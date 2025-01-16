@@ -31,8 +31,8 @@ const UsersList = () => {
                 <div key={user.uid}>
                     {
                         user.isActive ?
-                        <div style={{width: '5px', height: '5px', borderRadius: '50%', backgroundColor: 'green'}}></div> :
-                        <div style={{width: '5px', height: '5px', borderRadius: '50%', backgroundColor: 'grey'}}></div>
+                        <div style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'green'}}></div> :
+                        <div style={{width: '8x', height: '8px', borderRadius: '50%', backgroundColor: 'grey'}}></div>
                     }
                     <p>{user.displayName}</p>
                 </div>
