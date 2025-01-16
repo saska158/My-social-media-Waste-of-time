@@ -31,7 +31,7 @@ const SignIn = () => {
         i ako zelis da obradis greske
         */
             await update(userRef, {isActive: true})
-            onDisconnect(userRef).update({ isActive: false })
+           // onDisconnect(userRef).update({ isActive: false })
             console.log(`Korisnik ${uid} prijavljen i aktiviran.`)
         } catch(error) {
             console.error("Greška prilikom prijavljivanja:", error.message)
