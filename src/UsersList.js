@@ -32,7 +32,7 @@ const UsersList = () => {
                     {
                         user.isActive ?
                         <div style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'green'}}></div> :
-                        <div style={{width: '8x', height: '8px', borderRadius: '50%', backgroundColor: 'grey'}}></div>
+                        <div style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'grey'}}></div>
                     }
                     <p>{user.displayName}</p>
                 </div>
