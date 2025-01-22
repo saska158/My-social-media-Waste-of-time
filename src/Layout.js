@@ -4,6 +4,8 @@ import { useAuth } from "./authContext"
 const Layout = () => {
   const { user, logOut } = useAuth()
 
+  console.log('User sa Layout:', user)
+
   return (
     <div style={{backgroundColor: 'salmon'}}>
       <nav>
