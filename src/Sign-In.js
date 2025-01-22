@@ -6,7 +6,7 @@ import {
     database, 
     ref, 
     update, 
-    onDisconnect 
+    //onDisconnect 
 } from "./firebase"
 
 const SignIn = () => {
