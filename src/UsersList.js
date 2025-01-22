@@ -6,7 +6,7 @@ import {
 } from "./firebase"
 
 const UsersList = () => {
-    const [users, setUsers] = useState([])
+    const [users, setUsers] = useState([]) //mozda ipak null
 
     useEffect(() => {
         const usersRef = ref(database, 'users')
