@@ -17,7 +17,6 @@ const Layout = () => {
         setActiveUser(userData)
       }
     })
-
     return () => unsubscribe()
   }, [user])
 
@@ -26,13 +25,13 @@ const Layout = () => {
       <nav>
         {
           //user && user.emailVerified ?
-          activeUser?.isActive ?
+          activeUser && activeUser.isActive ?
           <Link to='/user'>{activeUser.displayName}</Link> :
           <Link to='/sign-in'>sign in</Link>
         }
         {
           //user && user.emailVerified ?
-          activeUser?.isActive ?
+          activeUser && activeUser.isActive ?
           <button onClick={logOut}>sign out</button> :
           null
         }
