@@ -8,6 +8,8 @@ import {
     update, 
     //onDisconnect 
 } from "./firebase"
+import Input from "./Input"
+import Button from "./Button"
 
 const SignIn = () => {
     const [email, setEmail] = useState('')
@@ -89,23 +91,23 @@ const SignIn = () => {
          }
          <h4>Sign in to your account</h4>
          <form>
-            <input 
+            <Input 
               type="email"
-              id="email"
+              //id="email"
               placeholder="E-MAIL" 
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
             />
-            <input 
+            <Input 
               type='password'
-              id="password"
+              //id="password"
               placeholder="PASSWORD"
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
             />
-            <button 
+            <Button 
               onClick={e => handleSignIn(e)}
               disabled={loading}
             >
@@ -113,7 +115,7 @@ const SignIn = () => {
                 loading ? "SIGNING IN..."
                 : "SIGN IN"
               }
-            </button>
+            </Button>
          </form>
          <h4>need an acount</h4>
          <Link to='/sign-up'>register</Link>

@@ -9,6 +9,8 @@ import {
     ref,
     set 
 } from "./firebase"
+import Input from "./Input"
+import Button from "./Button"
 
 const SignUp = () => {
     const initialState = {
@@ -95,28 +97,52 @@ const SignUp = () => {
         <div style={{background: 'salmon'}}>
             <h4>Personal details</h4>
             <form>
-                <input 
+                {/*<input 
                    type="email"
-                   id="email"
+                  // id="email"
                    placeholder="E-MAIL" 
                    value={formData.email}
                    name="email"
                    onChange={handleChange}
                    required
+                />*/}
+                <Input 
+                  type="email"
+                  placeholder="E-MAIL"
+                  value={formData.email}
+                  name="email"
+                  onChange={handleChange}
+                  required
                 />
-                <input 
+                {/*<input 
                   //type={showPassword ? 'text' : 'password'}
                   type="password"
-                  id="password"
+                 // id="password"
+                  placeholder="PASSWORD"
+                  value={formData.password}
+                  name="password"
+                  onChange={handleChange}
+                  required
+                />*/}
+                <Input 
+                  type="password"
                   placeholder="PASSWORD"
                   value={formData.password}
                   name="password"
                   onChange={handleChange}
                   required
                 />
-                <input 
+                {/*<input 
                   type="text"
-                  id="name"
+                 // id="name"
+                  placeholder="NAME"
+                  value={formData.name}
+                  name="name"
+                  onChange={handleChange}
+                  required
+                />*/}
+                <Input 
+                  type="text"
                   placeholder="NAME"
                   value={formData.name}
                   name="name"
@@ -124,9 +150,17 @@ const SignUp = () => {
                   required
                 />
                 <label htmlFor="checkbox2" className="checkbox-label">
-                <input 
+                {/*<input 
                   type="checkbox"
-                  id="checkbox2"
+                //  id="checkbox2"
+                  checked={formData.terms}
+                  name="terms"
+                  onChange={handleChange}
+                  required
+                />*/}
+                <Input 
+                  type="checkbox"
+                  //  id="checkbox2"
                   checked={formData.terms}
                   name="terms"
                   onChange={handleChange}
@@ -134,7 +168,8 @@ const SignUp = () => {
                 />
                   I have read and understand the Privacy and Cookies Policy
                 </label>
-              <button onClick={(e) => handleSignUp(e)}>CREATE ACCOUNT</button>
+              {/*<button onClick={(e) => handleSignUp(e)}>CREATE ACCOUNT</button>*/}
+              <Button onClick={(e) => handleSignUp(e)}>CREATE ACCOUNT</Button>
             </form>
         </div>
     )

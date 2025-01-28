@@ -22,6 +22,19 @@ import {
   reload 
 } from "firebase/auth"
 
+import { 
+  getFirestore, 
+  collection, 
+  doc,
+  addDoc, 
+  getDocs, 
+  setDoc,
+  query, 
+  where, 
+  orderBy,
+  onSnapshot,
+  serverTimestamp
+} from "firebase/firestore"
 
 const firebaseConfig = {
   apiKey: "AIzaSyC0t2HSwwWi7Ok2AzIqWdfRd35cCF7ocLU",
@@ -36,11 +49,14 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 
 const database = getDatabase(app)
-const auth = getAuth()
+const auth = getAuth(app) //proveri
+const firestore = getFirestore(app)
 
 export { 
   app, 
   database, 
+  firestore,
+  auth,
   ref,
   push,
   set,
@@ -48,7 +64,6 @@ export {
   onValue,
   update,
   onDisconnect,
-  auth, 
   onAuthStateChanged, 
   signOut, 
   reload,
@@ -56,4 +71,15 @@ export {
   signInWithEmailAndPassword, 
   updateProfile, 
   sendEmailVerification,  
+  getFirestore, 
+  collection, 
+  doc,
+  addDoc, 
+  getDocs, 
+  setDoc,
+  query, 
+  where, 
+  orderBy,
+  onSnapshot,
+  serverTimestamp
 }

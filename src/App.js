@@ -5,8 +5,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 OVO SU STRANE, KAD IMPORTUJEM U OKVIRU NJIH ONDA SU KOMPONENTE
 VIDI DA NAPRAVIS STO VISE ZAJEDNICKIH KOMPONENTI 
 */
-import Layout from './Layout'
-import ChatLayout from './ChatLayout'
+import Homepage from './Homepage'
+import ChatRoomLayout from './ChatRoomLayout'
 import ChatRoom from './ChatRoom'
 import SignIn from './Sign-In'
 import SignUp from './Sign-Up'
@@ -20,10 +20,10 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
        <Routes>
-        <Route path='/' element={<Layout />}>
-          <Route element={<ChatLayout />}>
+        <Route path='/' element={<Homepage />}>
+          <Route element={<ChatRoomLayout />}>
             <Route index element={<ChatRoom roomId="main" />} />
-            <Route path=":roomId" element={<ChatRoom />} />
+            <Route path=':roomId' element={<ChatRoom />} />
           </Route>
           <Route path='sign-in' element={<SignIn />} />
           <Route path='sign-up' element={<SignUp />} />
