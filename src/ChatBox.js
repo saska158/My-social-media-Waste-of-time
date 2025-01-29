@@ -14,23 +14,25 @@ import {
 } from "./firebase"
 //import MessagesList from './MessagesList'
 //import Messages from "./Messages"
+import { format } from "date-fns"
 import Input from './Input'
 import Button from './Button'
 import { useAuth } from "./authContext"
 
-const ChatBox = ({pickedUser}) => {
+const ChatBox = ({pickedUser, setIsChatVisible}) => {
     //const [isFullScreen, setIsFullScreen] = useState(false)
     const [chatId, setChatId] = useState('')
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
     const { user } = useAuth()
 
+    console.log("Picked", pickedUser)
 
     // Create or get the chatId when the component mounts or user UIDs change
     useEffect(() => {
-        const generatedChatId = [user.uid, pickedUser.uid].sort().join("_")
+        const generatedChatId = [user?.uid, pickedUser.uid].sort().join("_")
         setChatId(generatedChatId)
-    }, [user.uid, pickedUser.uid])
+    }, [user?.uid, pickedUser.uid])
 
     // Real-time listener for fetching messages
     useEffect(() => {
@@ -42,7 +44,8 @@ const ChatBox = ({pickedUser}) => {
         const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
             const fetchedMessages = snapshot.docs.map((doc) => ({
                 id: doc.id,
-                ...doc.data()
+                ...doc.data(),
+                timestamp: doc.data().timestamp.toDate()
             }))
             setMessages(fetchedMessages)
         })
@@ -58,8 +61,9 @@ const ChatBox = ({pickedUser}) => {
     //slusanje poruka i mozda useMemo?
     //i ovo: const chatsRef = collection(firestore, 'chats')
 
-    const sendMessage = async (e, userAUid, userBUid) => {
+    const sendMessage = async (e, userA, userB) => {
         e.preventDefault()
+        console.log("userA", userA)
 
         try {
             const chatsRef = collection(firestore, 'chats')
@@ -74,7 +78,7 @@ const ChatBox = ({pickedUser}) => {
             if(chatSnapshot.empty) {
                 // Chat doesn't exist, create a new one
                 await setDoc(chatDoc, {
-                    participants: [userAUid, userBUid],
+                    participants: [userA.uid, userB.uid],
                     createdAt: serverTimestamp(),
                 })
             }
@@ -82,7 +86,8 @@ const ChatBox = ({pickedUser}) => {
             // Add the message to the messages subcollection of the chat
             const messagesRef = collection(chatDoc, "messages")
             await addDoc(messagesRef, {
-                senderUid: userAUid,
+                senderUid: userA.uid,
+                senderName: userA.displayName,
                 content: message,
                 timestamp: serverTimestamp() 
             })
@@ -93,8 +98,11 @@ const ChatBox = ({pickedUser}) => {
         }
     }
 
+    console.log("mess", messages)
+
     return (
-        <div className="chat-box" style={{width: '300px', height: '500px'}}>
+        <div className="chat-box" style={{width: '300px', height: '500px', position: 'relative'}}>
+            <button onClick={() => setIsChatVisible(false)}>x</button>
             <p style={{backgroundColor: 'salmon'}}>
                 { pickedUser.displayName }
                 {/*<span onClick={() => setIsFullScreen(!isFullScreen)}>o</span>*/}
@@ -103,8 +111,13 @@ const ChatBox = ({pickedUser}) => {
             {/* SREDI MESSAGES KOMPONENTU */}
             {/* Display messages */}
             {messages.map((message) => (
-              <div key={message.id}>
-                <strong>{message.senderUid}</strong>: {message.content}
+              <div key={message.id} style={{
+                backgroundColor: message.senderName === user.displayName ? 'salmon' : 'grey',
+                width: 'fit-content',
+                marginLeft: message.senderName === user.displayName ? 'auto' : '0'
+                }}>
+                <p><strong>{message.senderName}</strong>: {message.content}</p>
+                <p>{format(message.timestamp, "HH:mm dd/MM/yyyy")}</p>
               </div>
             ))}
 
@@ -115,7 +128,7 @@ const ChatBox = ({pickedUser}) => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                 />
-                <Button onClick={(e) => sendMessage(e, user.uid, pickedUser.uid)}>send</Button>
+                <Button onClick={(e) => sendMessage(e, user, pickedUser)}>send</Button>
             </form>
         </div>
     )

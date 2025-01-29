@@ -38,7 +38,7 @@ export const AuthProvider = ({children}) => {
         }
     }
 
-    //console.log('nas user:', user)
+    console.log('nas user:', user)
 
     return (
         <AuthContext.Provider value={{user, logOut, setUser}}>{children}</AuthContext.Provider>
