@@ -45,7 +45,7 @@ const ChatBox = ({pickedUser, setIsChatVisible}) => {
             const fetchedMessages = snapshot.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
-                timestamp: doc.data().timestamp.toDate()
+                timestamp: doc.data().timestamp ? doc.data().timestamp.toDate() : null //sto??
             }))
             setMessages(fetchedMessages)
         })
@@ -112,9 +112,9 @@ const ChatBox = ({pickedUser, setIsChatVisible}) => {
             {/* Display messages */}
             {messages.map((message) => (
               <div key={message.id} style={{
-                backgroundColor: message.senderName === user.displayName ? 'salmon' : 'grey',
+                backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey',
                 width: 'fit-content',
-                marginLeft: message.senderName === user.displayName ? 'auto' : '0'
+                marginLeft: message.senderName === user?.displayName ? 'auto' : '0'
                 }}>
                 <p><strong>{message.senderName}</strong>: {message.content}</p>
                 <p>{format(message.timestamp, "HH:mm dd/MM/yyyy")}</p>
