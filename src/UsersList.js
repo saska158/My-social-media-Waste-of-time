@@ -49,7 +49,7 @@ const UsersList = () => {
 */
     return (
         <div style={{borderTop: '1px solid black', backgroundColor: 'white'}}>
-           <p>PICK SOMEONE TO CHAT WITH:</p>
+           <p>USERS:</p>
            {
             listOfUsers.map(user => (
                 <div key={user.uid} /*onClick={() => pickUser(user)}*/>

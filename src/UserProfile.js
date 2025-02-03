@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { firestore, doc, getDoc } from './firebase'
+import { useAuth } from "./authContext"
+import ChatBox from './ChatBox'
 
 const UserProfile = () => {
-    const { userUid } = useParams()
-
-    console.log('fffffff')
+    const { profileUid } = useParams()
+    const { user } = useAuth()
 
     const [profile, setProfile] = useState({
         displayName: "",
@@ -15,18 +16,30 @@ const UserProfile = () => {
         photoURL: "",
     })
 
+    const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
+
+    const navigate = useNavigate()
+
     useEffect(() => {
         const fetchUserData = async () => {
           //if(!user?.uid) return //da l uopste treba? cim smo na ovoj komponenti to znaci da ima user
-          const userDoc = await getDoc(doc(firestore, "profiles", userUid))
+          const userDoc = await getDoc(doc(firestore, "profiles", profileUid))
           if(userDoc.exists()) {
             setProfile(userDoc.data())
           }
         }
     
         fetchUserData()
-      }, [userUid])//da l mi uopste treba dependency
+      }, [profileUid])//da l mi uopste treba dependency
     
+
+    const handleMessageButton = () => {
+      if(user) {
+        setIsChatBoxVisible(!isChatBoxVisible)
+      } else {
+        navigate('/sign-in')
+      }
+    }
 
     return (
         <>
@@ -59,6 +72,10 @@ const UserProfile = () => {
               {profile.politicalViews} 
             </p>
           </div>
+          <button onClick={handleMessageButton}>message</button>
+          {
+            isChatBoxVisible && <ChatBox profileUid={profileUid} displayName={profile.displayName} setIsChatBoxVisible={setIsChatBoxVisible} />
+          }
         </>
     )
 }

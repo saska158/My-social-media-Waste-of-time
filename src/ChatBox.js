@@ -19,20 +19,20 @@ import Input from './Input'
 import Button from './Button'
 import { useAuth } from "./authContext"
 
-const ChatBox = ({pickedUser, setIsChatVisible}) => {
+const ChatBox = ({profileUid, displayName, setIsChatBoxVisible}) => {
     //const [isFullScreen, setIsFullScreen] = useState(false)
     const [chatId, setChatId] = useState('')
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
     const { user } = useAuth()
 
-    console.log("Picked", pickedUser)
+    //console.log("Picked", pickedUser)
 
     // Create or get the chatId when the component mounts or user UIDs change
     useEffect(() => {
-        const generatedChatId = [user?.uid, pickedUser.uid].sort().join("_")
+        const generatedChatId = [user?.uid, profileUid].sort().join("_")
         setChatId(generatedChatId)
-    }, [user?.uid, pickedUser.uid])
+    }, [user?.uid, profileUid])
 
     // Real-time listener for fetching messages
     useEffect(() => {
@@ -61,7 +61,7 @@ const ChatBox = ({pickedUser, setIsChatVisible}) => {
     //slusanje poruka i mozda useMemo?
     //i ovo: const chatsRef = collection(firestore, 'chats')
 
-    const sendMessage = async (e, userA, userB) => {
+    const sendMessage = async (e, userA, userBUid) => {
         e.preventDefault()
         console.log("userA", userA)
 
@@ -78,7 +78,7 @@ const ChatBox = ({pickedUser, setIsChatVisible}) => {
             if(chatSnapshot.empty) {
                 // Chat doesn't exist, create a new one
                 await setDoc(chatDoc, {
-                    participants: [userA.uid, userB.uid],
+                    participants: [userA.uid, userBUid],
                     createdAt: serverTimestamp(),
                 })
             }
@@ -102,9 +102,9 @@ const ChatBox = ({pickedUser, setIsChatVisible}) => {
 
     return (
         <div className="chat-box" style={{width: '300px', height: '500px', position: 'relative'}}>
-            <button onClick={() => setIsChatVisible(false)}>x</button>
+            <button onClick={() => setIsChatBoxVisible(false)}>x</button>
             <p style={{backgroundColor: 'salmon'}}>
-                { pickedUser.displayName }
+                { displayName }
                 {/*<span onClick={() => setIsFullScreen(!isFullScreen)}>o</span>*/}
             </p>
             {/*<MessagesList/> */}
@@ -128,7 +128,7 @@ const ChatBox = ({pickedUser, setIsChatVisible}) => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                 />
-                <Button onClick={(e) => sendMessage(e, user, pickedUser)}>send</Button>
+                <Button onClick={(e) => sendMessage(e, user, profileUid)}>send</Button>
             </form>
         </div>
     )

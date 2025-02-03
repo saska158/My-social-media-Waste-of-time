@@ -150,6 +150,7 @@ const MyProfile = () => {
             </p>
           )}
           </div>
+          <p>MY CHATS</p>
         </>
     )
 }
