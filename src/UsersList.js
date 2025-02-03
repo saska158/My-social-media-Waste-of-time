@@ -5,7 +5,7 @@ import {
     ref, 
     onValue, 
 } from "./firebase"
-import { useAuth } from "./authContext"
+//import { useAuth } from "./authContext"
 //import ChatBox from "./ChatBox"
 
 const UsersList = () => {
