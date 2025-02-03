@@ -11,7 +11,9 @@ import ChatRoom from './ChatRoom'
 import SignIn from './Sign-In'
 import SignUp from './Sign-Up'
 import EmailVerification from './EmailVerification'
-import User from './User'
+import MyProfile from './MyProfile'
+import UserProfile from './UserProfile'
+import AuthRequired from './AuthRequired'
 import { AuthProvider } from './authContext'
 
 function App() {
@@ -28,7 +30,10 @@ function App() {
           <Route path='sign-in' element={<SignIn />} />
           <Route path='sign-up' element={<SignUp />} />
           <Route path='email-verification' element={<EmailVerification />} />
-          <Route path='user' element={<User />} />
+          <Route element={<AuthRequired />}>
+            <Route path='my-profile' element={<MyProfile />} />
+          </Route>
+          <Route path='user/:userUid' element={<UserProfile />} />
         </Route>
        </Routes>
       </BrowserRouter>

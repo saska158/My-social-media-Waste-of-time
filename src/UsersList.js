@@ -1,18 +1,18 @@
 import { useState, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import { 
     database, 
     ref, 
     onValue, 
 } from "./firebase"
 import { useAuth } from "./authContext"
-import ChatBox from "./ChatBox"
+//import ChatBox from "./ChatBox"
 
 const UsersList = () => {
     const { user } = useAuth()
     const [listOfUsers, setListOfUsers] = useState([]) //mozda ipak null
-    const [pickedUser, setPickedUser] = useState(null)
-    const [isChatVisible, setIsChatVisible] = useState(false)
+    //const [pickedUser, setPickedUser] = useState(null)
+    //const [isChatVisible, setIsChatVisible] = useState(false)
 
     const navigate = useNavigate()
     //console.log("user from list", user)
@@ -31,16 +31,16 @@ const UsersList = () => {
         return () => unsubscribe()
     }, [])
 
-    useEffect(() => {
+    /*useEffect(() => {
         if(!user) {
             setIsChatVisible(false)
         }
     }, [user])
-
+*/
 
     const pickUser = (userFromList) => {
         if(user) {
-            setIsChatVisible(true)
+            //setIsChatVisible(true)
             setPickedUser(userFromList)
         } else {
             navigate('/sign-in') //nemas poruku iz state
@@ -58,13 +58,13 @@ const UsersList = () => {
                         <div style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'green'}}></div> :
                         <div style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'grey'}}></div>
                     }
-                    <p>{user.displayName}</p>
+                    <Link to={`user/${user.uid}`}>{user.displayName}</Link>
                 </div>
             ))
            }
-           {
+          {/* {
             isChatVisible && <ChatBox pickedUser={pickedUser} setIsChatVisible={setIsChatVisible}/>
-           }
+           }  */}
         </div>
     )
 }

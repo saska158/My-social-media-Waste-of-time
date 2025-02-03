@@ -7,6 +7,7 @@ ostavi neke komentare mozda u zavrsnoj verziji kako bi videli kko si razmisljala
 import { auth, database, ref, update, onAuthStateChanged, signOut } from "./firebase"
 import { useState, useEffect, createContext, useContext } from "react"
 
+
 const AuthContext = createContext()
 
 export const useAuth = () => useContext(AuthContext)
@@ -38,7 +39,7 @@ export const AuthProvider = ({children}) => {
         }
     }
 
-    console.log('nas user:', user)
+    //console.log('nas user:', user)
 
     return (
         <AuthContext.Provider value={{user, logOut, setUser}}>{children}</AuthContext.Provider>

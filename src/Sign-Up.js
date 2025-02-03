@@ -7,7 +7,11 @@ import {
     sendEmailVerification,
     database,
     ref,
-    set 
+    set,
+    firestore,
+    doc, 
+    setDoc, 
+    getDoc 
 } from "./firebase"
 import Input from "./Input"
 import Button from "./Button"
@@ -43,6 +47,23 @@ const SignUp = () => {
       })
     }
 
+    const createUserProfile = async (user) => {
+      const userRef = doc(firestore, "profiles", user.uid)
+      const userDoc = await getDoc(userRef)
+
+      if (!userDoc.exists()) {
+        // Create a new user profile in Firestore
+        await setDoc(userRef, {
+          displayName: user.displayName || "",
+          description: "",
+          musicTaste: "",
+          politicalViews: "",
+          photoURL: user.photoURL || "",
+          createdAt: new Date(),
+        })
+      }
+    }
+
     const handleSignUp = async (e) => {
         e.preventDefault()
         const { email, password, name, /*terms*/ } = formData
@@ -62,6 +83,7 @@ const SignUp = () => {
             await sendEmailVerification(user)
             console.log('User signed up successfully:', user)
             saveUserToDatabase(user)
+            createUserProfile(user)
             setFormData(initialState)
             navigate('/email-verification', {replace:true})// treba nesto da uradim povodom ovoga
         } catch(error) {

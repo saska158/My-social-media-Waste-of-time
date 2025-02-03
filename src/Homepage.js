@@ -27,7 +27,7 @@ const Homepage = () => {
         {
           //user && user.emailVerified ?
           activeUser && activeUser.isActive ?
-          <Link to='/user'>{activeUser.displayName}</Link> :
+          <Link to='/my-profile'>{activeUser.displayName}</Link> :
           <Link to='/sign-in'>sign in</Link>
         }
         {

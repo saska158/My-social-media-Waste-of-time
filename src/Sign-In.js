@@ -47,7 +47,7 @@ const SignIn = () => {
         try{
             const userCredential = await signInWithEmailAndPassword(auth, email, password)
             const user = userCredential.user
-            console.log('Signinovani user:', user)
+           //console.log('Signinovani user:', user)
             setEmail('')
             setPassword('')
             navigate(location.state?.from || '/', {replace: true})
