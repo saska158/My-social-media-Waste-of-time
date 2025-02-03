@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useNavigate, Link } from "react-router-dom"
+import { /*useNavigate, */Link } from "react-router-dom"
 import { 
     database, 
     ref, 
@@ -9,12 +9,12 @@ import { useAuth } from "./authContext"
 //import ChatBox from "./ChatBox"
 
 const UsersList = () => {
-    const { user } = useAuth()
+    //const { user } = useAuth()
     const [listOfUsers, setListOfUsers] = useState([]) //mozda ipak null
     //const [pickedUser, setPickedUser] = useState(null)
     //const [isChatVisible, setIsChatVisible] = useState(false)
 
-    const navigate = useNavigate()
+    //const navigate = useNavigate()
     //console.log("user from list", user)
 
     useEffect(() => {
