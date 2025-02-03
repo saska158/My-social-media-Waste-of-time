@@ -38,7 +38,7 @@ const UsersList = () => {
     }, [user])
 */
 
-    const pickUser = (userFromList) => {
+    /*const pickUser = (userFromList) => {
         if(user) {
             //setIsChatVisible(true)
             setPickedUser(userFromList)
@@ -46,13 +46,13 @@ const UsersList = () => {
             navigate('/sign-in') //nemas poruku iz state
         }
     }
-
+*/
     return (
         <div style={{borderTop: '1px solid black', backgroundColor: 'white'}}>
            <p>PICK SOMEONE TO CHAT WITH:</p>
            {
             listOfUsers.map(user => (
-                <div key={user.uid} onClick={() => pickUser(user)}>
+                <div key={user.uid} /*onClick={() => pickUser(user)}*/>
                     {
                         user.isActive ?
                         <div style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'green'}}></div> :
