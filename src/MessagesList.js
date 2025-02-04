@@ -11,7 +11,12 @@ const MessagesList = ({ messages, roomId=null }) => {
             }
             {
                 messages && messages.map(message => (
-                    <p key={message.id}>{`${message.name}: ${message.text}`}</p>
+                    <p key={message.id}>
+                        {`${message.name}: ${message.text}`}
+                        {
+                            message.photoUrl && <img src={message.photoUrl} alt="profile" style={{width: '20px', display: 'inline'}} />
+                        }
+                    </p>
                 ))
             }
         </div>

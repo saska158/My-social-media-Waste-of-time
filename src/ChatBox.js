@@ -8,9 +8,10 @@ import {
     getDocs, 
     addDoc, 
     setDoc,
+    updateDoc,
     serverTimestamp,
     orderBy, 
-    onSnapshot
+    onSnapshot,
 } from "./firebase"
 //import MessagesList from './MessagesList'
 //import Messages from "./Messages"
@@ -19,12 +20,14 @@ import Input from './Input'
 import Button from './Button'
 import { useAuth } from "./authContext"
 
-const ChatBox = ({profileUid, displayName, setIsChatBoxVisible}) => {
+const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     //const [isFullScreen, setIsFullScreen] = useState(false)
     const [chatId, setChatId] = useState('')
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
     const { user } = useAuth()
+
+    console.log("Useeeeer", user)
 
     //console.log("Picked", pickedUser)
 
@@ -80,6 +83,7 @@ const ChatBox = ({profileUid, displayName, setIsChatBoxVisible}) => {
                 await setDoc(chatDoc, {
                     participants: [userA.uid, userBUid],
                     createdAt: serverTimestamp(),
+                    lastMessage: null
                 })
             }
 
@@ -88,9 +92,21 @@ const ChatBox = ({profileUid, displayName, setIsChatBoxVisible}) => {
             await addDoc(messagesRef, {
                 senderUid: userA.uid,
                 senderName: userA.displayName,
+                senderPhoto: userA.photoURL,
                 content: message,
                 timestamp: serverTimestamp() 
             })
+
+            //update the lastMessage field in the chat document
+            await updateDoc(chatDoc, {
+                lastMessage: {  
+                    senderUid: userA.uid,
+                    senderName: userA.displayName,
+                    senderPhoto: userA.photoURL,
+                    content: message, 
+                    timestamp: serverTimestamp() },
+              })
+
             setMessage('')
             console.log("Message sent successfully!")
         } catch(error) {
@@ -104,7 +120,7 @@ const ChatBox = ({profileUid, displayName, setIsChatBoxVisible}) => {
         <div className="chat-box" style={{width: '300px', height: '500px', position: 'relative'}}>
             <button onClick={() => setIsChatBoxVisible(false)}>x</button>
             <p style={{backgroundColor: 'salmon'}}>
-                { displayName }
+                { profile.displayName }
                 {/*<span onClick={() => setIsFullScreen(!isFullScreen)}>o</span>*/}
             </p>
             {/*<MessagesList/> */}
@@ -116,7 +132,8 @@ const ChatBox = ({profileUid, displayName, setIsChatBoxVisible}) => {
                 width: 'fit-content',
                 marginLeft: message.senderName === user?.displayName ? 'auto' : '0'
                 }}>
-                <p><strong>{message.senderName}</strong>: {message.content}</p>
+                <img src={message.senderPhoto} alt="profile photo" style={{width: '20px', display: 'inline'}}/>:
+                <span>{message.content}</span>
                 <p>{format(message.timestamp, "HH:mm dd/MM/yyyy")}</p>
               </div>
             ))}

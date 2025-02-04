@@ -14,7 +14,7 @@ const UserProfile = () => {
         musicTaste: "",
         politicalViews: "",
         photoURL: "",
-    })
+    }) //treba li i uid?
 
     const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
 
@@ -74,7 +74,7 @@ const UserProfile = () => {
           </div>
           <button onClick={handleMessageButton}>message</button>
           {
-            isChatBoxVisible && <ChatBox profileUid={profileUid} displayName={profile.displayName} setIsChatBoxVisible={setIsChatBoxVisible} />
+            isChatBoxVisible && <ChatBox profileUid={profileUid} profile={profile} setIsChatBoxVisible={setIsChatBoxVisible} />
           }
         </>
     )

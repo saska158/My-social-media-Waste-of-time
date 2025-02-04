@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "./authContext"
-import { firestore, doc, getDoc, updateDoc } from './firebase'
+import { firestore, doc, getDoc, updateDoc, updateProfile } from './firebase'
+import MyChats from "./MyChats"
 
 const MyProfile = () => {
   const { user } = useAuth()
@@ -53,7 +54,6 @@ const MyProfile = () => {
     setImageFile(e.target.files[0])
   }
 
-  console.log("Image File:", imageFile)
 
   const handleUpload = async () => {
     if(!imageFile) return
@@ -73,6 +73,9 @@ const MyProfile = () => {
 
       if(data.secure_url) {
         await updateDoc(doc(firestore, "profiles", user.uid), {photoURL: data.secure_url})
+        await updateProfile(user, {
+          photoURL: data.secure_url
+      })
         setProfile(prev => ({...prev, photoURL: data.secure_url}))
       }
     } catch(error) {
@@ -150,7 +153,7 @@ const MyProfile = () => {
             </p>
           )}
           </div>
-          <p>MY CHATS</p>
+          <MyChats userUid={user.uid} />
         </>
     )
 }

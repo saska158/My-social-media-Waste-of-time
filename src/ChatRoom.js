@@ -40,7 +40,7 @@ const ChatRoom = () => {
         setMessage('')
         return
       }
-      push(roomRef, {text: message, name: user.displayName})
+      push(roomRef, {text: message, name: user.displayName, photoUrl: user.photoURL || ''})
       setMessage('')
     }
 
