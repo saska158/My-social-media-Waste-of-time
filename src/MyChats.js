@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
 import { 
     firestore,
     collection,
+    doc,
+    getDoc,
     query,
     where,
     onSnapshot
@@ -18,12 +19,28 @@ const MyChats = ({userUid}) => {
         const chatsRef = collection(firestore, 'chats')
         const chatsQuery = query(chatsRef, where('participants', 'array-contains', userUid))
 
-        const unsubscribe = onSnapshot(chatsQuery, (snapshot) => {
-            const chatData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data(),
-                timestamp: doc.data().createdAt ? doc.data().createdAt.toDate() : null
-            }))
+        const unsubscribe = onSnapshot(chatsQuery, async (snapshot) => {
+            const chatData = await Promise.all(
+                snapshot.docs.map(async (docSnap) => {
+                    const chat = docSnap.data()
+
+                    // Find the other participant
+                    const otherUserUid = chat.participants.find(uid => uid !== userUid)
+
+                    // Fetch the other user's profile
+                    const otherUserRef = doc(firestore, 'profiles', otherUserUid)
+                    const otherUserSnap = await getDoc(otherUserRef)
+                    const otherUserData = otherUserSnap.exists() ? otherUserSnap.data() : null
+
+                    return {
+                        id: docSnap.id,
+                        lastMessage: chat.lastMessage || null,
+                        otherUser: otherUserData,
+                        timestamp: docSnap.data().createdAt ? docSnap.data().createdAt.toDate() : null
+                    }
+                })
+            )
+
             setChats(chatData)
         })
 
@@ -37,9 +54,9 @@ const MyChats = ({userUid}) => {
             <h4>My chats</h4>
             {
                 chats.map(chat => (
-                    <div key={chat.id} style={{borderBottom: '1px solid black', background: 'white', display: 'flex'}}>
-                      <img src={chat.lastMessage.senderPhoto} alt="sender photo" style={{width: '20px', display: 'inline'}} />
-                      <p>{chat.lastMessage.senderName}: </p>
+                    <div key={chat.id} style={{borderBottom: '1px solid black', background: 'white'}}>
+                      <img src={chat.otherUser.photoURL} alt="sender" style={{width: '20px', display: 'inline'}} />
+                      <span>{chat.otherUser.displayName}</span>
                       <p>{chat.lastMessage.content}</p>
                       <p>{format(chat.timestamp, "HH:mm")}</p>
                     </div>
