@@ -132,7 +132,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
                 width: 'fit-content',
                 marginLeft: message.senderName === user?.displayName ? 'auto' : '0'
                 }}>
-                <img src={message.senderPhoto} alt="profile photo" style={{width: '20px', display: 'inline'}}/>:
+                <img src={message.senderPhoto} alt="profile" style={{width: '20px', display: 'inline'}}/>:
                 <span>{message.content}</span>
                 <p>{format(message.timestamp, "HH:mm dd/MM/yyyy")}</p>
               </div>
