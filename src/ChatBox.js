@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import {
     firestore, 
     collection,
@@ -12,6 +12,8 @@ import {
     serverTimestamp,
     orderBy, 
     onSnapshot,
+    limit,
+    startAfter,
 } from "./firebase"
 //import MessagesList from './MessagesList'
 //import Messages from "./Messages"
@@ -22,14 +24,18 @@ import { useAuth } from "./authContext"
 
 const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     //const [isFullScreen, setIsFullScreen] = useState(false)
+    const { user } = useAuth()
     const [chatId, setChatId] = useState('')
     const [message, setMessage] = useState('')
     const [messages, setMessages] = useState([])
-    const { user } = useAuth()
+    const [lastVisible, setLastVisible] = useState(null)
+    const [loading, setLoading] = useState(false)
 
-    console.log("Useeeeer", user)
+    const [initialLoad, setInitialLoad] = useState(true)
+    const [isFetchingOldMessages, setIsFetchingOldMessages] = useState(false)
 
-    //console.log("Picked", pickedUser)
+    const chatRef = useRef(null)
+
 
     // Create or get the chatId when the component mounts or user UIDs change
     useEffect(() => {
@@ -38,24 +44,115 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     }, [user?.uid, profileUid])
 
     // Real-time listener for fetching messages
+    
     useEffect(() => {
         if(!chatId) return
 
         const messagesRef = collection(firestore, "chats", chatId, "messages")
-        const messagesQuery = query(messagesRef, orderBy("timestamp", "asc"))
+        const messagesQuery = query(messagesRef, orderBy("timestamp", "desc"), limit(10))
+        //console.log("messages q:", messagesQuery) 
+
+        
+        const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
+            if(!snapshot.empty) {
+                const newMessages = snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data(),
+                    timestamp: doc.data().timestamp ? doc.data().timestamp.toDate() : null //sto??
+                }))
+                setMessages(newMessages.reverse())
+                setLastVisible(snapshot.docs[snapshot.docs.length - 1])
+            }
+        })
+        return () => unsubscribe()
+    }, [chatId])
+
+   
+
+    const loadMoreMessages = () => {
+        if (loading || !lastVisible) return
+        setLoading(true)
+
+        setIsFetchingOldMessages(true) // Prevent auto-scroll
+
+        const chatBox = chatRef.current
+        const scrollPosition = chatBox.scrollTop
+
+    
+        const messagesRef = collection(firestore, "chats", chatId, "messages")
+        const messagesQuery = query(messagesRef, orderBy("timestamp", "desc"), startAfter(lastVisible || 0), limit(10))
 
         const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
-            const fetchedMessages = snapshot.docs.map((doc) => ({
+          if (!snapshot.empty) {
+            const newMessages = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data(),
                 timestamp: doc.data().timestamp ? doc.data().timestamp.toDate() : null //sto??
-            }))
-            setMessages(fetchedMessages)
+            })).reverse()
+            setMessages(prevMessages => [ ...newMessages, ...prevMessages]) // Append older messages
+            setLastVisible(snapshot.docs[snapshot.docs.length - 1])
+          } 
+
+          setTimeout(() => {
+            // Maintain scroll position
+            chatBox.scrollTop = scrollPosition + 10
+          }, 0)
+    
+          setIsFetchingOldMessages(false)
+          setLoading(false)
+
         })
-
+      
         return () => unsubscribe()
+    }
+      
 
-    }, [chatId])
+    const handleScroll = () => {
+        if(chatRef.current) {
+            const chatBox = chatRef.current
+            console.log(chatBox.scrollTop)
+            
+            // Check if user scrolled to the top
+            if(chatBox.scrollTop === 0) {
+                loadMoreMessages()
+                //console.log("TOP")
+            }
+        }
+    }
+
+      
+    useEffect(() => {
+        const chatBox = chatRef.current
+        if(chatBox) {
+            chatBox.addEventListener("scroll", handleScroll)
+            return () => chatBox.removeEventListener("scroll", handleScroll)
+        }
+    }, [messages])
+
+    useEffect(() => {
+        if(messages.length < 11) {
+            const chatBox = chatRef.current
+        
+            if (messages.length > 0) {
+                if (initialLoad) {
+                    // First load -> scroll to bottom
+                    setTimeout(() => {
+                        chatBox.scrollTop = chatBox.scrollHeight
+                    }, 0)
+                    setInitialLoad(false)
+                } else if (!isFetchingOldMessages) {
+                    // New message sent -> scroll to bottom
+                    setTimeout(() => {
+                        chatBox.scrollTop = chatBox.scrollHeight
+                    }, 0)
+                }
+            }
+        }
+    }, [messages])
+      
+      
+
+   
 
     //console.log("User iz Box:", user.uid)
     //console.log("picked", pickedUser.uid)
@@ -66,7 +163,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
 
     const sendMessage = async (e, userA, userBUid) => {
         e.preventDefault()
-        console.log("userA", userA)
+        //console.log("userA", userA)
 
         try {
             const chatsRef = collection(firestore, 'chats')
@@ -114,29 +211,46 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
         }
     }
 
-    console.log("mess", messages)
+    // Effect to scroll to bottom when a new message is added
+    /*useEffect(() => {
+      if(chatRef.current) {
+        chatRef.current.scrollTo({ top: chatRef.current.scrollHeight, behavior: "smooth" })
+      }
+    }, [messages])*/ // Runs whenever messages change
+
 
     return (
-        <div className="chat-box" style={{width: '300px', height: '500px', position: 'relative'}}>
-            <button onClick={() => setIsChatBoxVisible(false)}>x</button>
-            <p style={{backgroundColor: 'salmon'}}>
+        <div className="chat-box">
+            <div style={{position: 'sticky', top: '0', left: '0', right: '0', background: 'white', borderBottom: '1px solid black'}}>
+              <button onClick={() => setIsChatBoxVisible(false)}>x</button>
+              {/*<button onClick={loadMoreMessages}>+</button>*/}
+              <p>
                 { profile.displayName }
                 {/*<span onClick={() => setIsFullScreen(!isFullScreen)}>o</span>*/}
-            </p>
+              </p>
+            </div>
             {/*<MessagesList/> */}
             {/* SREDI MESSAGES KOMPONENTU */}
             {/* Display messages */}
-            {messages.map((message) => (
-              <div key={message.id} style={{
-                backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey',
-                width: 'fit-content',
-                marginLeft: message.senderName === user?.displayName ? 'auto' : '0'
-                }}>
-                <img src={message.senderPhoto} alt="profile" style={{width: '20px', display: 'inline'}}/>:
-                <span>{message.content}</span>
-                <p>{format(message.timestamp, "HH:mm dd/MM/yyyy")}</p>
-              </div>
-            ))}
+            <div className="chat-box-messages" ref={chatRef}>
+                {messages.map((message) => (
+                  <div key={message.id} style={{
+                    backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey',
+                    width: 'fit-content',
+                    margin: '1em',
+                    marginLeft: message.senderName === user?.displayName ? 'auto' : '0',
+                    borderRadius: '30%',
+                    fontSize: '.7rem',
+                    textTransform: 'lowercase'
+                    }}>
+                    <img src={message.senderPhoto} alt="profile" style={{width: '20px', display: 'inline', borderRadius: '50%'}}/>
+                    <span>{message.content}</span>
+                    <p>{format(message.timestamp, "HH:mm dd/MM/yyyy")}</p>
+                  </div>
+                ))}
+            </div>
+         
+            {/*{loading && <div>Loading...</div>}*/}
 
             <form>
                 <Input 

@@ -42,7 +42,7 @@ const UserProfile = () => {
     }
 
     return (
-        <>
+        <div style={{background: 'green', position: 'relative'}}>
           {/* Profile Picture */}
           <div>
             <img 
@@ -76,7 +76,7 @@ const UserProfile = () => {
           {
             isChatBoxVisible && <ChatBox profileUid={profileUid} profile={profile} setIsChatBoxVisible={setIsChatBoxVisible} />
           }
-        </>
+        </div>
     )
 }
 

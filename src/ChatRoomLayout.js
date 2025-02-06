@@ -15,15 +15,17 @@ posalji i state object message i from
 const ChatRoomLayout = () => {
     
     return (
-        <>
+        <div style={{width: '70%'}}>
           <div style={{backgroundColor: 'grey'}}>
-            <NavLink to='/'>Main</NavLink>
-            <NavLink to='/movies'>Movies</NavLink>
-            <NavLink to='/books'>Books</NavLink>
-            <NavLink to='/music'>Music</NavLink>
+            <nav style={{display: 'flex', justifyContent: 'center', gap: '1.5em', color: 'white'}}>
+              <NavLink to='/'>Main</NavLink>
+              <NavLink to='/movies'>Movies</NavLink>
+              <NavLink to='/books'>Books</NavLink>
+              <NavLink to='/music'>Music</NavLink>
+            </nav>
             <Outlet />
           </div>
-        </>
+        </div>
     )
 }
 

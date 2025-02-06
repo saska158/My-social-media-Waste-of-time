@@ -6,9 +6,9 @@ const MessagesList = ({ messages, roomId=null }) => {
     //console.log('messages from outlet:', messages)
     return (
         <div style={{backgroundColor: 'white'}}>
-            { 
+            { /*
                 roomId && <h4>{roomId}</h4>
-            }
+            */}
             {
                 messages && messages.map(message => (
                     <p key={message.id}>

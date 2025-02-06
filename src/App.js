@@ -18,7 +18,6 @@ import UserProfile from './UserProfile'
 import AuthRequired from './AuthRequired'
 import { AuthProvider } from './authContext'
 
-
 function App() {
 
   return (
