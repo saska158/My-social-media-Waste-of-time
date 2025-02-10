@@ -68,7 +68,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
                 setMessages(newMessages.reverse())
                 setLastVisible(snapshot.docs[snapshot.docs.length - 1])
 
-                markMessagesAsSeen()
+                markMessagesAsSeen(messages)
             }
         })
         return () => unsubscribe()
