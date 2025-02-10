@@ -58,17 +58,17 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
         //console.log("messages q:", messagesQuery) 
 
         
-        const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
+        const unsubscribe = onSnapshot(messagesQuery, async (snapshot) => {
             if(!snapshot.empty) {
                 const newMessages = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data(),
                     timestamp: doc.data().timestamp ? doc.data().timestamp.toDate() : null //sto??
                 }))
+                await markMessagesAsSeen(messages)
                 setMessages(newMessages.reverse())
                 setLastVisible(snapshot.docs[snapshot.docs.length - 1])
 
-                markMessagesAsSeen(messages)
             }
         })
         return () => unsubscribe()
