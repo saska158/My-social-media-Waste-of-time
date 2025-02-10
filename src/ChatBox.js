@@ -73,7 +73,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
             }
         })
         return () => unsubscribe()
-    }, [chatId])
+    }, [chatId, user.uid])
 
    
 
