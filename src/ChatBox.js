@@ -67,6 +67,8 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
                 }))
                 setMessages(newMessages.reverse())
                 setLastVisible(snapshot.docs[snapshot.docs.length - 1])
+
+                markMessagesAsSeen()
             }
         })
         return () => unsubscribe()
@@ -218,8 +220,23 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
         }
     }
 
-    // Mark all messages as "seen" when the chat box opens
+    // Function to update messages as "seen"
+    const markMessagesAsSeen = async (messages) => {
+        if (!chatId) return
+    
+        const unseenMessages = messages.filter(
+          (message) => message.receiverUid === user.uid && message.status === "sent"
+        )
+    
+        for (const message of unseenMessages) {
+          await updateDoc(
+            collection(firestore, "chats", chatId, "messages", message.id), 
+            { status: "seen" }
+          )
+        }
+    }
 
+/*
     useEffect(() => {
         if(!chatId) return
         const markMessagesAsSeen = async () => {
@@ -237,6 +254,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
 
         markMessagesAsSeen()
     }, [chatId, user.uid])
+    */
 
     // Effect to scroll to bottom when a new message is added
     /*useEffect(() => {
