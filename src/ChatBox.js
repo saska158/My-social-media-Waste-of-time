@@ -34,7 +34,12 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     const [initialLoad, setInitialLoad] = useState(true)
     const [isFetchingOldMessages, setIsFetchingOldMessages] = useState(false)
 
+    const [visibleDate, setVisibleDate] = useState("")
+
     const chatRef = useRef(null)
+    const messageRefs = useRef([])
+    //for initializing the visibleDate when chatBox mounts
+    const initialized = useRef(false)
 
 
     // Create or get the chatId when the component mounts or user UIDs change
@@ -187,11 +192,13 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
             // Add the message to the messages subcollection of the chat
             const messagesRef = collection(chatDoc, "messages")
             await addDoc(messagesRef, {
+                receiverUid: userBUid,
                 senderUid: userA.uid,
                 senderName: userA.displayName,
                 senderPhoto: userA.photoURL,
                 content: message,
-                timestamp: serverTimestamp() 
+                timestamp: serverTimestamp(),
+                status: 'sent' 
             })
 
             //update the lastMessage field in the chat document
@@ -211,6 +218,26 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
         }
     }
 
+    // Mark all messages as "seen" when the chat box opens
+
+    useEffect(() => {
+        if(!chatId) return
+        const markMessagesAsSeen = async () => {
+            const messagesRef = collection(firestore, "chats", chatId, "messages")
+            const unseenMessagesQuery = query(
+                messagesRef,
+                where("receiverUid", "==", user.uid),
+                where("status", "==", "sent")
+            )
+            const querySnapshot = await getDocs(unseenMessagesQuery)
+            querySnapshot.forEach(async doc => {
+                await updateDoc(doc.ref, {status: 'seen'})
+            })
+        }
+
+        markMessagesAsSeen()
+    }, [chatId, user.uid])
+
     // Effect to scroll to bottom when a new message is added
     /*useEffect(() => {
       if(chatRef.current) {
@@ -218,10 +245,130 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
       }
     }, [messages])*/ // Runs whenever messages change
 
+    /*
+    useEffect(() => {
+        if(messages.length > 0 && !initialized.current) {
+            const timestamp = messages[messages.length - 1].timestamp
+            setVisibleDate(format(timestamp, "dd/MM/yyyy"))
+            initialized.current = true
+        }
+    }, [messages])*/
+
+
+    // Handling date based on scrolling
+
+    useEffect(() => {
+        const chatBox = chatRef.current
+        if(!chatBox) return
+
+        // Create an Intersection Observer
+        const observer = new IntersectionObserver((entries) => {
+            for(const entry of entries) {
+                if(entry.isIntersecting) {
+                    const timestamp = entry.target.getAttribute("data-timestamp")
+                    if(timestamp) {
+                        setVisibleDate(format(timestamp, "dd/MM/yyyy"))
+                    }
+                    break  // Stop checking after first visible message
+                }
+            }
+        },
+        { root: chatBox, threshold: 0 }) // Adjust threshold as needed
+
+        // Observe each message
+        messageRefs.current.forEach((message) => {
+            if(message instanceof Element) {
+                observer.observe(message)
+            }
+        })
+
+        return () => {
+            if (!chatBox) return // Ensure the chat box still exists
+            messageRefs.current.forEach((message) => {
+                if(message instanceof Element) {
+                    observer.unobserve(message)
+                }
+            })
+        }
+    }, [messages])
+
+    const renderMessages = () => {
+        let lastDate = null
+
+        return messages.map((message, index) => {
+            const messageDate = message.timestamp ? format(message.timestamp, "dd/MM/yyyy") : ''
+            const showDateDivider = lastDate !== messageDate
+            lastDate = messageDate
+
+            const isLastIndex = index === messages.length - 1
+        
+            return (
+                <>
+                  {showDateDivider && (
+                    <div className="date-divider">
+                      <span style={{fontSize: '.6rem'}}>{messageDate}</span>
+                    </div>
+                  )}
+                  <div 
+                  key={message.id} 
+                  style={{
+                    //backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey',
+                    width: 'fit-content',
+                    maxWidth: '50%',
+                    margin: '1em',
+                    marginLeft: message.senderName === user?.displayName ? 'auto' : '0',
+                    borderRadius: '30%',
+                    fontSize: '.7rem',
+                    textTransform: 'lowercase',
+                    display: 'flex'
+                  }}
+                  data-timestamp={message.timestamp}
+                  ref={(el) => (messageRefs.current[index] = el)} // Assign ref dynamically
+                >
+                  <img 
+                    src={message.senderPhoto} 
+                    alt="profile" 
+                    style={{
+                      width: '20px', 
+                      height: '20px',
+                      objectFit: 'cover',
+                      objectPosition: 'top',
+                      display: 'inline', 
+                      borderRadius: '50%',
+                      alignSelf: 'start'
+                    }}
+                  />
+                  <div 
+                    style={{
+                      backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey',
+                      padding: '.5em',
+                      borderRadius: '15px',
+                      width:'fit-content',
+                    }}>
+                    <p>{message.content}</p>
+                    <p style={{textAlign: 'right'}}>{format(message.timestamp, "HH:mm")}</p>  
+                    {
+                        isLastIndex && message.senderUid === user.uid && message.status === "seen" && (
+                            <p style={{fontSize: '.6rem'}}>seen</p>
+                        )
+                    }
+                  </div>
+                </div>
+                </>
+            )
+        })
+    }
 
     return (
         <div className="chat-box">
-            <div style={{position: 'sticky', top: '0', left: '0', right: '0', background: 'white', borderBottom: '1px solid black'}}>
+            <div style={{
+                position: 'sticky', 
+                top: '0', 
+                left: '0', 
+                right: '0', 
+                background: 's', 
+                borderBottom: '1px solid black'
+            }}>
               <button onClick={() => setIsChatBoxVisible(false)}>x</button>
               {/*<button onClick={loadMoreMessages}>+</button>*/}
               <p>
@@ -233,21 +380,51 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
             {/* SREDI MESSAGES KOMPONENTU */}
             {/* Display messages */}
             <div className="chat-box-messages" ref={chatRef}>
-                {messages.map((message) => (
-                  <div key={message.id} style={{
-                    backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey',
-                    width: 'fit-content',
-                    margin: '1em',
-                    marginLeft: message.senderName === user?.displayName ? 'auto' : '0',
-                    borderRadius: '30%',
-                    fontSize: '.7rem',
-                    textTransform: 'lowercase'
-                    }}>
-                    <img src={message.senderPhoto} alt="profile" style={{width: '20px', display: 'inline', borderRadius: '50%'}}/>
-                    <span>{message.content}</span>
-                    <p>{format(message.timestamp, "HH:mm dd/MM/yyyy")}</p>
+                <span className="date">{visibleDate}</span>
+                {/*
+                {messages.map((message, index) => (
+                  <div 
+                    key={message.id} 
+                    style={{
+                      //backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey',
+                      width: 'fit-content',
+                      maxWidth: '50%',
+                      margin: '1em',
+                      marginLeft: message.senderName === user?.displayName ? 'auto' : '0',
+                      borderRadius: '30%',
+                      fontSize: '.7rem',
+                      textTransform: 'lowercase',
+                      display: 'flex'
+                    }}
+                    data-timestamp={message.timestamp}
+                    ref={(el) => (messageRefs.current[index] = el)} // Assign ref dynamically
+                  >
+                    <img 
+                      src={message.senderPhoto} 
+                      alt="profile" 
+                      style={{
+                        width: '20px', 
+                        height: '20px',
+                        objectFit: 'cover',
+                        objectPosition: 'top',
+                        display: 'inline', 
+                        borderRadius: '50%',
+                        alignSelf: 'start'
+                      }}
+                    />
+                    <div 
+                      style={{
+                        backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey',
+                        padding: '.5em',
+                        borderRadius: '15px',
+                        width:'fit-content',
+                      }}>
+                      <p>{message.content}</p>
+                      <p style={{textAlign: 'right'}}>{format(message.timestamp, "HH:mm")}</p>  
+                    </div>
                   </div>
-                ))}
+                ))} */}
+                {renderMessages()}
             </div>
          
             {/*{loading && <div>Loading...</div>}*/}

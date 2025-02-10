@@ -62,16 +62,26 @@ const MyChats = ({userUid}) => {
     }
 
     return (
-        <div>
+        <div style={{width: '30%'}}>
             <h4>My chats</h4>
             {
                 chats.map(chat => (
                     <div 
                       key={chat.id} 
-                      style={{borderBottom: '1px solid black', background: 'white'}}
+                      style={{borderBottom: '1px solid black', background: 'white', cursor: 'pointer'}}
                       onClick={() => pickChat(chat.otherUserUid, chat.otherUser, setIsChatBoxVisible)}
                     >
-                      <img src={chat.otherUser.photoURL} alt="sender" style={{width: '20px', display: 'inline'}} />
+                      <img 
+                        src={chat.otherUser.photoURL} 
+                        alt="sender" 
+                        style={{
+                            width: '20px', 
+                            height: '20px', 
+                            display: 'inline',
+                            borderRadius: '50%',
+                            objectFit: 'cover',
+                            objectPosition: 'top'
+                        }}/>
                       <span>{chat.otherUser.displayName}</span>
                       <p>{chat.lastMessage.content}</p>
                       {/*<p>{format(chat.timestamp, "HH:mm")}</p> ne apdejtuje se*/}

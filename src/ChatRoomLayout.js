@@ -15,7 +15,11 @@ posalji i state object message i from
 const ChatRoomLayout = () => {
     
     return (
-        <div style={{width: '70%'}}>
+        <div style={{
+            width: '70%',
+            display: 'flex',
+            flexDirection: 'column',
+        }}>
           <div style={{backgroundColor: 'grey'}}>
             <nav style={{display: 'flex', justifyContent: 'center', gap: '1.5em', color: 'white'}}>
               <NavLink to='/'>Main</NavLink>

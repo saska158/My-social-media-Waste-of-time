@@ -48,7 +48,7 @@ const UsersList = () => {
     }
 */
     return (
-        <div style={{border: '1px solid black', backgroundColor: 'white', width: '25%'}}>
+        <div style={{border: '1px solid black', backgroundColor: 'white', width: '25%', height: '550px'}}>
            <p>USERS:</p>
            {
             listOfUsers.map(user => (

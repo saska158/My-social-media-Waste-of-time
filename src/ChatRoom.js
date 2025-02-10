@@ -60,9 +60,13 @@ const ChatRoom = () => {
     }, [roomRef])
 
     return (
-        <div>
+        <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column',
+            height: '550px'
+        }}>
             <MessagesList messages={messages} roomId={roomId} />
-            <form>
+            <form style={{display: 'flex', padding: '.5em'}}>
               <Input
                 type="text"
                 value={message}

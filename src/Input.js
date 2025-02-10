@@ -7,6 +7,7 @@ const Input = ({ type, placeholder, value, name='input', onChange, required=true
           name={name}
           onChange={onChange}
           required={required}
+          style={{flex: '1'}}
         />
     )
 }

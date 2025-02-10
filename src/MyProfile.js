@@ -87,14 +87,20 @@ const MyProfile = () => {
   }
 
     return (
-        <>
-          {/* Profile Picture */}
+        <div style={{display: 'flex', gap: '1em', padding: '1em'}}>
+          <div style={{width: '55%'}}>
+            {/* Profile Picture */}
           <div>
             <img 
               src={profile.photoURL || "/images/no-profile-picture.png"} 
               alt="profile-picture" 
-              style={{width: '100px', height: '100px', objectFit: 'cover', objectPosition: 'top'}} 
-            />
+              style={{
+                width: '100px', 
+                height: '100px', 
+                borderRadius: '50%',
+                objectFit: 'cover', 
+                objectPosition: 'top'
+              }}/>
             <input type="file" accept="image/*" onChange={handleFileChange} />
             <button onClick={handleUpload} disabled={!imageFile || uploading}>
               { uploading ? "Uploading..." : "Upload Image" }
@@ -153,8 +159,9 @@ const MyProfile = () => {
             </p>
           )}
           </div>
+          </div>
           <MyChats userUid={user.uid} />
-        </>
+        </div>
     )
 }
 
