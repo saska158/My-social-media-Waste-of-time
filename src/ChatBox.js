@@ -24,6 +24,7 @@ import {
 import { format } from "date-fns"
 import Input from './Input'
 import Button from './Button'
+import TypingIndicator from "./TypingIndicator"
 import { useAuth } from "./authContext"
 
 //OBAVEZNO IZMENI OVO PROFILEUID U OTHERUSERUID I SVE U SKLADU SA TIME
@@ -53,6 +54,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     const initialized = useRef(false)
 
 
+    console.log("Profile", profile)
     // Create or get the chatId when the component mounts or user UIDs change
     useEffect(() => {
         const generatedChatId = [user?.uid, profileUid].sort().join("_")
@@ -487,7 +489,12 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
          
             {/*{loading && <div>Loading...</div>}*/}
             {/* Show typing indicator if the other user is typing */}
-            {isTyping && <p className="typing-indicator">User is typing...</p>}
+            {isTyping && (
+              <div style={{display: 'flex', alignItems: 'center'}}>
+                <span>{profile.displayName} is typing</span>
+                <TypingIndicator />
+              </div>
+            )}
 
             <form>
                 <Input 
