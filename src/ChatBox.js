@@ -255,7 +255,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
         }
 
         markMessagesAsSeen()
-    }, [chatId, user.uid])
+    }, [chatId, user.uid, messages])
     
 
     // Effect to scroll to bottom when a new message is added
