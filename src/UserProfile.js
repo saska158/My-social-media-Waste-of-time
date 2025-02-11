@@ -42,13 +42,19 @@ const UserProfile = () => {
     }
 
     return (
-        <div style={{background: 'green', position: 'relative'}}>
+        <div style={{background: 'salmon', position: 'relative'}}>
           {/* Profile Picture */}
           <div>
             <img 
               src={profile.photoURL || "/images/no-profile-picture.png"} 
               alt="profile-picture" 
-              style={{width: '100px', height: '100px', objectFit: 'cover', objectPosition: 'top'}} 
+              style={{
+                width: '100px', 
+                height: '100px', 
+                borderRadius: '50%',
+                objectFit: 'cover', 
+                objectPosition: 'top'
+              }}
             />
           </div>
           {/* Description */}

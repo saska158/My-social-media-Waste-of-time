@@ -14,6 +14,10 @@ import {
     onSnapshot,
     limit,
     startAfter,
+    database,
+    set,
+    onValue,
+    ref
 } from "./firebase"
 //import MessagesList from './MessagesList'
 //import Messages from "./Messages"
@@ -22,6 +26,8 @@ import Input from './Input'
 import Button from './Button'
 import { useAuth } from "./authContext"
 
+//OBAVEZNO IZMENI OVO PROFILEUID U OTHERUSERUID I SVE U SKLADU SA TIME
+//SVE JE NECITLJIVO I KONFUZNO ZBOG TOGA 
 const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     //const [isFullScreen, setIsFullScreen] = useState(false)
     const { user } = useAuth()
@@ -35,6 +41,11 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     const [isFetchingOldMessages, setIsFetchingOldMessages] = useState(false)
 
     const [visibleDate, setVisibleDate] = useState("")
+
+    const [isTyping, setIsTyping] = useState(false)
+
+    const typingRef = ref(database, `typingStatus/${chatId}/${user.uid}`)
+    let typingTimeout
 
     const chatRef = useRef(null)
     const messageRefs = useRef([])
@@ -171,7 +182,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
 
     const sendMessage = async (e, userA, userBUid) => {
         e.preventDefault()
-        //console.log("userA", userA)
+        //treba da dodas da ne moze da se posalje prazna poruka
 
         try {
             const chatsRef = collection(firestore, 'chats')
@@ -215,6 +226,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
               })
 
             setMessage('')
+            set(typingRef, false) // Stop typing indicator when message is sent
             console.log("Message sent successfully!")
         } catch(error) {
             console.error("Error sending message:", error)
@@ -311,6 +323,29 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
             })
         }
     }, [messages])
+
+    // Listen for typing status of the other user
+    useEffect(() => {
+      if (!chatId || !profileUid) return
+
+      const otherTypingRef = ref(database, `typingStatus/${chatId}/${profileUid}`)
+      const unsubscribe = onValue(otherTypingRef, (snapshot) => {
+        setIsTyping(snapshot.val() === true)
+      })
+
+      return () => unsubscribe()
+    }, [chatId, profileUid])
+
+    // Handle typing indicator
+    const handleTyping = () => {
+      set(typingRef, true)
+
+      clearTimeout(typingTimeout)
+      typingTimeout = setTimeout(() => {
+        set(typingRef, false)
+      }, 1000)
+    }
+
 
     const renderMessages = () => {
         let lastDate = null
@@ -448,13 +483,18 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
             </div>
          
             {/*{loading && <div>Loading...</div>}*/}
+            {/* Show typing indicator if the other user is typing */}
+            {isTyping && <p className="typing-indicator">User is typing...</p>}
 
             <form>
                 <Input 
                   type='text'
                   placeholder='...'
                   value={message}
-                  onChange={(e) => setMessage(e.target.value)}
+                  onChange={(e) => {
+                    setMessage(e.target.value)
+                    handleTyping()
+                  }}
                 />
                 <Button onClick={(e) => sendMessage(e, user, profileUid)}>send</Button>
             </form>

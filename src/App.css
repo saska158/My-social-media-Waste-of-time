@@ -46,6 +46,10 @@ li {
   margin-right: 1em;
   cursor: pointer;
 }
+
+button {
+  cursor: pointer;
+}
   
 
 .chat-box {
@@ -81,7 +85,7 @@ li {
 }
  
 .chat-box form {
-  background-color: teal;
+  background-color: rgb(238, 171, 163);
   border-top: 1px solid black;
   padding: 1em;
   display: flex;
