@@ -123,5 +123,9 @@ button {
   right: 0;
 }
 
+.typing-indicator {
+  font-size: .6rem;
+  background-color: transparent;
+}
 
 

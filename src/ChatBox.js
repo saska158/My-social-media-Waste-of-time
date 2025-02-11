@@ -45,7 +45,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     const [isTyping, setIsTyping] = useState(false)
 
     const typingRef = ref(database, `typingStatus/${chatId}/${user.uid}`)
-    let typingTimeout
+    const typingTimeoutRef = useRef(null)
 
     const chatRef = useRef(null)
     const messageRefs = useRef([])
@@ -340,10 +340,13 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     const handleTyping = () => {
       set(typingRef, true)
 
-      clearTimeout(typingTimeout)
-      typingTimeout = setTimeout(() => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current)
+      }
+
+      typingTimeoutRef.current = setTimeout(() => {
         set(typingRef, false)
-      }, 1000)
+    }, 2000)
     }
 
 
