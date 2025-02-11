@@ -348,7 +348,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
 
       typingTimeoutRef.current = setTimeout(() => {
         set(typingRef, false)
-    }, 2000)
+    }, 1500)
     }
 
 
