@@ -15,13 +15,31 @@ posalji i state object message i from
 const ChatRoomLayout = () => {
     
     return (
-        <div style={{
-            width: '70%',
-            display: 'flex',
-            flexDirection: 'column',
+        <div 
+          style={{
+            //display: 'flex',
+           // flexDirection: 'column',
+            width: '100%',
         }}>
-          <div style={{backgroundColor: 'grey'}}>
-            <nav style={{display: 'flex', justifyContent: 'center', gap: '1.5em', color: 'white'}}>
+          <div 
+            style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between',
+              width: '100%',
+              background: 'white'
+            }}
+          >
+            <nav 
+              style={{
+                display: 'flex', 
+                flexDirection: 'column', 
+                justifyContent: 'flex-start', 
+                gap: '1em', 
+                color: 'white',
+                width: '10%',
+                backgroundColor: 'salmon',
+              }}
+            >
               <NavLink to='/'>Main</NavLink>
               <NavLink to='/movies'>Movies</NavLink>
               <NavLink to='/books'>Books</NavLink>

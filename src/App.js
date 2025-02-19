@@ -14,6 +14,7 @@ import SignIn from './Sign-In'
 import SignUp from './Sign-Up'
 import EmailVerification from './EmailVerification'
 import MyProfile from './MyProfile'
+import MyChats from './MyChats'
 import UserProfile from './UserProfile'
 import AuthRequired from './AuthRequired'
 import { AuthProvider } from './authContext'
@@ -31,14 +32,15 @@ function App() {
              <Route path=':roomId' element={<ChatRoom />} />
            </Route>
          </Route>
-         <Route path='sign-in' element={<SignIn />} />
-         <Route path='sign-up' element={<SignUp />} />
-         <Route path='email-verification' element={<EmailVerification />} />
          <Route element={<AuthRequired />}>
           <Route path='my-profile' element={<MyProfile />} />
+          <Route path='my-chats' element={<MyChats />} />
          </Route>
          <Route path='user/:profileUid' element={<UserProfile />} />
         </Route>
+        <Route path='sign-in' element={<SignIn />} />
+        <Route path='sign-up' element={<SignUp />} /> 
+        <Route path='email-verification' element={<EmailVerification />} />
        </Routes>
       </BrowserRouter>
     </AuthProvider>

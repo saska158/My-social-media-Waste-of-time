@@ -54,6 +54,7 @@ const SignUp = () => {
       if (!userDoc.exists()) {
         // Create a new user profile in Firestore
         await setDoc(userRef, {
+          uid: user.uid,
           displayName: user.displayName || "",
           description: "",
           musicTaste: "",

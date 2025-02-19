@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { Link, Outlet } from "react-router-dom"
 import { useAuth } from "./authContext"
 import { database, ref, onValue } from "./firebase"
+import UsersList from "./UsersList"
 
 
 const NavigationLayout = () => {
@@ -22,8 +23,25 @@ const NavigationLayout = () => {
   }, [user])
 
   return (
-    <div style={{backgroundColor: 'salmon'}}>
-      <nav>
+    <div style={{
+      backgroundColor: 'rgb(238, 171, 163)',
+      display: 'flex',
+      }}
+    >
+      <nav style={{
+        backgroundColor: 'rgb(241, 137, 125)',
+        padding: '.5em 2em',
+        width: '27%',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        /*position: 'fixed',
+        top: '0',
+        left: '0',
+        bottom: '0',
+        height: '100vh'*/
+        }}
+      >{/*}
         {
           //user && user.emailVerified ?
           activeUser && activeUser.isActive ?
@@ -35,10 +53,26 @@ const NavigationLayout = () => {
           activeUser && activeUser.isActive ?
           <button onClick={logOut}>sign out</button> :
           null
+        }*/}
+        {
+          activeUser && activeUser.isActive ? (
+            <>
+              <Link to="/">Home</Link>
+              <Link to="/my-profile">My profile</Link>
+              <Link to="/my-chats">My chats</Link>
+              <button onClick={logOut}>sign out</button>
+            </>
+          ) : (
+            <>
+            <p style={{fontSize: '2rem'}}>Join us</p>
+              <Link to='/sign-up'>register</Link>
+              <Link to='/sign-in'>sign in</Link>
+            </>
+          )
         }
       </nav>
       <Outlet />
-      {/*<UsersList />*/} 
+      <UsersList />
     </div>
   )
 }

@@ -4,18 +4,17 @@ import {
     database, 
     ref, 
     onValue, 
+    orderByChild,
+    startAt,
+    query
 } from "./firebase"
-//import { useAuth } from "./authContext"
-//import ChatBox from "./ChatBox"
+import { useAuth } from "./authContext"
+import UsersQuery from "./UsersQuery"
 
 const UsersList = () => {
-    //const { user } = useAuth()
+    const { user } = useAuth()
     const [listOfUsers, setListOfUsers] = useState([]) //mozda ipak null
-    //const [pickedUser, setPickedUser] = useState(null)
-    //const [isChatVisible, setIsChatVisible] = useState(false)
-
-    //const navigate = useNavigate()
-    //console.log("user from list", user)
+    const [isUsersQueryShown, setIsUsersQueryShown] = useState(false)
 
     useEffect(() => {
         const usersRef = ref(database, 'users')
@@ -31,42 +30,64 @@ const UsersList = () => {
         return () => unsubscribe()
     }, [])
 
-    /*useEffect(() => {
-        if(!user) {
-            setIsChatVisible(false)
+    const activeUsers = listOfUsers.filter(usr => usr.isActive && usr.uid !== user.uid).map(usr => (
+        <div key={usr.uid} /*onClick={() => pickUser(user)}*/>
+        {
+            usr.isActive ?
+            <div style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'green'}}></div> :
+           <div style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'grey'}}></div>
         }
-    }, [user])
-*/
+        <Link to={`user/${usr.uid}`}>{usr.displayName}</Link>
+    </div>))
 
-    /*const pickUser = (userFromList) => {
-        if(user) {
-            //setIsChatVisible(true)
-            setPickedUser(userFromList)
-        } else {
-            navigate('/sign-in') //nemas poruku iz state
-        }
-    }
-*/
     return (
-        <div style={{border: '1px solid black', backgroundColor: 'white', width: '25%', height: '550px'}}>
-           <p>USERS:</p>
+        <div style={{
+              border: '1px solid black', 
+              backgroundColor: 'white', 
+              width: '35%',
+            }}
+        >
+            {
+                activeUsers.length > 0 ? (
+                    <>
+                      <p>online:</p>
+                      {activeUsers}
+                    </>
+                ) : <p>noone is online</p>
+            }
            {
-            listOfUsers.map(user => (
-                <div key={user.uid} /*onClick={() => pickUser(user)}*/>
-                    {
-                        user.isActive ?
-                        <div style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'green'}}></div> :
-                        <div style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'grey'}}></div>
-                    }
-                    <Link to={`user/${user.uid}`}>{user.displayName}</Link>
-                </div>
-            ))
+           /*<p>and {listOfUsers.length} others</p>*/}
+           <button 
+             onClick={(e) => {
+                e.stopPropagation()
+                setIsUsersQueryShown(true)
+             }}
+             style={{
+                background: 'salmon',
+                color: 'white',
+                padding: '.6em .8em',
+                border: '0',
+                borderRadius: '20px'
+             }}
+            >
+                find people to follow
+            </button>
+           {
+            isUsersQueryShown && <UsersQuery 
+                                   listOfUsers={listOfUsers} 
+                                   setListOfUsers={setListOfUsers}
+                                   setIsUsersQueryShown={setIsUsersQueryShown}
+                                 />
            }
-          {/* {
-            isChatVisible && <ChatBox pickedUser={pickedUser} setIsChatVisible={setIsChatVisible}/>
-           }  */}
         </div>
     )
 }
 
 export default UsersList
+
+
+            
+
+
+     
+

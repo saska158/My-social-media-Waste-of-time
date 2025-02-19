@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom"
-import UsersList from "./UsersList"
+//import UsersList from "./UsersList"
 
 const Homepage = () => {
     return (
@@ -9,9 +9,10 @@ const Homepage = () => {
             gap: '.5em', 
             height: '100vh',
             padding: '1em',
+            width: '73%'
         }}>
           <Outlet />
-          <UsersList />
+         {/* <UsersList />*/}
         </div>
     )
 }

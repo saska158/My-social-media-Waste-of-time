@@ -1,12 +1,11 @@
 import { useState } from "react"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { 
     auth, 
     signInWithEmailAndPassword, 
     database, 
     ref, 
     update, 
-    //onDisconnect 
 } from "./firebase"
 import Input from "./Input"
 import Button from "./Button"
@@ -117,8 +116,6 @@ const SignIn = () => {
               }
             </Button>
          </form>
-         <h4>need an acount</h4>
-         <Link to='/sign-up'>register</Link>
         </>
     )
 }

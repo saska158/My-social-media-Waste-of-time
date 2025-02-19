@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "./authContext"
 import { firestore, doc, getDoc, updateDoc, updateProfile } from './firebase'
-import MyChats from "./MyChats"
+import Post from "./Post"
+//import MyChats from "./MyChats"
 
 const MyProfile = () => {
   const { user } = useAuth()
@@ -16,6 +17,9 @@ const MyProfile = () => {
     musicTaste: "",
     politicalViews: "",
     photoURL: "",
+   // posts: [],
+    followers: [],
+    following: []
   })
   const [editingField, setEditingField] = useState(null)
   const [inputValue, setInputValue] = useState("")
@@ -87,7 +91,7 @@ const MyProfile = () => {
   }
 
     return (
-        <div style={{display: 'flex', gap: '1em', padding: '1em'}}>
+        <div style={{display: 'flex', gap: '1em', padding: '1em', width: '100%'}}>
           <div style={{width: '55%'}}>
             {/* Profile Picture */}
           <div>
@@ -106,6 +110,16 @@ const MyProfile = () => {
               { uploading ? "Uploading..." : "Upload Image" }
             </button>
           </div>
+          <div style={{display: 'flex', gap: '.5em'}}>
+                  <span>
+                    <strong>{profile.followers?.length || 0}</strong>
+                    {profile.followers?.length === 1 ? 'follower' : 'followers'}
+                  </span>
+                  <span>
+                    <strong>{profile.following?.length || 0}</strong>
+                    following
+                  </span>
+                </div>
           {/* Description */}
           <div>
             <strong>about me:</strong>
@@ -144,23 +158,40 @@ const MyProfile = () => {
           </div>
           {/* Political Views */}
           <div>
-          <strong>Political Views:</strong>
-          {editingField === "politicalViews" ? (
-            <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            onBlur={() => handleSave("politicalViews")}
-            autoFocus
-            />
-          ) : (
-            <p onClick={() => handleEdit("politicalViews")}>
-              {profile.politicalViews || "Click to add political views..."} 🖊️
-            </p>
-          )}
+            <strong>Political Views:</strong>
+            {editingField === "politicalViews" ? (
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onBlur={() => handleSave("politicalViews")}
+                autoFocus
+              />
+              ) : (
+                <p onClick={() => handleEdit("politicalViews")}>
+                  {profile.politicalViews || "Click to add political views..."} 🖊️
+                </p>
+            )}
           </div>
+          {/* Posts */}
+          <div>
+            <strong>Posts:</strong>
+            {/*
+              profile && profile?.posts?.length > 0 ? (
+                profile.posts.map((post, index) => <Post 
+                                            id={index}
+                                            //userUid={profileUid}
+                                            photoURL={profile.photoURL}
+                                            username={profile.displayName}
+                                            messageText={post}
+                                          />)
+              ) : (
+                <p>There's no post yet</p>
+              )
+            */}
           </div>
-          <MyChats userUid={user.uid} />
+        </div>
+         {/* <MyChats userUid={user.uid} /> */}
         </div>
     )
 }

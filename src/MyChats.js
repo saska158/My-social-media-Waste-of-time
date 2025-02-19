@@ -8,10 +8,12 @@ import {
     where,
     onSnapshot
  } from "./firebase"
+import { useAuth } from "./authContext"
 //import { format } from "date-fns"
 import ChatBox from "./ChatBox"
 
-const MyChats = ({userUid}) => {
+const MyChats = () => {
+    const { user } = useAuth()
     const [chats, setChats] = useState([])
     const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
     const [otherUser, setOtherUser] = useState({ //katastrofa od imena i konfuzije
@@ -20,10 +22,10 @@ const MyChats = ({userUid}) => {
     })
 
     useEffect(() => {
-        if (!userUid) return
+        if (!user.uid) return
 
         const chatsRef = collection(firestore, 'chats')
-        const chatsQuery = query(chatsRef, where('participants', 'array-contains', userUid))
+        const chatsQuery = query(chatsRef, where('participants', 'array-contains', user.uid))
 
         const unsubscribe = onSnapshot(chatsQuery, async (snapshot) => {
             const chatData = await Promise.all(
@@ -31,7 +33,7 @@ const MyChats = ({userUid}) => {
                     const chat = docSnap.data()
 
                     // Find the other participant
-                    const otherUserUid = chat.participants.find(uid => uid !== userUid)
+                    const otherUserUid = chat.participants.find(uid => uid !== user.uid)
 
                     // Fetch the other user's profile
                     const otherUserRef = doc(firestore, 'profiles', otherUserUid)
@@ -52,7 +54,7 @@ const MyChats = ({userUid}) => {
         })
 
         return () => unsubscribe
-    }, [userUid])
+    }, [user.uid])
 
     //console.log('Chats', chats)
 
@@ -63,33 +65,38 @@ const MyChats = ({userUid}) => {
 
     return (
         <div style={{width: '30%'}}>
-            <h4>My chats</h4>
             {
-                chats.map(chat => (
-                    <div 
-                      key={chat.id} 
-                      style={{borderBottom: '1px solid black', background: 'white', cursor: 'pointer'}}
-                      onClick={() => pickChat(chat.otherUserUid, chat.otherUser, setIsChatBoxVisible)}
-                    >
-                      <img 
-                        src={chat.otherUser.photoURL} 
-                        alt="sender" 
-                        style={{
-                            width: '20px', 
-                            height: '20px', 
-                            display: 'inline',
-                            borderRadius: '50%',
-                            objectFit: 'cover',
-                            objectPosition: 'top'
-                        }}/>
-                      <span>{chat.otherUser.displayName}</span>
-                      <p>{chat.lastMessage.content}</p>
-                      {/*<p>{format(chat.timestamp, "HH:mm")}</p> ne apdejtuje se*/}
+                !isChatBoxVisible ? (
+                    <div>
+                    <h4>My chats</h4>
+                    {
+                        chats.map(chat => (
+                            <div 
+                              key={chat.id} 
+                              style={{borderBottom: '1px solid black', background: 'white', cursor: 'pointer'}}
+                              onClick={() => pickChat(chat.otherUserUid, chat.otherUser, setIsChatBoxVisible)}
+                            >
+                              <img 
+                                src={chat.otherUser.photoURL} 
+                                alt="sender" 
+                                style={{
+                                    width: '20px', 
+                                    height: '20px', 
+                                    display: 'inline',
+                                    borderRadius: '50%',
+                                    objectFit: 'cover',
+                                    objectPosition: 'top'
+                                }}/>
+                              <span>{chat.otherUser.displayName}</span>
+                              <p>{chat.lastMessage.content}</p>
+                              {/*<p>{format(chat.timestamp, "HH:mm")}</p> ne apdejtuje se*/}
+                            </div>
+                        ))
+                    }
                     </div>
-                ))
-            }
-            {
-                isChatBoxVisible && <ChatBox profileUid={otherUser.uid} profile={otherUser.otherUserProfile} setIsChatBoxVisible={setIsChatBoxVisible} />
+                ) : (
+                    <ChatBox profileUid={otherUser.uid} profile={otherUser.otherUserProfile} setIsChatBoxVisible={setIsChatBoxVisible} />
+                )
             }
         </div>
     )
