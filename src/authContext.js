@@ -29,7 +29,7 @@ export const AuthProvider = ({children}) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             setUser(user)
-
+/*
             if(user) {
                 // Request notification permission and save the FCM token
                 const token =  await requestNotificationPermission(user.uid)  
@@ -38,7 +38,7 @@ export const AuthProvider = ({children}) => {
                 }
                 // Listen for incoming messages or notifications
                 listenForMessages() 
-            }
+            }*/
         })
 
         return () => unsubscribe()
