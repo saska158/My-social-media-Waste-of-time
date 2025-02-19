@@ -30,7 +30,7 @@ const UsersList = () => {
         return () => unsubscribe()
     }, [])
 
-    const activeUsers = listOfUsers.filter(usr => usr.isActive && usr.uid !== user.uid).map(usr => (
+    const activeUsers = listOfUsers.filter(usr => usr.isActive && usr.uid !== user?.uid).map(usr => (
         <div key={usr.uid} /*onClick={() => pickUser(user)}*/>
         {
             usr.isActive ?
