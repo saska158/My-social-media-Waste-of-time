@@ -110,6 +110,7 @@ export {
 }
 
 //BAjUgbwqNYfUpW_4b1dhRjKwbf5TBvn2tndV6iUSOhauHihA9SWNv0ZsadXr-g6_3BmeNDXhG9pkVS2sl684Yvs
+/*
 
 // ✅ Function to Save FCM Token in Firestore
 export const saveUserToken = async (userUid, token) => {
@@ -166,4 +167,4 @@ navigator.serviceWorker
   })
   .catch((error) => {
     console.error("Service Worker registration failed:", error)
-  })
+  })*/
