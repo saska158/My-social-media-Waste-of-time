@@ -11,9 +11,9 @@ import {
     update, 
     onAuthStateChanged, 
     signOut,
-    requestNotificationPermission,
-    listenForMessages,
-    saveUserToken
+    //requestNotificationPermission,
+    //listenForMessages,
+    //saveUserToken
 } from "./firebase"
 import { useState, useEffect, createContext, useContext } from "react"
 
