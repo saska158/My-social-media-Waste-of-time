@@ -1,15 +1,57 @@
 import { useState, useEffect, useMemo } from "react"
-import { Link } from "react-router-dom"
-import { database, ref, update, get, onValue, push } from "./firebase"
+import { Link, useNavigate } from "react-router-dom"
+import { 
+  database, 
+  ref, 
+  update, 
+  get, 
+  onValue, 
+  push, 
+  firestore,
+  collection, 
+  query, 
+  where, 
+  getDoc,
+  getDocs 
+} from "./firebase"
 import { useAuth } from "./authContext"
-
+import PopUp from "./PopUp"
 
 const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}) => {
     const { user } = useAuth()
+    const [profile, setProfile] = useState(null)
     const [likes, setLikes] = useState()
     const [newComment, setNewComment] = useState("")
     const [comments, setComments] = useState([])
     const [showComments, setShowComments] = useState(false)
+
+    const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
+
+    const navigate = useNavigate()
+
+    useEffect(() => {
+      const fetchProfile = async () => {
+        
+        const profilesRef = collection(firestore, "profiles")
+        const q = query(profilesRef, where("uid", "==", creatorUid))
+        
+  
+        try {
+          const querySnapshot = await getDocs(q)
+          if (!querySnapshot.empty) {
+            setProfile(querySnapshot.docs[0].data()) // Store first matching profile
+          } else {
+            console.log("Profile not found")
+          }
+        } catch (error) {
+          console.error("Error fetching profile:", error)
+        }
+      }
+  
+      fetchProfile()
+    }, [profile])
+
+    console.log("prrrr", profile)
 
     const likesRef = useMemo(() => {
         const room = roomId ? `${roomId}` : `main`
@@ -44,24 +86,36 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
     }, [id])
 
 
-    const handleLike = async () => {
+    const handleLike = async (e) => {
+      e.stopPropagation()
+      if(!user) {
+        //navigate('/sign-in', {
+          //state: {
+           // message: 'Sign in or create your account to join the conversation!',
+            //from: '/' //ovde treba da bude ruta posebnih soba, ne znam kako
+          //}
+        //})
+        setIsJoinPopupShown(true)
+      } else {
         try {
-            // Fetch current likes from Firebase
-            const snapshot = await get(likesRef)
-            const likes = snapshot.val() || {}
-    
-            if (likes[user.uid]) {
-                // User has already liked → remove their like (unlike)
-                await update(likesRef, { [user.uid]: null })
-                console.log("Unliked")
-            } else {
-                // User hasn't liked → add their like
-                await update(likesRef, { [user.uid]: { name: user.displayName } })
-                console.log("Liked")
-            }
-        } catch (error) {
-            console.error("Error updating like:", error)
-        }
+          // Fetch current likes from Firebase
+          const snapshot = await get(likesRef)
+          const likes = snapshot.val() || {}
+  
+          if (likes[user?.uid]) {
+              // User has already liked → remove their like (unlike)
+              await update(likesRef, { [user.uid]: null })
+              console.log("Unliked")
+          } else {
+              // User hasn't liked → add their like
+              await update(likesRef, { [user.uid]: { name: user.displayName } })
+              console.log("Liked")
+          }
+      } catch (error) {
+          console.error("Error updating like:", error)
+      }
+      }
+      
     }
 
     const handleNewComment = (e) => {
@@ -99,9 +153,10 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
             <Link to={creatorUid ? `/user/${creatorUid}` : '/my-profile'}>
                 <div style={{display: 'flex', padding: '.5em', cursor: 'pointer'}}>
                     {
-                        photoUrl ? (
+                        profile?.photoURL ? (
                             <img 
-                                src={photoUrl} 
+                                //src={photoUrl}
+                                src={profile.photoURL} 
                                 alt="profile" 
                                 style={{
                                     width: '30px', 
@@ -115,7 +170,8 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
                         ) : null
                     }
                     <div>
-                        <p><strong>{creatorName}</strong></p>
+                        {/*<p><strong>{creatorName}</strong></p>*/}
+                        <p><strong>{profile?.displayName}</strong></p>
                     </div>
                 </div>
             </Link>
@@ -182,7 +238,20 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
                     gap: '.5em',
                     color: 'salmon'
                   }}
-                  onClick={() => setShowComments(!showComments)}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    if(!user) {
+                      //navigate('/sign-in', {
+                        //state: {
+                          //message: 'Sign in or create your account to join the conversation!',
+                          //from: '/' //ovde treba da bude ruta posebnih soba, ne znam kako
+                        //}
+                      //})
+                      setIsJoinPopupShown(true)
+                    } else {
+                      setShowComments(!showComments)
+                    }
+                  }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px'}}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
@@ -232,6 +301,39 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
                 )
               }
             </div>
+            {
+              isJoinPopupShown && (
+                <PopUp setIsPopUpShown={setIsJoinPopupShown}>
+                  <h1>Razgovori</h1>
+                <p>Sign in or create your account to join the conversation!</p>
+                <Link to="/sign-up">
+                  <button 
+                    style={{
+                      fontSize: '1rem', 
+                      background: 'salmon', 
+                      padding: '.7em 1.2em', 
+                      borderRadius: '10px',
+                      color: 'white'
+                    }}
+                  >
+                    Create an account
+                  </button>
+                </Link>
+                <Link to="/sign-in">
+                  <button 
+                    style={{
+                      fontSize: '1rem',
+                      padding: '.7em 1.2em', 
+                      borderRadius: '10px',
+                      background: 'rgba(238, 171, 163, .5)'
+                    }}
+                  >
+                    Sign in
+                  </button>
+                </Link>
+                </PopUp>
+              )
+            }
         </div>
     )
 }

@@ -33,7 +33,7 @@ function App() {
            </Route>
          </Route>
          <Route element={<AuthRequired />}>
-          <Route path='my-profile' element={<MyProfile />} />
+          {/*<Route path='my-profile' element={<MyProfile />} />*/}
           <Route path='my-chats' element={<MyChats />} />
          </Route>
          <Route path='user/:profileUid' element={<UserProfile />} />

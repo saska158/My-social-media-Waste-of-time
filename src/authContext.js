@@ -43,6 +43,7 @@ export const AuthProvider = ({children}) => {
 
         return () => unsubscribe()
     }, [])
+console.log("korisnik", user)
 
     const logOut = async () => {
         try {

@@ -1,11 +1,12 @@
 import { useState, useEffect, useMemo, useRef } from "react"
-import { useParams, useNavigate } from "react-router-dom"
+import { useParams, useNavigate, Link } from "react-router-dom"
 import { database, ref, push, onValue, /*firestore, doc, updateDoc, arrayUnion */} from "./firebase"
 import { useAuth } from './authContext'
 //import MessagesList from "./MessagesList"
 import Input from "./Input"
 import Button from "./Button"
 import Post from "./Post"
+import PopUp from "./PopUp"
 
 const ChatRoom = () => {
     //const messages = useOutletContext(
@@ -16,6 +17,7 @@ const ChatRoom = () => {
     const [posts, setPosts] = useState([])
 
     const [isPopupShown, setIsPopupShown] = useState(false)
+    const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
 
     const { user } = useAuth()
     //console.log("Imamo usera, chatlay:", user)
@@ -42,7 +44,7 @@ const ChatRoom = () => {
       if(!user) {
         navigate('/sign-in', {
           state: {
-            message: 'You need to sign up to send a message.',
+            message: 'Sign in or create your account to join the conversation!',
             from: '/' //ovde treba da bude ruta posebnih soba, ne znam kako
           }
         })
@@ -116,14 +118,25 @@ const ChatRoom = () => {
               width: '70%',
               borderRadius: '20px',
               padding: '1em 1.5em',
-              margin: '.7em'
+              margin: '.7em',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '.5em'
             }}
             onClick={(e) => {
               e.stopPropagation()
-              setIsPopupShown(true)
+              if(!user) {
+                setIsJoinPopupShown(true)
+              } else {
+                setIsPopupShown(true)
+              }
             }}
           >
-            new post
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px'}}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+            </svg>
+            <span>new post</span>
           </button>
           {
             isPopupShown && (
@@ -134,12 +147,11 @@ const ChatRoom = () => {
                   left: '0',
                   width: '100%',
                   height: '100%',
-                  background: 'rgba(0, 0, 0, 0.5)'
+                  background: 'rgba(238, 171, 163, .5)'
                 }}
               >
                 <form 
                   style={{
-                    padding: '.5em',
                     background: 'white',
                     width: '50%',
                     height: '500px',
@@ -147,7 +159,8 @@ const ChatRoom = () => {
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    borderRadius: '20px'
+                    padding: '1em',
+                    borderRadius: '30px',
                   }}
                   ref={formRef}
                 >
@@ -185,6 +198,40 @@ const ChatRoom = () => {
                                             />)
             }
           </div>
+
+          {
+            isJoinPopupShown && (
+              <PopUp setIsPopUpShown={setIsJoinPopupShown}>
+                <h1>Razgovori</h1>
+                <p>Sign in or create your account to join the conversation!</p>
+                <Link to="/sign-up">
+                  <button 
+                    style={{
+                      fontSize: '1rem', 
+                      background: 'salmon', 
+                      padding: '.7em 1.2em', 
+                      borderRadius: '10px',
+                      color: 'white'
+                    }}
+                  >
+                    Create an account
+                  </button>
+                </Link>
+                <Link to="/sign-in">
+                  <button 
+                    style={{
+                      fontSize: '1rem',
+                      padding: '.7em 1.2em', 
+                      borderRadius: '10px',
+                      background: 'rgba(238, 171, 163, .5)'
+                    }}
+                  >
+                    Sign in
+                  </button>
+                </Link>
+              </PopUp>
+            )
+          }
         </div>
     )
 }

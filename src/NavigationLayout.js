@@ -58,14 +58,15 @@ const NavigationLayout = () => {
           activeUser && activeUser.isActive ? (
             <>
               <Link to="/">Home</Link>
-              <Link to="/my-profile">My profile</Link>
+              {/*<Link to="/my-profile">My profile</Link>*/}
+              <Link to={`/user/${user?.uid}`}>My profile</Link>
               <Link to="/my-chats">My chats</Link>
               <button onClick={logOut}>sign out</button>
             </>
           ) : (
             <>
             <p style={{fontSize: '2rem'}}>Join us</p>
-              <Link to='/sign-up'>register</Link>
+              <Link to='/sign-up'>create account</Link>
               <Link to='/sign-in'>sign in</Link>
             </>
           )

@@ -1,0 +1,92 @@
+import { useEffect, useRef } from "react"
+//import { Link } from "react-router-dom"
+
+const PopUp = ({setIsPopUpShown, children}) => {
+    const popUpRef = useRef(null)
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if(popUpRef.current && !popUpRef.current.contains(e.target)) {
+                setIsPopUpShown(false)
+            }
+        }
+        document.addEventListener("click", handleClickOutside)
+
+        return () => document.removeEventListener("click", handleClickOutside)
+    }, [])
+
+    return (
+        <div style={{
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            width: '100%',
+            height: '100%',
+            background: 'rgba(238, 171, 163, .5)'
+        }}>
+          <div style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            width: '50%',
+            height: '70%',
+            background: 'white',
+            padding: '1em',
+            borderRadius: '30px',
+            transform: 'translate(-50%, -50%)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1em',
+            alignItems: 'center'
+          }}
+          ref={popUpRef}
+          >
+            { children }
+            <button
+              style={{
+                position: 'absolute',
+                top: '5%',
+                right: '5%'
+              }}
+              onClick={() => setIsPopUpShown(false)}
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+            </button>
+          </div>
+        </div>
+    )
+}
+
+export default PopUp
+
+/*
+            <h1>Razgovori</h1>
+            <p>Sign in or create your account to join the conversation!</p>
+            <Link to="/sign-up">
+              <button 
+                style={{
+                    fontSize: '1rem', 
+                    background: 'salmon', 
+                    padding: '.7em 1.2em', 
+                    borderRadius: '10px',
+                    color: 'white'
+                }}
+              >
+                Create an account
+              </button>
+            </Link>
+            <Link to="/sign-in">
+              <button 
+                style={{
+                    fontSize: '1rem',
+                    padding: '.7em 1.2em', 
+                    borderRadius: '10px',
+                    background: 'rgba(238, 171, 163, .5)'
+                }}
+              >
+                Sign in
+              </button>
+            </Link>
+*/
