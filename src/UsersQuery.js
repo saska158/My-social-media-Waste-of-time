@@ -101,6 +101,8 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
         
     }
 
+    
+
     return (
         <>
         <PopUp setIsPopUpShown={setIsUsersQueryShown}>
@@ -125,7 +127,23 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
                                 gap: '.5em'
                               }}
                         >
-                            <Link to={`user/${usr.uid}`}>{usr.displayName}</Link>
+                            <Link to={`user/${usr.uid}`}>
+                              <div style={{display: 'flex', alignItems: 'start', gap: '.3em'}}>
+                                <img
+                                  src={usr.photoURL}
+                                  alt="profile"
+                                  style={{
+                                    width: '30px', 
+                                    height: '30px',
+                                    objectFit: 'cover',
+                                    objectPosition: 'top',
+                                    display: 'inline',
+                                    borderRadius: '50%'
+                                  }}
+                                />
+                                <span>{usr.displayName}</span>
+                              </div>
+                            </Link>
                             <button 
                               /*style={{
                                 background: 'blue',

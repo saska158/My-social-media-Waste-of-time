@@ -32,6 +32,8 @@ const UsersList = () => {
         return () => unsubscribe()
     }, [])
 
+    console.log("iz q", user?.uid)
+
     const activeUsers = listOfUsers.filter(usr => usr.isActive && usr.uid !== user?.uid).map(usr => (
         <div key={usr.uid} /*onClick={() => pickUser(user)}*/>
         {
@@ -39,7 +41,23 @@ const UsersList = () => {
             <div style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'green'}}></div> :
            <div style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'grey'}}></div>
         }
-        <Link to={`user/${usr.uid}`}>{usr.displayName}</Link>
+        <Link to={`user/${usr.uid}`}>
+          <div style={{display: 'flex', alignItems: 'center', gap: '.3em'}}>
+            <img 
+              src={usr.photoURL || "/images/no-profile-picture.png"} 
+              alt="profile"
+              style={{
+                width: '30px', 
+                height: '30px',
+                objectFit: 'cover',
+                objectPosition: 'top',
+                display: 'inline',
+                borderRadius: '50%'
+              }}
+            />
+            <span>{usr.displayName}</span>
+          </div>
+        </Link>
     </div>))
 
     return (

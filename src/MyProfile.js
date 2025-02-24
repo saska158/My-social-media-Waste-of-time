@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "./authContext"
-import { firestore, doc, getDoc, updateDoc, updateProfile } from './firebase'
+import { database, firestore, doc, getDoc, updateDoc, updateProfile, ref, update } from './firebase'
 import Post from "./Post"
 //import MyChats from "./MyChats"
 
@@ -58,7 +58,7 @@ const MyProfile = () => {
     setImageFile(e.target.files[0])
   }
 
-
+  
   const handleUpload = async () => {
     if(!imageFile) return
 
@@ -79,7 +79,10 @@ const MyProfile = () => {
         await updateDoc(doc(firestore, "profiles", user.uid), {photoURL: data.secure_url})
         await updateProfile(user, {
           photoURL: data.secure_url
-      })
+        })
+        const userRef = ref(database, `users/${user.uid}`)
+        await update(userRef, {photoURL: data.secure_url})
+        console.log("user reeeeeeeef", userRef)
         setProfile(prev => ({...prev, photoURL: data.secure_url}))
       }
     } catch(error) {

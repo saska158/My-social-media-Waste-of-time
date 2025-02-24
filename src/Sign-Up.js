@@ -43,7 +43,8 @@ const SignUp = () => {
         uid: user.uid,
         email: user.email,
         displayName: user.displayName,
-        isActive: false
+        isActive: false,
+        photoURL: ''
       })
     }
 

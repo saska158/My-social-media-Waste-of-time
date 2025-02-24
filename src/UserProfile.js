@@ -7,6 +7,7 @@ import {
   updateDoc, 
   database, 
   ref, 
+  update,
   onValue, 
   arrayUnion,
   //arrayRemove, 
@@ -232,6 +233,8 @@ const UserProfile = () => {
              displayName: profile.displayName,
              photoURL: data.secure_url
             })
+            const userRef = ref(database, `users/${user.uid}`)
+            await update(userRef, {photoURL: data.secure_url})
             setProfile(prev => ({...prev, photoURL: data.secure_url}))
             //await updateDoc(profileRef, profile)
             //await updateProfile(user, {
@@ -251,6 +254,7 @@ const UserProfile = () => {
           displayName: profile.displayName,
           //photoURL: profile.photoURL
         })
+
       }      //const profileRef = doc(firestore, "profiles", profileUid)
       //await updateDoc(profileRef, profile)
       //await updateProfile(user, {
