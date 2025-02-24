@@ -51,7 +51,7 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
       fetchProfile()
     }, [profile])
 
-    console.log("prrrr", profile)
+    //console.log("prrrr", profile)
 
     const likesRef = useMemo(() => {
         const room = roomId ? `${roomId}` : `main`

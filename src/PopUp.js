@@ -37,7 +37,7 @@ const PopUp = ({setIsPopUpShown, children}) => {
             display: 'flex',
             flexDirection: 'column',
             gap: '1em',
-            alignItems: 'center'
+            //alignItems: 'center'
           }}
           ref={popUpRef}
           >

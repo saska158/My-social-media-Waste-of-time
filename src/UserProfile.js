@@ -11,7 +11,8 @@ import {
   arrayUnion,
   //arrayRemove, 
   onSnapshot,
-  updateProfile 
+  updateProfile, 
+  collection
 } from './firebase'
 import { useAuth } from "./authContext"
 import ChatBox from './ChatBox'
@@ -91,7 +92,7 @@ const UserProfile = () => {
       }
     }
 
-
+  
 
     /*
     const followUser = () => {
@@ -259,7 +260,7 @@ const UserProfile = () => {
       setIsEditPopupShown(false)
     }
 
-    console.log("prof", profile.photoURL)
+    //console.log("prof", profile.photoURL)
 
     return (
         <div style={{background: 'salmon', position: 'relative', width: '100%'}}>

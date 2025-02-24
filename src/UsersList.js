@@ -11,10 +11,12 @@ import {
 import { useAuth } from "./authContext"
 import UsersQuery from "./UsersQuery"
 
+
 const UsersList = () => {
     const { user } = useAuth()
     const [listOfUsers, setListOfUsers] = useState([]) //mozda ipak null
     const [isUsersQueryShown, setIsUsersQueryShown] = useState(false)
+
 
     useEffect(() => {
         const usersRef = ref(database, 'users')
@@ -73,8 +75,8 @@ const UsersList = () => {
             </button>
            {
             isUsersQueryShown && <UsersQuery 
-                                   listOfUsers={listOfUsers} 
-                                   setListOfUsers={setListOfUsers}
+                                   //listOfUsers={listOfUsers} 
+                                   //setListOfUsers={setListOfUsers}
                                    setIsUsersQueryShown={setIsUsersQueryShown}
                                  />
            }
