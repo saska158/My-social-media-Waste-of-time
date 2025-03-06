@@ -14,7 +14,8 @@ const fetchLinkPreview = async (url) => {
         }
     } catch (error) {
         console.error("Error fetching link preview:", error)
-        return null
+        //return null
+        return error
     }
 }
 

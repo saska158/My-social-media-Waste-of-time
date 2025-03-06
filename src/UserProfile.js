@@ -582,24 +582,28 @@ const UserProfile = () => {
                     value={profile.displayName}
                     name="displayName"
                     onChange={handleInputChange}
+                    placeholder="name"
                   />
                   <input
                     type="text"
                     value={profile.description}
                     name="description"
                     onChange={handleInputChange}
+                    placeholder="bio"
                   />
                   <input
                     type="text"
                     value={profile.musicTaste}
                     name="musicTaste"
                     onChange={handleInputChange}
+                    placeholder="music taste"
                   />
                   <input
                     type="text"
                     value={profile.politicalViews}
                     name="politicalViews"
                     onChange={handleInputChange}
+                    placeholder="political views"
                   />
                   <button 
                     style={{

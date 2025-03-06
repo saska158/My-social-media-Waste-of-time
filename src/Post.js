@@ -35,6 +35,8 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
 
     const navigate = useNavigate()
 
+    const [error, setError] = useState(null)
+
     useEffect(() => {
       const fetchProfile = async () => {
         
@@ -149,12 +151,17 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
       const urls = extractUrls(post.text)
 
       if (urls && urls.length > 0) {
-          fetchLinkPreview(urls[0]).then(setVideoData) // We take the first URL from the input
+          fetchLinkPreview(urls[0]).then(setVideoData).catch(err => setError(err)) // We take the first URL from the input
       } else {
           setVideoData(null) // Clear preview if no URL is detected
       }
     }, [post.text]) 
-
+console.log("error je", error)
+    if(error) {
+      return (
+        <p>{`Error:`}</p>
+      )
+    }
 
     return (
         <div 

@@ -116,7 +116,7 @@ const ChatRoom = () => {
             //height: '550px',
             height: '550px',
             overflow: 'auto',
-            alignItems: 'center'
+            //alignItems: 'center'
             //width: '90%'
         }}>
           {/*<button
