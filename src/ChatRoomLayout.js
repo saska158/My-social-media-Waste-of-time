@@ -24,7 +24,8 @@ const ChatRoomLayout = () => {
           <div 
             style={{ 
               display: 'flex', 
-              justifyContent: 'space-between',
+              flexDirection: 'column',
+              //justifyContent: 'space-between',
               width: '100%',
               background: 'white'
             }}
@@ -32,12 +33,13 @@ const ChatRoomLayout = () => {
             <nav 
               style={{
                 display: 'flex', 
-                flexDirection: 'column', 
+                //flexDirection: 'column', 
                 justifyContent: 'flex-start', 
                 gap: '1em', 
                 color: 'white',
-                width: '10%',
+                //width: '10%',
                 backgroundColor: 'salmon',
+                padding: '1em'
               }}
             >
               <NavLink to='/'>Main</NavLink>

@@ -54,10 +54,16 @@ button {
   border: none;
 }
 
-input {
+input, textarea {
   padding: .5em;
   border-radius: 20px;
   border: .3px solid salmon;
+  font-style: inherit;
+  outline: none;
+}
+
+textarea {
+  resize: none;
 }
   
 

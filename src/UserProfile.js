@@ -142,7 +142,7 @@ const UserProfile = () => {
         if(data) {
           //console.log("evoooo", Object.values(data).filter(value => value.creatorUid === profileUid))
           //const userPostsArray = Object.values(data).filter(value => value.creatorUid === profileUid)
-          const postsArray = Object.keys(data).map(key => ({id: key, ...data[key]}))
+          const postsArray = Object.keys(data).map(key => ({id: key, ...data[key]})).reverse()
           const userPostsArray = postsArray.filter(post => post.creatorUid === profileUid)
           //console.log(userPostsArray)
           setUserMainPosts(userPostsArray)

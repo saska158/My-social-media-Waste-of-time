@@ -7,6 +7,8 @@ import Input from "./Input"
 import Button from "./Button"
 import Post from "./Post"
 import PopUp from "./PopUp"
+import fetchLinkPreview from "./api/fetchLinkPreview"
+import extractUrls from "./utils/extractUrls"
 
 const ChatRoom = () => {
     //const messages = useOutletContext(
@@ -15,6 +17,7 @@ const ChatRoom = () => {
     }
     const [post, setPost] = useState(initialPost)
     const [posts, setPosts] = useState([])
+    const [videoData, setVideoData] = useState(null)
 
     const [isPopupShown, setIsPopupShown] = useState(false)
     const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
@@ -22,6 +25,8 @@ const ChatRoom = () => {
     const { user } = useAuth()
     //console.log("Imamo usera, chatlay:", user)
     const formRef = useRef(null)
+
+    const linkPreviewRef = useRef(null)
 
     const navigate = useNavigate()
 
@@ -31,6 +36,17 @@ const ChatRoom = () => {
       const room = roomId ? `${roomId}` : `main`
       return ref(database, room)
     }, [roomId])
+
+    // Effect to detect and fetch preview when user types a URL
+    useEffect(() => {
+      const urls = extractUrls(post.text)
+
+      if (urls && urls.length > 0) {
+          fetchLinkPreview(urls[0]).then(setVideoData) // We take the first URL from the input
+      } else {
+          setVideoData(null) // Clear preview if no URL is detected
+      }
+    }, [post.text]) 
 
     const handleTextChange = (e) => {
       setPost(prevPost => ({...prevPost, text: e.target.value}))
@@ -85,6 +101,7 @@ const ChatRoom = () => {
       const handleClickOutside = (e) => {
         if(formRef.current && !formRef.current.contains(e.target)) {
           setIsPopupShown(false)
+          setPost(initialPost)
         }
       }
       document.addEventListener("click", handleClickOutside)
@@ -96,8 +113,11 @@ const ChatRoom = () => {
         <div style={{ 
             display: 'flex', 
             flexDirection: "column",
+            //height: '550px',
             height: '550px',
-            width: '90%'
+            overflow: 'auto',
+            alignItems: 'center'
+            //width: '90%'
         }}>
           {/*<button
             style={{
@@ -161,17 +181,71 @@ const ChatRoom = () => {
                     transform: 'translate(-50%, -50%)',
                     padding: '1em',
                     borderRadius: '30px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1em'
                   }}
                   ref={formRef}
                 >
-                  <Input
+                  {/*<Input
                     type="text"
                     value={post.text}
                     placeholder="let's waste time"
                     onChange={handleTextChange}
+                  />*/}
+                  <textarea
+                    value={post.text}
+                    onChange={handleTextChange}
+                    placeholder="let's waste time"
+                    rows="4"
+                    style={{width: '100%', padding: '1em'}}
                   />
-                  <Button onClick={createPost}>post</Button>  
+                  <Button 
+                    onClick={createPost}
+                    style={{
+                      background: 'salmon',
+                      color: 'white',
+                      borderRadius: '20px',
+                      padding: '.5em 1em',
+                      alignSelf: 'flex-end'
+                    }}
+                  >
+                    post
+                  </Button>  
+                     {/* Preview section: Show the link preview if available */}
+                  {videoData && (
+                <div 
+                  style={{ 
+                    marginTop: "10px", 
+                    border: "1px solid #ccc", 
+                    padding: "10px" 
+                  }}
+                  ref={linkPreviewRef}
+                >
+                    <button onClick={() => {
+                      if(linkPreviewRef.current) {
+                        linkPreviewRef.current.style.display = "none"
+                      }
+                    }}>
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                    <a href={videoData.url} target="_blank" rel="noopener noreferrer">
+                        <img
+                            src={videoData.image}
+                            alt={videoData.title}
+                            style={{ width: "70%", marginRight: "10px" }}
+                        />
+                        <div>
+                            <p style={{textTransform: 'initial'}}>{videoData.title}</p>
+                            {/*<p>{videoData.description}</p>*/}
+                        </div>
+                    </a>
+                </div>
+            )}
                 </form> 
+
               </div>
             )
           }
@@ -181,12 +255,13 @@ const ChatRoom = () => {
             background: 'rgb(253, 239, 237)',
             display: 'flex',
             flexDirection: "column-reverse",
+            //alignItems: 'center',
             flex: '1',
-            /*overflowY: 'auto',
-            height: '500px'*/
+            //overflowY: 'auto',
+            //height: '100vh'
           }}>
             {
-              posts && posts.map(postItem => <Post
+              posts.length > 0 && posts.map(postItem => <Post
                                               key={postItem.id}
                                               id={postItem.id}
                                               creatorUid={postItem.creatorUid}

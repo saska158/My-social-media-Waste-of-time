@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { 
   database, 
@@ -16,6 +16,8 @@ import {
 } from "./firebase"
 import { useAuth } from "./authContext"
 import PopUp from "./PopUp"
+import fetchLinkPreview from "./api/fetchLinkPreview"
+import extractUrls from "./utils/extractUrls"
 
 const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}) => {
     const { user } = useAuth()
@@ -25,7 +27,11 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
     const [comments, setComments] = useState([])
     const [showComments, setShowComments] = useState(false)
 
+    const [videoData, setVideoData] = useState(null)
+
     const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
+
+    const linkPreviewRef = useRef(null)
 
     const navigate = useNavigate()
 
@@ -138,6 +144,18 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
         setNewComment('')
     }
 
+    // Effect to detect and fetch preview when user types a URL
+    useEffect(() => {
+      const urls = extractUrls(post.text)
+
+      if (urls && urls.length > 0) {
+          fetchLinkPreview(urls[0]).then(setVideoData) // We take the first URL from the input
+      } else {
+          setVideoData(null) // Clear preview if no URL is detected
+      }
+    }, [post.text]) 
+
+
     return (
         <div 
             key={id}
@@ -175,7 +193,32 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
                     </div>
                 </div>
             </Link>
-            <p style={{fontSize: '.8rem', padding: '0 .5em'}}>{post.text}</p>
+            {
+              videoData ? (
+                <div 
+                  style={{ 
+                    marginTop: "10px", 
+                    //border: "1px solid #ccc", 
+                    //padding: "10px" 
+                  }}
+                  ref={linkPreviewRef}
+                >
+                    <a href={videoData.url} target="_blank" rel="noopener noreferrer">
+                        <img
+                            src={videoData.image}
+                            alt={videoData.title}
+                            style={{ width: "100%", /*marginRight: "10px" */}}
+                        />
+                        <div>
+                            <p style={{textTransform: 'initial'}}>{videoData.title}</p>
+                            {/*<p>{videoData.description}</p>*/}
+                        </div>
+                    </a>
+                </div>
+              ) : (
+                <p style={{fontSize: '.8rem', padding: '0 .5em'}}>{post?.text}</p>
+              )
+            }
             <div 
               style={{
                 fontSize: '.7rem', 
