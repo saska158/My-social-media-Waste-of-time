@@ -13,13 +13,13 @@ import {
   where, 
   getDoc,
   getDocs 
-} from "./firebase"
-import { useAuth } from "./authContext"
-import PopUp from "./PopUp"
-import fetchLinkPreview from "./api/fetchLinkPreview"
-import extractUrls from "./utils/extractUrls"
+} from "../api/firebase"
+import { useAuth } from "../contexts/authContext"
+import PopUp from "../components/PopUp"
+import fetchLinkPreview from "../api/fetchLinkPreview"
+import extractUrls from "../utils/extractUrls"
 
-const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}) => {
+const Post = ({id, creatorUid, photoUrl, creatorName, post, roomId}) => {
     const { user } = useAuth()
     const [profile, setProfile] = useState(null)
     const [likes, setLikes] = useState()
@@ -36,6 +36,7 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
     const navigate = useNavigate()
 
     const [error, setError] = useState(null)
+
 
     useEffect(() => {
       const fetchProfile = async () => {
@@ -57,7 +58,7 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
       }
   
       fetchProfile()
-    }, [profile])
+    }, [creatorUid])
 
     //console.log("prrrr", profile)
 
@@ -100,7 +101,7 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
         //navigate('/sign-in', {
           //state: {
            // message: 'Sign in or create your account to join the conversation!',
-            //from: '/' //ovde treba da bude ruta posebnih soba, ne znam kako
+            //from: '/' //ovde treba da bude ruta posebnih soba
           //}
         //})
         setIsJoinPopupShown(true)
@@ -111,11 +112,9 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
           const likes = snapshot.val() || {}
   
           if (likes[user?.uid]) {
-              // User has already liked → remove their like (unlike)
               await update(likesRef, { [user.uid]: null })
               console.log("Unliked")
           } else {
-              // User hasn't liked → add their like
               await update(likesRef, { [user.uid]: { name: user.displayName } })
               console.log("Liked")
           }
@@ -151,17 +150,12 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, /*setPost,*/ roomId}
       const urls = extractUrls(post.text)
 
       if (urls && urls.length > 0) {
-          fetchLinkPreview(urls[0]).then(setVideoData).catch(err => setError(err)) // We take the first URL from the input
+          fetchLinkPreview(urls[0]).then(setVideoData) // We take the first URL from the input
       } else {
           setVideoData(null) // Clear preview if no URL is detected
       }
     }, [post.text]) 
-console.log("error je", error)
-    if(error) {
-      return (
-        <p>{`Error:`}</p>
-      )
-    }
+
 
     return (
         <div 
@@ -210,7 +204,14 @@ console.log("error je", error)
                   }}
                   ref={linkPreviewRef}
                 >
-                    <a href={videoData.url} target="_blank" rel="noopener noreferrer">
+                  {
+                    videoData.description === 'Too many requests / rate limit exceeded' ? (
+                      <p style={{fontSize: '.8rem'}}>
+                        Too many requests / rate limit exceeded.
+                        Link can't be shown.
+                      </p>
+                    ) : (
+                      <a href={videoData.url} target="_blank" rel="noopener noreferrer">
                         <img
                             src={videoData.image}
                             alt={videoData.title}
@@ -221,6 +222,8 @@ console.log("error je", error)
                             {/*<p>{videoData.description}</p>*/}
                         </div>
                     </a>
+                    )
+                  }
                 </div>
               ) : (
                 <p style={{fontSize: '.8rem', padding: '0 .5em'}}>{post?.text}</p>
@@ -294,7 +297,7 @@ console.log("error je", error)
                       //navigate('/sign-in', {
                         //state: {
                           //message: 'Sign in or create your account to join the conversation!',
-                          //from: '/' //ovde treba da bude ruta posebnih soba, ne znam kako
+                          //from: '/' //ovde treba da bude ruta posebnih soba
                         //}
                       //})
                       setIsJoinPopupShown(true)

@@ -6,9 +6,9 @@ import {
     database, 
     ref, 
     update, 
-} from "./firebase"
-import Input from "./Input"
-import Button from "./Button"
+} from "../api/firebase"
+import Input from "../components/Input"
+import Button from "../components/Button"
 
 const SignIn = () => {
     const [email, setEmail] = useState('')
@@ -24,15 +24,7 @@ const SignIn = () => {
     const updateUserActivity = async (uid) => {
         try {
             const userRef = ref(database, `users/${uid}`)
-
-        /*
-        koristi await ispred update i ucini da je updateUserActivity async,
-        kao i try/catch ukoliko zelis da osiguras da je azuriranje zavrseno 
-        pre nego sto nastavis sa izvrsavanjem koda
-        i ako zelis da obradis greske
-        */
             await update(userRef, {isActive: true})
-            //onDisconnect(userRef).update({ isActive: true })
             console.log(`Korisnik ${uid} prijavljen i aktiviran.`)
         } catch(error) {
             console.error("Greška prilikom prijavljivanja:", error.message)
@@ -54,7 +46,7 @@ const SignIn = () => {
         } catch(error) {
             let customMessage
             if(error.code === 'auth/invalid-credential') {
-                customMessage = `WARNING: The user name and password provided do not correspond to any account at D&D.`
+                customMessage = `WARNING: The user name and password provided do not correspond to any account.`
             }  else if (error.code === 'auth/invalid-email') {
                 customMessage = `WARNING: Enter a valid e-mail address.`
             } else if (error.code === 'auth/missing-password') {

@@ -7,10 +7,9 @@ import {
     query,
     where,
     onSnapshot
- } from "./firebase"
-import { useAuth } from "./authContext"
-//import { format } from "date-fns"
-import ChatBox from "./ChatBox"
+ } from "../api/firebase"
+import { useAuth } from "../contexts/authContext"
+import ChatBox from "../components/ChatBox"
 
 const MyChats = () => {
     const { user } = useAuth()

@@ -1,17 +1,15 @@
 import { useState, useEffect, useMemo, useRef } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
-import { database, ref, push, onValue, /*firestore, doc, updateDoc, arrayUnion */} from "./firebase"
-import { useAuth } from './authContext'
-//import MessagesList from "./MessagesList"
-import Input from "./Input"
-import Button from "./Button"
-import Post from "./Post"
-import PopUp from "./PopUp"
-import fetchLinkPreview from "./api/fetchLinkPreview"
-import extractUrls from "./utils/extractUrls"
+import { database, ref, push, onValue } from "../api/firebase"
+import { useAuth } from '../contexts/authContext'
+import Input from "../components/Input"
+import Button from "../components/Button"
+import Post from "../components/Post"
+import PopUp from "../components/PopUp"
+import fetchLinkPreview from "../api/fetchLinkPreview"
+import extractUrls from "../utils/extractUrls"
 
 const ChatRoom = () => {
-    //const messages = useOutletContext(
     const initialPost = {
       text: ""
     }
@@ -23,7 +21,7 @@ const ChatRoom = () => {
     const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
 
     const { user } = useAuth()
-    //console.log("Imamo usera, chatlay:", user)
+    
     const formRef = useRef(null)
 
     const linkPreviewRef = useRef(null)
@@ -61,7 +59,7 @@ const ChatRoom = () => {
         navigate('/sign-in', {
           state: {
             message: 'Sign in or create your account to join the conversation!',
-            from: '/' //ovde treba da bude ruta posebnih soba, ne znam kako
+            from: '/' //ovde treba da bude ruta posebnih soba
           }
         })
         setPost(initialPost)
@@ -113,24 +111,9 @@ const ChatRoom = () => {
         <div style={{ 
             display: 'flex', 
             flexDirection: "column",
-            //height: '550px',
             height: '550px',
             overflow: 'auto',
-            //alignItems: 'center'
-            //width: '90%'
         }}>
-          {/*<button
-            style={{
-              background: 'rgb(245, 99, 83)',
-              color: 'white',
-              padding: '.6em .8em',
-              border: '0',
-              borderRadius: '20px',
-              width: '80px'
-           }}
-          >
-            New post
-          </button>  */}
           <button
             style={{
               border: '.3px solid grey',
@@ -212,53 +195,48 @@ const ChatRoom = () => {
                   >
                     post
                   </Button>  
-                     {/* Preview section: Show the link preview if available */}
-                  {videoData && (
-                <div 
-                  style={{ 
-                    marginTop: "10px", 
-                    border: "1px solid #ccc", 
-                    padding: "10px" 
-                  }}
-                  ref={linkPreviewRef}
-                >
-                    <button onClick={() => {
-                      if(linkPreviewRef.current) {
-                        linkPreviewRef.current.style.display = "none"
-                      }
-                    }}>
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                      </svg>
-                    </button>
-                    <a href={videoData.url} target="_blank" rel="noopener noreferrer">
-                        <img
+                  {/* Preview section: Show the link preview if available */}
+                  {
+                    videoData && (
+                      <div 
+                        style={{ 
+                          marginTop: "10px", 
+                          border: "1px solid #ccc", 
+                          padding: "10px" 
+                        }}
+                        ref={linkPreviewRef}
+                      >
+                        <button onClick={() => {
+                          if(linkPreviewRef.current) {
+                            linkPreviewRef.current.style.display = "none"
+                          }
+                        }}>
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                        <a href={videoData.url} target="_blank" rel="noopener noreferrer">
+                          <img
                             src={videoData.image}
                             alt={videoData.title}
                             style={{ width: "70%", marginRight: "10px" }}
-                        />
-                        <div>
+                          />
+                          <div>
                             <p style={{textTransform: 'initial'}}>{videoData.title}</p>
                             {/*<p>{videoData.description}</p>*/}
-                        </div>
-                    </a>
-                </div>
-            )}
+                          </div>
+                        </a>
+                      </div>
+                  )}
                 </form> 
-
               </div>
             )
           }
-         {/* <MessagesList posts={posts} roomId={roomId} />*/}
-
           <div style={{
             background: 'rgb(253, 239, 237)',
             display: 'flex',
             flexDirection: "column-reverse",
-            //alignItems: 'center',
             flex: '1',
-            //overflowY: 'auto',
-            //height: '100vh'
           }}>
             {
               posts.length > 0 && posts.map(postItem => <Post
@@ -313,14 +291,3 @@ const ChatRoom = () => {
 
 export default ChatRoom
 
-/*
-            <form style={{display: 'flex', padding: '.5em'}}>
-            <Input
-              type="text"
-              value={message}
-              placeholder="let's waste time"
-              onChange={handleInput}
-            />
-            <Button onClick={sendMessage}>post</Button>
-          </form>  
-*/

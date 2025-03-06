@@ -18,16 +18,14 @@ import {
     set,
     onValue,
     ref
-} from "./firebase"
-//import MessagesList from './MessagesList'
-//import Messages from "./Messages"
+} from "../api/firebase"
 import { format } from "date-fns"
 import Input from './Input'
 import Button from './Button'
 import TypingIndicator from "./TypingIndicator"
-import { useAuth } from "./authContext"
+import { useAuth } from "../contexts/authContext"
 
-//OBAVEZNO IZMENI OVO PROFILEUID U OTHERUSERUID I SVE U SKLADU SA TIME
+//OBAVEZNO DA IZMENIM OVO PROFILEUID U OTHERUSERUID I SVE U SKLADU SA TIME
 //SVE JE NECITLJIVO I KONFUZNO ZBOG TOGA 
 const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     //const [isFullScreen, setIsFullScreen] = useState(false)

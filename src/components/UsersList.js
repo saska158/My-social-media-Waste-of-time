@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react"
-import { /*useNavigate, */Link } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { 
     database, 
     ref, 
     onValue, 
-    orderByChild,
-    startAt,
-    query
-} from "./firebase"
-import { useAuth } from "./authContext"
+} from "../api/firebase"
+import { useAuth } from "../contexts/authContext"
 import UsersQuery from "./UsersQuery"
 
 

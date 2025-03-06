@@ -1,23 +1,16 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-//import Room from './Room'
-/* 
-OVO SU STRANE, KAD IMPORTUJEM U OKVIRU NJIH ONDA SU KOMPONENTE
-VIDI DA NAPRAVIS STO VISE ZAJEDNICKIH KOMPONENTI 
-*/
-import Homepage from './Homepage'
-import NavigationLayout from './NavigationLayout'
-import ChatRoomLayout from './ChatRoomLayout'
-import ChatRoom from './ChatRoom'
-//import UsersList from './UsersList'
-import SignIn from './Sign-In'
-import SignUp from './Sign-Up'
-import EmailVerification from './EmailVerification'
-import MyProfile from './MyProfile'
-import MyChats from './MyChats'
-import UserProfile from './UserProfile'
-import AuthRequired from './AuthRequired'
-import { AuthProvider } from './authContext'
+import Homepage from './pages/Homepage'
+import NavigationLayout from './layouts/NavigationLayout'
+import ChatRoomLayout from './layouts/ChatRoomLayout'
+import ChatRoom from './pages/ChatRoom'
+import SignIn from './pages/Sign-In'
+import SignUp from './pages/Sign-Up'
+import EmailVerification from './pages/EmailVerification'
+import MyChats from './pages/MyChats'
+import UserProfile from './pages/UserProfile'
+import AuthRequired from './components/AuthRequired'
+import { AuthProvider } from './contexts/authContext'
 
 function App() {
 
@@ -33,7 +26,6 @@ function App() {
            </Route>
          </Route>
          <Route element={<AuthRequired />}>
-          {/*<Route path='my-profile' element={<MyProfile />} />*/}
           <Route path='my-chats' element={<MyChats />} />
          </Route>
          <Route path='user/:profileUid' element={<UserProfile />} />

@@ -1,7 +1,7 @@
-import { auth, reload } from "./firebase"
+import { auth, reload } from "../api/firebase"
 import { useState, useEffect } from "react"
 import { Navigate } from "react-router-dom"
-import { useAuth } from "./authContext"
+import { useAuth } from "../contexts/authContext"
 
 const EmailVerification = () => {
     const { user, setUser } = useAuth()

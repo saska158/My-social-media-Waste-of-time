@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { useAuth } from "./authContext"
+import { useAuth } from "../contexts/authContext"
 import { 
     collection,
     firestore,
@@ -9,7 +9,7 @@ import {
     getDoc,
     updateDoc,
     arrayUnion
-} from "./firebase"
+} from "../api/firebase"
 import PopUp from "./PopUp"
 
 const UsersQuery = ({setIsUsersQueryShown}) => {

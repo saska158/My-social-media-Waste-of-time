@@ -12,9 +12,9 @@ import {
     doc, 
     setDoc, 
     getDoc 
-} from "./firebase"
-import Input from "./Input"
-import Button from "./Button"
+} from "../api/firebase"
+import Input from "../components/Input"
+import Button from "../components/Button"
 
 const SignUp = () => {
     const initialState = {
@@ -74,7 +74,7 @@ const SignUp = () => {
             return
         }*/
         setLoading(true)
-        setError(null)/* da li treba, mozda pravi bespotrevni rerender? */
+        setError(null)
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password)
             const user = userCredential.user

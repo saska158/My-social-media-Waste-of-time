@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { useParams, useNavigate, Link } from "react-router-dom"
+import { useParams, Link } from "react-router-dom"
 import { 
   firestore, 
   doc, 
@@ -10,15 +10,14 @@ import {
   update,
   onValue, 
   arrayUnion,
-  //arrayRemove, 
   onSnapshot,
   updateProfile, 
   collection
-} from './firebase'
-import { useAuth } from "./authContext"
-import ChatBox from './ChatBox'
-import Post from "./Post"
-import PopUp from "./PopUp"
+} from '../api/firebase'
+import { useAuth } from "../contexts/authContext"
+import ChatBox from '../components/ChatBox'
+import Post from "../components/Post"
+import PopUp from "../components/PopUp"
 
 const UserProfile = () => {
     const { profileUid } = useParams()
