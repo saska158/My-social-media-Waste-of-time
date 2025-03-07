@@ -226,7 +226,17 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, roomId}) => {
                   }
                 </div>
               ) : (
-                <p style={{fontSize: '.8rem', padding: '0 .5em'}}>{post?.text}</p>
+                <div>
+                  <p style={{fontSize: '.8rem', padding: '0 .5em'}}>{post?.text}</p>
+                  {
+                    post.image && (
+                      <img
+                        src={post.image}
+                        alt="post-image"
+                      />
+                    )
+                  }
+                </div>
               )
             }
             <div 

@@ -1,13 +1,13 @@
 import { useEffect, useRef } from "react"
-//import { Link } from "react-router-dom"
 
-const PopUp = ({setIsPopUpShown, children}) => {
+const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children}) => {
     const popUpRef = useRef(null)
 
     useEffect(() => {
         const handleClickOutside = (e) => {
             if(popUpRef.current && !popUpRef.current.contains(e.target)) {
                 setIsPopUpShown(false)
+                setShowEmojiPicker(false)
             }
         }
         document.addEventListener("click", handleClickOutside)
@@ -22,7 +22,7 @@ const PopUp = ({setIsPopUpShown, children}) => {
             left: '0',
             width: '100%',
             height: '100%',
-            background: 'rgba(238, 171, 163, .5)'
+            background: 'rgba(238, 171, 163, .8)'
         }}>
           <div style={{
             position: 'fixed',
@@ -30,6 +30,7 @@ const PopUp = ({setIsPopUpShown, children}) => {
             left: '50%',
             width: '50%',
             height: '70%',
+            overflow: 'auto',
             background: 'white',
             padding: '1em',
             borderRadius: '30px',

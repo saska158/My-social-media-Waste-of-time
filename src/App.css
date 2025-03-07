@@ -36,12 +36,12 @@ a {
 }
 
 
-ul {
+/*ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
-}
+}*/
   
 li {
   margin-right: 1em;
@@ -55,15 +55,19 @@ button {
 }
 
 input, textarea {
-  padding: .5em;
-  border-radius: 20px;
-  border: .3px solid salmon;
+  padding: 1em;
   font-style: inherit;
   outline: none;
 }
-
+input {
+  border: .3px solid salmon;
+  border-radius: 20px;
+}
 textarea {
   resize: none;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  border: none;
 }
   
 

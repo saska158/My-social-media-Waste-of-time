@@ -211,8 +211,6 @@ const UserProfile = () => {
       setUploading(true)
 
       if(imageFile) {
-        //await uploadImage()
-
         const formData = new FormData()
         formData.append("file", imageFile)
         formData.append("upload_preset", UPLOAD_PRESET)
@@ -533,12 +531,10 @@ const UserProfile = () => {
                 <form style={{display: 'flex', flexDirection: 'column', gap: '1em', margin: '1em'}}>
                   <label
                     style={{
-                      //border: '1px solid black',
                       position: 'relative',
                       display: 'inline-block',
                       cursor: 'pointer',
                       borderRadius: '50%',
-                      //overflow: 'hidden',
                       width: '100px',
                       height: '100px'
                     }}

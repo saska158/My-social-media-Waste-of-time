@@ -22,20 +22,22 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
 
 
     useEffect(() => {
-            const usersRef = collection(firestore, 'profiles')
-            const unsubscribe = onSnapshot(usersRef, (snapshot) => {
-                if(!snapshot.empty) {
-                    const usersArray = snapshot.docs.map((doc) => ({
-                        ...doc.data(),
-                        followedByMe: doc.data()?.followers?.some(follower => follower.uid === user.uid)
-                    }))
-                    setUsers(usersArray)    
-                } else {
-                 setUsers([])
-                }
-            })
-    
-            return () => unsubscribe()
+      if(user) {
+        const usersRef = collection(firestore, 'profiles')
+        const unsubscribe = onSnapshot(usersRef, (snapshot) => {
+          if(!snapshot.empty) {
+              const usersArray = snapshot.docs.map((doc) => ({
+                  ...doc.data(),
+                  followedByMe: doc.data()?.followers?.some(follower => follower.uid === user.uid)
+              }))
+              setUsers(usersArray)    
+          } else {
+           setUsers([])
+          }
+        })
+
+        return () => unsubscribe()
+      }
     }, [])
 
     console.log("korisnici", users)
@@ -124,7 +126,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
                                 borderBottom: '.5px solid salmon',
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '.5em'
+                                gap: '.5em',
                               }}
                         >
                             <Link to={`user/${usr.uid}`}>

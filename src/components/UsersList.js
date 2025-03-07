@@ -7,13 +7,14 @@ import {
 } from "../api/firebase"
 import { useAuth } from "../contexts/authContext"
 import UsersQuery from "./UsersQuery"
+import PopUp from "./PopUp"
 
 
 const UsersList = () => {
     const { user } = useAuth()
     const [listOfUsers, setListOfUsers] = useState([]) //mozda ipak null
     const [isUsersQueryShown, setIsUsersQueryShown] = useState(false)
-
+    const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
 
     useEffect(() => {
         const usersRef = ref(database, 'users')
@@ -29,7 +30,6 @@ const UsersList = () => {
         return () => unsubscribe()
     }, [])
 
-    console.log("iz q", user?.uid)
 
     const activeUsers = listOfUsers.filter(usr => usr.isActive && usr.uid !== user?.uid).map(usr => (
         <div key={usr.uid} /*onClick={() => pickUser(user)}*/>
@@ -61,6 +61,7 @@ const UsersList = () => {
         <div style={{
               backgroundColor: 'white', 
               width: '35%',
+              padding: '.5em'
             }}
         >
             {
@@ -69,21 +70,26 @@ const UsersList = () => {
                       <p>online:</p>
                       {activeUsers}
                     </>
-                ) : <p>noone is online</p>
+                ) : <p style={{fontSize: '1rem'}}>Noone is online.</p>
             }
            {
            /*<p>and {listOfUsers.length} others</p>*/}
            <button 
              onClick={(e) => {
                 e.stopPropagation()
-                setIsUsersQueryShown(true)
+                if(!user) {
+                  setIsJoinPopupShown(true)
+                } else {
+                  setIsUsersQueryShown(true)
+                }
              }}
              style={{
                 background: 'salmon',
                 color: 'white',
                 padding: '.6em .8em',
                 border: '0',
-                borderRadius: '20px'
+                borderRadius: '20px',
+                marginTop: '1.5em'
              }}
             >
                 find people to follow
@@ -94,6 +100,39 @@ const UsersList = () => {
                                    //setListOfUsers={setListOfUsers}
                                    setIsUsersQueryShown={setIsUsersQueryShown}
                                  />
+           }
+           {
+            isJoinPopupShown && (
+              <PopUp setIsPopUpShown={setIsJoinPopupShown}>
+                <h1>Razgovori</h1>
+                <p>Sign in or create your account to join the conversation!</p>
+                <Link to="/sign-up">
+                  <button 
+                    style={{
+                      fontSize: '1rem', 
+                      background: 'salmon', 
+                      padding: '.7em 1.2em', 
+                      borderRadius: '10px',
+                      color: 'white'
+                    }}
+                  >
+                    Create an account
+                  </button>
+                </Link>
+                <Link to="/sign-in">
+                  <button 
+                    style={{
+                      fontSize: '1rem',
+                      padding: '.7em 1.2em', 
+                      borderRadius: '10px',
+                      background: 'rgba(238, 171, 163, .5)'
+                    }}
+                  >
+                    Sign in
+                  </button>
+                </Link>
+              </PopUp>
+            )
            }
         </div>
     )
