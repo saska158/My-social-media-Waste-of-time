@@ -25,6 +25,7 @@ import Button from './Button'
 import TypingIndicator from "./TypingIndicator"
 import Message from "./Message"
 import { useAuth } from "../contexts/authContext"
+import { snap } from "gsap"
 
 //OBAVEZNO DA IZMENIM OVO PROFILEUID U OTHERUSERUID I SVE U SKLADU SA TIME
 //SVE JE NECITLJIVO I KONFUZNO ZBOG TOGA 
@@ -57,6 +58,8 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
         const generatedChatId = [user?.uid, profileUid].sort().join("_")
         setChatId(generatedChatId)
     }, [user?.uid, profileUid])
+
+    console.log("gde je chat id", chatId)
 
     // Real-time listener for fetching messages
     
@@ -290,6 +293,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
 
       return () => unsubscribe()
     }, [chatId, profileUid])
+  
 
     // Handle typing indicator
     const handleTyping = () => {
@@ -306,14 +310,14 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
 
 
     const renderMessages = () => {
-        let lastDate = null
+        //let lastDate = null
 
         return messages.map((message, index) => (
           <Message 
             index={index}
             message={message} 
             messages={messages}
-            lastDate={lastDate}
+           // lastDate={lastDate}
             messageRefs={messageRefs}
           />
         ))

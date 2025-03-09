@@ -9,10 +9,11 @@ import {
 import { useAuth } from "../contexts/authContext"
 import { format } from "date-fns"
 
-const Message = ({index, message, messages, lastDate, messageRefs}) => {
+const Message = ({index, message, messages, /*lastDate,*/ messageRefs}) => {
     
     const { user } = useAuth()
     const [userProfile, setUserProfile] = useState(null)
+    let lastDate
 
     useEffect(() => {
         const profilesRef = collection(firestore, "profiles")
