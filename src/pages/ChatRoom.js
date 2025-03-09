@@ -63,14 +63,14 @@ const ChatRoom = () => {
       setPost(prevPost => ({...prevPost, text: e.target.value}))
     }
 
+    console.log("post", post)
     //OVDE PORED TOGA STO PORUKU SALJEMO U REALTIMEDATABASE, TREBALO BI I U FIRESTORE U DOKUMENT
     //NPR TE OSOBE POD PROPERTIJEM MOJE PORUKE/MOJI POSTOVI
     //DA BISMO U PROFILU TE OSOBE PRIKAZALI NJENE POSTOVE
     const createPost =  async (e) => {
       e.preventDefault()
-      if(!post.text) return
-      
-      const imageFile = imageInputRef.current.files[0]
+      if(post.text || post.image) {
+        const imageFile = imageInputRef.current.files[0]
       setUploading(true)
 
       let imageUrl = ''
@@ -101,6 +101,7 @@ const ChatRoom = () => {
         ...post, 
         image: imageUrl
       }
+    
       //slanje u realtime database
       push(roomRef, {
         creatorUid: user.uid,  
@@ -111,6 +112,7 @@ const ChatRoom = () => {
       })
       setPost(initialPost)
       setIsPopupShown(false)
+      }
     }
 
     /* postavljamo slushac poruka u realtime-u */
@@ -157,6 +159,7 @@ const ChatRoom = () => {
         reader.onloadend = () => {
           console.log("result", reader.result)
           setImagePreview(reader.result)
+          setPost(prevPost => ({...prevPost, image: reader.result}))
         }
         reader.readAsDataURL(file)
       }

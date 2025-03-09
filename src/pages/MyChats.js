@@ -55,12 +55,13 @@ const MyChats = () => {
         return () => unsubscribe
     }, [user.uid])
 
-    //console.log('Chats', chats)
+    console.log("otheruser",otherUser)
 
     const pickChat = (otherUserUid, otherUser, setIsChatBoxVisible) => {
         setIsChatBoxVisible(true)
         setOtherUser({uid: otherUserUid, otherUserProfile: otherUser})
     }
+
 
     return (
         <div style={{width: '30%'}}>
@@ -69,28 +70,33 @@ const MyChats = () => {
                     <div>
                     <h4>My chats</h4>
                     {
-                        chats.map(chat => (
-                            <div 
-                              key={chat.id} 
-                              style={{borderBottom: '1px solid black', background: 'white', cursor: 'pointer'}}
-                              onClick={() => pickChat(chat.otherUserUid, chat.otherUser, setIsChatBoxVisible)}
-                            >
-                              <img 
-                                src={chat.otherUser.photoURL} 
-                                alt="sender" 
-                                style={{
-                                    width: '20px', 
-                                    height: '20px', 
-                                    display: 'inline',
-                                    borderRadius: '50%',
-                                    objectFit: 'cover',
-                                    objectPosition: 'top'
-                                }}/>
-                              <span>{chat.otherUser.displayName}</span>
-                              <p>{chat.lastMessage.content}</p>
-                              {/*<p>{format(chat.timestamp, "HH:mm")}</p> ne apdejtuje se*/}
-                            </div>
-                        ))
+                        chats.length > 0 ? (
+                            
+                                chats.map(chat => (
+                                    <div 
+                                      key={chat.id} 
+                                      style={{borderBottom: '1px solid black', background: 'white', cursor: 'pointer'}}
+                                      onClick={() => pickChat(chat.otherUserUid, chat.otherUser, setIsChatBoxVisible)}
+                                    >
+                                      <img 
+                                        src={chat.otherUser.photoURL} 
+                                        alt="sender" 
+                                        style={{
+                                            width: '20px', 
+                                            height: '20px', 
+                                            display: 'inline',
+                                            borderRadius: '50%',
+                                            objectFit: 'cover',
+                                            objectPosition: 'top'
+                                        }}/>
+                                      <span>{chat.otherUser.displayName}</span>
+                                      <p>{chat.lastMessage.content}</p>
+                                    </div>
+                                ))
+                            
+                        ) : (
+                            <p>You still don't have any chats.</p>
+                        )
                     }
                     </div>
                 ) : (
@@ -100,5 +106,5 @@ const MyChats = () => {
         </div>
     )
 }
-//<span>{format(chat.lastMessage.timestamp, "HH:mm dd/MM/yyyy")}</span>
+
 export default MyChats

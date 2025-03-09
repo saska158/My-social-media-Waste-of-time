@@ -23,12 +23,12 @@ import { format } from "date-fns"
 import Input from './Input'
 import Button from './Button'
 import TypingIndicator from "./TypingIndicator"
+import Message from "./Message"
 import { useAuth } from "../contexts/authContext"
 
 //OBAVEZNO DA IZMENIM OVO PROFILEUID U OTHERUSERUID I SVE U SKLADU SA TIME
 //SVE JE NECITLJIVO I KONFUZNO ZBOG TOGA 
 const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
-    //const [isFullScreen, setIsFullScreen] = useState(false)
     const { user } = useAuth()
     const [chatId, setChatId] = useState('')
     const [message, setMessage] = useState('')
@@ -52,7 +52,6 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     const initialized = useRef(false)
 
 
-    console.log("Profile", profile)
     // Create or get the chatId when the component mounts or user UIDs change
     useEffect(() => {
         const generatedChatId = [user?.uid, profileUid].sort().join("_")
@@ -168,18 +167,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
             }
         }
     }, [messages])
-      
-      
-
-   
-
-    //console.log("User iz Box:", user.uid)
-    //console.log("picked", pickedUser.uid)
-    //ovaj chat id: const chatId = [userAUid, userBUid].sort().join("_")
-    //mi treba van funkcije sendMessage da ga upotrebim za 
-    //slusanje poruka i mozda useMemo?
-    //i ovo: const chatsRef = collection(firestore, 'chats')
-
+  
     const sendMessage = async (e, userA, userBUid) => {
         e.preventDefault()
         //treba da dodas da ne moze da se posalje prazna poruka
@@ -233,23 +221,6 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
         }
     }
 
-    // Function to update messages as "seen"
-    /*
-    const markMessagesAsSeen = async (messages) => {
-        if (!chatId) return
-    
-        const unseenMessages = messages.filter(
-          (message) => message.receiverUid === user.uid && message.status === "sent"
-        )
-    
-        for (const message of unseenMessages) {
-          await updateDoc(
-            collection(firestore, "chats", chatId, "messages", message.id), 
-            { status: "seen" }
-          )
-        }
-    }*/
-
 
     useEffect(() => {
         if(!chatId) return
@@ -268,23 +239,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
 
         markMessagesAsSeen()
     }, [chatId, user.uid, messages])
-    
-
-    // Effect to scroll to bottom when a new message is added
-    /*useEffect(() => {
-      if(chatRef.current) {
-        chatRef.current.scrollTo({ top: chatRef.current.scrollHeight, behavior: "smooth" })
-      }
-    }, [messages])*/ // Runs whenever messages change
-
-    /*
-    useEffect(() => {
-        if(messages.length > 0 && !initialized.current) {
-            const timestamp = messages[messages.length - 1].timestamp
-            setVisibleDate(format(timestamp, "dd/MM/yyyy"))
-            initialized.current = true
-        }
-    }, [messages])*/
+  
 
 
     // Handling date based on scrolling
@@ -353,68 +308,15 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     const renderMessages = () => {
         let lastDate = null
 
-        return messages.map((message, index) => {
-            const messageDate = message.timestamp ? format(message.timestamp, "dd/MM/yyyy") : ''
-            const showDateDivider = lastDate !== messageDate
-            lastDate = messageDate
-
-            const isLastIndex = index === messages.length - 1
-        
-            return (
-                <>
-                  {showDateDivider && (
-                    <div className="date-divider">
-                      <span style={{fontSize: '.6rem'}}>{messageDate}</span>
-                    </div>
-                  )}
-                  <div 
-                  key={message.id} 
-                  style={{
-                    //backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey',
-                    width: 'fit-content',
-                    maxWidth: '50%',
-                    margin: '1em',
-                    marginLeft: message.senderName === user?.displayName ? 'auto' : '0',
-                    borderRadius: '30%',
-                    fontSize: '.7rem',
-                    textTransform: 'lowercase',
-                    display: 'flex'
-                  }}
-                  data-timestamp={message.timestamp}
-                  ref={(el) => (messageRefs.current[index] = el)} // Assign ref dynamically
-                >
-                  <img 
-                    src={message.senderPhoto} 
-                    alt="profile" 
-                    style={{
-                      width: '20px', 
-                      height: '20px',
-                      objectFit: 'cover',
-                      objectPosition: 'top',
-                      display: 'inline', 
-                      borderRadius: '50%',
-                      alignSelf: 'start'
-                    }}
-                  />
-                  <div 
-                    style={{
-                      backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey',
-                      padding: '.5em',
-                      borderRadius: '15px',
-                      width:'fit-content',
-                    }}>
-                    <p>{message.content}</p>
-                    <p style={{textAlign: 'right'}}>{format(message.timestamp, "HH:mm")}</p>  
-                    {
-                        isLastIndex && message.senderUid === user.uid && message.status === "seen" && (
-                            <p style={{fontSize: '.6rem'}}>seen</p>
-                        )
-                    }
-                  </div>
-                </div>
-                </>
-            )
-        })
+        return messages.map((message, index) => (
+          <Message 
+            index={index}
+            message={message} 
+            messages={messages}
+            lastDate={lastDate}
+            messageRefs={messageRefs}
+          />
+        ))
     }
 
     return (
@@ -428,64 +330,16 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
                 borderBottom: '1px solid black'
             }}>
               <button onClick={() => setIsChatBoxVisible(false)}>x</button>
-              {/*<button onClick={loadMoreMessages}>+</button>*/}
               <p>
                 { profile.displayName }
-                {/*<span onClick={() => setIsFullScreen(!isFullScreen)}>o</span>*/}
               </p>
             </div>
-            {/*<MessagesList/> */}
-            {/* SREDI MESSAGES KOMPONENTU */}
             {/* Display messages */}
             <div className="chat-box-messages" ref={chatRef}>
                 <span className="date">{visibleDate}</span>
-                {/*
-                {messages.map((message, index) => (
-                  <div 
-                    key={message.id} 
-                    style={{
-                      //backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey',
-                      width: 'fit-content',
-                      maxWidth: '50%',
-                      margin: '1em',
-                      marginLeft: message.senderName === user?.displayName ? 'auto' : '0',
-                      borderRadius: '30%',
-                      fontSize: '.7rem',
-                      textTransform: 'lowercase',
-                      display: 'flex'
-                    }}
-                    data-timestamp={message.timestamp}
-                    ref={(el) => (messageRefs.current[index] = el)} // Assign ref dynamically
-                  >
-                    <img 
-                      src={message.senderPhoto} 
-                      alt="profile" 
-                      style={{
-                        width: '20px', 
-                        height: '20px',
-                        objectFit: 'cover',
-                        objectPosition: 'top',
-                        display: 'inline', 
-                        borderRadius: '50%',
-                        alignSelf: 'start'
-                      }}
-                    />
-                    <div 
-                      style={{
-                        backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey',
-                        padding: '.5em',
-                        borderRadius: '15px',
-                        width:'fit-content',
-                      }}>
-                      <p>{message.content}</p>
-                      <p style={{textAlign: 'right'}}>{format(message.timestamp, "HH:mm")}</p>  
-                    </div>
-                  </div>
-                ))} */}
                 {renderMessages()}
             </div>
          
-            {/*{loading && <div>Loading...</div>}*/}
             {/* Show typing indicator if the other user is typing */}
             {isTyping && (
               <div style={{display: 'flex', alignItems: 'center'}}>

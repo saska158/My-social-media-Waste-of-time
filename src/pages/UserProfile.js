@@ -52,6 +52,7 @@ const UserProfile = () => {
 
     const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
     const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
+    const [isFollowPopupShown, setIsFollowPopupShown] = useState(false)
     const [isEditPopupShown, setIsEditPopupShown] = useState(false)
 
     //const navigate = useNavigate()
@@ -75,34 +76,28 @@ const UserProfile = () => {
       return () => unsubscribe()
 
     }, [profileUid, user?.uid])
+
+    useEffect(() => {
+      setIsChatBoxVisible(false)
+    }, [profileUid])
     
 
     const handleMessageButton = (e) => {
       e.stopPropagation()
+      console.log("da li pratim", profile.followers.some(follower => follower.uid === user.uid))
+      const amIFollowingThisUser = profile.followers.some(follower => follower.uid === user.uid)
+      const isThisUserFollowingMe = profile.following ? profile.following.some(follower => follower.uid === user.uid) : false
+
       if(user) {
-        setIsChatBoxVisible(!isChatBoxVisible)
+        if(amIFollowingThisUser && isThisUserFollowingMe) {
+          setIsChatBoxVisible(!isChatBoxVisible)
+        } else {
+          setIsFollowPopupShown(true)
+        }
       } else {
-        //navigate('/sign-in', {
-          //state: {
-            //message: 'Sign in or create your account to join the conversation!',
-            //from: '/' //ovde treba da bude ruta posebnih soba, ne znam kako
-          //}
-        //})
         setIsJoinPopupShown(true)
       }
     }
-
-  
-
-    /*
-    const followUser = () => {
-      //ovde treba dodati ovog user-a u profiles/user koji dodaje
-      //u property following
-      //napraviti i property followers
-      //onda omoguciti message
-      //videti je l + dugme moze da bude reusabilno
-      //jer ga ima ovde a i u user listi - UsersQuery
-    }*/
 
     const handleFollowToggle = async (otherUserUid) => {
       if (!user) return alert("You must be logged in to follow users.")
@@ -127,9 +122,7 @@ const UserProfile = () => {
       
       console.log('follow', isFollowing)
     }
-    
-
-    //console.log("followers", profile.followers, isFollowing)
+  
 
     /* postavljamo slushac postova u realtime-u */
     
@@ -139,11 +132,8 @@ const UserProfile = () => {
       const unsubscribe = onValue(mainRoomRef, (snapshot) => {
         const data = snapshot.val()
         if(data) {
-          //console.log("evoooo", Object.values(data).filter(value => value.creatorUid === profileUid))
-          //const userPostsArray = Object.values(data).filter(value => value.creatorUid === profileUid)
           const postsArray = Object.keys(data).map(key => ({id: key, ...data[key]})).reverse()
           const userPostsArray = postsArray.filter(post => post.creatorUid === profileUid)
-          //console.log(userPostsArray)
           setUserMainPosts(userPostsArray)
         } else {
           setUserMainPosts([])
@@ -159,8 +149,7 @@ const UserProfile = () => {
         setImageFile(file)
         const reader = new FileReader()
         reader.onloadend = () => {
-          console.log("result", reader.result)
-          //setProfile(prevProfile => ({...prevProfile, photoURL: reader.result}))
+         // console.log("result", reader.result)
           setImagePreview(reader.result)
         }
         reader.readAsDataURL(file)
@@ -171,37 +160,6 @@ const UserProfile = () => {
       const { value, name } = e.target
       setProfile(prevProfile => ({...prevProfile, [name]: value})) 
     } 
-
-    /*const uploadImage = async () => {
-      if(!imageFile) return
-
-      setUploading(true)
-      const formData = new FormData()
-      formData.append("file", imageFile)
-      formData.append("upload_preset", UPLOAD_PRESET)
-
-      try {
-        const response = await fetch(CLOUDINARY_URL, {
-          method: "POST",
-          body: formData
-        })
-        const data = await response.json()
-        console.log('dataaaa', data.secure_url)
-
-        if(data.secure_url) {
-          await updateDoc(doc(firestore, "profiles", user.uid), {photoURL: data.secure_url})
-          await updateProfile(user, {
-          photoURL: data.secure_url
-          })
-          setProfile(prev => ({...prev, photoURL: data.secure_url}))
-        }
-      } catch(error) {
-        console.error("Upload failed:", error)
-      } finally {
-        setUploading(false)
-        setImageFile(null)
-      }
-    }*/
 
     const saveProfileChanges = async (e) => {
       e.preventDefault()
@@ -233,11 +191,6 @@ const UserProfile = () => {
             const userRef = ref(database, `users/${user.uid}`)
             await update(userRef, {photoURL: data.secure_url})
             setProfile(prev => ({...prev, photoURL: data.secure_url}))
-            //await updateDoc(profileRef, profile)
-            //await updateProfile(user, {
-              //displayName: profile.displayName,
-              //photoURL: profile.photoURL
-            //})
           }
         } catch(error) {
           console.error("Upload failed:", error)
@@ -249,19 +202,13 @@ const UserProfile = () => {
         await updateDoc(profileRef, profile)
         await updateProfile(user, {
           displayName: profile.displayName,
-          //photoURL: profile.photoURL
         })
 
-      }      //const profileRef = doc(firestore, "profiles", profileUid)
-      //await updateDoc(profileRef, profile)
-      //await updateProfile(user, {
-        //displayName: profile.displayName,
-        //photoURL: profile.photoURL
-      //})
+      }      
+
       setIsEditPopupShown(false)
     }
 
-    //console.log("prof", profile.photoURL)
 
     return (
         <div style={{background: 'salmon', position: 'relative', width: '100%'}}>
@@ -460,7 +407,6 @@ const UserProfile = () => {
                                                           photoUrl={post.photoUrl}
                                                           creatorName={post.creatorName}
                                                           post={post.post}
-                                                          //setPost={setPost}
                                                           roomId={post.room}
                                                         />)
                         ) : (
@@ -569,7 +515,6 @@ const UserProfile = () => {
                         cursor: 'pointer',
                         opacity: '0'
                       }}
-                      //value={profile.photoURL}
                     />
                   </label>
                   <input
@@ -617,16 +562,20 @@ const UserProfile = () => {
               </PopUp>
             )
           }
+          {
+            isFollowPopupShown && (
+              <PopUp setIsPopUpShown={setIsFollowPopupShown}>
+                <p>You need to follow each other to send a message.</p>
+              </PopUp>
+            )
+          }
         </div>
     )
 }
 
 export default UserProfile
 
-/*
-ne znam
 
-*/
 
 
 
