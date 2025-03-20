@@ -101,7 +101,19 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
                           linkData={linkData}
                         />
                       ) : (
-                        <p>{message.content.text}</p>
+                        <div>
+                          { 
+                            message.content.text && <p>{message.content.text}</p>
+                          }
+                          {
+                            message.content.image && (
+                              <img
+                                src={message.content.image}
+                                alt="message-image"
+                              />
+                            )
+                          }
+                        </div>
                       )
                     }
                     <p style={{textAlign: 'right'}}>{format(message.timestamp, "HH:mm")}</p>  

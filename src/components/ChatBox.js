@@ -27,13 +27,12 @@ import Message from "./Message"
 import { useAuth } from "../contexts/authContext"
 import ChatSmiley from "./ChatSmiley"
 import EmojiPicker from "emoji-picker-react"
+import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
 
 
 //OBAVEZNO DA IZMENIM OVO PROFILEUID U OTHERUSERUID I SVE U SKLADU SA TIME
 //SVE JE NECITLJIVO I KONFUZNO ZBOG TOGA 
 const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
-  
-
     const { user } = useAuth()
     const [chatId, setChatId] = useState('')
     const initialMessage = {
@@ -58,6 +57,10 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
 
     const chatRef = useRef(null)
     const messageRefs = useRef([])
+    const imageInputRef = useRef(null)
+    const [imagePreview, setImagePreview] = useState(null)
+
+    const [error, setError] = useState(null)
 
     //for initializing the visibleDate when chatBox mounts
     const initialized = useRef(false)
@@ -181,56 +184,76 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     }, [messages])
   
     const sendMessage = async (e, userA, userBUid) => {
-        e.preventDefault()
-        //treba da dodas da ne moze da se posalje prazna poruka
+      e.preventDefault()
+      //treba da dodas da ne moze da se posalje prazna poruka
+      if(message.text || message.image) {
+        const imageFile = imageInputRef.current.files[0]
+        let imageUrl = ''
+
+        if(imageFile) {
+          try {
+            imageUrl = await uploadToCloudinaryAndGetUrl(imageFile)
+          } catch(error) {
+            console.error("Getting url failed:", error)
+            setError(error)
+          } 
+        }
+
+        const newMessage = {
+          ...message,
+          image: imageUrl
+        }
 
         try {
-            const chatsRef = collection(firestore, 'chats')
-            const chatDoc = doc(chatsRef, chatId)
+          const chatsRef = collection(firestore, 'chats')
+          const chatDoc = doc(chatsRef, chatId)
 
-            // Ensure consistent order for user IDs (e.g., 'user1_user2' and 'user2_user1' are treated the same)
-            //const chatId = [userAUid, userBUid].sort().join("_")
+          // Ensure consistent order for user IDs (e.g., 'user1_user2' and 'user2_user1' are treated the same)
+          //const chatId = [userAUid, userBUid].sort().join("_")
 
-            // Check if the chat exists, if not create it
-            const chatSnapshot = await getDocs(query(chatsRef, where("__name__", "==", chatId)))
-            
-            if(chatSnapshot.empty) {
-                // Chat doesn't exist, create a new one
-                await setDoc(chatDoc, {
-                    participants: [userA.uid, userBUid],
-                    createdAt: serverTimestamp(),
-                    lastMessage: null
-                })
-            }
+          // Check if the chat exists, if not create it
+          const chatSnapshot = await getDocs(query(chatsRef, where("__name__", "==", chatId)))
+          
+          if(chatSnapshot.empty) {
+              // Chat doesn't exist, create a new one
+              await setDoc(chatDoc, {
+                  participants: [userA.uid, userBUid],
+                  createdAt: serverTimestamp(),
+                  lastMessage: null
+              })
+          }
 
-            // Add the message to the messages subcollection of the chat
-            const messagesRef = collection(chatDoc, "messages")
-            await addDoc(messagesRef, {
-                receiverUid: userBUid,
-                senderUid: userA.uid,
-                senderName: userA.displayName,
-                senderPhoto: userA.photoURL,
-                content: message,
-                timestamp: serverTimestamp(),
-                status: 'sent' 
+          // Add the message to the messages subcollection of the chat
+          const messagesRef = collection(chatDoc, "messages")
+          await addDoc(messagesRef, {
+              receiverUid: userBUid,
+              senderUid: userA.uid,
+              senderName: userA.displayName,
+              senderPhoto: userA.photoURL,
+              content: newMessage,
+              timestamp: serverTimestamp(),
+              status: 'sent' 
+          })
+
+          //update the lastMessage field in the chat document
+          await updateDoc(chatDoc, {
+              lastMessage: {  
+                  senderUid: userA.uid,
+                  senderName: userA.displayName,
+                  senderPhoto: userA.photoURL,
+                  content: message.text, 
+                  timestamp: serverTimestamp() },
             })
 
-            //update the lastMessage field in the chat document
-            await updateDoc(chatDoc, {
-                lastMessage: {  
-                    senderUid: userA.uid,
-                    senderName: userA.displayName,
-                    senderPhoto: userA.photoURL,
-                    content: message.text, 
-                    timestamp: serverTimestamp() },
-              })
-
-            setMessage(initialMessage)
-            set(typingRef, false) // Stop typing indicator when message is sent
-            console.log("Message sent successfully!")
-        } catch(error) {
-            console.error("Error sending message:", error)
-        }
+          setMessage(initialMessage)
+          set(typingRef, false) // Stop typing indicator when message is sent
+          console.log("Message sent successfully!")
+      } catch(error) {
+          console.error("Error sending message:", error)
+      } finally {
+        setImagePreview(null)
+      }
+      }
     }
 
 
@@ -321,7 +344,18 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
         setMessage(prevMessage => ({...prevMessage, text: prevMessage.text + emojiObject.emoji}))
     }
 
-    console.log("poruka", message)
+    const handleImageChange = (e) => {
+      const file = e.target.files[0]
+      if (file) {
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          console.log("result", reader.result)
+          setImagePreview(reader.result)
+          setMessage(prevMessage => ({...prevMessage, image: reader.result}))
+        }
+        reader.readAsDataURL(file)
+      }
+    }
 
 
     const renderMessages = () => {
@@ -396,6 +430,23 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
                   }}
                   style={{border: '0', fontSize: '1rem'}}
                 />
+
+                {/* image preview */}
+                {
+                  imagePreview && (
+                    <img
+                      src={imagePreview}
+                      alt="image-post"
+                      style={{
+                        width: '50px', 
+                        height: '50px', 
+                        objectFit: 'cover', 
+                        objectPosition: 'top',
+                        margin: '.5em'
+                      }}
+                    />
+                  )
+                }
                 {/* ovo je za slike */}
                 <label
                   style={{
@@ -431,8 +482,8 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
                       cursor: 'pointer',
                       opacity: '0'
                     }}
-                    //onChange={handleImageChange}
-                    //ref={imageInputRef}
+                    onChange={handleImageChange}
+                    ref={imageInputRef}
                   />
                 </label>
                 {/* ovo je za smajlije */}

@@ -56,7 +56,22 @@ const Comment = ({comment, index}) => {
                       linkData={linkData}
                     />
                 ) : (
-                    <p>{comment.content.text}</p>
+                   <div>
+                    {
+                      comment.content.text && <p>{comment.content.text}</p>
+                    }
+                    {
+                      comment.content.image && (
+                        <img
+                          src={comment.content.image}
+                          alt="comment-image"
+                          style={{
+                            width: '100px'
+                          }}
+                        />
+                      )
+                    }
+                   </div>
                 )
               }
             </div>
