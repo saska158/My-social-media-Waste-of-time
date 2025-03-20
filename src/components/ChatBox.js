@@ -25,17 +25,26 @@ import Button from './Button'
 import TypingIndicator from "./TypingIndicator"
 import Message from "./Message"
 import { useAuth } from "../contexts/authContext"
-import { snap } from "gsap"
+import ChatSmiley from "./ChatSmiley"
+import EmojiPicker from "emoji-picker-react"
+
 
 //OBAVEZNO DA IZMENIM OVO PROFILEUID U OTHERUSERUID I SVE U SKLADU SA TIME
 //SVE JE NECITLJIVO I KONFUZNO ZBOG TOGA 
 const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
+  
+
     const { user } = useAuth()
     const [chatId, setChatId] = useState('')
-    const [message, setMessage] = useState('')
+    const initialMessage = {
+      text: '',
+      image: ''
+    }
+    const [message, setMessage] = useState(initialMessage)
     const [messages, setMessages] = useState([])
     const [lastVisible, setLastVisible] = useState(null)
     const [loading, setLoading] = useState(false)
+    const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
     const [initialLoad, setInitialLoad] = useState(true)
     const [isFetchingOldMessages, setIsFetchingOldMessages] = useState(false)
@@ -49,6 +58,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
 
     const chatRef = useRef(null)
     const messageRefs = useRef([])
+
     //for initializing the visibleDate when chatBox mounts
     const initialized = useRef(false)
 
@@ -59,7 +69,6 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
         setChatId(generatedChatId)
     }, [user?.uid, profileUid])
 
-    console.log("gde je chat id", chatId)
 
     // Real-time listener for fetching messages
     
@@ -131,7 +140,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     const handleScroll = () => {
         if(chatRef.current) {
             const chatBox = chatRef.current
-            console.log(chatBox.scrollTop)
+            //console.log(chatBox.scrollTop)
             
             // Check if user scrolled to the top
             if(chatBox.scrollTop === 0) {
@@ -212,11 +221,11 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
                     senderUid: userA.uid,
                     senderName: userA.displayName,
                     senderPhoto: userA.photoURL,
-                    content: message, 
+                    content: message.text, 
                     timestamp: serverTimestamp() },
               })
 
-            setMessage('')
+            setMessage(initialMessage)
             set(typingRef, false) // Stop typing indicator when message is sent
             console.log("Message sent successfully!")
         } catch(error) {
@@ -308,23 +317,38 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     }, 1500)
     }
 
+    const handleEmojiClick = (emojiObject) => {
+        setMessage(prevMessage => ({...prevMessage, text: prevMessage.text + emojiObject.emoji}))
+    }
+
+    console.log("poruka", message)
+
 
     const renderMessages = () => {
-        //let lastDate = null
+        let lastDate = null
 
-        return messages.map((message, index) => (
-          <Message 
-            index={index}
-            message={message} 
-            messages={messages}
-           // lastDate={lastDate}
-            messageRefs={messageRefs}
-          />
-        ))
+        return messages.map((message, index) => {
+          const messageDate = message.timestamp ? format(message.timestamp, "dd/MM/yyyy") : ''
+          const showDateDivider = lastDate !== messageDate
+          lastDate = messageDate
+    
+          const isLastIndex = index === messages.length - 1
+          return (
+            <Message 
+              key={index}
+              index={index}
+              message={message} 
+              showDateDivider={showDateDivider}
+              messageRefs={messageRefs}
+              messageDate={messageDate}
+              isLastIndex={isLastIndex}
+            />
+          )
+        })
     }
 
     return (
-        <div className="chat-box">
+        <div className="chat-box" style={{position: 'relative'}}>
             <div style={{
                 position: 'sticky', 
                 top: '0', 
@@ -352,17 +376,93 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
               </div>
             )}
 
-            <form>
+            <form style={{display: 'flex'}}>
+                <label 
+                  style={{
+                    border: '.3px solid salmon', 
+                    borderRadius: '20px',
+                    background: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                > {/* label da obuhvati input za tekst, za sliku i smajlije */}
                 <Input 
                   type='text'
                   placeholder='...'
-                  value={message}
+                  value={message.text}
                   onChange={(e) => {
-                    setMessage(e.target.value)
+                    setMessage(prevMessage => ({...prevMessage, text: e.target.value}))
                     handleTyping()
                   }}
+                  style={{border: '0', fontSize: '1rem'}}
                 />
-                <Button onClick={(e) => sendMessage(e, user, profileUid)}>send</Button>
+                {/* ovo je za slike */}
+                <label
+                  style={{
+                    position: 'relative',
+                    display: 'inline-block',
+                    cursor: 'pointer',
+                    //borderRadius: '50%',
+                    width: '20px',
+                    height: '20px',
+                    //background: 'blue'
+                  }}
+                >
+                  <Button
+                    onClick={(e) => {e.preventDefault()}}
+                    style={{
+                      position: 'absolute',
+                      width: '100%',
+                      height: '100%',
+                      padding: '0'
+                    }}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '100%', color: 'salmon'}}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    </svg>
+                  </Button>
+                  <input 
+                    type="file"
+                    accept="image/*"
+                    style={{
+                      position: 'absolute',
+                      width: '100%',
+                      height: '100%',
+                      cursor: 'pointer',
+                      opacity: '0'
+                    }}
+                    //onChange={handleImageChange}
+                    //ref={imageInputRef}
+                  />
+                </label>
+                {/* ovo je za smajlije */}
+                <ChatSmiley setShowEmojiPicker={setShowEmojiPicker}/>
+                </label>
+                <Button 
+                  onClick={(e) => sendMessage(e, user, profileUid)}
+                  style={{marginLeft: 'auto'}}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: 'white'}}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                  </svg>
+                </Button>
+
+                {
+                    showEmojiPicker && (
+                        <div>
+                            <EmojiPicker 
+                                onEmojiClick={handleEmojiClick} 
+                                style={{
+                                    position: 'absolute',
+                                    bottom: '0',
+                                    left: '0',
+                                    width: '60%',
+                                    height: '60%' 
+                                }}
+                            />
+                        </div>
+                    )
+                }
             </form>
         </div>
     )

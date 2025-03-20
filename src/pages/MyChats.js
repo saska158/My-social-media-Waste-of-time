@@ -55,7 +55,7 @@ const MyChats = () => {
         return () => unsubscribe
     }, [user.uid])
 
-    console.log("otheruser",otherUser)
+    //console.log("otheruser",otherUser)
 
     const pickChat = (otherUserUid, otherUser, setIsChatBoxVisible) => {
         setIsChatBoxVisible(true)

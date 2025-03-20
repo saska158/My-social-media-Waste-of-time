@@ -9,6 +9,8 @@ import PopUp from "../components/PopUp"
 import fetchLinkPreview from "../api/fetchLinkPreview"
 import extractUrls from "../utils/extractUrls"
 import EmojiPicker from "emoji-picker-react"
+import ChatSmiley from "../components/ChatSmiley"
+import LinkPreview from "../components/LinkPreview"
 
 const ChatRoom = () => {
     
@@ -21,7 +23,7 @@ const ChatRoom = () => {
     }
     const [post, setPost] = useState(initialPost)
     const [posts, setPosts] = useState([])
-    const [videoData, setVideoData] = useState(null)
+    const [linkData, setLinkData] = useState(null)
     const [showEmojiPicker, setShowEmojiPicker] = useState(false)
     const [selectedEmoji, setSelectedEmoji] = useState([])
     const [imagePreview, setImagePreview] = useState(null)
@@ -53,9 +55,9 @@ const ChatRoom = () => {
       const urls = extractUrls(post.text)
 
       if (urls && urls.length > 0) {
-          fetchLinkPreview(urls[0]).then(setVideoData) // We take the first URL from the input
+          fetchLinkPreview(urls[0]).then(setLinkData) // We take the first URL from the input
       } else {
-          setVideoData(null) // Clear preview if no URL is detected
+          setLinkData(null) // Clear preview if no URL is detected
       }
     }, [post.text]) 
 
@@ -63,10 +65,6 @@ const ChatRoom = () => {
       setPost(prevPost => ({...prevPost, text: e.target.value}))
     }
 
-    console.log("post", post)
-    //OVDE PORED TOGA STO PORUKU SALJEMO U REALTIMEDATABASE, TREBALO BI I U FIRESTORE U DOKUMENT
-    //NPR TE OSOBE POD PROPERTIJEM MOJE PORUKE/MOJI POSTOVI
-    //DA BISMO U PROFILU TE OSOBE PRIKAZALI NJENE POSTOVE
     const createPost =  async (e) => {
       e.preventDefault()
       if(post.text || post.image) {
@@ -141,11 +139,6 @@ const ChatRoom = () => {
       return () => document.removeEventListener("click", handleClickOutside)
     }, [])
 
-    const toggleEmojiPicker = (e) => {
-      e.preventDefault()
-      //e.stopPropagation()
-      setShowEmojiPicker(prev => !prev)
-    }
 
     const handleEmojiClick = (emojiObject) => {
       setPost(prevPost => ({...prevPost, text: prevPost.text + emojiObject.emoji}))
@@ -206,15 +199,6 @@ const ChatRoom = () => {
               <PopUp setIsPopUpShown={setIsPopupShown} setShowEmojiPicker={setShowEmojiPicker}>
                 <form 
                   style={{
-                    //background: 'white',
-                    //width: '50%',
-                    //height: '500px',
-                    //position: 'absolute',
-                    //top: '50%',
-                    //left: '50%',
-                    //transform: 'translate(-50%, -50%)',
-                   // padding: '1em',
-                    //borderRadius: '30px',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '1em',
@@ -270,10 +254,8 @@ const ChatRoom = () => {
                         position: 'relative',
                         display: 'inline-block',
                         cursor: 'pointer',
-                        //borderRadius: '50%',
                         width: '25px',
                         height: '25px',
-                        //background: 'blue'
                       }}
                     >
                       <Button
@@ -303,13 +285,7 @@ const ChatRoom = () => {
                         ref={imageInputRef}
                       />
                     </label>
-                    <Button 
-                      onClick={(e) => toggleEmojiPicker(e)}
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '25px', color: 'salmon'}}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.182 15.182a4.5 4.5 0 0 1-6.364 0M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0ZM9.75 9.75c0 .414-.168.75-.375.75S9 10.164 9 9.75 9.168 9 9.375 9s.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Zm5.625 0c0 .414-.168.75-.375.75s-.375-.336-.375-.75.168-.75.375-.75.375.336.375.75Zm-.375 0h.008v.015h-.008V9.75Z" />
-                      </svg>
-                    </Button>
+                    <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
                   </div>
                   {
                     showEmojiPicker && (
@@ -329,33 +305,19 @@ const ChatRoom = () => {
                   }
               
                   {
-                    videoData && (
-                      <div 
-                        style={{ 
-                          marginTop: "10px", 
-                          border: "1px solid #ccc", 
-                          padding: "10px" 
-                        }}
-                        ref={linkPreviewRef}
+                    linkData && (
+                      <LinkPreview
+                        linkData={linkData}
+                        linkPreviewRef={linkPreviewRef}
                       >
                         <button onClick={() => {
                           if(linkPreviewRef.current) {
-                            linkPreviewRef.current.style.display = "none"}}}>*/
+                            linkPreviewRef.current.style.display = "none"}}}>
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
                           </svg>
                         </button>
-                        <a href={videoData.url} target="_blank" rel="noopener noreferrer">
-                          <img
-                            src={videoData.image}
-                            alt={videoData.title}
-                            style={{ width: "70%", marginRight: "10px" }}
-                          />
-                          <div>
-                            <p style={{textTransform: 'initial'}}>{videoData.title}</p>
-                          </div>
-                        </a>
-                      </div>
+                      </LinkPreview>
                     )
                   }
                 </form> 
@@ -423,92 +385,3 @@ const ChatRoom = () => {
 
 export default ChatRoom
 
-/*
-{
-            isPopupShown && (
-              <div
-                style={{
-                  position: 'fixed',
-                  top: '0',
-                  left: '0',
-                  width: '100%',
-                  height: '100%',
-                  background: 'rgba(238, 171, 163, .5)'
-                }}
-              >
-                <form 
-                  style={{
-                    background: 'white',
-                    width: '50%',
-                    height: '500px',
-                    position: 'absolute',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    padding: '1em',
-                    borderRadius: '30px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '1em'
-                  }}
-                  ref={formRef}
-                >
-              
-                  <textarea
-                    value={post.text}
-                    onChange={handleTextChange}
-                    placeholder="let's waste time"
-                    rows="4"
-                    style={{width: '100%', padding: '1em'}}
-                  />
-                  <Button 
-                    onClick={createPost}
-                    style={{
-                      background: 'salmon',
-                      color: 'white',
-                      borderRadius: '20px',
-                      padding: '.5em 1em',
-                      alignSelf: 'flex-end'
-                    }}
-                  >
-                    post
-                  </Button>  
-                  <Button style={{marginTop: 'auto', alignSelf: 'flex-end'}}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '25px', color: 'salmon'}}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                    </svg>
-                  </Button>
-              
-                  {
-                    videoData && (
-                      <div 
-                        style={{ 
-                          marginTop: "10px", 
-                          border: "1px solid #ccc", 
-                          padding: "10px" 
-                        }}
-                        ref={linkPreviewRef}
-                      >
-                        <button onClick={() => {
-                          if(linkPreviewRef.current) {
-                            linkPreviewRef.current.style.display = "none"}}}>*/
-                          //<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
-                          //<path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                          //</svg>
-                       // </button>
-                       // <a href={videoData.url} target="_blank" rel="noopener noreferrer">
-                         // <img
-                         //   src={videoData.image}
-                          //  alt={videoData.title}
-                          //  style={{ width: "70%", marginRight: "10px" }}
-                          ///>
-                          //<div>
-                          //  <p style={{textTransform: 'initial'}}>{videoData.title}</p>
-                          //</div>
-                        //</a>
-                      //</div>
-                  //)}
-               // </form> 
-             // </div>
-           // )
-          //}

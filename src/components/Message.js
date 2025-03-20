@@ -8,12 +8,34 @@ import {
 } from "../api/firebase"
 import { useAuth } from "../contexts/authContext"
 import { format } from "date-fns"
+import fetchLinkPreview from "../api/fetchLinkPreview"
+import extractUrls from "../utils/extractUrls"
+import LinkPreview from "./LinkPreview"
 
-const Message = ({index, message, messages, /*lastDate,*/ messageRefs}) => {
+const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDateDivider}) => {
+    const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dsjpoak0f/upload"  
+    const UPLOAD_PRESET = "profile_pictures"
     
     const { user } = useAuth()
     const [userProfile, setUserProfile] = useState(null)
-    let lastDate
+
+    const [linkData, setLinkData] = useState(null)
+
+    console.log("message iz message", message)
+
+
+    useEffect(() => {
+      if(message) {
+        const urls = extractUrls(message.content.text)
+        if (urls && urls.length > 0) {
+          fetchLinkPreview(urls[0]).then(setLinkData) // We take the first URL from the input
+        } else {
+          setLinkData(null) // Clear preview if no URL is detected
+        }
+      }
+    }, [message.content.text])
+    
+    
 
     useEffect(() => {
         const profilesRef = collection(firestore, "profiles")
@@ -30,12 +52,6 @@ const Message = ({index, message, messages, /*lastDate,*/ messageRefs}) => {
         return () => unsubscribe()
     }, [message.senderUid])
 
-    const messageDate = message.timestamp ? format(message.timestamp, "dd/MM/yyyy") : ''
-    const showDateDivider = lastDate !== messageDate
-    lastDate = messageDate
-    
-    const isLastIndex = index === messages.length - 1
-
     return (
         userProfile && (
             <>
@@ -45,7 +61,7 @@ const Message = ({index, message, messages, /*lastDate,*/ messageRefs}) => {
                     </div>
                   )}
                   <div 
-                  key={index} 
+                  //key={index} 
                   style={{
                     width: 'fit-content',
                     maxWidth: '50%',
@@ -79,7 +95,15 @@ const Message = ({index, message, messages, /*lastDate,*/ messageRefs}) => {
                       borderRadius: '15px',
                       width:'fit-content',
                     }}>
-                    <p>{message.content}</p>
+                    {
+                      linkData ? (
+                        <LinkPreview
+                          linkData={linkData}
+                        />
+                      ) : (
+                        <p>{message.content.text}</p>
+                      )
+                    }
                     <p style={{textAlign: 'right'}}>{format(message.timestamp, "HH:mm")}</p>  
                     {
                         isLastIndex && message.senderUid === user.uid && message.status === "seen" && (

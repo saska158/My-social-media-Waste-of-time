@@ -1,4 +1,4 @@
-const Input = ({ type, placeholder, value, name='input', onChange, required=true }) => {
+const Input = ({ type, placeholder, value, name='input', onChange, required=true, style }) => {
     return (
         <input 
           type={type}
@@ -7,7 +7,7 @@ const Input = ({ type, placeholder, value, name='input', onChange, required=true
           name={name}
           onChange={onChange}
           required={required}
-          style={{flex: '1'}}
+          style={{...style, flex: '1'}}
         />
     )
 }

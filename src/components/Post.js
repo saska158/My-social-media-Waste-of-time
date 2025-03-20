@@ -18,16 +18,17 @@ import { useAuth } from "../contexts/authContext"
 import PopUp from "../components/PopUp"
 import fetchLinkPreview from "../api/fetchLinkPreview"
 import extractUrls from "../utils/extractUrls"
+import Comments from "./Comments"
+import LinkPreview from "./LinkPreview"
 
-const Post = ({id, creatorUid, photoUrl, creatorName, post, roomId}) => {
+const Post = ({id, creatorUid, post, roomId}) => {
     const { user } = useAuth()
     const [profile, setProfile] = useState(null)
     const [likes, setLikes] = useState()
-    const [newComment, setNewComment] = useState("")
     const [comments, setComments] = useState([])
     const [showComments, setShowComments] = useState(false)
 
-    const [videoData, setVideoData] = useState(null)
+    const [linkData, setLinkData] = useState(null)
 
     const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
 
@@ -125,34 +126,14 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, roomId}) => {
       
     }
 
-    const handleNewComment = (e) => {
-        console.log("comment")
-        setNewComment(e.target.value)
-    }
-
-    const addComment = async () => {
-        if (!newComment.trim()) return // Prevent empty comments
-
-        const newCommentData = {
-            userId: user.uid,
-            name: user.displayName,
-            photoURL: user.photoURL,
-            text: newComment,
-            timestamp: Date.now()
-        }
-
-        await push(commentsRef, newCommentData)
-        setNewComment('')
-    }
-
     // Effect to detect and fetch preview when user types a URL
     useEffect(() => {
       const urls = extractUrls(post.text)
 
       if (urls && urls.length > 0) {
-          fetchLinkPreview(urls[0]).then(setVideoData) // We take the first URL from the input
+          fetchLinkPreview(urls[0]).then(setLinkData) // We take the first URL from the input
       } else {
-          setVideoData(null) // Clear preview if no URL is detected
+          setLinkData(null) // Clear preview if no URL is detected
       }
     }, [post.text]) 
 
@@ -195,36 +176,11 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, roomId}) => {
                 </div>
             </Link>
             {
-              videoData ? (
-                <div 
-                  style={{ 
-                    marginTop: "10px", 
-                    //border: "1px solid #ccc", 
-                    //padding: "10px" 
-                  }}
-                  ref={linkPreviewRef}
-                >
-                  {
-                    videoData.description === 'Too many requests / rate limit exceeded' ? (
-                      <p style={{fontSize: '.8rem'}}>
-                        Too many requests / rate limit exceeded.
-                        Link can't be shown.
-                      </p>
-                    ) : (
-                      <a href={videoData.url} target="_blank" rel="noopener noreferrer">
-                        <img
-                            src={videoData.image}
-                            alt={videoData.title}
-                            style={{ width: "100%", /*marginRight: "10px" */}}
-                        />
-                        <div>
-                            <p style={{textTransform: 'initial'}}>{videoData.title}</p>
-                            {/*<p>{videoData.description}</p>*/}
-                        </div>
-                    </a>
-                    )
-                  }
-                </div>
+              linkData ? (
+                <LinkPreview
+                  linkData={linkData}
+                  linkPreviewRef={linkPreviewRef}
+                />
               ) : (
                 <div>
                   <p style={{fontSize: '.8rem', padding: '0 .5em'}}>{post?.text}</p>
@@ -324,43 +280,11 @@ const Post = ({id, creatorUid, photoUrl, creatorName, post, roomId}) => {
               </div>
               {
                 showComments && (
-                    <div style={{fontSize: '.7rem', marginLeft: '2em'}}>
-                      <input
-                        type="text"
-                        placeholder="Add a comment"
-                        value={newComment}
-                        onChange={handleNewComment}
-                      />
-                      <button onClick={addComment}>comment</button>
-                      <div>
-                        {
-                            comments.length > 0 ? (
-                                comments.map((comment, index) => (
-                                    <p key={index}>
-                                        <div style={{display: 'flex', alignItems: 'center'}}>
-                                          <img
-                                            src={comment.photoURL}
-                                            alt="profile"
-                                            style={{
-                                              width: '20px', 
-                                              height: '20px',
-                                              objectFit: 'cover',
-                                              objectPosition: 'top',
-                                              display: 'inline',
-                                              borderRadius: '50%'
-                                          }}
-                                          />
-                                          <p>{comment.name}</p>
-                                        </div>
-                                        <p>{comment.text}</p>
-                                    </p>
-                                ))
-                            ) : (
-                                <p>No comments yet</p>
-                            )
-                        }
-                      </div>
-                    </div>
+                  <Comments 
+                    comments={comments}
+                    roomId={roomId}
+                    id={id}
+                  />
                 )
               }
             </div>
