@@ -11,11 +11,9 @@ import extractUrls from "../utils/extractUrls"
 import EmojiPicker from "emoji-picker-react"
 import ChatSmiley from "../components/ChatSmiley"
 import LinkPreview from "../components/LinkPreview"
+import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
 
 const ChatRoom = () => {
-    
-    const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dsjpoak0f/upload"  
-    const UPLOAD_PRESET = "profile_pictures"
     
     const initialPost = {
       text: "",
@@ -31,6 +29,8 @@ const ChatRoom = () => {
 
     const [isPopupShown, setIsPopupShown] = useState(false)
     const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
+
+    const [error, setError] = useState(null)
 
     const { user } = useAuth()
     
@@ -69,47 +69,38 @@ const ChatRoom = () => {
       e.preventDefault()
       if(post.text || post.image) {
         const imageFile = imageInputRef.current.files[0]
-      setUploading(true)
+        setUploading(true)
 
-      let imageUrl = ''
+        let imageUrl = ''
 
-      if(imageFile) {
-        const formData = new FormData()
-        formData.append("file", imageFile)
-        formData.append("upload_preset", UPLOAD_PRESET)
-
-        try {
-          const response = await fetch(CLOUDINARY_URL, {
-            method: 'POST',
-            body: formData
-          })
-          const data = await response.json()
-          if(data.secure_url) {
-            imageUrl = data.secure_url
+        if(imageFile) {
+          try {
+            imageUrl = await uploadToCloudinaryAndGetUrl(imageFile)
+          } catch(error) {
+            console.error("Getting url failed:", error)
+            setError(error)
+          } finally {
+            setUploading(false)
           }
-        } catch(error) {
-          console.error("Upload failed:", error)
-        } finally {
-          setUploading(false)
-          setImageFile(null)
         }
-      }
-
-      const newPost = {
-        ...post, 
-        image: imageUrl
-      }
+     
+        const newPost = {
+          ...post, 
+          image: imageUrl
+        }
     
-      //slanje u realtime database
-      push(roomRef, {
-        creatorUid: user.uid,  
-        creatorName: user.displayName, 
-        photoUrl: user.photoURL || '',
-        post: newPost,
-        room: roomId || 'main'
-      })
-      setPost(initialPost)
-      setIsPopupShown(false)
+        //slanje u realtime database
+        push(roomRef, {
+          creatorUid: user.uid,  
+          creatorName: user.displayName, 
+          photoUrl: user.photoURL || '',
+          post: newPost,
+          room: roomId || 'main'
+        })
+
+        setPost(initialPost)
+        setIsPopupShown(false)
+
       }
     }
 
@@ -147,7 +138,6 @@ const ChatRoom = () => {
     const handleImageChange = (e) => {
       const file = e.target.files[0]
       if (file) {
-        setImageFile(file)
         const reader = new FileReader()
         reader.onloadend = () => {
           console.log("result", reader.result)

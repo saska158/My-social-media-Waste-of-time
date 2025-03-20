@@ -18,13 +18,11 @@ import { useAuth } from "../contexts/authContext"
 import ChatBox from '../components/ChatBox'
 import Post from "../components/Post"
 import PopUp from "../components/PopUp"
+import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
 
 const UserProfile = () => {
     const { profileUid } = useParams()
     const { user } = useAuth()
-
-    const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dsjpoak0f/upload"  
-    const UPLOAD_PRESET = "profile_pictures"
 
     const isMyProfile = profileUid === user?.uid
 
@@ -38,7 +36,6 @@ const UserProfile = () => {
         following: []
     }) //treba li i uid?
 
-    const [imageFile, setImageFile] = useState(null)
     const [imagePreview, setImagePreview] = useState(null)
     const [uploading, setUploading] = useState(false)
 
@@ -54,6 +51,8 @@ const UserProfile = () => {
     const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
     const [isFollowPopupShown, setIsFollowPopupShown] = useState(false)
     const [isEditPopupShown, setIsEditPopupShown] = useState(false)
+
+    const [error, setError] = useState(null)
 
     //const navigate = useNavigate()
 
@@ -146,10 +145,8 @@ const UserProfile = () => {
     const handleImageChange = (e) => {
       const file = e.target.files[0]
       if (file) {
-        setImageFile(file)
         const reader = new FileReader()
         reader.onloadend = () => {
-         // console.log("result", reader.result)
           setImagePreview(reader.result)
         }
         reader.readAsDataURL(file)
@@ -165,38 +162,30 @@ const UserProfile = () => {
       e.preventDefault()
       const profileRef = doc(firestore, "profiles", profileUid)
       const imageFile = imageInputRef.current.files[0]
-
       setUploading(true)
 
+      let imageUrl = ''
+
       if(imageFile) {
-        const formData = new FormData()
-        formData.append("file", imageFile)
-        formData.append("upload_preset", UPLOAD_PRESET)
-
         try {
-          const response = await fetch(CLOUDINARY_URL, {
-            method: "POST",
-            body: formData
-          })
-          const data = await response.json()
-          console.log('dataaaa', data.secure_url)
-
-          if(data.secure_url) {
-            const updatedData = {...profile, photoURL: data.secure_url}
-            await updateDoc(doc(firestore, "profiles", user.uid), updatedData)
-            await updateProfile(user, {
-             displayName: profile.displayName,
-             photoURL: data.secure_url
-            })
-            const userRef = ref(database, `users/${user.uid}`)
-            await update(userRef, {photoURL: data.secure_url})
-            setProfile(prev => ({...prev, photoURL: data.secure_url}))
-          }
+          imageUrl = await uploadToCloudinaryAndGetUrl(imageFile)
         } catch(error) {
-          console.error("Upload failed:", error)
+          console.error("Getting url failed:", error)
+          setError(error)
         } finally {
           setUploading(false)
-          setImageFile(null)
+        }
+
+        if(imageUrl) {
+          const updatedData = {...profile, photoURL: imageUrl}
+          await updateDoc(doc(firestore, "profiles", user.uid), updatedData)
+          await updateProfile(user, {
+            displayName: profile.displayName,
+            photoURL: imageUrl
+          })
+          const userRef = ref(database, `users/${user.uid}`)
+          await update(userRef, {photoURL: imageUrl})
+          setProfile(prev => ({...prev, photoURL: imageUrl}))
         }
       } else {
         await updateDoc(profileRef, profile)
@@ -205,8 +194,7 @@ const UserProfile = () => {
         })
 
       }      
-
-      setIsEditPopupShown(false)
+      //setIsEditPopupShown(false)
     }
 
 
@@ -554,8 +542,11 @@ const UserProfile = () => {
                       alignSelf: 'center'
                     }}
                     onClick={saveProfileChanges}
+                    disabled={uploading}
                   >
-                    save changes
+                    {
+                      uploading ? 'uploading...' : 'save changes'
+                    }
                   </button>
                 </form>
                 </div>
