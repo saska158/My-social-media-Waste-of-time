@@ -11,16 +11,17 @@ import Input from "../components/Input"
 import Button from "../components/Button"
 
 const SignIn = () => {
+    // State
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
+    // Hooks that don't trigger re-renders  
     const location = useLocation()
     const navigate = useNavigate()
-    //console.log("Location:", location)
 
+    // Functions
     const updateUserActivity = async (uid) => {
         try {
             const userRef = ref(database, `users/${uid}`)
@@ -75,11 +76,11 @@ const SignIn = () => {
     
     return (
         <>
-         {
+          {
             location.state?.message ?
-            <p>{location.state.message}</p> :
-            null
-         }
+              <p>{location.state.message}</p> :
+              null
+          }
          <h4>Sign in to your account</h4>
          <form>
             <Input 

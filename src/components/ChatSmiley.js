@@ -1,9 +1,9 @@
 import Button from "./Button"
 
 const ChatSmiley = ({setShowEmojiPicker}) => {
+    
     const toggleEmojiPicker = (e) => {
         e.preventDefault()
-        //e.stopPropagation()
         setShowEmojiPicker(prev => !prev)
     }
 

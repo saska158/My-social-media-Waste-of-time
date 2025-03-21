@@ -12,7 +12,10 @@ import { useAuth } from "../contexts/authContext"
 import ChatBox from "../components/ChatBox"
 
 const MyChats = () => {
+    // Context
     const { user } = useAuth()
+    
+    // State
     const [chats, setChats] = useState([])
     const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
     const [otherUser, setOtherUser] = useState({ //katastrofa od imena i konfuzije
@@ -20,6 +23,13 @@ const MyChats = () => {
         otherUserProfile: ''
     })
 
+    // Functions
+    const pickChat = (otherUserUid, otherUser, setIsChatBoxVisible) => {
+        setIsChatBoxVisible(true)
+        setOtherUser({uid: otherUserUid, otherUserProfile: otherUser})
+    }
+
+    // Effects
     useEffect(() => {
         if (!user.uid) return
 
@@ -55,24 +65,15 @@ const MyChats = () => {
         return () => unsubscribe
     }, [user.uid])
 
-    //console.log("otheruser",otherUser)
-
-    const pickChat = (otherUserUid, otherUser, setIsChatBoxVisible) => {
-        setIsChatBoxVisible(true)
-        setOtherUser({uid: otherUserUid, otherUserProfile: otherUser})
-    }
-
-
     return (
         <div style={{width: '30%'}}>
             {
                 !isChatBoxVisible ? (
                     <div>
-                    <h4>My chats</h4>
-                    {
+                      <h4>My chats</h4>
+                      {
                         chats.length > 0 ? (
-                            
-                                chats.map(chat => (
+                            chats.map(chat => (
                                     <div 
                                       key={chat.id} 
                                       style={{borderBottom: '1px solid black', background: 'white', cursor: 'pointer'}}
@@ -88,19 +89,24 @@ const MyChats = () => {
                                             borderRadius: '50%',
                                             objectFit: 'cover',
                                             objectPosition: 'top'
-                                        }}/>
+                                        }}
+                                      />
                                       <span>{chat.otherUser.displayName}</span>
                                       <p>{chat.lastMessage.content}</p>
                                     </div>
-                                ))
+                            ))
                             
                         ) : (
                             <p>You still don't have any chats.</p>
                         )
-                    }
+                      }
                     </div>
                 ) : (
-                    <ChatBox profileUid={otherUser.uid} profile={otherUser.otherUserProfile} setIsChatBoxVisible={setIsChatBoxVisible} />
+                    <ChatBox 
+                      profileUid={otherUser.uid} 
+                      profile={otherUser.otherUserProfile} 
+                      setIsChatBoxVisible={setIsChatBoxVisible} 
+                    />
                 )
             }
         </div>

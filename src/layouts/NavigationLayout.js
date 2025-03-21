@@ -6,11 +6,13 @@ import UsersList from "../components/UsersList"
 
 
 const NavigationLayout = () => {
-  const [activeUser, setActiveUser] = useState(null)//sta sam ovde sve izbrljala sa ovim active, proveriiii
+  // Context
   const { user, logOut } = useAuth() //sto nisam samo pomocu ovoga???
+  
+  // State
+  const [activeUser, setActiveUser] = useState(null)//sta sam ovde sve izbrljala sa ovim active, proveriiii
 
-  //console.log("activeUser", activeUser)
-
+  // Effects
   useEffect(() => {
     const userRef = ref(database, `users/${user?.uid}`)
     const unsubscribe = onValue(userRef, (snapshot) => {
