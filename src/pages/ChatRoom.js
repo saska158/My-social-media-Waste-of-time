@@ -41,6 +41,7 @@ const ChatRoom = () => {
   const formRef = useRef(null)
   const linkPreviewRef = useRef(null)
   const imageInputRef = useRef(null)
+  const textareaRef = useRef(null)
   const navigate = useNavigate()
 
   // Memoized Values (`useMemo`)
@@ -62,7 +63,35 @@ const ChatRoom = () => {
 
       let imageUrl = ''
 
-      if(imageFile) {
+      try {
+        if(imageFile) {
+          imageUrl = await uploadToCloudinaryAndGetUrl(imageFile)
+        }
+
+        const newPost = {
+          ...post, 
+          image: imageUrl
+        }
+        
+        //slanje u realtime database
+        push(roomRef, {
+          creatorUid: user.uid,  
+          creatorName: user.displayName, 
+          photoUrl: user.photoURL || '',
+          post: newPost,
+          room: roomId || 'main'
+        })
+        setPost(initialPost)
+
+      } catch(error) {
+        console.error("Error while creating a post", error)
+        setError(error)
+      } finally {
+        setUploading(false)
+        setIsPopupShown(false)
+      }
+
+      /*if(imageFile) {
         try {
           imageUrl = await uploadToCloudinaryAndGetUrl(imageFile)
         } catch(error) {
@@ -70,6 +99,7 @@ const ChatRoom = () => {
           setError(error)
         } finally {
           setUploading(false)
+          
         }
       }
    
@@ -88,7 +118,7 @@ const ChatRoom = () => {
       })
 
       setPost(initialPost)
-      setIsPopupShown(false)
+      setIsPopupShown(false)*/
 
     }
   }
@@ -148,6 +178,12 @@ const ChatRoom = () => {
     document.addEventListener("click", handleClickOutside)
     return () => document.removeEventListener("click", handleClickOutside)
   }, [])
+
+  useEffect(() => {
+    if(textareaRef.current) {
+      textareaRef.current.focus()
+    }
+  }, [isPopupShown])
 
 
   return (
@@ -209,6 +245,7 @@ const ChatRoom = () => {
                       maxHeight: '300px', 
                       padding: '1em'
                     }}
+                    ref={textareaRef}
                   />
                   {
                     imagePreview && (
@@ -229,8 +266,11 @@ const ChatRoom = () => {
                     padding: '.5em 1em',
                     alignSelf: 'flex-end'
                   }}
+                  disabled={uploading}
                 >
-                  post
+                  {
+                    uploading ? 'uploading...' : 'post'
+                  }
                 </Button>  
                 <div 
                   style={{

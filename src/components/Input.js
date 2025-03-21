@@ -1,4 +1,4 @@
-const Input = ({ type, placeholder, value, name='input', onChange, required=true, style }) => {
+const Input = ({ type, placeholder, value, name='input', onChange, required=true, style, ref=null }) => {
     return (
         <input 
           type={type}
@@ -8,6 +8,7 @@ const Input = ({ type, placeholder, value, name='input', onChange, required=true
           onChange={onChange}
           required={required}
           style={{...style, flex: '1'}}
+          ref={ref}
         />
     )
 }

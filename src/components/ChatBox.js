@@ -60,6 +60,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
   const chatRef = useRef(null)
   const messageRefs = useRef([])
   const imageInputRef = useRef(null)
+  const inputRef = useRef(null)
   /*for initializing the visibleDate when chatBox mounts*/
   const initialized = useRef(false)
 
@@ -360,8 +361,14 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
     return () => unsubscribe()
   }, [chatId, profileUid])
 
+  useEffect(() => {
+    if(inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [messages])
+
   return (
-    <div className="chat-box" style={{position: 'relative'}}>
+    <div className="chat-box" style={{position: 'relative', overflowX: 'hidden'}}>
       <div 
         style={{
           position: 'sticky', 
@@ -408,6 +415,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
               handleTyping()
             }}
             style={{border: '0', fontSize: '1rem'}}
+            ref={inputRef}
           />
           {/* image preview */}
           {
@@ -465,14 +473,18 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
             {/* ovo je za smajlije */}
             <ChatSmiley setShowEmojiPicker={setShowEmojiPicker}/>
           </label>
-          <Button 
-            onClick={(e) => sendMessage(e, user, profileUid)}
-            style={{marginLeft: 'auto'}}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: 'white'}}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-            </svg>
-          </Button>
+          {
+            message.text || message.image ? (
+              <Button 
+                onClick={(e) => sendMessage(e, user, profileUid)}
+                style={{marginLeft: 'auto'}}
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: 'white'}}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                </svg>
+              </Button>
+            ) : null
+          }
           {
             showEmojiPicker && (
               <div>

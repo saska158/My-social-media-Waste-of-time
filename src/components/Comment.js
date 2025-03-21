@@ -2,9 +2,11 @@ import { useState, useEffect } from "react"
 import fetchLinkPreview from "../api/fetchLinkPreview"
 import extractUrls from "../utils/extractUrls"
 import LinkPreview from "./LinkPreview"
+import PopUp from "./PopUp"
 
 const Comment = ({comment, index}) => {
   const [linkData, setLinkData] = useState(null)
+  const [isImageViewerShown, setIsImageViewerShown] = useState(false)
 
   useEffect(() => {
     if(comment.content.text) {
@@ -36,7 +38,7 @@ const Comment = ({comment, index}) => {
           objectFit: 'cover',
           objectPosition: 'top',
           display: 'inline',
-          borderRadius: '50%'
+          borderRadius: '50%',
         }}
       />
       <div
@@ -63,7 +65,12 @@ const Comment = ({comment, index}) => {
                     src={comment.content.image}
                     alt="comment-image"
                     style={{
-                      width: '100px'
+                      width: '100px',
+                      cursor: 'pointer'
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setIsImageViewerShown(true)
                     }}
                   />
                 )
@@ -72,6 +79,18 @@ const Comment = ({comment, index}) => {
           )
         }
       </div>
+      {
+        isImageViewerShown && (
+          <PopUp
+            setIsPopUpShown={setIsImageViewerShown}
+          >
+            <img
+              src={comment.content.image}
+              alt="image viewer"
+            />
+          </PopUp>
+        )
+      }
     </div>
   )
 }

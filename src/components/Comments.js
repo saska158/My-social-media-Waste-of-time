@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react"
+import { useState, useMemo, useRef, useEffect } from "react"
 import { database, push, ref } from "../api/firebase"
 import { useAuth } from "../contexts/authContext"
 import EmojiPicker from "emoji-picker-react"
@@ -25,6 +25,7 @@ const Comments = ({comments, roomId, id}) => {
   
   // Hooks that don't trigger re-renders 
   const imageInputRef = useRef(null)
+  const inputRef = useRef(null)
 
   // Memoized Values (`useMemo`)
   const commentsRef = useMemo(() => {
@@ -95,6 +96,13 @@ const Comments = ({comments, roomId, id}) => {
     }
   }
 
+  // Effects
+  useEffect(() => {
+    if(inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [comments])
+
   return (
     <div style={{fontSize: '.7rem', marginLeft: '2em', padding: '1em', position: 'relative'}}>
       <form style={{display: 'flex'}}>
@@ -112,6 +120,7 @@ const Comments = ({comments, roomId, id}) => {
             value={comment.text}
             onChange={handleComment}
             style={{border: '0'}}
+            ref={inputRef}
           />
           {/* image preview */}
           {
@@ -168,21 +177,25 @@ const Comments = ({comments, roomId, id}) => {
           </label>
           <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
         </label>
-        <button 
-          onClick={addComment}
-          style={{marginLeft: 'auto'}}
-          disabled={loading}
-        >
-          {
-            loading ? (
-              <p>loading...</p>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '25px', color: 'salmon'}}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-              </svg>
-            )
-          }
-        </button>
+        {
+          comment.text || comment.image ? (
+            <button 
+              onClick={addComment}
+              style={{marginLeft: 'auto'}}
+              disabled={loading}
+            >
+              {
+                loading ? (
+                  <p>loading...</p>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '25px', color: 'salmon'}}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                  </svg>
+                )
+              }
+            </button>
+          ) : null
+        }
       </form>
       {
         showEmojiPicker && (

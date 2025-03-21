@@ -21,6 +21,7 @@ import extractUrls from "../utils/extractUrls"
 import Comments from "./Comments"
 import LinkPreview from "./LinkPreview"
 
+
 const Post = ({id, creatorUid, post, roomId}) => {
   // Context 
   const { user } = useAuth()  
@@ -32,6 +33,7 @@ const Post = ({id, creatorUid, post, roomId}) => {
   const [showComments, setShowComments] = useState(false)  
   const [linkData, setLinkData] = useState(null)
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
+  const [isImageViewerShown, setIsImageViewerShown] = useState(false)
   const [error, setError] = useState(null)
 
   // Hooks that don't trigger re-renders
@@ -184,6 +186,13 @@ const Post = ({id, creatorUid, post, roomId}) => {
                 <img
                   src={post.image}
                   alt="post-image"
+                  style={{
+                    cursor: 'pointer'
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setIsImageViewerShown(true)
+                  }}
                 />
               )
             }
@@ -312,6 +321,18 @@ const Post = ({id, creatorUid, post, roomId}) => {
                 Sign in
               </button>
             </Link>
+          </PopUp>
+        )
+      }
+      {
+        isImageViewerShown && (
+          <PopUp
+            setIsPopUpShown={setIsImageViewerShown}
+          >
+            <img
+              src={post.image}
+              alt="image viewer"
+            />
           </PopUp>
         )
       }

@@ -11,6 +11,7 @@ import { format } from "date-fns"
 import fetchLinkPreview from "../api/fetchLinkPreview"
 import extractUrls from "../utils/extractUrls"
 import LinkPreview from "./LinkPreview"
+import PopUp from "./PopUp"
 
 const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDateDivider}) => {
   // Context
@@ -19,6 +20,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
   // State
   const [userProfile, setUserProfile] = useState(null)
   const [linkData, setLinkData] = useState(null)
+  const [isImageViewerShown, setIsImageViewerShown] = useState(false)
 
   // Effects
   useEffect(() => {
@@ -106,6 +108,13 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
                       <img
                         src={message.content.image}
                         alt="message-image"
+                        style={{
+                          cursor: 'pointer'
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setIsImageViewerShown(true)
+                        }}
                       />
                     )
                   }
@@ -120,6 +129,19 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             }
           </div>
         </div>
+        {
+          isImageViewerShown && (
+            //<ImageViewer image={message.content.image} />
+            <PopUp
+              setIsPopUpShown={setIsImageViewerShown}
+            >
+              <img
+                src={message.content.image}
+                alt="image viewer"
+              />
+            </PopUp>
+          )
+        }
       </>
     )
   )

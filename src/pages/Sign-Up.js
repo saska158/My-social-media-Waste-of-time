@@ -159,7 +159,14 @@ const SignUp = () => {
           />
           I have read and understand the Privacy and Cookies Policy
         </label>
-        <Button onClick={(e) => handleSignUp(e)}>CREATE ACCOUNT</Button>
+        <Button 
+          onClick={(e) => handleSignUp(e)}
+          disabled={loading}
+        >
+          {
+            loading ? "CREATING ACCOUNT" : "CREATE ACCOUNT"
+          }
+        </Button>
       </form>
     </div>
   )
