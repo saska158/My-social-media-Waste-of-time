@@ -4,13 +4,10 @@ import { useAuth } from "../contexts/authContext"
 import { 
     collection,
     firestore,
-    onSnapshot,
-    doc, 
-    getDoc,
-    updateDoc,
-    arrayUnion
+    onSnapshot
 } from "../api/firebase"
 import PopUp from "./PopUp"
+import UserItem from "./UserItem"
 
 const UsersQuery = ({setIsUsersQueryShown}) => {
   // Context
@@ -21,6 +18,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
   const [searchQuery, setSearchQuery] = useState('')
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
 
+
   // Hooks that don't trigger re-renders
   const location = useLocation()
   const prevLocation = useRef(location.pathname)
@@ -30,34 +28,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
     setSearchQuery(e.target.value)
   }  
 
-  const handleFollowToggle = async (userUid, e) => {
-    e.stopPropagation()
-    if(!user) {
-        setIsJoinPopupShown(true)
-        return
-    } 
-
-    const myProfileRef = doc(firestore, "profiles", user.uid)
-    const myProfileSnap = await getDoc(myProfileRef)
-    const otherUserProfileRef = doc(firestore, "profiles", userUid)
-    const otherUserProfileSnap = await getDoc(otherUserProfileRef)
-    const myFollowing = myProfileSnap.data().followers || []
-    const otherUserFollowers = otherUserProfileSnap.data().followers || []
-
-    const followedByMe = users.some(usr => usr.uid === userUid && usr.followedByMe)
-
-    if(followedByMe) {
-        // Unfollow: remove user from followers/following
-        await updateDoc(myProfileRef, {following: myProfileSnap.data().following?.filter(profile => profile.uid !== userUid)})
-        await updateDoc(otherUserProfileRef, {followers: otherUserProfileSnap.data().followers?.filter(follower => follower.uid !== user.uid)})
-    } else {
-        // Follow: add user to followers/following
-        await updateDoc(otherUserProfileRef, {followers: arrayUnion(myProfileSnap.data())})
-        await updateDoc(myProfileRef, {following: arrayUnion(otherUserProfileSnap.data())})
-    }
-    
-  }
-
+  
   // Effects
   useEffect(() => {
     if(user) {
@@ -93,8 +64,13 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
 
 
   return (
-    <>
-      <PopUp setIsPopUpShown={setIsUsersQueryShown}>
+    <div >
+      <PopUp 
+        setIsPopUpShown={setIsUsersQueryShown}
+        style={{
+          overflow: 'auto',
+        }}
+      >
         <input
           type="text"
           placeholder="search users"
@@ -103,104 +79,12 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
           style={{margin: '1em', alignSelf: 'flex-start'}}
         />
         {
-          user ? (
-            filteredUsers.filter(usr => usr.uid !== user.uid).map(usr => {
-              return (
-                <div 
-                  key={usr.uid}
-                  style={{
-                    padding: '2em',
-                    borderBottom: '.5px solid salmon',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '.5em',
-                  }}
-                >
-                  <Link to={`user/${usr.uid}`}>
-                    <div style={{display: 'flex', alignItems: 'start', gap: '.3em'}}>
-                      <img
-                        src={usr.photoURL}
-                        alt="profile"
-                        style={{
-                          width: '30px', 
-                          height: '30px',
-                          objectFit: 'cover',
-                          objectPosition: 'top',
-                          display: 'inline',
-                          borderRadius: '50%'
-                        }}
-                      />
-                      <span>{usr.displayName}</span>
-                    </div>
-                  </Link>
-                  <button 
-                    onClick={(e) => handleFollowToggle(usr.uid, e)}
-                  >
-                    {
-                      usr.followedByMe ? (
-                        <div
-                          style={{
-                            border: '.5px solid salmon',
-                            color: 'salmon',
-                            padding: '.5em .8em',
-                            borderRadius: '30px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1em'
-                          }}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px'}}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
-                          </svg>
-                        </div>
-                      ) : (
-                        <div
-                          style={{
-                            border: '.5px solid salmon',
-                            color: 'salmon',
-                            padding: '.5em .8em',
-                            borderRadius: '30px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1em'
-                          }}
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px'}}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
-                          </svg>
-                        </div>
-                      )
-                    }
-                  </button>
-                </div>
-              )
-            })
-          ) : (
-            filteredUsers.map(usr => (
-              <div 
-                key={usr.uid}
-                style={{
-                  padding: '2em',
-                  borderBottom: '.5px solid white'
-                }}
-              >
-                <Link to={`user/${usr.uid}`}>{usr.displayName}</Link>
-                <button 
-                  style={{
-                    background: 'blue',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '50%',
-                    color: 'white',
-                    border: '0'
-                  }}
-                  onClick={(e) => handleFollowToggle(usr.uid, e)}
-                >
-                  +
-                </button>
-              </div>
+            filteredUsers.filter(usr => usr.uid !== user.uid).map(usr => (
+              <UserItem 
+                userItem={usr} 
+                users={users} 
+              />
             ))
-          )
         }
       </PopUp>
       {
@@ -236,7 +120,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
           </PopUp>
         )
       }
-    </>
+    </div>
   )
 }
 

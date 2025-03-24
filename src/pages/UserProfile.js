@@ -30,8 +30,8 @@ const UserProfile = () => {
     musicTaste: "",
     politicalViews: "",
     photoURL: "",
-      followers: [],
-      following: []
+    followers: [],
+    following: []
   }) //treba li i uid?
   const [imagePreview, setImagePreview] = useState(null)
   const [isFollowing, setIsFollowing] = useState(false)
@@ -113,38 +113,46 @@ const UserProfile = () => {
     e.preventDefault()
     const profileRef = doc(firestore, "profiles", profileUid)
     const imageFile = imageInputRef.current.files[0]
+    /*const { 
+      displayName, 
+      description, 
+      musicTaste, 
+      politicalViews, 
+      photoURL, 
+      followers, 
+      following 
+    } = profile*/
     setUploading(true)
 
     let imageUrl = ''
 
-    if(imageFile) {
-      try {
+    try {
+      if(imageFile) {
         imageUrl = await uploadToCloudinaryAndGetUrl(imageFile)
-      } catch(error) {
-        console.error("Getting url failed:", error)
-        setError(error)
-      } finally {
-        setUploading(false)
-      }
-
-      if(imageUrl) {
-        const updatedData = {...profile, photoURL: imageUrl}
-        await updateDoc(doc(firestore, "profiles", user.uid), updatedData)
+  
+        if(imageUrl) {
+          const updatedData = {...profile, photoURL: imageUrl}
+          await updateDoc(doc(firestore, "profiles", user.uid), updatedData)
+          await updateProfile(user, {
+            displayName: profile.displayName,
+            photoURL: imageUrl
+          })
+          const userRef = ref(database, `users/${user.uid}`)
+          await update(userRef, {photoURL: imageUrl})
+          setProfile(prev => ({...prev, photoURL: imageUrl}))
+        }
+      } else {
+        await updateDoc(profileRef, profile)
         await updateProfile(user, {
           displayName: profile.displayName,
-          photoURL: imageUrl
         })
-        const userRef = ref(database, `users/${user.uid}`)
-        await update(userRef, {photoURL: imageUrl})
-        setProfile(prev => ({...prev, photoURL: imageUrl}))
-      }
-    } else {
-      await updateDoc(profileRef, profile)
-      await updateProfile(user, {
-        displayName: profile.displayName,
-      })
-
-    }      
+  
+      }      
+    } catch(error) {
+      setError(error)
+    } finally {
+      setUploading(false)
+    }
   }
 
   // Effects

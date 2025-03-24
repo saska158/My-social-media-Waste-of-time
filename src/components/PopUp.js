@@ -1,7 +1,25 @@
 import { useEffect, useRef } from "react"
 
-const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children}) => {
+const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children, style}) => {
     const popUpRef = useRef(null)
+
+    const defaultStyle = {
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      width: '50%',
+      height: '70%',
+      //overflow: 'auto',
+      overflow: 'hidden',
+      background: 'white',
+      padding: '1em',
+      borderRadius: '30px',
+      transform: 'translate(-50%, -50%)',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '1em',
+      //alignItems: 'center'
+    }
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -16,29 +34,19 @@ const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children}) => {
     }, [])
 
     return (
-        <div style={{
+        <div 
+          style={{
             position: 'fixed',
             top: '0',
             left: '0',
             width: '100%',
             height: '100%',
             background: 'rgba(238, 171, 163, .8)'
-        }}>
+          }}
+        >
           <div style={{
-            position: 'fixed',
-            top: '50%',
-            left: '50%',
-            width: '50%',
-            height: '70%',
-            overflow: 'auto',
-            background: 'white',
-            padding: '1em',
-            borderRadius: '30px',
-            transform: 'translate(-50%, -50%)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1em',
-            //alignItems: 'center'
+            ...defaultStyle,
+            ...style
           }}
           ref={popUpRef}
           >
