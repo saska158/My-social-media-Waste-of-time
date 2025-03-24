@@ -397,17 +397,21 @@ const UserProfile = () => {
                 )
               }
             </div>
-            <button 
-              onClick={handleMessageButton}
-              style={{
-                background: 'white',
-                borderRadius: '20px',
-                padding: '.5em .8em',
-                margin: '.8em'
-              }}
-            >
-              message
-            </button>
+            {
+              !isMyProfile && (
+                <button 
+                  onClick={handleMessageButton}
+                  style={{
+                    background: 'white',
+                    borderRadius: '20px',
+                    padding: '.5em .8em',
+                    margin: '.8em'
+                  }}
+                >
+                  message
+                </button>
+              )
+            }
           </>
         ) : (
           <ChatBox profileUid={profileUid} profile={profile} setIsChatBoxVisible={setIsChatBoxVisible} />
