@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react"
 import { useParams, useNavigate, Link } from "react-router-dom"
 import { database, ref, push, onValue } from "../api/firebase"
 import { useAuth } from '../contexts/authContext'
+import { useLoading } from '../contexts/loadingContext'
 import Input from "../components/Input"
 import Button from "../components/Button"
 import Post from "../components/Post"
@@ -12,6 +13,7 @@ import EmojiPicker from "emoji-picker-react"
 import ChatSmiley from "../components/ChatSmiley"
 import LinkPreview from "../components/LinkPreview"
 import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
+import { PulseLoader } from "react-spinners"
 
 const ChatRoom = () => {
     
@@ -22,6 +24,9 @@ const ChatRoom = () => {
 
   // Context
   const { user } = useAuth()
+  const { loadingState, setLoadingState } = useLoading()
+
+  console.log("loading", loadingState)
 
   // State
   const [post, setPost] = useState(initialPost)
@@ -30,8 +35,8 @@ const ChatRoom = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [selectedEmoji, setSelectedEmoji] = useState([])
   const [imagePreview, setImagePreview] = useState(null)
-  const [imageFile, setImageFile] = useState(null)
-  const [uploading, setUploading] = useState(false)
+  //const [imageFile, setImageFile] = useState(null)
+  //const [uploading, setUploading] = useState(false)
   const [error, setError] = useState(null)
   const [isPopupShown, setIsPopupShown] = useState(false)
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
@@ -59,7 +64,8 @@ const ChatRoom = () => {
     e.preventDefault()
     if(post.text || post.image) {
       const imageFile = imageInputRef.current.files[0]
-      setUploading(true)
+      //setUploading(true)
+      setLoadingState(prev => ({...prev, upload: true}))
 
       let imageUrl = ''
 
@@ -87,39 +93,10 @@ const ChatRoom = () => {
         console.error("Error while creating a post", error)
         setError(error)
       } finally {
-        setUploading(false)
+        //setUploading(false)
+        setLoadingState(prev => ({...prev, upload: false}))
         setIsPopupShown(false)
       }
-
-      /*if(imageFile) {
-        try {
-          imageUrl = await uploadToCloudinaryAndGetUrl(imageFile)
-        } catch(error) {
-          console.error("Getting url failed:", error)
-          setError(error)
-        } finally {
-          setUploading(false)
-          
-        }
-      }
-   
-      const newPost = {
-        ...post, 
-        image: imageUrl
-      }
-  
-      //slanje u realtime database
-      push(roomRef, {
-        creatorUid: user.uid,  
-        creatorName: user.displayName, 
-        photoUrl: user.photoURL || '',
-        post: newPost,
-        room: roomId || 'main'
-      })
-
-      setPost(initialPost)
-      setIsPopupShown(false)*/
-
     }
   }
 
@@ -231,6 +208,7 @@ const ChatRoom = () => {
                   flexDirection: 'column',
                   gap: '1em',
                   height: '100%',
+                  overflow: 'auto'
                 }}
                 ref={formRef}
               >
@@ -264,12 +242,15 @@ const ChatRoom = () => {
                     color: 'white',
                     borderRadius: '20px',
                     padding: '.5em 1em',
-                    alignSelf: 'flex-end'
+                    alignSelf: 'flex-end',
+                    opacity: loadingState.upload ? '0.6' : '1'
                   }}
-                  disabled={uploading}
+                  //disabled={uploading}
+                  disabled={loadingState.upload}
                 >
                   {
-                    uploading ? 'uploading...' : 'post'
+                    //uploading ? 'uploading...' : 'post'
+                    loadingState.upload ? <PulseLoader size={8} color="#fff" /> : 'post'
                   }
                 </Button>  
                 <div 

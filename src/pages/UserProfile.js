@@ -14,14 +14,18 @@ import {
   updateProfile, 
 } from '../api/firebase'
 import { useAuth } from "../contexts/authContext"
+import { useLoading } from "../contexts/loadingContext"
 import ChatBox from '../components/ChatBox'
 import Post from "../components/Post"
 import PopUp from "../components/PopUp"
 import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
+import { PulseLoader } from "react-spinners"
+import { ClipLoader } from "react-spinners"
 
 const UserProfile = () => {
   // Context
   const { user } = useAuth()
+  const { loadingState, setLoadingState } = useLoading()
   
   // State
   const [profile, setProfile] = useState({
@@ -42,7 +46,7 @@ const UserProfile = () => {
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
   const [isFollowPopupShown, setIsFollowPopupShown] = useState(false)
   const [isEditPopupShown, setIsEditPopupShown] = useState(false)
-  const [uploading, setUploading] = useState(false)
+  //const [uploading, setUploading] = useState(false)
   const [error, setError] = useState(null)
 
   // Hooks that don't trigger re-renders 
@@ -70,28 +74,29 @@ const UserProfile = () => {
   }
 
   const handleFollowToggle = async (otherUserUid) => {
-    if (!user) return alert("You must be logged in to follow users.")
-    //nemas try/catch
-          
-    const myProfileRef = doc(firestore, "profiles", user.uid)
-    const myProfileSnap = await getDoc(myProfileRef)
-    const otherUserProfileRef = doc(firestore, "profiles", otherUserUid)
-    const otherUserProfileSnap = await getDoc(otherUserProfileRef)
-               
-    if(isFollowing) {
-      await updateDoc(myProfileRef, {following: myProfileSnap.data().following.filter(profile => profile.uid !== profileUid)})
-    } else {
-      await updateDoc(myProfileRef, {following: arrayUnion(otherUserProfileSnap.data())})
-    }
-          
-    if(isFollowing) {
-      await updateDoc(otherUserProfileRef, {followers: profile.followers.filter(follower => follower.uid !== user.uid)})
-    } else {
-      await updateDoc(otherUserProfileRef, {followers: arrayUnion(myProfileSnap.data())})
-    }
+    setLoadingState(prev => ({...prev, upload: true}))
     
-    console.log('follow', isFollowing)
+    try {
+      const myProfileRef = doc(firestore, "profiles", user.uid)
+      const myProfileSnap = await getDoc(myProfileRef)
+      const otherUserProfileRef = doc(firestore, "profiles", otherUserUid)
+      const otherUserProfileSnap = await getDoc(otherUserProfileRef)
+
+      if(isFollowing) {
+        await updateDoc(myProfileRef, {following: myProfileSnap.data().following.filter(profile => profile.uid !== profileUid)})
+        await updateDoc(otherUserProfileRef, {followers: profile.followers.filter(follower => follower.uid !== user.uid)})
+      } else {
+          await updateDoc(myProfileRef, {following: arrayUnion(otherUserProfileSnap.data())})
+          await updateDoc(otherUserProfileRef, {followers: arrayUnion(myProfileSnap.data())})
+      } 
+    } catch(error) {
+        setError(error)
+    } finally {
+        //setLoading(false)
+        setLoadingState(prev => ({...prev, upload: false}))
+    }
   }
+  
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
@@ -113,16 +118,8 @@ const UserProfile = () => {
     e.preventDefault()
     const profileRef = doc(firestore, "profiles", profileUid)
     const imageFile = imageInputRef.current.files[0]
-    /*const { 
-      displayName, 
-      description, 
-      musicTaste, 
-      politicalViews, 
-      photoURL, 
-      followers, 
-      following 
-    } = profile*/
-    setUploading(true)
+    
+    setLoadingState(prev => ({...prev, upload: true}))
 
     let imageUrl = ''
 
@@ -151,7 +148,8 @@ const UserProfile = () => {
     } catch(error) {
       setError(error)
     } finally {
-      setUploading(false)
+      //setUploading(false)
+      setLoadingState(prev => ({...prev, upload: false}))
     }
   }
 
@@ -226,8 +224,10 @@ const UserProfile = () => {
                       alignItems: 'center'
                     }}
                     onClick={() => handleFollowToggle(profileUid)}
+                    disabled={loadingState.upload}
                   >
                     {
+                      loadingState.upload ? <ClipLoader size={40} color="fff" /> :
                       isFollowing ? (
                         <div
                           style={{
@@ -533,10 +533,10 @@ const UserProfile = () => {
                     alignSelf: 'center'
                   }}
                   onClick={saveProfileChanges}
-                  disabled={uploading}
+                  disabled={loadingState.upload}
                 >
                   {
-                    uploading ? 'uploading...' : 'save changes'
+                    loadingState.upload ? <PulseLoader size={8} color="#fff" /> : 'save changes'
                   }
                 </button>
               </form>

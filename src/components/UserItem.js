@@ -2,14 +2,15 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../contexts/authContext"
 import { firestore, doc, getDoc, updateDoc, arrayUnion } from "../api/firebase"
+import { ClipLoader } from "react-spinners"
 
 const UserItem = ({userItem, users}) => {
+    // Context
+    const { user } = useAuth()
+
     // State
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-
-    // Context
-    const {user} = useAuth()
 
     // Functions
 
@@ -72,17 +73,17 @@ const UserItem = ({userItem, users}) => {
                 onClick={(e) => handleFollowToggle(userItem.uid, e)}
                 disabled={loading}
                 style={{
-                    border: '.5px solid salmon',
+                    border: loading ? '0' : '.5px solid salmon',
                     color: 'salmon',
                     padding: '.5em .8em',
                     borderRadius: '30px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '1em'
+                    gap: '1em',
                 }}
             >
                 {
-                    loading ? "loading..." :
+                    loading ? <ClipLoader size={20} color="salmon" /> :
                     userItem.followedByMe ? (
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px'}}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />

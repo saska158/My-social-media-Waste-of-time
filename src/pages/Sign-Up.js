@@ -15,6 +15,8 @@ import {
 } from "../api/firebase"
 import Input from "../components/Input"
 import Button from "../components/Button"
+import { useLoading } from "../contexts/loadingContext"
+import { PulseLoader } from "react-spinners"
 
 const SignUp = () => {
   const initialState = {
@@ -24,9 +26,12 @@ const SignUp = () => {
     terms: false
   }
 
+  // Context
+  const { loadingState, setLoadingState } = useLoading()
+
   // State
   const [formData, setFormData] = useState(initialState)
-  const [loading, setLoading] = useState(false)
+  //const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   // Hooks that don't trigger re-renders   
@@ -72,7 +77,8 @@ const SignUp = () => {
   const handleSignUp = async (e) => {
     e.preventDefault()
     const { email, password, name, /*terms*/ } = formData
-    setLoading(true)
+    //setLoading(true)
+    setLoadingState(prev => ({...prev, auth: true}))
     setError(null)
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
@@ -101,15 +107,16 @@ const SignUp = () => {
         console.error('Error signing up:', error)
         setError(customMessage)
     } finally {
-        setLoading(false)
+        //setLoading(false)
+        setLoadingState(prev => ({...prev, auth: false}))
     }
   }
 
-  if(loading) {
+  /*if(loading) {
     return (
       <p>Loading...</p>
     )
-  }
+  }*/
 
   if(error) {
     return (
@@ -161,10 +168,16 @@ const SignUp = () => {
         </label>
         <Button 
           onClick={(e) => handleSignUp(e)}
-          disabled={loading}
+          disabled={loadingState.auth}
+          style={{
+            background: '#fff',
+            padding: '1em 1.2em',
+            borderRadius: '20px',
+            opacity: loadingState.auth ? '0.7' : '1'
+          }}
         >
           {
-            loading ? "CREATING ACCOUNT" : "CREATE ACCOUNT"
+            loadingState.auth ? <PulseLoader size={8} /> : "CREATE ACCOUNT"
           }
         </Button>
       </form>

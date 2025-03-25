@@ -9,12 +9,16 @@ import {
 } from "../api/firebase"
 import Input from "../components/Input"
 import Button from "../components/Button"
+import { useLoading } from "../contexts/loadingContext"
+import { PulseLoader } from "react-spinners"
 
 const SignIn = () => {
+    // Context
+    const { loadingState, setLoadingState } = useLoading()
     // State
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [loading, setLoading] = useState(false)
+    //const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
     // Hooks that don't trigger re-renders  
@@ -34,7 +38,8 @@ const SignIn = () => {
 
     const handleSignIn = async (e) => {
         e.preventDefault()
-        setLoading(true)
+        //setLoading(true)
+        setLoadingState(prev => ({...prev, auth: true}))
         setError(null)
         try{
             const userCredential = await signInWithEmailAndPassword(auth, email, password)
@@ -58,15 +63,22 @@ const SignIn = () => {
             console.error('Error signing up:', error)
             setError(customMessage)
         } finally {
-            setLoading(false)
+            //setLoading(false)
+            setLoadingState(prev => ({...prev, auth: false}))
         }
     }
     
-    if(loading) {
+    /*if(loading) {
         return (
           <p>Loading...</p>
         )
-    }
+    }*/
+
+    /*if(loadingState.auth) {
+      return (
+        <PulseLoader size={8} color="#fff" />
+      )
+    }*/
 
     if(error) {
         return (
@@ -101,10 +113,16 @@ const SignIn = () => {
             />
             <Button 
               onClick={e => handleSignIn(e)}
-              disabled={loading}
+              disabled={loadingState.auth}
+              style={{
+                background: '#fff',
+                padding: '1em 1.2em',
+                borderRadius: '20px',
+                opacity: loadingState.auth ? '0.7' : '1'
+              }}
             >
               {
-                loading ? "SIGNING IN..."
+                loadingState.auth ? <PulseLoader size={8} />
                 : "SIGN IN"
               }
             </Button>

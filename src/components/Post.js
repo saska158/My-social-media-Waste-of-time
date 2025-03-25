@@ -15,16 +15,21 @@ import {
   getDocs 
 } from "../api/firebase"
 import { useAuth } from "../contexts/authContext"
+import { useLoading } from "../contexts/loadingContext"
 import PopUp from "../components/PopUp"
 import fetchLinkPreview from "../api/fetchLinkPreview"
 import extractUrls from "../utils/extractUrls"
 import Comments from "./Comments"
 import LinkPreview from "./LinkPreview"
+import Skeleton from "react-loading-skeleton"
+import "react-loading-skeleton/dist/skeleton.css"
 
+const PostSkeleton = () => <Skeleton height={20} width={200} borderRadius={8} />
 
 const Post = ({id, creatorUid, post, roomId}) => {
   // Context 
-  const { user } = useAuth()  
+  const { user } = useAuth()
+  const { loadingState, setLoadingState } = useLoading() 
   
   // State
   const [profile, setProfile] = useState(null)
@@ -122,18 +127,39 @@ const Post = ({id, creatorUid, post, roomId}) => {
 
   /* effect to detect and fetch preview when user types a URL */
   useEffect(() => {
-    const urls = extractUrls(post.text)
+    //const urls = extractUrls(post.text)
 
-    if (urls && urls.length > 0) {
-        fetchLinkPreview(urls[0]).then(setLinkData) // We take the first URL from the input
-    } else {
-        setLinkData(null) // Clear preview if no URL is detected
+    //if (urls && urls.length > 0) {
+        //fetchLinkPreview(urls[0]).then(setLinkData) // We take the first URL from the input
+    //} else {
+        //setLinkData(null) // Clear preview if no URL is detected
+    //}
+    const fetchData = async () => {
+      setLoadingState(prev => ({...prev, upload: true}))
+      try {
+        const urls = extractUrls(post.text)
+        if(urls && urls.length > 0) {
+          const linkDetails = await fetchLinkPreview(urls[0])
+          setLinkData(linkDetails)
+        }
+      } catch(error) {
+        setError(error)
+      } finally {
+        setLoadingState(prev => ({...prev, upload: false}))
+      }
     }
+    fetchData()
   }, [post.text]) 
 
 
   const isLiked = !!(likes && likes[user?.uid])
   const likesArray = Object.values(likes || {})
+
+  if(loadingState.upload) {
+    return (
+      <PostSkeleton />
+    )
+  }
 
   return (
     <div 

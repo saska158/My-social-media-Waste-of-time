@@ -62,6 +62,8 @@ const UsersList = () => {
     </div>
   ))
 
+  console.log("user iz user list", user)
+
   return (
     <div 
       style={{

@@ -11,31 +11,34 @@ import MyChats from './pages/MyChats'
 import UserProfile from './pages/UserProfile'
 import AuthRequired from './components/AuthRequired'
 import { AuthProvider } from './contexts/authContext'
+import { LoadingProvider } from './contexts/loadingContext'
 
 function App() {
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
-       <Routes>
-        <Route element={<NavigationLayout />}>
-         <Route path='/' element={<Homepage />}>
-           <Route element={<ChatRoomLayout />}>
-             <Route index element={<ChatRoom roomId="main" />} />
-             <Route path=':roomId' element={<ChatRoom />} />
+    <LoadingProvider>
+      <AuthProvider>
+        <BrowserRouter>
+         <Routes>
+          <Route element={<NavigationLayout />}>
+           <Route path='/' element={<Homepage />}>
+             <Route element={<ChatRoomLayout />}>
+               <Route index element={<ChatRoom roomId="main" />} />
+               <Route path=':roomId' element={<ChatRoom />} />
+             </Route>
            </Route>
-         </Route>
-         <Route element={<AuthRequired />}>
-          <Route path='my-chats' element={<MyChats />} />
-         </Route>
-         <Route path='user/:profileUid' element={<UserProfile />} />
-        </Route>
-        <Route path='sign-in' element={<SignIn />} />
-        <Route path='sign-up' element={<SignUp />} /> 
-        <Route path='email-verification' element={<EmailVerification />} />
-       </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+           <Route element={<AuthRequired />}>
+            <Route path='my-chats' element={<MyChats />} />
+           </Route>
+           <Route path='user/:profileUid' element={<UserProfile />} />
+          </Route>
+          <Route path='sign-in' element={<SignIn />} />
+          <Route path='sign-up' element={<SignUp />} /> 
+          <Route path='email-verification' element={<EmailVerification />} />
+         </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </LoadingProvider>
   )
 }
 
