@@ -67,7 +67,19 @@ const NavigationLayout = () => {
               >
                 My chats
               </NavLink>
-              <button onClick={logOut}>sign out</button>
+              <button 
+                onClick={logOut}
+                style={{
+                  border: '.3px solid salmon',
+                  color: 'salmon',
+                  background: 'rgb(253, 248, 248)',
+                  width: '80px',
+                  borderRadius: '30px',
+                  padding: '.7em',
+                }}
+              >
+                sign out
+              </button>
             </>
           ) : (
             <>

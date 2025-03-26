@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react"
-import fetchLinkPreview from "../api/fetchLinkPreview"
-import extractUrls from "../utils/extractUrls"
-import LinkPreview from "./LinkPreview"
-import PopUp from "./PopUp"
+import fetchLinkPreview from "../../api/fetchLinkPreview"
+import extractUrls from "../../utils/extractUrls"
+import LinkPreview from "../LinkPreview"
+import PopUp from "../PopUp"
 
 const Comment = ({comment, index}) => {
   const [linkData, setLinkData] = useState(null)

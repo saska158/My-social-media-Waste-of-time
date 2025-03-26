@@ -2,8 +2,8 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Homepage from './pages/Homepage'
 import NavigationLayout from './layouts/NavigationLayout'
-import ChatRoomLayout from './layouts/ChatRoomLayout'
-import ChatRoom from './pages/ChatRoom'
+import GroupChatLayout from './layouts/GroupChatLayout'
+import GroupChat from './pages/GroupChat'
 import SignIn from './pages/Sign-In'
 import SignUp from './pages/Sign-Up'
 import EmailVerification from './pages/EmailVerification'
@@ -22,9 +22,9 @@ function App() {
          <Routes>
           <Route element={<NavigationLayout />}>
            <Route path='/' element={<Homepage />}>
-             <Route element={<ChatRoomLayout />}>
-               <Route index element={<ChatRoom roomId="main" />} />
-               <Route path=':roomId' element={<ChatRoom />} />
+             <Route element={<GroupChatLayout />}>
+               <Route index element={<GroupChat roomId="main" />} />
+               <Route path=':roomId' element={<GroupChat />} />
              </Route>
            </Route>
            <Route element={<AuthRequired />}>

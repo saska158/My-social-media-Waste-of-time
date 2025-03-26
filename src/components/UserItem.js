@@ -14,69 +14,69 @@ const UserItem = ({userItem, users}) => {
 
     // Functions
     const handleFollowToggle = async (userUid, e) => {
-        e.stopPropagation()
-        setLoading(true)
+      e.stopPropagation()
+      setLoading(true)
     
-        try {
-          const myProfileRef = doc(firestore, "profiles", user.uid)
-          const myProfileSnap = await getDoc(myProfileRef)
-          const otherUserProfileRef = doc(firestore, "profiles", userUid)
-          const otherUserProfileSnap = await getDoc(otherUserProfileRef)
+      try {
+        const myProfileRef = doc(firestore, "profiles", user.uid)
+        const myProfileSnap = await getDoc(myProfileRef)
+        const otherUserProfileRef = doc(firestore, "profiles", userUid)
+        const otherUserProfileSnap = await getDoc(otherUserProfileRef)
     
-          const followedByMe = users.some(usr => usr.uid === userUid && usr.followedByMe)
-            if(followedByMe) {
-              // Unfollow: remove user from followers/following
-              await updateDoc(myProfileRef, {following: myProfileSnap.data().following?.filter(profile => profile.uid !== userUid)})
-              await updateDoc(otherUserProfileRef, {followers: otherUserProfileSnap.data().followers?.filter(follower => follower.uid !== user.uid)})
-          } else {
-              // Follow: add user to followers/following
-              await updateDoc(otherUserProfileRef, {followers: arrayUnion(myProfileSnap.data())})
-              await updateDoc(myProfileRef, {following: arrayUnion(otherUserProfileSnap.data())})
-          }
-        } catch(error) {
-          setError(error)
-        } finally {
-          setLoading(false)
+        const followedByMe = users.some(usr => usr.uid === userUid && usr.followedByMe)
+        if(followedByMe) {
+          // Unfollow: remove user from followers/following
+          await updateDoc(myProfileRef, {following: myProfileSnap.data().following?.filter(profile => profile.uid !== userUid)})
+          await updateDoc(otherUserProfileRef, {followers: otherUserProfileSnap.data().followers?.filter(follower => follower.uid !== user.uid)})
+        } else {
+            // Follow: add user to followers/following
+            await updateDoc(otherUserProfileRef, {followers: arrayUnion(myProfileSnap.data())})
+            await updateDoc(myProfileRef, {following: arrayUnion(otherUserProfileSnap.data())})
         }
+      } catch(error) {
+          setError(error)
+      } finally {
+          setLoading(false)
+      }
     }
     
     return (
         <div 
-            key={userItem.uid}
-            style={{
-                padding: '2em',
-                borderBottom: '.5px solid salmon',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'flex-start',
-                gap: '.5em',
-                height: '100px'
-            }}
+          key={userItem.uid}
+          style={{
+            padding: '2em',
+            borderBottom: '.5px solid salmon',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+            gap: '.5em',
+            height: '100px'
+          }}
         >
-            <Link to={`user/${userItem.uid}`}>
-                <div 
-                  style={{
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    gap: '.3em'
-                  }}
-                >
-                    <img
-                      src={userItem.photoURL}
-                      alt="profile"
-                      style={{
-                        width: '40px', 
-                        height: '40px',
-                        objectFit: 'cover',
-                        objectPosition: 'top',
-                        display: 'inline',
-                        borderRadius: '50%',
-                      }}
-                    />
-                    <span>{userItem.displayName}</span>
-                </div>
-            </Link>
-            <div style={{width: '50%'}}>
+          <Link to={`user/${userItem.uid}`}>
+            <div 
+              style={{
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '.3em'
+              }}
+            >
+              <img
+                src={userItem.photoURL}
+                alt="profile"
+                style={{
+                  width: '40px', 
+                  height: '40px',
+                  objectFit: 'cover',
+                  objectPosition: 'top',
+                  display: 'inline',
+                  borderRadius: '50%',
+                }}
+              />
+              <span>{userItem.displayName}</span>
+            </div>
+          </Link>
+          <div style={{width: '50%'}}>
             {
               loading ? (
                 <ClipLoader color="salmon" />

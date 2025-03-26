@@ -8,7 +8,7 @@ import {
 import { useAuth } from "../contexts/authContext"
 import UsersQuery from "./UsersQuery"
 import PopUp from "./PopUp"
-
+import JoinPopUp from "./JoinPopUp"
 
 const UsersList = () => {
   // Context
@@ -77,7 +77,7 @@ const UsersList = () => {
             <p>online:</p>
             {activeUsers}
           </>
-        ) : <p style={{fontSize: '1rem'}}>Noone is online.</p>
+        ) : <p style={{fontSize: '1rem', color: 'salmon', margin: '.5em 0'}}>Noone is online.</p>
       }
       <button 
         onClick={(e) => {
@@ -89,12 +89,12 @@ const UsersList = () => {
           }
         }}
         style={{
-          background: 'salmon',
-          color: 'white',
-          padding: '.6em .8em',
-          border: '0',
-          borderRadius: '20px',
-          marginTop: '1.5em'
+          border: '.3px solid salmon',
+          color: 'salmon',
+          background: 'rgb(253, 248, 248)',
+          width: '150px',
+          borderRadius: '30px',
+          padding: '1em',
         }}
       >
         find people to follow
@@ -107,37 +107,7 @@ const UsersList = () => {
         )
       }
       {
-        isJoinPopupShown && (
-          <PopUp setIsPopUpShown={setIsJoinPopupShown}>
-            <h1>Razgovori</h1>
-            <p>Sign in or create your account to join the conversation!</p>
-            <Link to="/sign-up">
-              <button 
-                style={{
-                  fontSize: '1rem', 
-                  background: 'salmon', 
-                  padding: '.7em 1.2em', 
-                  borderRadius: '10px',
-                  color: 'white'
-                }}
-              >
-                Create an account
-              </button>
-            </Link>
-            <Link to="/sign-in">
-              <button 
-                style={{
-                  fontSize: '1rem',
-                  padding: '.7em 1.2em', 
-                  borderRadius: '10px',
-                  background: 'rgba(238, 171, 163, .5)'
-                }}
-              >
-                Sign in
-              </button>
-            </Link>
-          </PopUp>
-        )
+        isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} />
       }
     </div>
   )

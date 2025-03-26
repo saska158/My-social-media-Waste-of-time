@@ -1,11 +1,11 @@
 import { useState, useMemo, useRef, useEffect } from "react"
-import { database, push, ref } from "../api/firebase"
-import { useAuth } from "../contexts/authContext"
+import { database, push, ref } from "../../api/firebase"
+import { useAuth } from "../../contexts/authContext"
 import EmojiPicker from "emoji-picker-react"
-import ChatSmiley from "./ChatSmiley"
+import ChatSmiley from "../ChatSmiley"
 import Comment from "./Comment"
-import Button from "./Button"
-import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
+import Button from "../Button"
+import uploadToCloudinaryAndGetUrl from "../../api/uploadToCloudinaryAndGetUrl"
 import { ClipLoader } from "react-spinners"
 
 const Comments = ({comments, roomId, id}) => {

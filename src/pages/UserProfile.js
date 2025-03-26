@@ -16,7 +16,7 @@ import {
 import { useAuth } from "../contexts/authContext"
 import { useLoading } from "../contexts/loadingContext"
 import ChatBox from '../components/ChatBox'
-import Post from "../components/Post"
+import Post from "../components/post/Post"
 import PopUp from "../components/PopUp"
 import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
 import { PulseLoader } from "react-spinners"
@@ -42,7 +42,6 @@ const UserProfile = () => {
   const [room, setRoom] = useState('main') 
   const [activeSection, setActiveSection] = useState("about")
   const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
-  const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
   const [isFollowPopupShown, setIsFollowPopupShown] = useState(false)
   const [isEditPopupShown, setIsEditPopupShown] = useState(false)
   const [error, setError] = useState(null)
@@ -60,14 +59,10 @@ const UserProfile = () => {
     const amIFollowingThisUser = profile.followers.some(follower => follower.uid === user.uid)
     const isThisUserFollowingMe = profile.following ? profile.following.some(follower => follower.uid === user.uid) : false
 
-    if(user) {
-      if(amIFollowingThisUser && isThisUserFollowingMe) {
-        setIsChatBoxVisible(!isChatBoxVisible)
-      } else {
-        setIsFollowPopupShown(true)
-      }
+    if(amIFollowingThisUser && isThisUserFollowingMe) {
+      setIsChatBoxVisible(!isChatBoxVisible)
     } else {
-      setIsJoinPopupShown(true)
+      setIsFollowPopupShown(true)
     }
   }
 
@@ -391,39 +386,6 @@ const UserProfile = () => {
           </>
         ) : (
           <ChatBox chatPartnerUid={profileUid} chatPartnerProfile={profile} setIsChatBoxVisible={setIsChatBoxVisible} />
-        )
-      }
-      {
-        isJoinPopupShown && (
-          <PopUp setIsPopUpShown={setIsJoinPopupShown}>
-            <h1>Razgovori</h1>
-            <p>Sign in or create your account to join the conversation!</p>
-            <Link to="/sign-up">
-              <button 
-                style={{
-                  fontSize: '1rem', 
-                  background: 'salmon', 
-                  padding: '.7em 1.2em', 
-                  borderRadius: '10px',
-                  color: 'white'
-                }}
-              >
-                Create an account
-              </button>
-            </Link>
-            <Link to="/sign-in">
-              <button 
-                style={{
-                  fontSize: '1rem',
-                  padding: '.7em 1.2em', 
-                  borderRadius: '10px',
-                  background: 'rgba(238, 171, 163, .5)'
-                }}
-              >
-                Sign in
-              </button>
-            </Link>
-          </PopUp>
         )
       }
       {

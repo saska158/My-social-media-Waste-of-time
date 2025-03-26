@@ -1,47 +1,24 @@
-import { useState, useEffect, useMemo, useRef } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { 
+import { useState, useEffect, useMemo } from "react"
+import { useAuth } from "../../contexts/authContext"
+import {   
   database, 
   ref, 
   update, 
   get, 
-  onValue, 
-  firestore,
-  collection, 
-  query, 
-  where, 
-  getDocs 
-} from "../api/firebase"
-import { useAuth } from "../contexts/authContext"
-import { useLoading } from "../contexts/loadingContext"
-import PopUp from "../components/PopUp"
-import fetchLinkPreview from "../api/fetchLinkPreview"
-import extractUrls from "../utils/extractUrls"
+  onValue,  
+} from "../../api/firebase"
 import Comments from "./Comments"
-import LinkPreview from "./LinkPreview"
-import Skeleton from "react-loading-skeleton"
-import "react-loading-skeleton/dist/skeleton.css"
+import JoinPopUp from "../JoinPopUp"
 
-const PostSkeleton = () => <Skeleton height={20} width={200} borderRadius={8} />
-
-const Post = ({id, creatorUid, post, roomId}) => {
-  // Context 
+const PostActions = ({roomId, id}) => {
+  // Context
   const { user } = useAuth()
-  const { loadingState, setLoadingState } = useLoading() 
-  
-  // State
-  const [profile, setProfile] = useState(null)
-  const [likes, setLikes] = useState()
-  const [comments, setComments] = useState([])
-  const [showComments, setShowComments] = useState(false)  
-  const [linkData, setLinkData] = useState(null)
-  const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
-  const [isImageViewerShown, setIsImageViewerShown] = useState(false)
-  const [error, setError] = useState(null)
 
-  // Hooks that don't trigger re-renders
-  const linkPreviewRef = useRef(null)
-  const navigate = useNavigate()
+  // State
+  const [likes, setLikes] = useState()  
+  const [comments, setComments] = useState([])
+  const [showComments, setShowComments] = useState(false) 
+  const [isJoinPopupShown, setIsJoinPopupShown] = useState(false) 
 
   // Memoized Values (`useMemo`)
   const likesRef = useMemo(() => {
@@ -58,12 +35,6 @@ const Post = ({id, creatorUid, post, roomId}) => {
   const handleLike = async (e) => {
     e.stopPropagation()
     if(!user) {
-      //navigate('/sign-in', {
-        //state: {
-         // message: 'Sign in or create your account to join the conversation!',
-          //from: '/' //ovde treba da bude ruta posebnih soba
-        //}
-      //})
       setIsJoinPopupShown(true)
     } else {
       try {
@@ -81,30 +52,10 @@ const Post = ({id, creatorUid, post, roomId}) => {
     } catch (error) {
         console.error("Error updating like:", error)
     }
-    }
-    
+    } 
   }
 
   // Effects
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const profilesRef = collection(firestore, "profiles")
-      const q = query(profilesRef, where("uid", "==", creatorUid))
-      try {
-        const querySnapshot = await getDocs(q)
-        if (!querySnapshot.empty) {
-          setProfile(querySnapshot.docs[0].data()) // Store first matching profile
-        } else {
-            console.log("Profile not found")
-        }
-      } catch (error) {
-          console.error("Error fetching profile:", error)
-      }
-    }
-  
-    fetchProfile()
-  }, [creatorUid])
-
   useEffect(() => {
     // Listen for real-time changes
     const unsubscribe = onValue(likesRef, (snapshot) => {
@@ -123,97 +74,11 @@ const Post = ({id, creatorUid, post, roomId}) => {
     return () => unsubscribe()
   }, [id])
 
-  /* effect to detect and fetch preview when user types a URL */
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoadingState(prev => ({...prev, upload: true}))
-      try {
-        const urls = extractUrls(post.text)
-        if(urls && urls.length > 0) {
-          const linkDetails = await fetchLinkPreview(urls[0])
-          setLinkData(linkDetails)
-        }
-      } catch(error) {
-        setError(error)
-      } finally {
-        setLoadingState(prev => ({...prev, upload: false}))
-      }
-    }
-    fetchData()
-  }, [post.text]) 
-
-
   const isLiked = !!(likes && likes[user?.uid])
   const likesArray = Object.values(likes || {})
 
-  if(loadingState.upload) {
-    return (
-      <PostSkeleton />
-    )
-  }
-
   return (
-    <div 
-      key={id}
-      style={{
-        background: 'white',
-        border: '.5px solid rgb(247, 198, 193)',
-        borderRadius: '10px',
-        width: '70%',
-        margin: '1em',
-        padding: '1em'
-      }}
-    >
-      <Link to={creatorUid ? `/user/${creatorUid}` : '/my-profile'}>
-        <div style={{display: 'flex', padding: '.5em', cursor: 'pointer'}}>
-          {
-            profile?.photoURL ? (
-              <img 
-                src={profile.photoURL} 
-                alt="profile" 
-                style={{
-                  width: '30px', 
-                  height: '30px',
-                  objectFit: 'cover',
-                  objectPosition: 'top',
-                  display: 'inline',
-                  borderRadius: '50%'
-                }}
-              />
-            ) : null
-          }
-          <div>
-            <p><strong>{profile?.displayName}</strong></p>
-          </div>
-        </div>
-      </Link>
-      {
-        linkData ? (
-          <LinkPreview
-            linkData={linkData}
-            linkPreviewRef={linkPreviewRef}
-          />
-        ) : (
-          <div>
-            <p style={{fontSize: '.8rem', padding: '0 .5em'}}>{post?.text}</p>
-            {
-              post.image && (
-                <img
-                  src={post.image}
-                  alt="post-image"
-                  style={{
-                    cursor: 'pointer'
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setIsImageViewerShown(true)
-                  }}
-                />
-              )
-            }
-          </div>
-        )
-      }
+    <div>
       <div 
         style={{
           fontSize: '.7rem', 
@@ -228,11 +93,12 @@ const Post = ({id, creatorUid, post, roomId}) => {
           {
             likesArray.length === 0 ? `0 likes` :
             likesArray.length === 1 ? `${likesArray[0]?.name} likes` :
-            `${likesArray[0].name} and ${likesArray.length - 1} others`
+            `${likesArray[0].name} and ${likesArray.length - 1} ${likesArray.length - 1 === 1 ? 'other' : 'others'}`
           }
         </span>
-        <span>{comments.length} comments</span>
+        <span>{comments.length} {comments.length === 1 ? 'comment' : 'comments'}</span>
       </div>
+
       <div>
         <div 
           style={{
@@ -278,12 +144,6 @@ const Post = ({id, creatorUid, post, roomId}) => {
             onClick={(e) => {
               e.stopPropagation()
               if(!user) {
-                //navigate('/sign-in', {
-                  //state: {
-                    //message: 'Sign in or create your account to join the conversation!',
-                    //from: '/' //ovde treba da bude ruta posebnih soba
-                  //}
-                //})
                 setIsJoinPopupShown(true)
               } else {
                   setShowComments(!showComments)
@@ -305,54 +165,12 @@ const Post = ({id, creatorUid, post, roomId}) => {
             />
           )
         }
-      </div>
+      </div> 
       {
-        isJoinPopupShown && (
-          <PopUp setIsPopUpShown={setIsJoinPopupShown}>
-            <h1>Razgovori</h1>
-            <p>Sign in or create your account to join the conversation!</p>
-            <Link to="/sign-up">
-              <button 
-                style={{
-                  fontSize: '1rem', 
-                  background: 'salmon', 
-                  padding: '.7em 1.2em', 
-                  borderRadius: '10px',
-                  color: 'white'
-                }}
-              >
-                Create an account
-              </button>
-            </Link>
-            <Link to="/sign-in">
-              <button 
-                style={{
-                  fontSize: '1rem',
-                  padding: '.7em 1.2em', 
-                  borderRadius: '10px',
-                  background: 'rgba(238, 171, 163, .5)'
-                }}
-              >
-                Sign in
-              </button>
-            </Link>
-          </PopUp>
-        )
-      }
-      {
-        isImageViewerShown && (
-          <PopUp
-            setIsPopUpShown={setIsImageViewerShown}
-          >
-            <img
-              src={post.image}
-              alt="image viewer"
-            />
-          </PopUp>
-        )
+        isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} />
       }
     </div>
   )
 }
 
-export default Post
+export default PostActions

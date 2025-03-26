@@ -1,6 +1,6 @@
 import { NavLink, Outlet } from "react-router-dom"
 
-const ChatRoomLayout = () => {
+const GroupChatLayout = () => {
 
   const routes = [
     { path: "/", label: "Main" },
@@ -46,4 +46,4 @@ const ChatRoomLayout = () => {
   )
 }
 
-export default ChatRoomLayout
+export default GroupChatLayout
