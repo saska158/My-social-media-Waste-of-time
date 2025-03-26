@@ -10,16 +10,21 @@ const EmailVerification = () => {
   // State
   const [isEmailVerified, setIsEmailVerified] = useState(user?.emailVerified)
   const [verificationMessage, setVerificationMessage] = useState('')
+  const [error, setError] = useState(null)
 
   // Functions
   const checkEmailVerified = async () => {
-    await reload(auth.currentUser)
-    const updatedUser = auth.currentUser
-    setUser(updatedUser)
-    setIsEmailVerified(updatedUser?.emailVerified)
-    if(!updatedUser.emailVerified) {
+    try {
+      await reload(auth.currentUser)
+      const updatedUser = auth.currentUser
+      setUser(updatedUser)
+      setIsEmailVerified(updatedUser?.emailVerified)
+      if(!updatedUser.emailVerified) {
         setVerificationMessage("Your email is not verified yet. Please check your email and verify your account.")
-    } 
+      } 
+    } catch(error) {
+      setError(error)
+    }
     /*
     razmisli o svemu u ovoj funkciji, mozda moze i jednostavnije...
     nemas try/catch

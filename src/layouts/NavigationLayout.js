@@ -1,33 +1,20 @@
-import { useState, useEffect } from "react"
-import { Link, Outlet } from "react-router-dom"
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom"
 import { useAuth } from "../contexts/authContext"
-import { database, ref, onValue } from "../api/firebase"
 import UsersList from "../components/UsersList"
 
 
 const NavigationLayout = () => {
   // Context
-  const { user, logOut } = useAuth() //sto nisam samo pomocu ovoga???
-  
-  // State
-  const [activeUser, setActiveUser] = useState(null)//sta sam ovde sve izbrljala sa ovim active, proveriiii
+  const { user, logOut } = useAuth() 
 
-  // Effects
-  useEffect(() => {
-    const userRef = ref(database, `users/${user?.uid}`)
-    const unsubscribe = onValue(userRef, (snapshot) => {
-      const userData = snapshot.val()
-      if(userData) {
-        setActiveUser(userData)
-      }
-    })
-    return () => unsubscribe()
-  }, [user])
+  // Hooks that don't trigger re-renders  
+  const location = useLocation()
 
   return (
     <div style={{
       backgroundColor: 'rgb(238, 171, 163)',
       display: 'flex',
+      height: '100vh'
       }}
     >
       <nav style={{
@@ -38,14 +25,48 @@ const NavigationLayout = () => {
         flexDirection: 'column',
         alignItems: 'flex-start',
         }}
-      >
+      > 
+        <Link 
+          to="/" 
+          style={{
+            fontSize: '2rem',
+            textTransform: 'initial',
+            color: 'white'
+          }}
+        >
+          Razgovori
+        </Link>
         {
-          activeUser && activeUser.isActive ? (
+          user ? (
             <>
-              <Link to="/">Home</Link>
-              {/*<Link to="/my-profile">My profile</Link>*/}
-              <Link to={`/user/${user?.uid}`}>My profile</Link>
-              <Link to="/my-chats">My chats</Link>
+              <NavLink
+                to="/"
+                style={({ isActive }) => ({
+                  color: 
+                    isActive 
+                    || location.pathname === '/movies' 
+                    || location.pathname === '/music' 
+                    || location.pathname === '/books' ? 'white' : 'black'
+                })}
+              >
+                Home
+              </NavLink>
+              <NavLink 
+                to={`/user/${user?.uid}`}
+                style={({ isActive }) => ({
+                  color: isActive ? 'white' : 'black'
+                })}
+              >
+                My profile
+              </NavLink>
+              <NavLink 
+                to="/my-chats"
+                style={({ isActive }) => ({
+                  color: isActive ? 'white' : 'black'
+                })}
+              >
+                My chats
+              </NavLink>
               <button onClick={logOut}>sign out</button>
             </>
           ) : (

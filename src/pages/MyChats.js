@@ -10,6 +10,7 @@ import {
  } from "../api/firebase"
 import { useAuth } from "../contexts/authContext"
 import ChatBox from "../components/ChatBox"
+import ChatItem from "../components/ChatItem"
 
 const MyChats = () => {
     // Context
@@ -18,51 +19,44 @@ const MyChats = () => {
     // State
     const [chats, setChats] = useState([])
     const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
-    const [otherUser, setOtherUser] = useState({ //katastrofa od imena i konfuzije
+    const [chatPartner, setChatPartner] = useState({ 
         uid: '',
-        otherUserProfile: ''
+        profile: ''
     })
-
-    // Functions
-    const pickChat = (otherUserUid, otherUser, setIsChatBoxVisible) => {
-        setIsChatBoxVisible(true)
-        setOtherUser({uid: otherUserUid, otherUserProfile: otherUser})
-    }
 
     // Effects
     useEffect(() => {
-        if (!user.uid) return
+      if (!user.uid) return
 
-        const chatsRef = collection(firestore, 'chats')
-        const chatsQuery = query(chatsRef, where('participants', 'array-contains', user.uid))
+      const chatsRef = collection(firestore, 'chats')
+      const chatsQuery = query(chatsRef, where('participants', 'array-contains', user.uid))
 
-        const unsubscribe = onSnapshot(chatsQuery, async (snapshot) => {
-            const chatData = await Promise.all(
-                snapshot.docs.map(async (docSnap) => {
-                    const chat = docSnap.data()
+      const unsubscribe = onSnapshot(chatsQuery, async (snapshot) => {
+        const chatData = await Promise.all(
+          snapshot.docs.map(async (docSnap) => {
+            const chat = docSnap.data()
 
-                    // Find the other participant
-                    const otherUserUid = chat.participants.find(uid => uid !== user.uid)
+            // Find the other participant
+            const chatPartnerUid = chat.participants.find(uid => uid !== user.uid)
 
-                    // Fetch the other user's profile
-                    const otherUserRef = doc(firestore, 'profiles', otherUserUid)
-                    const otherUserSnap = await getDoc(otherUserRef)
-                    const otherUserData = otherUserSnap.exists() ? otherUserSnap.data() : null
+            // Fetch the other user's profile
+            const chatPartherRef = doc(firestore, 'profiles', chatPartnerUid)
+            const chatPartnerSnap = await getDoc(chatPartherRef)
+            const chatPartnerData = chatPartnerSnap.exists() ? chatPartnerSnap.data() : null
 
-                    return {
-                        id: docSnap.id,
-                        lastMessage: chat.lastMessage || null,
-                        otherUserUid,
-                        otherUser: otherUserData,
-                        timestamp: docSnap.data().createdAt ? docSnap.data().createdAt.toDate() : null
-                    }
-                })
-            )
+            return {
+              id: docSnap.id,
+              lastMessage: chat.lastMessage || null,
+              chatPartnerUid,
+              chatPartner: chatPartnerData,
+              timestamp: docSnap.data().createdAt ? docSnap.data().createdAt.toDate() : null
+            }
+          })
+        )
+        setChats(chatData)
+      })
 
-            setChats(chatData)
-        })
-
-        return () => unsubscribe
+      return () => unsubscribe
     }, [user.uid])
 
     return (
@@ -70,30 +64,22 @@ const MyChats = () => {
             {
                 !isChatBoxVisible ? (
                     <div>
-                      <h4>My chats</h4>
+                      <p
+                        style={{
+                          margin: '1em 1em .5em', 
+                          fontSize: '1.2rem'
+                        }}
+                      >
+                        My chats
+                      </p>
                       {
                         chats.length > 0 ? (
                             chats.map(chat => (
-                                    <div 
-                                      key={chat.id} 
-                                      style={{borderBottom: '1px solid black', background: 'white', cursor: 'pointer'}}
-                                      onClick={() => pickChat(chat.otherUserUid, chat.otherUser, setIsChatBoxVisible)}
-                                    >
-                                      <img 
-                                        src={chat.otherUser.photoURL} 
-                                        alt="sender" 
-                                        style={{
-                                            width: '20px', 
-                                            height: '20px', 
-                                            display: 'inline',
-                                            borderRadius: '50%',
-                                            objectFit: 'cover',
-                                            objectPosition: 'top'
-                                        }}
-                                      />
-                                      <span>{chat.otherUser.displayName}</span>
-                                      <p>{chat.lastMessage.content}</p>
-                                    </div>
+                              <ChatItem
+                                chat={chat}
+                                setIsChatBoxVisible={setIsChatBoxVisible}
+                                setChatPartner={setChatPartner}
+                              />
                             ))
                             
                         ) : (
@@ -103,8 +89,8 @@ const MyChats = () => {
                     </div>
                 ) : (
                     <ChatBox 
-                      profileUid={otherUser.uid} 
-                      profile={otherUser.otherUserProfile} 
+                      chatPartnerUid={chatPartner.uid} 
+                      chatPartnerProfile={chatPartner.profile} 
                       setIsChatBoxVisible={setIsChatBoxVisible} 
                     />
                 )

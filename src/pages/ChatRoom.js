@@ -35,8 +35,6 @@ const ChatRoom = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [selectedEmoji, setSelectedEmoji] = useState([])
   const [imagePreview, setImagePreview] = useState(null)
-  //const [imageFile, setImageFile] = useState(null)
-  //const [uploading, setUploading] = useState(false)
   const [error, setError] = useState(null)
   const [isPopupShown, setIsPopupShown] = useState(false)
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
@@ -64,7 +62,6 @@ const ChatRoom = () => {
     e.preventDefault()
     if(post.text || post.image) {
       const imageFile = imageInputRef.current.files[0]
-      //setUploading(true)
       setLoadingState(prev => ({...prev, upload: true}))
 
       let imageUrl = ''
@@ -79,7 +76,6 @@ const ChatRoom = () => {
           image: imageUrl
         }
         
-        //slanje u realtime database
         push(roomRef, {
           creatorUid: user.uid,  
           creatorName: user.displayName, 
@@ -93,7 +89,6 @@ const ChatRoom = () => {
         console.error("Error while creating a post", error)
         setError(error)
       } finally {
-        //setUploading(false)
         setLoadingState(prev => ({...prev, upload: false}))
         setIsPopupShown(false)
       }
@@ -118,15 +113,13 @@ const ChatRoom = () => {
   }
 
   // Effects
-
-  /* effect to detect and fetch preview when user types a URL */
   useEffect(() => {
     const urls = extractUrls(post.text)
 
     if (urls && urls.length > 0) {
-      fetchLinkPreview(urls[0]).then(setLinkData) // We take the first URL from the input
+      fetchLinkPreview(urls[0]).then(setLinkData) 
     } else {
-        setLinkData(null) // Clear preview if no URL is detected
+        setLinkData(null) 
       }
   }, [post.text]) 
 
@@ -245,11 +238,9 @@ const ChatRoom = () => {
                     alignSelf: 'flex-end',
                     opacity: loadingState.upload ? '0.6' : '1'
                   }}
-                  //disabled={uploading}
                   disabled={loadingState.upload}
                 >
                   {
-                    //uploading ? 'uploading...' : 'post'
                     loadingState.upload ? <PulseLoader size={8} color="#fff" /> : 'post'
                   }
                 </Button>  

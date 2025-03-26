@@ -6,12 +6,10 @@ import {
   update, 
   get, 
   onValue, 
-  push, 
   firestore,
   collection, 
   query, 
   where, 
-  getDoc,
   getDocs 
 } from "../api/firebase"
 import { useAuth } from "../contexts/authContext"
@@ -127,13 +125,6 @@ const Post = ({id, creatorUid, post, roomId}) => {
 
   /* effect to detect and fetch preview when user types a URL */
   useEffect(() => {
-    //const urls = extractUrls(post.text)
-
-    //if (urls && urls.length > 0) {
-        //fetchLinkPreview(urls[0]).then(setLinkData) // We take the first URL from the input
-    //} else {
-        //setLinkData(null) // Clear preview if no URL is detected
-    //}
     const fetchData = async () => {
       setLoadingState(prev => ({...prev, upload: true}))
       try {
@@ -178,7 +169,6 @@ const Post = ({id, creatorUid, post, roomId}) => {
           {
             profile?.photoURL ? (
               <img 
-                //src={photoUrl}
                 src={profile.photoURL} 
                 alt="profile" 
                 style={{
@@ -193,7 +183,6 @@ const Post = ({id, creatorUid, post, roomId}) => {
             ) : null
           }
           <div>
-            {/*<p><strong>{creatorName}</strong></p>*/}
             <p><strong>{profile?.displayName}</strong></p>
           </div>
         </div>

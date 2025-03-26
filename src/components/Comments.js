@@ -6,6 +6,7 @@ import ChatSmiley from "./ChatSmiley"
 import Comment from "./Comment"
 import Button from "./Button"
 import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
+import { ClipLoader } from "react-spinners"
 
 const Comments = ({comments, roomId, id}) => {
   const initialComment = {
@@ -57,7 +58,7 @@ const Comments = ({comments, roomId, id}) => {
 
   const addComment = async (e) => {
     e.preventDefault()
-    //if (!newComment.text.trim()) return // Prevent empty comments
+
     if(comment.text || comment.image) {
       const imageFile = imageInputRef.current.files[0]
       let imageUrl = ''
@@ -105,7 +106,10 @@ const Comments = ({comments, roomId, id}) => {
 
   return (
     <div style={{fontSize: '.7rem', marginLeft: '2em', padding: '1em', position: 'relative'}}>
-      <form style={{display: 'flex'}}>
+      <form 
+        onSubmit={addComment}
+        style={{display: 'flex'}}
+      >
         <label 
           style={{
             borderRadius: '20px', 
@@ -180,13 +184,13 @@ const Comments = ({comments, roomId, id}) => {
         {
           comment.text || comment.image ? (
             <button 
-              onClick={addComment}
+              type="submit"
               style={{marginLeft: 'auto'}}
               disabled={loading}
             >
               {
                 loading ? (
-                  <p>loading...</p>
+                  <ClipLoader color="salmon"/>
                 ) : (
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '25px', color: 'salmon'}}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />

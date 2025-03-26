@@ -18,7 +18,6 @@ const SignIn = () => {
     // State
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    //const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
     // Hooks that don't trigger re-renders  
@@ -38,13 +37,11 @@ const SignIn = () => {
 
     const handleSignIn = async (e) => {
         e.preventDefault()
-        //setLoading(true)
         setLoadingState(prev => ({...prev, auth: true}))
         setError(null)
         try{
             const userCredential = await signInWithEmailAndPassword(auth, email, password)
             const user = userCredential.user
-           //console.log('Signinovani user:', user)
             setEmail('')
             setPassword('')
             navigate(location.state?.from || '/', {replace: true})
@@ -63,22 +60,9 @@ const SignIn = () => {
             console.error('Error signing up:', error)
             setError(customMessage)
         } finally {
-            //setLoading(false)
             setLoadingState(prev => ({...prev, auth: false}))
         }
     }
-    
-    /*if(loading) {
-        return (
-          <p>Loading...</p>
-        )
-    }*/
-
-    /*if(loadingState.auth) {
-      return (
-        <PulseLoader size={8} color="#fff" />
-      )
-    }*/
 
     if(error) {
         return (
@@ -94,10 +78,17 @@ const SignIn = () => {
               null
           }
          <h4>Sign in to your account</h4>
-         <form>
+         <form
+           style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
+            gap: '.5em',
+            padding: '1em'
+           }}
+         >
             <Input 
               type="email"
-              //id="email"
               placeholder="E-MAIL" 
               value={email}
               onChange={e => setEmail(e.target.value)}
@@ -105,27 +96,28 @@ const SignIn = () => {
             />
             <Input 
               type='password'
-              //id="password"
               placeholder="PASSWORD"
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
             />
-            <Button 
-              onClick={e => handleSignIn(e)}
-              disabled={loadingState.auth}
-              style={{
-                background: '#fff',
-                padding: '1em 1.2em',
-                borderRadius: '20px',
-                opacity: loadingState.auth ? '0.7' : '1'
-              }}
-            >
-              {
-                loadingState.auth ? <PulseLoader size={8} />
-                : "SIGN IN"
-              }
-            </Button>
+            {
+              loadingState.auth ? (
+                <PulseLoader size={10}  color="white"/>
+              ) : (
+                <Button 
+                  onClick={e => handleSignIn(e)}
+                  disabled={loadingState.auth}
+                  style={{
+                    background: '#fff',
+                    padding: '1em 1.2em',
+                    borderRadius: '20px',
+                  }}
+                >
+                  SIGN IN
+                </Button>
+              )
+            }
          </form>
         </>
     )

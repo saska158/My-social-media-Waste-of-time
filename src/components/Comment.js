@@ -12,9 +12,9 @@ const Comment = ({comment, index}) => {
     if(comment.content.text) {
       const urls = extractUrls(comment.content.text)
       if (urls && urls.length > 0) {
-        fetchLinkPreview(urls[0]).then(setLinkData) // We take the first URL from the input
+        fetchLinkPreview(urls[0]).then(setLinkData) 
       } else {
-        setLinkData(null) // Clear preview if no URL is detected
+        setLinkData(null) 
       }
     }
   }, [comment.content.text])

@@ -20,7 +20,6 @@ import Post from "../components/Post"
 import PopUp from "../components/PopUp"
 import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
 import { PulseLoader } from "react-spinners"
-import { ClipLoader } from "react-spinners"
 
 const UserProfile = () => {
   // Context
@@ -46,7 +45,6 @@ const UserProfile = () => {
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
   const [isFollowPopupShown, setIsFollowPopupShown] = useState(false)
   const [isEditPopupShown, setIsEditPopupShown] = useState(false)
-  //const [uploading, setUploading] = useState(false)
   const [error, setError] = useState(null)
 
   // Hooks that don't trigger re-renders 
@@ -58,7 +56,7 @@ const UserProfile = () => {
   // Functions
   const handleMessageButton = (e) => {
     e.stopPropagation()
-    console.log("da li pratim", profile.followers.some(follower => follower.uid === user.uid))
+    //console.log("da li pratim", profile.followers.some(follower => follower.uid === user.uid))
     const amIFollowingThisUser = profile.followers.some(follower => follower.uid === user.uid)
     const isThisUserFollowingMe = profile.following ? profile.following.some(follower => follower.uid === user.uid) : false
 
@@ -92,7 +90,6 @@ const UserProfile = () => {
     } catch(error) {
         setError(error)
     } finally {
-        //setLoading(false)
         setLoadingState(prev => ({...prev, upload: false}))
     }
   }
@@ -148,7 +145,6 @@ const UserProfile = () => {
     } catch(error) {
       setError(error)
     } finally {
-      //setUploading(false)
       setLoadingState(prev => ({...prev, upload: false}))
     }
   }
@@ -193,7 +189,6 @@ const UserProfile = () => {
 
   return (
     <div style={{background: 'salmon', position: 'relative', width: '100%'}}>
-      {isMyProfile && <p>Ovo je moj profil</p>}
       {
         !isChatBoxVisible ? (
           <>
@@ -215,48 +210,29 @@ const UserProfile = () => {
               </div>
               {
                 user && !isMyProfile ? (
+                  loadingState.upload ? <PulseLoader color="white" /> :
                   <button
                     style={{
                       textAlign: 'center',
                       fontSize: '1rem',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center'
+                      border: '.5px solid white',
+                      color: 'white',
+                      padding: '.5em .8em',
+                      borderRadius: '30px',
                     }}
                     onClick={() => handleFollowToggle(profileUid)}
                     disabled={loadingState.upload}
                   >
                     {
-                      loadingState.upload ? <ClipLoader size={40} color="fff" /> :
                       isFollowing ? (
-                        <div
-                          style={{
-                            border: '.5px solid white',
-                            color: 'white',
-                            padding: '.5em .8em',
-                            borderRadius: '30px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1em'
-                          }}
-                        >
+                        <div style={{display: 'flex', alignItems: 'center', gap: '.5em'}}>
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px'}}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
                           </svg>
                           <span>unfollow</span>
                         </div>
                       ) : (
-                        <div
-                          style={{
-                            border: '.5px solid white',
-                            color: 'white',
-                            padding: '.5em .8em',
-                            borderRadius: '30px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '1em'
-                          }}
-                        >
+                        <div style={{display: 'flex', alignItems: 'center', gap: '.5em'}}>
                           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px'}}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
                           </svg>
@@ -398,7 +374,7 @@ const UserProfile = () => {
               }
             </div>
             {
-              !isMyProfile && (
+              user && !isMyProfile ? (
                 <button 
                   onClick={handleMessageButton}
                   style={{
@@ -410,11 +386,11 @@ const UserProfile = () => {
                 >
                   message
                 </button>
-              )
+              ) : null
             }
           </>
         ) : (
-          <ChatBox profileUid={profileUid} profile={profile} setIsChatBoxVisible={setIsChatBoxVisible} />
+          <ChatBox chatPartnerUid={profileUid} chatPartnerProfile={profile} setIsChatBoxVisible={setIsChatBoxVisible} />
         )
       }
       {
@@ -467,7 +443,7 @@ const UserProfile = () => {
                   }}
                 >
                   <img 
-                    src={imagePreview || profile.photoURL /*"/images/no-profile-picture.png"*/}
+                    src={imagePreview || profile.photoURL}
                     alt="profile"
                     style={{
                       position: 'absolute',
@@ -526,7 +502,7 @@ const UserProfile = () => {
                 />
                 <button 
                   style={{
-                    background: 'salmon', 
+                    background: loadingState.upload ? 'none' : 'salmon', 
                     borderRadius: '20px', 
                     color: 'white',
                     padding: '.5em .8em',
@@ -536,7 +512,7 @@ const UserProfile = () => {
                   disabled={loadingState.upload}
                 >
                   {
-                    loadingState.upload ? <PulseLoader size={8} color="#fff" /> : 'save changes'
+                    loadingState.upload ? <PulseLoader color="salmon" /> : 'save changes'
                   }
                 </button>
               </form>

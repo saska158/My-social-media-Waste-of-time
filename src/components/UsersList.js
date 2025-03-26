@@ -15,7 +15,7 @@ const UsersList = () => {
   const { user } = useAuth()
   
   // State
-  const [listOfUsers, setListOfUsers] = useState([]) //mozda ipak null
+  const [listOfUsers, setListOfUsers] = useState([]) 
   const [isUsersQueryShown, setIsUsersQueryShown] = useState(false)
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
 
@@ -24,7 +24,6 @@ const UsersList = () => {
     const usersRef = ref(database, 'users')
     const unsubscribe = onValue(usersRef, (snapshot) => {
       const usersData = snapshot.val()
-      // console.log('Users Data:', Object.values(usersData))
       if(usersData) {
         const usersArray = Object.values(usersData)
         setListOfUsers(usersArray)
@@ -36,7 +35,7 @@ const UsersList = () => {
 
 
   const activeUsers = listOfUsers.filter(usr => usr.isActive && usr.uid !== user?.uid).map(usr => (
-    <div key={usr.uid} /*onClick={() => pickUser(user)}*/>
+    <div key={usr.uid}>
       {
         usr.isActive ?
           <div style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'green'}}></div> :

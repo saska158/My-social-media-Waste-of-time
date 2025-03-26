@@ -9,7 +9,6 @@ const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children, style}
       left: '50%',
       width: '50%',
       height: '70%',
-      //overflow: 'auto',
       overflow: 'hidden',
       background: 'white',
       padding: '1em',
@@ -18,7 +17,6 @@ const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children, style}
       display: 'flex',
       flexDirection: 'column',
       gap: '1em',
-      //alignItems: 'center'
     }
 
     useEffect(() => {

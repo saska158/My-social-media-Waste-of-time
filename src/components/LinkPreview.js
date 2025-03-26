@@ -19,11 +19,10 @@ const LinkPreview = ({linkData, linkPreviewRef=null, children}) => {
                     <img
                       src={linkData.image}
                       alt={linkData.title}
-                      style={{ width: "100%", /*marginRight: "10px" */}}
+                      style={{ width: "100%"}}
                     />
                     <div>
                       <p style={{textTransform: 'initial'}}>{linkData.title}</p>
-                      {/*<p>{videoData.description}</p>*/}
                     </div>
                   </a>
                 </div>

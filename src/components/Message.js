@@ -27,9 +27,9 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
     if(message) {
       const urls = extractUrls(message.content.text)
       if (urls && urls.length > 0) {
-        fetchLinkPreview(urls[0]).then(setLinkData) // We take the first URL from the input
+        fetchLinkPreview(urls[0]).then(setLinkData) 
       } else {
-          setLinkData(null) // Clear preview if no URL is detected
+          setLinkData(null) 
       }
     }
   }, [message.content.text])
@@ -131,7 +131,6 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
         </div>
         {
           isImageViewerShown && (
-            //<ImageViewer image={message.content.image} />
             <PopUp
               setIsPopUpShown={setIsImageViewerShown}
             >

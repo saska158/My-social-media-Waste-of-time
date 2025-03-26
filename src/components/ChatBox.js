@@ -25,14 +25,13 @@ import Button from './Button'
 import TypingIndicator from "./TypingIndicator"
 import Message from "./Message"
 import { useAuth } from "../contexts/authContext"
+import { useLoading } from "../contexts/loadingContext"
 import ChatSmiley from "./ChatSmiley"
 import EmojiPicker from "emoji-picker-react"
 import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
+import { ClipLoader } from "react-spinners"
 
-
-//OBAVEZNO DA IZMENIM OVO PROFILEUID U OTHERUSERUID I SVE U SKLADU SA TIME
-//SVE JE NECITLJIVO I KONFUZNO ZBOG TOGA 
-const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
+const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
   const initialMessage = {
     text: '',
     image: ''
@@ -40,6 +39,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
 
   // Context
   const { user } = useAuth()
+  const { loadingState, setLoadingState } = useLoading()
 
   // State
   const [chatId, setChatId] = useState('')
@@ -105,12 +105,10 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
   const handleScroll = () => {
     if(chatRef.current) {
         const chatBox = chatRef.current
-        //console.log(chatBox.scrollTop)
-        
+ 
         // Check if user scrolled to the top
         if(chatBox.scrollTop === 0) {
             loadMoreMessages()
-            //console.log("TOP")
         }
     }
   }
@@ -135,6 +133,8 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
         ...message,
         image: imageUrl
       }
+
+      setLoadingState(prev => ({...prev, upload: true}))
 
       try {
         const chatsRef = collection(firestore, 'chats')
@@ -180,15 +180,15 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
         setMessage(initialMessage)
         set(typingRef, false) // Stop typing indicator when message is sent
         console.log("Message sent successfully!")
-    } catch(error) {
+      } catch(error) {
         console.error("Error sending message:", error)
-    } finally {
-      setImagePreview(null)
-    }
+      } finally {
+        setImagePreview(null)
+        setLoadingState(prev => ({...prev, upload: false}))
+      }
     }
   }
 
-  /* handle typing indicator */
   const handleTyping = () => {
     set(typingRef, true)
 
@@ -245,9 +245,9 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
   // Effects
   /* create or get the chatId when the component mounts or user UIDs change */
   useEffect(() => {
-    const generatedChatId = [user?.uid, profileUid].sort().join("_")
+    const generatedChatId = [user?.uid, chatPartnerUid].sort().join("_")
     setChatId(generatedChatId)
-  }, [user?.uid, profileUid])
+  }, [user?.uid, chatPartnerUid])
 
   /* real-time listener for fetching messages */
   useEffect(() => {
@@ -351,21 +351,23 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
       
   /* listen for typing status of the other user */
   useEffect(() => {
-    if (!chatId || !profileUid) return
+    if (!chatId || !chatPartnerUid) return
 
-    const otherTypingRef = ref(database, `typingStatus/${chatId}/${profileUid}`)
+    const otherTypingRef = ref(database, `typingStatus/${chatId}/${chatPartnerUid}`)
     const unsubscribe = onValue(otherTypingRef, (snapshot) => {
       setIsTyping(snapshot.val() === true)
     })
 
     return () => unsubscribe()
-  }, [chatId, profileUid])
+  }, [chatId, chatPartnerUid])
 
   useEffect(() => {
     if(inputRef.current) {
       inputRef.current.focus()
     }
   }, [messages])
+
+  console.log("profile iz chatbox", chatPartnerProfile)
 
   return (
     <div className="chat-box" style={{position: 'relative', overflowX: 'hidden'}}>
@@ -375,14 +377,42 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
           top: '0', 
           left: '0', 
           right: '0', 
-          background: 's', 
-          borderBottom: '1px solid black'
+          background: 'rgb(238, 171, 163)', 
+          display: 'flex',
+          padding: '.5em'
         }}
       >
-        <button onClick={() => setIsChatBoxVisible(false)}>x</button>
-        <p>
-          { profile.displayName }
-        </p>
+        <div 
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '.5em'
+          }}
+        >
+          <img
+            src={chatPartnerProfile.photoURL}
+            alt="profile-photo"
+            style={{
+              width: '40px', 
+              height: '40px',
+              objectFit: 'cover',
+              objectPosition: 'top',
+              display: 'inline',
+              borderRadius: '50%',
+            }}
+          />
+          <p>{ chatPartnerProfile.displayName }</p>
+        </div>
+        <button 
+          onClick={() => setIsChatBoxVisible(false)}
+          style={{
+            marginLeft: 'auto',
+          }}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+        </button>
       </div>
       {/* Display messages */}
       <div className="chat-box-messages" ref={chatRef}>
@@ -392,7 +422,7 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
       {/* Show typing indicator if the other user is typing */}
       {isTyping && (
         <div style={{display: 'flex', alignItems: 'center'}}>
-          <span>{profile.displayName} is typing</span>
+          <span>{chatPartnerProfile.displayName} is typing</span>
           <TypingIndicator />
         </div>
       )}
@@ -405,10 +435,10 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
             display: 'flex',
             alignItems: 'center',
           }}
-        > {/* label da obuhvati input za tekst, za sliku i smajlije */}
+        > 
           <Input 
             type='text'
-            placeholder='...'
+            placeholder='Message...'
             value={message.text}
             onChange={(e) => {
               setMessage(prevMessage => ({...prevMessage, text: e.target.value}))
@@ -476,12 +506,19 @@ const ChatBox = ({profileUid, profile, setIsChatBoxVisible}) => {
           {
             message.text || message.image ? (
               <Button 
-                onClick={(e) => sendMessage(e, user, profileUid)}
+                onClick={(e) => sendMessage(e, user, chatPartnerUid)}
                 style={{marginLeft: 'auto'}}
+                disabled={loadingState.upload}
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: 'white'}}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                </svg>
+                {
+                  loadingState.upload ? (
+                    <ClipLoader color="white"/>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: 'white'}}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                    </svg>
+                  )
+                }
               </Button>
             ) : null
           }

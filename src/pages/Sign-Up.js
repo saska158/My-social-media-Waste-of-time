@@ -31,7 +31,6 @@ const SignUp = () => {
 
   // State
   const [formData, setFormData] = useState(initialState)
-  //const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   // Hooks that don't trigger re-renders   
@@ -76,8 +75,7 @@ const SignUp = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault()
-    const { email, password, name, /*terms*/ } = formData
-    //setLoading(true)
+    const { email, password, name } = formData
     setLoadingState(prev => ({...prev, auth: true}))
     setError(null)
     try {
@@ -107,16 +105,9 @@ const SignUp = () => {
         console.error('Error signing up:', error)
         setError(customMessage)
     } finally {
-        //setLoading(false)
         setLoadingState(prev => ({...prev, auth: false}))
     }
   }
-
-  /*if(loading) {
-    return (
-      <p>Loading...</p>
-    )
-  }*/
 
   if(error) {
     return (
@@ -131,7 +122,15 @@ const SignUp = () => {
       }}
     >
       <h4>Personal details</h4>
-      <form>
+      <form
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-start',
+          gap: '.5em',
+          padding: '1em'
+        }}
+      >
         <Input 
           type="email"
           placeholder="E-MAIL"
@@ -166,20 +165,23 @@ const SignUp = () => {
           />
           I have read and understand the Privacy and Cookies Policy
         </label>
-        <Button 
-          onClick={(e) => handleSignUp(e)}
-          disabled={loadingState.auth}
-          style={{
-            background: '#fff',
-            padding: '1em 1.2em',
-            borderRadius: '20px',
-            opacity: loadingState.auth ? '0.7' : '1'
-          }}
-        >
-          {
-            loadingState.auth ? <PulseLoader size={8} /> : "CREATE ACCOUNT"
-          }
-        </Button>
+        {
+          loadingState.auth ? (
+            <PulseLoader size={10}  color="white"/>
+          ) : (
+            <Button 
+              onClick={(e) => handleSignUp(e)}
+              disabled={loadingState.auth}
+              style={{
+                background: '#fff',
+                padding: '1em 1.2em',
+                borderRadius: '20px',
+              }}
+            >
+              CREATE ACCOUNT
+            </Button>
+          )
+        }
       </form>
     </div>
   )
