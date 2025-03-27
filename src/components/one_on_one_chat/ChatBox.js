@@ -39,10 +39,11 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
   const [visibleDate, setVisibleDate] = useState("")
   const [error, setError] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
+  const [isTyping, setIsTyping] = useState(false)
 
   // Custom hook
   const { messages, sendMessage, loadingState } = useChat(chatId)
-  const { isTyping, setIsTyping, handleTyping, typingRef } = useTypingIndicator(chatId, chatPartnerUid)
+  const { handleTyping, typingRef } = useTypingIndicator(chatId, chatPartnerUid)
 
   console.log("isTyping", isTyping)
 

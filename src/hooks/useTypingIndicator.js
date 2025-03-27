@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useRef } from "react"
 import {
     database,
     ref,
@@ -9,9 +9,6 @@ import { useAuth } from "../contexts/authContext"
 const useTypingIndicator = ({chatId}) => {
     // Context
     const { user } = useAuth()
-
-    // State
-    const [isTyping, setIsTyping] = useState(false)
 
     // Hooks that don't trigger re-renders 
     const typingTimeoutRef = useRef(null)
@@ -32,7 +29,7 @@ const useTypingIndicator = ({chatId}) => {
       }, 1500)
     }
 
-    return { isTyping, setIsTyping, handleTyping, typingRef }
+    return { handleTyping, typingRef }
 }
 
 export default useTypingIndicator
