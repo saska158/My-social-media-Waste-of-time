@@ -41,6 +41,8 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
   const { messages, sendMessage, loadingState } = useChat(chatId)
   const { isTyping, handleTyping, typingRef } = useTypingIndicator(chatId, chatPartnerUid)
 
+  console.log("isTyping", isTyping)
+
 
   // Hooks that don't trigger re-renders 
   const chatRef = useRef(null)
