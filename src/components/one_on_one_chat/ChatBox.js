@@ -21,7 +21,6 @@ import ChatBoxHeader from "./ChatBoxHeader"
 import EmojiPicker from "emoji-picker-react"
 import { ClipLoader } from "react-spinners"
 import useChat from "../../hooks/useChat"
-import useTypingIndicator from "../../hooks/useTypingIndicator"
 
 const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
   const initialMessage = {
@@ -43,7 +42,6 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
 
   // Custom hook
   const { messages, sendMessage, loadingState } = useChat(chatId)
-  const { handleTyping, typingRef } = useTypingIndicator(chatId, chatPartnerUid)
 
   console.log("isTyping", isTyping)
 
@@ -51,7 +49,10 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
   // Hooks that don't trigger re-renders 
   const chatRef = useRef(null)
   const inputRef = useRef(null)
+  const typingTimeoutRef = useRef(null)
 
+  // Firebase ref
+  const typingRef = ref(database, `typingStatus/${chatId}/${user.uid}`)
   // Functions
   const handleEmojiClick = (emojiObject) => {
       setMessage(prevMessage => ({...prevMessage, text: prevMessage.text + emojiObject.emoji}))
@@ -81,6 +82,18 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
       set(typingRef, false) // Stop typing indicator when message is sent
       setImagePreview(null)
     }
+  }
+
+  const handleTyping = () => {
+    set(typingRef, true)
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current)
+    }
+
+    typingTimeoutRef.current = setTimeout(() => {
+      set(typingRef, false)
+    }, 1500)
   }
 
   // Effects
