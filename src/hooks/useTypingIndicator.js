@@ -7,7 +7,7 @@ import {
 } from "../api/firebase"
 import { useAuth } from "../contexts/authContext"
 
-const useTypingIndicator = ({chatId, chatPartnerUid}) => {
+const useTypingIndicator = ({chatId}) => {
     // Context
     const { user } = useAuth()
 
@@ -33,20 +33,7 @@ const useTypingIndicator = ({chatId, chatPartnerUid}) => {
       }, 1500)
     }
 
-    // Effects
-    /* listen for typing status of the other user */
-    useEffect(() => {
-      if (!chatId || !chatPartnerUid) return
-
-      const otherTypingRef = ref(database, `typingStatus/${chatId}/${chatPartnerUid}`)
-      const unsubscribe = onValue(otherTypingRef, (snapshot) => {
-        setIsTyping(snapshot.val() === true)
-      })
-
-      return () => unsubscribe()
-    }, [chatId, chatPartnerUid])
-
-    return { isTyping, handleTyping, typingRef }
+    return { isTyping, setIsTyping, handleTyping, typingRef }
 }
 
 export default useTypingIndicator

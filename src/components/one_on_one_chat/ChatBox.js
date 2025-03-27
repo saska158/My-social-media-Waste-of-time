@@ -39,7 +39,7 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
 
   // Custom hook
   const { messages, sendMessage, loadingState } = useChat(chatId)
-  const { isTyping, handleTyping, typingRef } = useTypingIndicator(chatId, chatPartnerUid)
+  const { isTyping, setIsTyping, handleTyping, typingRef } = useTypingIndicator(chatId, chatPartnerUid)
 
   console.log("isTyping", isTyping)
 
@@ -110,6 +110,18 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
       inputRef.current.focus()
     }
   }, [messages])
+
+  /* listen for typing status of the other user */
+  useEffect(() => {
+    if (!chatId || !chatPartnerUid) return
+
+    const otherTypingRef = ref(database, `typingStatus/${chatId}/${chatPartnerUid}`)
+    const unsubscribe = onValue(otherTypingRef, (snapshot) => {
+      setIsTyping(snapshot.val() === true)
+    })
+
+    return () => unsubscribe()
+  }, [chatId, chatPartnerUid])
     
   return (
     <div className="chat-box" style={{position: 'relative', overflowX: 'hidden'}}>
