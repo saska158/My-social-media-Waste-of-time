@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef } from "react"
 import {
     database,
     ref,
-    set,
-    onValue
+    set
 } from "../api/firebase"
 import { useAuth } from "../contexts/authContext"
 
