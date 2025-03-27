@@ -9,7 +9,7 @@ import {
     onSnapshot
  } from "../api/firebase"
 import { useAuth } from "../contexts/authContext"
-import ChatBox from "../components/ChatBox"
+import ChatBox from "../components/one_on_one_chat/ChatBox"
 import ChatItem from "../components/ChatItem"
 
 const MyChats = () => {
@@ -74,8 +74,9 @@ const MyChats = () => {
                       </p>
                       {
                         chats.length > 0 ? (
-                            chats.map(chat => (
+                            chats.map((chat, index) => (
                               <ChatItem
+                                key={index}
                                 chat={chat}
                                 setIsChatBoxVisible={setIsChatBoxVisible}
                                 setChatPartner={setChatPartner}

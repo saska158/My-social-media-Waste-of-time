@@ -5,13 +5,13 @@ import {
     query,
     where,
     onSnapshot
-} from "../api/firebase"
-import { useAuth } from "../contexts/authContext"
+} from "../../api/firebase"
+import { useAuth } from "../../contexts/authContext"
 import { format } from "date-fns"
-import fetchLinkPreview from "../api/fetchLinkPreview"
-import extractUrls from "../utils/extractUrls"
-import LinkPreview from "./LinkPreview"
-import PopUp from "./PopUp"
+import fetchLinkPreview from "../../api/fetchLinkPreview"
+import extractUrls from "../../utils/extractUrls"
+import LinkPreview from "../LinkPreview"
+import PopUp from "../PopUp"
 
 const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDateDivider}) => {
   // Context

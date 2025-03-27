@@ -15,7 +15,7 @@ import {
 } from '../api/firebase'
 import { useAuth } from "../contexts/authContext"
 import { useLoading } from "../contexts/loadingContext"
-import ChatBox from '../components/ChatBox'
+import ChatBox from '../components/one_on_one_chat/ChatBox'
 import Post from "../components/post/Post"
 import PopUp from "../components/PopUp"
 import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
