@@ -11,7 +11,8 @@ const useInfiniteScroll = (fetchMore, hasMore, elementRef) => {
 
       //const isAtBottom = element.scrollHeight - element.scrollTop <= element.clientHeight + 5
       //if (isAtBottom) fetchMore()
-      if(element.scrollTop === 0) {
+      if(element.scrollTop === 1) {
+        console.log("fetch more")
         fetchMore()
       }
     }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react"
+import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { database, ref, onValue } from "../api/firebase"
 import { useAuth } from '../contexts/authContext'
@@ -28,10 +28,34 @@ const GroupChat = () => {
   }, [roomId])
 
   // Custom hooks
-  const { posts, fetchMorePosts, hasMore, loadingState } = usePosts(roomRef)
+  const { posts, fetchMorePosts, hasMore, loadingState } = usePosts(roomRef, postsRef)
   useInfiniteScroll(fetchMorePosts, hasMore, postsRef)
 
   // Effects
+  useLayoutEffect(() => {
+    const postsEl = postsRef.current
+    setTimeout(() => {
+      if(postsEl) {
+        postsEl.scrollTop = posts.scrollTop - postsEl.clientHeight
+      }
+    }, 100)
+    console.log("scrollTop", postsEl.scrollTop)
+  }, [])
+  useEffect(() => {
+    const postsEl = postsRef.current
+    postsEl.addEventListener("scroll", () => {console.log(postsEl.scrollTop)})
+  }, [])
+
+  useLayoutEffect(() => {
+    const postsEl = postsRef.current
+    const timeoutId = setTimeout(() => {
+      if(postsEl) {
+        postsEl.scrollTop = postsEl.scrollTop - postsEl.scrollHeight
+      }
+    }, 100)
+
+    return () => clearTimeout(timeoutId)
+  }, [posts])
   /* postavljamo slushac poruka u realtime-u */
  /* useEffect(() => {
     const unsubscribe = onValue(roomRef, (snapshot) => {

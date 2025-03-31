@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react"
 import { useLoading } from "../contexts/loadingContext"
 import { onValue, query, orderByKey, startAt, limitToLast, get } from "../api/firebase"
 
-const usePosts = (roomRef) => {
+const usePosts = (roomRef, elementRef) => {
     // State
     const [posts, setPosts] = useState([])
     const [lastVisible, setLastVisible] = useState(null)
@@ -23,13 +23,19 @@ const usePosts = (roomRef) => {
         )
 
         const unsubscribe = onValue(postsQuery, (snapshot) => {
-            const data = snapshot.val()
-            if(data) {
-              const postsArray = Object.keys(data).map((key) => ({id: key, ...data[key]}))
-              setPosts(postsArray)
+            if(snapshot.exists()) {
+                const posts = snapshot.val()
+                const postsKeys = Object.keys(posts)
+                const postsArray = postsKeys.map((key) => ({id: key, ...posts[key]}))
+                setPosts(postsArray)
+                //setLastVisible(postsKeys[postsKeys.length - 1])
+                console.log("last", postsArray[0].id)
+                setLastVisible(postsArray[0].id)
+                setHasMore(postsArray.length === 10)
             } else {
                 setPosts([])
-            }
+                setHasMore(false)
+            } 
         })
           
         return () => unsubscribe()
@@ -50,9 +56,11 @@ const usePosts = (roomRef) => {
         if(snapshot.exists()) {
             const posts = snapshot.val()
             const postsKeys = Object.keys(posts)
-            setPosts((prevPosts) => [...prevPosts, ...postsKeys.map((key) => ({id: key,...posts[key]}))])
-            setLastVisible(postsKeys[postsKeys.length - 1])
-            setHasMore(postsKeys.length === 10)
+            const postsArray = postsKeys.map((key) => ({id: key, ...posts[key]}))
+            setPosts((prevPosts) => [...prevPosts, ...postsArray])
+            //setLastVisible(postsKeys[postsKeys.length - 1])
+            setLastVisible(postsArray[0].id)
+            setHasMore(postsArray.length === 10)
         } else {
             setHasMore(false)
         }

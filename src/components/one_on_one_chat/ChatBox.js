@@ -145,11 +145,13 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
   useLayoutEffect(() => {
     const chatBox = chatRef.current
     console.log(chatBox)
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       if(chatBox) {
         chatBox.scrollTop = chatBox.scrollHeight
       }
     }, 100)
+
+    return () => clearTimeout(timeoutId)
   }, [messages])
     
   return (
