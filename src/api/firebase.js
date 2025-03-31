@@ -12,7 +12,8 @@ import {
   onDisconnect,
   orderByChild,
   orderByKey,
-  startAt ,
+  startAt,
+  endAt,
   limitToFirst,
   limitToLast
 } from "firebase/database"
@@ -82,6 +83,7 @@ export {
   orderByChild,
   orderByKey,
   startAt,
+  endAt,
   limitToFirst,
   limitToLast,
   update,

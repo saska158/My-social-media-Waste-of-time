@@ -32,15 +32,7 @@ const GroupChat = () => {
   useInfiniteScroll(fetchMorePosts, hasMore, postsRef)
 
   // Effects
-  useLayoutEffect(() => {
-    const postsEl = postsRef.current
-    setTimeout(() => {
-      if(postsEl) {
-        postsEl.scrollTop = posts.scrollTop - postsEl.clientHeight
-      }
-    }, 100)
-    console.log("scrollTop", postsEl.scrollTop)
-  }, [])
+
   useEffect(() => {
     const postsEl = postsRef.current
     postsEl.addEventListener("scroll", () => {console.log(postsEl.scrollTop)})
@@ -56,6 +48,8 @@ const GroupChat = () => {
 
     return () => clearTimeout(timeoutId)
   }, [posts])
+
+
   /* postavljamo slushac poruka u realtime-u */
  /* useEffect(() => {
     const unsubscribe = onValue(roomRef, (snapshot) => {
