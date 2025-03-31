@@ -5,18 +5,21 @@ import { useAuth } from '../contexts/authContext'
 import Post from "../components/post/Post"
 import JoinPopUp from "../components/JoinPopUp"
 import GroupChatForm from "../components/GroupChatForm"
+import usePosts from "../hooks/usePosts"
+import useInfiniteScroll from "../hooks/useInfiniteScroll"
 
 const GroupChat = () => {
   // Context
   const { user } = useAuth()
 
   // State
-  const [posts, setPosts] = useState([])
+  //const [posts, setPosts] = useState([])
   const [isPopupShown, setIsPopupShown] = useState(false)
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
 
   // Hooks that don't trigger re-renders  
   const { roomId } = useParams()
+  const postsRef = useRef(null)
 
   // Memoized Values (`useMemo`)
   const roomRef = useMemo(() => {
@@ -24,10 +27,13 @@ const GroupChat = () => {
     return ref(database, room)
   }, [roomId])
 
+  // Custom hooks
+  const { posts, fetchMorePosts, hasMore, loadingState } = usePosts(roomRef)
+  useInfiniteScroll(fetchMorePosts, hasMore, postsRef)
 
   // Effects
   /* postavljamo slushac poruka u realtime-u */
-  useEffect(() => {
+ /* useEffect(() => {
     const unsubscribe = onValue(roomRef, (snapshot) => {
       const data = snapshot.val()
       if(data) {
@@ -39,7 +45,7 @@ const GroupChat = () => {
     })
   
     return () => unsubscribe()
-  }, [roomRef])
+  }, [roomRef])*/
 
 
   return (
@@ -47,8 +53,6 @@ const GroupChat = () => {
       style={{ 
         display: 'flex', 
         flexDirection: "column",
-        height: '550px',
-        overflow: 'auto',
       }}
     >
       <button
@@ -94,8 +98,13 @@ const GroupChat = () => {
             background: 'rgb(253, 239, 237)',
             display: 'flex',
             flexDirection: "column-reverse",
-            flex: '1',
+            alignItems: 'center',
+            //flex: '1',
+            height: '500px',
+            overflowY: 'auto',
+            //border: '1px solid red'
           }}
+          ref={postsRef}
         >
           {
             posts.length > 0 && posts.map(postItem => (

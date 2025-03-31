@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useLayoutEffect } from "react"
 import {
     firestore, 
     collection,
@@ -20,7 +20,9 @@ import ChatSmiley from "../ChatSmiley"
 import ChatBoxHeader from "./ChatBoxHeader"
 import EmojiPicker from "emoji-picker-react"
 import { ClipLoader } from "react-spinners"
-import useChat from "../../hooks/useChat"
+import useMessages from "../../hooks/useMessages"
+import useInfiniteScroll from "../../hooks/useInfiniteScroll"
+
 
 const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
   const initialMessage = {
@@ -39,20 +41,20 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
   const [error, setError] = useState(null)
   const [imagePreview, setImagePreview] = useState(null)
   const [isTyping, setIsTyping] = useState(false)
-
-  // Custom hook
-  const { messages, sendMessage, loadingState } = useChat(chatId)
-
-  console.log("isTyping", isTyping)
-
+  const [initialLoad, setInitialLoad] = useState(true)
 
   // Hooks that don't trigger re-renders 
   const chatRef = useRef(null)
   const inputRef = useRef(null)
   const typingTimeoutRef = useRef(null)
 
+  // Custom hooks
+  const { messages, sendMessage, fetchMoreMessages, hasMore, loadingState } = useMessages(chatId)
+  useInfiniteScroll(fetchMoreMessages, hasMore, chatRef)
+
   // Firebase ref
   const typingRef = ref(database, `typingStatus/${chatId}/${user.uid}`)
+
   // Functions
   const handleEmojiClick = (emojiObject) => {
       setMessage(prevMessage => ({...prevMessage, text: prevMessage.text + emojiObject.emoji}))
@@ -102,6 +104,12 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
     const generatedChatId = [user?.uid, chatPartnerUid].sort().join("_")
     setChatId(generatedChatId)
   }, [user?.uid, chatPartnerUid])
+
+  useEffect(() => {
+    if(inputRef.current) {
+      inputRef.current.focus()
+    }
+  }, [messages])
   
 
   useEffect(() => {
@@ -122,12 +130,6 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
     markMessagesAsSeen()
   }, [chatId, user.uid, messages]) 
 
-  useEffect(() => {
-    if(inputRef.current) {
-      inputRef.current.focus()
-    }
-  }, [messages])
-
   /* listen for typing status of the other user */
   useEffect(() => {
     if (!chatId || !chatPartnerUid) return
@@ -139,6 +141,16 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
 
     return () => unsubscribe()
   }, [chatId, chatPartnerUid])
+
+  useLayoutEffect(() => {
+    const chatBox = chatRef.current
+    console.log(chatBox)
+    setTimeout(() => {
+      if(chatBox) {
+        chatBox.scrollTop = chatBox.scrollHeight
+      }
+    }, 100)
+  }, [messages])
     
   return (
     <div className="chat-box" style={{position: 'relative', overflowX: 'hidden'}}>

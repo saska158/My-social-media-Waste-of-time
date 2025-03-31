@@ -11,7 +11,10 @@ import {
   update, 
   onDisconnect,
   orderByChild,
-  startAt 
+  orderByKey,
+  startAt ,
+  limitToFirst,
+  limitToLast
 } from "firebase/database"
 
 import { 
@@ -77,7 +80,10 @@ export {
   remove,
   onValue,
   orderByChild,
+  orderByKey,
   startAt,
+  limitToFirst,
+  limitToLast,
   update,
   onDisconnect,
   onAuthStateChanged, 

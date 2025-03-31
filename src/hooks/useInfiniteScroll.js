@@ -1,5 +1,67 @@
-const useInfiniteScroll = () => {
-    //const [lastVisible, setLastVisible] = useState(null)
+import { useEffect } from "react"
+
+const useInfiniteScroll = (fetchMore, hasMore, elementRef) => {
+
+  useEffect(() => {
+    if(!elementRef?.current) return
+
+    const handleScroll = () => {
+      const element = elementRef.current
+      if(!element || !hasMore) return
+
+      //const isAtBottom = element.scrollHeight - element.scrollTop <= element.clientHeight + 5
+      //if (isAtBottom) fetchMore()
+      if(element.scrollTop === 0) {
+        fetchMore()
+      }
+    }
+
+    const element = elementRef.current
+    element.addEventListener("scroll", handleScroll)
+
+    return () => element.removeEventListener("scroll", handleScroll)
+  }, [fetchMore, hasMore, elementRef])
+}
+
+  //const [items, setItems] = useState([])
+  /*const [loadingItems, setLoadingItems] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
+  const [lastVisible, setLastVisible] = useState(null)
+  const itemsEndRef = useRef(null)
+
+  // 🔹 Load more items when scrolling
+  const loadMoreItems = useCallback(async () => {
+    if (!lastVisible || !hasMore) return
+
+    setLoadingItems(true)
+    const q = queryFunction(...params, startAfter(lastVisible))
+
+    const snapshot = await getDocs(q)
+    if (!snapshot.empty) {
+      const newItems = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+        timestamp: doc.data().timestamp?.toDate() || null
+      }))
+
+      setItems(prev => [...newItems.reverse(), ...prev])
+      setLastVisible(snapshot.docs[snapshot.docs.length - 1])
+    } else {
+      setHasMore(false)
+    }
+    setLoadingItems(false);
+  }, [queryFunction, params, lastVisible, hasMore])
+
+  // 🔹 Auto-scroll to bottom when new items arrive
+  useEffect(() => {
+    itemsEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [items])
+
+  return { loadingItems, loadMoreItems, hasMore, itemsEndRef, setLastVisible }*/
+
+export default useInfiniteScroll
+
+//const [lastVisible, setLastVisible] = useState(null)
     //const [initialLoad, setInitialLoad] = useState(true)
     //const [isFetchingOldMessages, setIsFetchingOldMessages] = useState(false)
     // const messageRefs = useRef([])
@@ -121,6 +183,3 @@ const useInfiniteScroll = () => {
       })
     }
   }, [messages])  */
-}
-
-export default useInfiniteScroll
