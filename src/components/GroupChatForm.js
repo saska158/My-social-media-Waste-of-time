@@ -65,7 +65,7 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomRef, roomId}) => {
               timestamp: serverTimestamp(),
               room: roomId || 'main',
               likes: {},
-              comments: {}
+              comments: []
             })
             setPost(initialPost)
     

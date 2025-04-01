@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react"
-import { database, push, ref } from "../../api/firebase"
+import { doc, firestore, updateDoc, arrayUnion } from "../../api/firebase"
 import { useAuth } from "../../contexts/authContext"
 import EmojiPicker from "emoji-picker-react"
 import ChatSmiley from "../ChatSmiley"
@@ -28,11 +28,10 @@ const Comments = ({comments, roomId, id}) => {
   const imageInputRef = useRef(null)
   const inputRef = useRef(null)
 
-  // Memoized Values (`useMemo`)
-  const commentsRef = useMemo(() => {
+  const postRef = useMemo(() => {
     const room = roomId ? `${roomId}` : `main`
-    return ref(database, `${room}/${id}/post/comments`)
-  }, [roomId])
+    return doc(firestore, room, id)
+  }, [roomId, id])
 
   // Functions
   const handleComment = (e) => {
@@ -63,33 +62,28 @@ const Comments = ({comments, roomId, id}) => {
       const imageFile = imageInputRef.current.files[0]
       let imageUrl = ''
       setLoading(true)
-      if(imageFile) {
-        try {
-          imageUrl = await uploadToCloudinaryAndGetUrl(imageFile)
-        } catch(error) {
-            console.error("Getting url failed:", error)
-            setError(error)
-        } 
-      }
-
-      const newComment = {
-        ...comment,
-        image: imageUrl
-      }
-
-      const newCommentData = {
-        userId: user.uid,
-        name: user.displayName,
-        photoURL: user.photoURL,
-        content: newComment,
-        timestamp: Date.now()
-      }
-
       try {
-        await push(commentsRef, newCommentData)
-        setComment(initialComment)
+        if(imageFile) {
+          imageUrl = await uploadToCloudinaryAndGetUrl(imageFile)
+        }
+
+        const newComment = {
+          ...comment,
+          image: imageUrl
+        }
+
+        const newCommentData = {
+          userId: user.uid,
+          name: user.displayName,
+          photoURL: user.photoURL,
+          content: newComment,
+          timestamp: Date.now()//popravi
+        }
+        await updateDoc(postRef, {comments: arrayUnion(newCommentData)})
+        setComment(initialComment)  
       } catch(error) {
             console.error("Error sending comment", error)
+            setError(error)
       } finally {
             setImagePreview(null)
             setLoading(false)
