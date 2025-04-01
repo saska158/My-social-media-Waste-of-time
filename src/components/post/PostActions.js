@@ -6,6 +6,13 @@ import {
   update, 
   get, 
   onValue,  
+  firestore,
+  doc,
+  getDoc, 
+  updateDoc,
+  onSnapshot,
+  arrayUnion,
+  deleteField
 } from "../../api/firebase"
 import Comments from "./Comments"
 import JoinPopUp from "../JoinPopUp"
@@ -21,15 +28,26 @@ const PostActions = ({roomId, id}) => {
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false) 
 
   // Memoized Values (`useMemo`)
-  const likesRef = useMemo(() => {
+  /*const likesRef = useMemo(() => {
     const room = roomId ? `${roomId}` : `main`
     return ref(database, `${room}/${id}/post/likes`)
+  }, [roomId])*/
+
+  const postRef = useMemo(() => {
+    const room = roomId ? `${roomId}` : `main`
+    return doc(firestore, room, id)
   }, [roomId])
+
 
   const commentsRef = useMemo(() => {
     const room = roomId ? `${roomId}` : `main`
     return ref(database, `${room}/${id}/post/comments`)
   }, [roomId])
+
+  /*const commentsRef = useMemo(() => {
+    const room = roomId ? `${roomId}` : `main`
+    return doc(firestore, room, id, 'post')
+  }, [roomId])*/
 
   // Functions
   const handleLike = async (e) => {
@@ -39,14 +57,20 @@ const PostActions = ({roomId, id}) => {
     } else {
       try {
         // Fetch current likes from Firebase
-        const snapshot = await get(likesRef)
-        const likes = snapshot.val() || {}
+        //const snapshot = await get(likesRef)
+        const snapshot = await getDoc(postRef)
+        //const likes = snapshot.val() || {}
+        const likes = snapshot.data().likes 
+        console.log('sn', likes)
 
         if (likes[user?.uid]) {
-            await update(likesRef, { [user.uid]: null })
+            //await update(likesRef, { [user.uid]: null })
+            await updateDoc(postRef, {[`likes.${user.uid}`]: deleteField()})
             console.log("Unliked")
         } else {
-            await update(likesRef, { [user.uid]: { name: user.displayName } })
+            //await update(likesRef, { [user.uid]: { name: user.displayName } })
+            //await updateDoc(postRef, {likes: arrayUnion({[user.uid]: {name: user.displayName}}) })
+            await updateDoc(postRef, {[`likes.${user.uid}`]: {name: user.displayName}})
             console.log("Liked")
         }
     } catch (error) {
@@ -58,9 +82,18 @@ const PostActions = ({roomId, id}) => {
   // Effects
   useEffect(() => {
     // Listen for real-time changes
-    const unsubscribe = onValue(likesRef, (snapshot) => {
+
+    /*const unsubscribe = onValue(likesRef, (snapshot) => {
       setLikes(snapshot.val() || {}) // Update likes state when data changes
-    })
+    })*/
+
+      const unsubscribe = onSnapshot(postRef, (snapshot) => {
+        if(!snapshot.empty) {
+          console.log("snapshot", snapshot.data().likes)
+          const likes = snapshot.data().likes
+          setLikes(likes)
+        }
+      })
 
     return () => unsubscribe()
   }, [id])

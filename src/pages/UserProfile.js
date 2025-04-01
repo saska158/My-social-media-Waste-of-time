@@ -8,10 +8,10 @@ import {
   database, 
   ref, 
   update,
-  onValue, 
   arrayUnion,
   onSnapshot,
-  updateProfile, 
+  updateProfile,
+  collection, 
 } from '../api/firebase'
 import { useAuth } from "../contexts/authContext"
 import { useLoading } from "../contexts/loadingContext"
@@ -38,7 +38,7 @@ const UserProfile = () => {
   }) //treba li i uid?
   const [imagePreview, setImagePreview] = useState(null)
   const [isFollowing, setIsFollowing] = useState(false)
-  const [userMainPosts, setUserMainPosts] = useState([])
+  const [userPosts, setUserPosts] = useState([])
   const [room, setRoom] = useState('main') 
   const [activeSection, setActiveSection] = useState("about")
   const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
@@ -167,15 +167,16 @@ const UserProfile = () => {
     
   /* postavljamo slushac postova u realtime-u */
   useEffect(() => {
-    const mainRoomRef = ref(database, room)  
-    const unsubscribe = onValue(mainRoomRef, (snapshot) => {
-      const data = snapshot.val()
-      if(data) {
-        const postsArray = Object.keys(data).map(key => ({id: key, ...data[key]})).reverse()
+    const roomRef = collection(firestore, room)
+    const unsubscribe = onSnapshot(roomRef, (snapshot) => {
+      if(!snapshot.empty) {
+        const postsArray = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data(),
+          timestamp: doc.data().timestamp ? doc.data().timestamp.toDate() : null
+        }))
         const userPostsArray = postsArray.filter(post => post.creatorUid === profileUid)
-        setUserMainPosts(userPostsArray)
-      } else {
-          setUserMainPosts([])
+        setUserPosts(userPostsArray)
       }
     })
     return () => unsubscribe()
@@ -348,8 +349,8 @@ const UserProfile = () => {
                       </button>
                     </nav>
                     {
-                      userMainPosts.length > 0 ? (
-                        userMainPosts.map((post, index) => (
+                      userPosts.length > 0 ? (
+                        userPosts.map((post, index) => (
                           <Post
                             key={index}
                             id={post.id}

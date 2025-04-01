@@ -46,7 +46,8 @@ import {
   limit,
   startAfter,
   arrayUnion,
-  arrayRemove
+  arrayRemove,
+  deleteField
 } from "firebase/firestore"
 
 import { getMessaging, getToken, onMessage } from "firebase/messaging"
@@ -114,6 +115,7 @@ export {
   limit,
   startAfter,
   arrayUnion,
-  arrayRemove
+  arrayRemove,
+  deleteField
 }
 

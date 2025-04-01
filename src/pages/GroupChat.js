@@ -28,17 +28,18 @@ const GroupChat = () => {
   }, [roomId])
 
   // Custom hooks
-  const { posts, fetchMorePosts, hasMore, loadingState } = usePosts(roomRef, postsRef)
+  const { posts, fetchMorePosts, hasMore, loadingState } = usePosts(postsRef)
   useInfiniteScroll(fetchMorePosts, hasMore, postsRef)
+
 
   // Effects
 
-  useEffect(() => {
+ /* useEffect(() => {
     const postsEl = postsRef.current
     postsEl.addEventListener("scroll", () => {console.log(postsEl.scrollTop)})
   }, [])
-
-  useLayoutEffect(() => {
+*/
+  /*useLayoutEffect(() => {
     const postsEl = postsRef.current
     const timeoutId = setTimeout(() => {
       if(postsEl) {
@@ -47,8 +48,7 @@ const GroupChat = () => {
     }, 100)
 
     return () => clearTimeout(timeoutId)
-  }, [posts])
-
+  }, [posts])*/
 
   return (
     <div 
@@ -109,7 +109,7 @@ const GroupChat = () => {
           ref={postsRef}
         >
           {
-            posts.length > 0 && posts.map(postItem => (
+            posts.length > 0 ? posts.map(postItem => (
               <Post
                 key={postItem.id}
                 id={postItem.id}
@@ -117,7 +117,9 @@ const GroupChat = () => {
                 post={postItem.post}
                 roomId={roomId}
               />
-            ))
+            )) : (
+              <div>There's no posts in this room yet</div>
+            )
           }
         </div>
         {

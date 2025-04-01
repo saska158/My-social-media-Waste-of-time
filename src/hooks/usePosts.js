@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
+import { useParams } from "react-router-dom"
 import { useLoading } from "../contexts/loadingContext"
 import { 
     query, 
@@ -6,10 +7,12 @@ import {
     limit,
     onSnapshot,
     getDocs,
-    startAfter
+    startAfter,
+    collection,
+    firestore
 } from "../api/firebase"
 
-const usePosts = (roomRef, elementRef) => {
+const usePosts = (elementRef) => {
     // State
     const [posts, setPosts] = useState([])
     const [lastVisible, setLastVisible] = useState(null)
@@ -17,6 +20,15 @@ const usePosts = (roomRef, elementRef) => {
 
     // Context
     const { loadingState, setLoadingState } = useLoading()
+
+    // Hooks that don't trigger re-renders  
+  const { roomId } = useParams()
+
+    // Memoized Values (`useMemo`)
+      const roomRef = useMemo(() => {
+        const room = roomId ? `${roomId}` : `main`
+        return collection(firestore, room)
+      }, [roomId])
 
     // Effects
     useEffect(() => {
@@ -44,7 +56,7 @@ const usePosts = (roomRef, elementRef) => {
         })
           
         return () => unsubscribe()
-    }, [roomRef])
+    }, [roomRef, roomId])
 
     // Functions
     const fetchMorePosts = useCallback(async () => {
@@ -79,9 +91,6 @@ const usePosts = (roomRef, elementRef) => {
         }
 
     }, [lastVisible, hasMore])
-
-    console.log('posts', posts)
-    console.log('last visible', lastVisible)
 
     return { posts, fetchMorePosts, hasMore, loadingState }
 }
