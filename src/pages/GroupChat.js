@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react"
-import { useParams, Link } from "react-router-dom"
-import { database, ref, onValue } from "../api/firebase"
+import { useParams } from "react-router-dom"
+import { firestore, collection } from "../api/firebase"
 import { useAuth } from '../contexts/authContext'
 import Post from "../components/post/Post"
 import JoinPopUp from "../components/JoinPopUp"
@@ -24,7 +24,7 @@ const GroupChat = () => {
   // Memoized Values (`useMemo`)
   const roomRef = useMemo(() => {
     const room = roomId ? `${roomId}` : `main`
-    return ref(database, room)
+    return collection(firestore, room)
   }, [roomId])
 
   // Custom hooks
@@ -48,22 +48,6 @@ const GroupChat = () => {
 
     return () => clearTimeout(timeoutId)
   }, [posts])
-
-
-  /* postavljamo slushac poruka u realtime-u */
- /* useEffect(() => {
-    const unsubscribe = onValue(roomRef, (snapshot) => {
-      const data = snapshot.val()
-      if(data) {
-        const postsArray = Object.keys(data).map((key) => ({id: key, ...data[key]}))
-        setPosts(postsArray)
-      } else {
-          setPosts([])
-      }
-    })
-  
-    return () => unsubscribe()
-  }, [roomRef])*/
 
 
   return (

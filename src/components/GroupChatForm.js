@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { push } from "../api/firebase"
+import { addDoc, serverTimestamp } from "../api/firebase"
 import { useLoading } from '../contexts/loadingContext'
 import { useAuth } from "../contexts/authContext"
 import EmojiPicker from "emoji-picker-react"
@@ -57,12 +57,12 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomRef, roomId}) => {
               ...post, 
               image: imageUrl
             }
-            
-            push(roomRef, {
+            await addDoc(roomRef, {
               creatorUid: user.uid,  
               creatorName: user.displayName, 
               photoUrl: user.photoURL || '',
               post: newPost,
+              timestamp: serverTimestamp(),
               room: roomId || 'main'
             })
             setPost(initialPost)

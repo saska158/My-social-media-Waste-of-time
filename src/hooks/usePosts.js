@@ -1,6 +1,13 @@
 import { useState, useEffect, useCallback } from "react"
 import { useLoading } from "../contexts/loadingContext"
-import { onValue, query, orderByKey, startAt, endAt, limitToLast, limitToFirst, get } from "../api/firebase"
+import { 
+    query, 
+    orderBy,
+    limit,
+    onSnapshot,
+    getDocs,
+    startAfter
+} from "../api/firebase"
 
 const usePosts = (roomRef, elementRef) => {
     // State
@@ -12,24 +19,25 @@ const usePosts = (roomRef, elementRef) => {
     const { loadingState, setLoadingState } = useLoading()
 
     // Effects
-    /* real-time listener for fetching posts */
     useEffect(() => {
         if(!roomRef) return
+
         const postsQuery = query(
             roomRef,
-            orderByKey(),
-            startAt(lastVisible),
-            limitToLast(10)
+            orderBy("timestamp", "desc"),
+            limit(3)
         )
 
-        const unsubscribe = onValue(postsQuery, (snapshot) => {
-            if(snapshot.exists()) {
-                const posts = snapshot.val()
-                const postsKeys = Object.keys(posts)
-                const postsArray = postsKeys.map(key => ({id: key, ...posts[key]}))
-                setPosts(postsArray)
-                setLastVisible(postsArray[0]?.id || null)
-                setHasMore(postsArray.length === 10)
+        const unsubscribe = onSnapshot(postsQuery, (snapshot) => {
+            if(!snapshot.empty) {
+                const newPosts = snapshot.docs.map(doc => ({
+                  id: doc.id,
+                  ...doc.data(),
+                  timestamp: doc.data().timestamp ? doc.data().timestamp.toDate() : null
+                }))
+                setPosts(newPosts.reverse())
+                setLastVisible(snapshot.docs[snapshot.docs.length - 1])
+                setHasMore(snapshot.docs.length === 3)
             } else {
                 setHasMore(false)
             }
@@ -45,28 +53,35 @@ const usePosts = (roomRef, elementRef) => {
 
         const postsQuery = query(
             roomRef,
-            orderByKey(),
-            endAt(lastVisible),
-            limitToLast(10)
+            orderBy("timestamp", "desc"),
+            startAfter(lastVisible), 
+            limit(3)
         )
-
-        const snapshot = await get(postsQuery)
-        console.log(snapshot.val())
-        if(snapshot.exists()) {
-            const posts = snapshot.val()
-            const postsKeys = Object.keys(posts)
-            const postsArray = postsKeys.map((key) => ({id: key, ...posts[key]}))
-            // Remove the duplicate (lastVisible post that was already loaded)
-            //postsArray.pop()
-            setPosts((prevPosts) => [...prevPosts, ...postsArray])
-            setLastVisible(postsArray[0]?.id || null)
-            setHasMore(postsArray.length === 10)
-        } else {
+  
+        try {
+          const snapshot = await getDocs(postsQuery)
+  
+          if (!snapshot.empty) {
+            const newPosts = snapshot.docs.map(doc => ({
+              id: doc.id,
+              ...doc.data(),
+              timestamp: doc.data().timestamp ? doc.data().timestamp.toDate() : null
+            })).reverse()
+  
+            setPosts(prevPosts => [...newPosts, ...prevPosts])
+            setLastVisible(snapshot.docs[snapshot.docs.length - 1])
+            setHasMore(snapshot.docs.length === 3)
+          } else {
             setHasMore(false)
+          }
+        } catch (error) {
+          console.error("Error fetching more messages:", error)
         }
 
     }, [lastVisible, hasMore])
+
     console.log('posts', posts)
+    console.log('last visible', lastVisible)
 
     return { posts, fetchMorePosts, hasMore, loadingState }
 }
