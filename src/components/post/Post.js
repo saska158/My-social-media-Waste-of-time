@@ -15,7 +15,6 @@ import "react-loading-skeleton/dist/skeleton.css"
 //const PostSkeleton = () => <Skeleton height={20} width={200} borderRadius={8} />
 
 const Post = ({id, creatorUid, post, roomId}) => {
-  
   // State
   const [profile, setProfile] = useState(null)
 
@@ -40,21 +39,10 @@ const Post = ({id, creatorUid, post, roomId}) => {
   }, [creatorUid])
 
   return (
-    <div 
-      key={id}
-      className="post-container"
-    >
-      <PostHeader
-        creatorUid={creatorUid}
-        profile={profile}
-      />
-      <PostContent
-        post={post}
-      />
-      <PostActions
-        roomId={roomId}
-        id={id}
-      />
+    <div key={id} className="post-container">
+      <PostHeader {...{creatorUid, profile}} />
+      <PostContent {...{post}} />
+      <PostActions {...{roomId, id}} />
     </div>
   )
 }

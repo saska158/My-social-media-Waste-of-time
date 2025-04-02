@@ -61,36 +61,29 @@ const MyChats = () => {
 
     return (
         <div className="my-chats-container">
-            {
-                !isChatBoxVisible ? (
-                    <div>
-                      <h2>
-                        My chats
-                      </h2>
-                      {
-                        chats.length > 0 ? (
-                            chats.map((chat, index) => (
-                              <ChatItem
-                                key={index}
-                                chat={chat}
-                                setIsChatBoxVisible={setIsChatBoxVisible}
-                                setChatPartner={setChatPartner}
-                              />
-                            ))
-                            
-                        ) : (
-                            <p>You still don't have any chats.</p>
-                        )
-                      }
-                    </div>
-                ) : (
-                    <ChatBox 
-                      chatPartnerUid={chatPartner.uid} 
-                      chatPartnerProfile={chatPartner.profile} 
-                      setIsChatBoxVisible={setIsChatBoxVisible} 
-                    />
-                )
-            }
+          {
+            !isChatBoxVisible ? (
+              <div>
+                <h2>My chats</h2>
+                {
+                  chats.length > 0 ? (
+                    chats.map((chat, index) => <ChatItem 
+                                                key={index} 
+                                                {...{ chat, setIsChatBoxVisible, setChatPartner }} 
+                                               />
+                    )
+                  ) : <p>You still don't have any chats.</p>
+                }
+              </div>
+            ) : (
+              <ChatBox 
+                chatPartnerUid={chatPartner.uid} 
+                chatPartnerProfile={chatPartner.profile} 
+                setIsChatBoxVisible={setIsChatBoxVisible} 
+              />
+            )
+          }
+          
         </div>
     )
 }

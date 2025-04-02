@@ -40,12 +40,7 @@ const PostContent = ({post}) => {
   return (
     <div>
       {
-        linkData ? (
-          <LinkPreview
-            linkData={linkData}
-            linkPreviewRef={linkPreviewRef}
-          />
-        ) : (
+        linkData ? <LinkPreview {...{linkData, linkPreviewRef}}/> : (
           <div>
             <p style={{fontSize: '.8rem', padding: '0 .5em'}}>{post?.text}</p>
             {
@@ -66,9 +61,7 @@ const PostContent = ({post}) => {
       }
       {
         isImageViewerShown && (
-          <PopUp
-            setIsPopUpShown={setIsImageViewerShown}
-          >
+          <PopUp setIsPopUpShown={setIsImageViewerShown}>
             <img src={post.image} alt="image viewer" />
           </PopUp>
         )

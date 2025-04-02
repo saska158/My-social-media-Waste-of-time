@@ -100,8 +100,8 @@ textarea {
   display: flex;
   flex-direction: column-reverse;
   align-items: center;
-  /*height: 500px;
-  overflow-y: auto;*/
+  height: 500px;
+  overflow-y: auto;
 }
 
 /* HOMEPAGE */

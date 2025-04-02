@@ -124,9 +124,7 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
             onClick={saveProfileChanges}
             disabled={loadingState.upload}
           >
-            {
-              loadingState.upload ? <PulseLoader color="salmon" /> : 'save changes'
-            }
+            { loadingState.upload ? <PulseLoader color="salmon" /> : 'save changes' }
           </button>
         </form>
       </div>

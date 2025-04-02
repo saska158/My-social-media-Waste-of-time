@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 import { useAuth } from "../../contexts/authContext"
 import { 
     collection,
@@ -59,10 +59,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
 
 
   return (
-    <PopUp 
-      setIsPopUpShown={setIsUsersQueryShown}
-      style={{overflow: 'auto'}}
-    >
+    <PopUp setIsPopUpShown={setIsUsersQueryShown} style={{overflow: 'auto'}}>
       <input
         type="text"
         placeholder="search users"
@@ -72,10 +69,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
       />
       {
         filteredUsers.filter(usr => usr.uid !== user.uid).map(usr => (
-          <UserItem 
-            userItem={usr} 
-            users={users} 
-          />
+          <UserItem userItem={usr} users={users} />
         ))
       }
     </PopUp>

@@ -39,10 +39,7 @@ const UserItem = ({userItem, users}) => {
     }
     
     return (
-        <div 
-          key={userItem.uid}
-          className="user-item-container"
-        >
+        <div key={userItem.uid} className="user-item-container">
           <Link to={`user/${userItem.uid}`}>
             <div className="user-item-infos">
               <img
@@ -55,9 +52,7 @@ const UserItem = ({userItem, users}) => {
           </Link>
           <div style={{width: '50%'}}>
             {
-              loading ? (
-                <ClipLoader color="salmon" />
-              ) : (
+              loading ? <ClipLoader color="salmon" /> : (
                 <button 
                   onClick={(e) => handleFollowToggle(userItem.uid, e)}
                   disabled={loading}

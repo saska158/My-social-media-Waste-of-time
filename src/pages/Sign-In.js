@@ -7,8 +7,6 @@ import {
     ref, 
     update, 
 } from "../api/firebase"
-import Input from "../components/Input"
-import Button from "../components/Button"
 import { useLoading } from "../contexts/loadingContext"
 import { PulseLoader } from "react-spinners"
 
@@ -79,14 +77,14 @@ const SignIn = () => {
           }
          <h4>Sign in to your account</h4>
          <form className="sign-in-up-form">
-            <Input 
+            <input 
               type="email"
               placeholder="E-MAIL" 
               value={email}
               onChange={e => setEmail(e.target.value)}
               required
             />
-            <Input 
+            <input 
               type='password'
               placeholder="PASSWORD"
               value={password}
@@ -97,13 +95,13 @@ const SignIn = () => {
               loadingState.auth ? (
                 <PulseLoader size={10}  color="white"/>
               ) : (
-                <Button 
+                <button 
                   onClick={e => handleSignIn(e)}
                   disabled={loadingState.auth}
                   className="sign-in-up-button"
                 >
                   SIGN IN
-                </Button>
+                </button>
               )
             }
          </form>

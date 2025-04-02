@@ -51,7 +51,7 @@ const NavigationLayout = () => {
             </>
           ) : (
             <>
-            <p style={{fontSize: '2rem'}}>Join us</p>
+              <p style={{fontSize: '2rem'}}>Join us</p>
               <Link to='/sign-up'>create account</Link>
               <Link to='/sign-in'>sign in</Link>
             </>

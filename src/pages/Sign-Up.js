@@ -13,8 +13,6 @@ import {
     setDoc, 
     getDoc 
 } from "../api/firebase"
-import Input from "../components/Input"
-import Button from "../components/Button"
 import { useLoading } from "../contexts/loadingContext"
 import { PulseLoader } from "react-spinners"
 
@@ -119,7 +117,7 @@ const SignUp = () => {
     <div>
       <h4>Personal details</h4>
       <form className="sign-in-up-form">
-        <Input 
+        <input 
           type="email"
           placeholder="E-MAIL"
           value={formData.email}
@@ -127,7 +125,7 @@ const SignUp = () => {
           onChange={handleChange}
           required
         />
-        <Input 
+        <input 
           type="password"
           placeholder="PASSWORD"
           value={formData.password}
@@ -135,7 +133,7 @@ const SignUp = () => {
           onChange={handleChange}
           required
         />
-        <Input 
+        <input 
           type="text"
           placeholder="NAME"
           value={formData.name}
@@ -144,7 +142,7 @@ const SignUp = () => {
           required
         />
         <label htmlFor="checkbox2" className="checkbox-label">
-          <Input 
+          <input 
             type="checkbox"
             checked={formData.terms}
             name="terms"
@@ -157,13 +155,13 @@ const SignUp = () => {
           loadingState.auth ? (
             <PulseLoader size={10}  color="white"/>
           ) : (
-            <Button 
+            <button 
               onClick={(e) => handleSignUp(e)}
               disabled={loadingState.auth}
               className="sign-in-up-button"
             >
               CREATE ACCOUNT
-            </Button>
+            </button>
           )
         }
       </form>

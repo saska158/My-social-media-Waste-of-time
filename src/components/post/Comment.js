@@ -20,58 +20,24 @@ const Comment = ({comment, index}) => {
   }, [comment.content.text])
 
   return (
-    <div 
-      key={index} 
-      className="comment-container"
-      /*style={{
-        display: 'flex', 
-        alignItems: 'flex-start',
-        gap: '.3em',
-        marginBottom: '1em'
-      }}*/
-    >
+    <div key={index} className="comment-container">
       <img
         src={comment.photoURL}
         alt="profile"
         className="comment-profile-image"
-        /*style={{
-          width: '30px', 
-          height: '30px',
-          objectFit: 'cover',
-          objectPosition: 'top',
-          display: 'inline',
-          borderRadius: '50%',
-        }}*/
       />
-      <div
-        className="comment-content"
-        /*style={{
-          background: '#f7d4d1',
-          borderRadius: '10px',
-          padding: '1em'
-        }}*/
-      >
+      <div className="comment-content">
         <p>{comment.name}</p>
         {
-          linkData ? (
-            <LinkPreview 
-              linkData={linkData}
-            />
-          ) : (
+          linkData ? <LinkPreview {...{linkData}} /> : (
             <div>
-              {
-                comment.content.text && <p>{comment.content.text}</p>
-              }
+              { comment.content.text && <p>{comment.content.text}</p> }
               {
                 comment.content.image && (
                   <img
                     src={comment.content.image}
                     alt="comment-image"
                     className="comment-content-image"
-                    /*style={{
-                      width: '100px',
-                      cursor: 'pointer'
-                    }}*/
                     onClick={(e) => {
                       e.stopPropagation()
                       setIsImageViewerShown(true)
@@ -85,13 +51,8 @@ const Comment = ({comment, index}) => {
       </div>
       {
         isImageViewerShown && (
-          <PopUp
-            setIsPopUpShown={setIsImageViewerShown}
-          >
-            <img
-              src={comment.content.image}
-              alt="image viewer"
-            />
+          <PopUp setIsPopUpShown={setIsImageViewerShown}>
+            <img src={comment.content.image} alt="image viewer" />
           </PopUp>
         )
       }

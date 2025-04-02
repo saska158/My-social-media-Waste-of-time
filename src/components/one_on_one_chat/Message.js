@@ -74,15 +74,9 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             style={{backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey'}}
           >
             {
-              linkData ? (
-                <LinkPreview
-                  linkData={linkData}
-                />
-              ) : (
+              linkData ? <LinkPreview {...{linkData}}/> : (
                 <div>
-                  { 
-                    message.content.text && <p>{message.content.text}</p>
-                  }
+                  { message.content.text && <p>{message.content.text}</p> }
                   {
                     message.content.image && (
                       <img
@@ -109,13 +103,8 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
         </div>
         {
           isImageViewerShown && (
-            <PopUp
-              setIsPopUpShown={setIsImageViewerShown}
-            >
-              <img
-                src={message.content.image}
-                alt="image viewer"
-              />
+            <PopUp setIsPopUpShown={setIsImageViewerShown}>
+              <img src={message.content.image} alt="image viewer" />
             </PopUp>
           )
         }

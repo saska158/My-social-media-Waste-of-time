@@ -8,10 +8,7 @@ import uploadToCloudinaryAndGetUrl from "../../api/uploadToCloudinaryAndGetUrl"
 import { ClipLoader } from "react-spinners"
 
 const Comments = ({comments, roomId, id}) => {
-  const initialComment = {
-    text: '',
-    image: ''
-  }
+  const initialComment = {text: '', image: ''}
 
   // Context
   const {user} = useAuth() 
@@ -99,10 +96,7 @@ const Comments = ({comments, roomId, id}) => {
 
   return (
     <div className="comments-container">
-      <form 
-        onSubmit={addComment}
-        style={{display: 'flex'}}
-      >
+      <form onSubmit={addComment} style={{display: 'flex'}}>
         <label className="comments-main-label">
           <input
             type="text"
@@ -112,7 +106,6 @@ const Comments = ({comments, roomId, id}) => {
             style={{border: '0'}}
             ref={inputRef}
           />
-          {/* image preview */}
           {
             imagePreview && (
               <img
@@ -122,7 +115,6 @@ const Comments = ({comments, roomId, id}) => {
               />
             )
           }
-          {/* ovo je za slike */}
           <label className="comments-image-input-label">
             <button
               onClick={(e) => {e.preventDefault()}}
@@ -150,9 +142,7 @@ const Comments = ({comments, roomId, id}) => {
               disabled={loading}
             >
               {
-                loading ? (
-                  <ClipLoader color="salmon"/>
-                ) : (
+                loading ? <ClipLoader color="salmon"/> : (
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '25px', color: 'salmon'}}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                   </svg>
@@ -163,27 +153,14 @@ const Comments = ({comments, roomId, id}) => {
         }
       </form>
       {
-        showEmojiPicker && (
-          <div>
-            <EmojiPicker 
-              onEmojiClick={handleEmojiClick} 
-              className="comments-emoji-picker"
-            />
-          </div>
-        )
+        showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} className="comments-emoji-picker"
+      />
       }
       <div style={{padding: '1em 0'}}>
         {
           comments.length > 0 ? (
-            comments.map((comment, index) => (
-              <Comment 
-                comment={comment} 
-                index={index} 
-              />
-            ))
-          ) : (
-            <p>No comments yet</p>
-          )
+            comments.map((comment, index) => <Comment {...{comment, index}} />)
+          ) : <p>No comments yet</p>
         }
       </div>
     </div>

@@ -44,9 +44,7 @@ const UsersList = () => {
 
   return (
     <div className="users-list-container">
-      <div>
-        {activeUsers.length > 0 ? activeUsers : 'Noone is online.'}
-      </div>
+      <div>{activeUsers.length > 0 ? activeUsers : 'Noone is online.'}</div>
       <button onClick={findPeopleToFollow} className="users-list-follow-button">
         find people to follow
       </button>
