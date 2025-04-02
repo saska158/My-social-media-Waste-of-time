@@ -44,7 +44,7 @@ const SignUp = () => {
   }
 
   const saveUserToDatabase = (user) => {
-    set(ref(database, `users/${user.uid}`), {
+    set(ref(database, `users/${user.uid}`), { // je l ne treba async?
       uid: user.uid,
       email: user.email,
       displayName: user.displayName,
@@ -53,16 +53,15 @@ const SignUp = () => {
     })
   }
 
-  const createUserProfile = async (user) => {
+  const createUserProfile = async (user) => { // nema try/catch, loading i greske
     const userRef = doc(firestore, "profiles", user.uid)
     const userDoc = await getDoc(userRef)
 
     if (!userDoc.exists()) {
-      // Create a new user profile in Firestore
       await setDoc(userRef, {
         uid: user.uid,
         displayName: user.displayName || "",
-        description: "",
+        description: "", // ove propertije promeni tako da mogu i da budu prikazani(bio, music, politics...)
         musicTaste: "",
         politicalViews: "",
         photoURL: user.photoURL || "",
@@ -108,9 +107,7 @@ const SignUp = () => {
   }
 
   if(error) {
-    return (
-      <p>{error}</p>
-    )
+    return <p>{error}</p>
   }
 
   return (
@@ -152,14 +149,8 @@ const SignUp = () => {
           I have read and understand the Privacy and Cookies Policy
         </label>
         {
-          loadingState.auth ? (
-            <PulseLoader size={10}  color="white"/>
-          ) : (
-            <button 
-              onClick={(e) => handleSignUp(e)}
-              disabled={loadingState.auth}
-              className="sign-in-up-button"
-            >
+          loadingState.auth ? <PulseLoader size={10}  color="white"/> : (
+            <button onClick={(e) => handleSignUp(e)} disabled={loadingState.auth} className="sign-in-up-button">
               CREATE ACCOUNT
             </button>
           )

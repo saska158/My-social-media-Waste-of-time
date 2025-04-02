@@ -25,10 +25,10 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
   // Effects
   useEffect(() => {
     if(message) {
-      const urls = extractUrls(message.content.text)
+      const urls = extractUrls(message.content.text) // treba li greska? ili je u okviru extractUrls
       if (urls && urls.length > 0) {
-        fetchLinkPreview(urls[0]).then(setLinkData) 
-      } else {
+        fetchLinkPreview(urls[0]).then(setLinkData)  // ovde sigurno treba, nema catch. mislim da sam negde
+      } else {                                       // vec napravila sa async/await
           setLinkData(null) 
       }
     }

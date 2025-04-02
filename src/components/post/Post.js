@@ -17,6 +17,7 @@ import "react-loading-skeleton/dist/skeleton.css"
 const Post = ({id, creatorUid, post, roomId}) => {
   // State
   const [profile, setProfile] = useState(null)
+  const [error, setError] = useState(null)
 
   // Effects
   useEffect(() => {
@@ -32,9 +33,9 @@ const Post = ({id, creatorUid, post, roomId}) => {
         }
       } catch (error) {
           console.error("Error fetching profile:", error)
+          setError(error)
       }
     }
-  
     fetchProfile()
   }, [creatorUid])
 

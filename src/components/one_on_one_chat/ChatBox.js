@@ -44,7 +44,7 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
 
   useEffect(() => {
     if(!chatId) return
-    const markMessagesAsSeen = async () => {
+    const markMessagesAsSeen = async () => { //nemas try/catch
       const messagesRef = collection(firestore, "chats", chatId, "messages")
       const unseenMessagesQuery = query(
         messagesRef,

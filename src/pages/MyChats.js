@@ -31,9 +31,9 @@ const MyChats = () => {
       const chatsRef = collection(firestore, 'chats')
       const chatsQuery = query(chatsRef, where('participants', 'array-contains', user.uid))
 
-      const unsubscribe = onSnapshot(chatsQuery, async (snapshot) => {
-        const chatData = await Promise.all(
-          snapshot.docs.map(async (docSnap) => {
+      const unsubscribe = onSnapshot(chatsQuery, async (snapshot) => { 
+        const chatData = await Promise.all( // Razmisli o ovome Promise.all i sta se sve ovde desava
+          snapshot.docs.map(async (docSnap) => { // mozda treba negde drugde isto to da se primeni
             const chat = docSnap.data()
 
             // Find the other participant

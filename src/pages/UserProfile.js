@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { 
-  firestore, 
-  doc, 
-  onSnapshot,
-} from '../api/firebase'
+import { firestore, doc, onSnapshot } from '../api/firebase'
 import { useAuth } from "../contexts/authContext"
 import ChatBox from '../components/one_on_one_chat/ChatBox'
 import PopUp from "../components/PopUp"
@@ -57,7 +53,7 @@ const UserProfile = () => {
   // Effects
   useEffect(() => {
     const profileRef = doc(firestore, "profiles", profileUid)
-    const unsubscribe = onSnapshot(profileRef, (snapshot) => {
+    const unsubscribe = onSnapshot(profileRef, (snapshot) => { // neki loading, skeleton?
       if(snapshot.exists()) {
         const profileData = snapshot.data()
         setProfile(profileData)

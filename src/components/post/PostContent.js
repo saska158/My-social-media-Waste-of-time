@@ -17,6 +17,12 @@ const PostContent = ({post}) => {
   // Hooks that don't trigger re-renders
   const linkPreviewRef = useRef(null)  
 
+  // Functions
+  const handleImageViewer = (e) => {
+    e.stopPropagation()
+    setIsImageViewerShown(true)
+  }
+
   // Effects
   /* effect to detect and fetch preview when user types a URL */
   useEffect(() => {
@@ -25,8 +31,8 @@ const PostContent = ({post}) => {
       try {
         const urls = extractUrls(post.text)
         if(urls && urls.length > 0) {
-          const linkDetails = await fetchLinkPreview(urls[0])
-          setLinkData(linkDetails)
+          const linkDetails = await fetchLinkPreview(urls[0]) //mislim da je ovo primer kako sam resila
+          setLinkData(linkDetails)                            // pomocu async/await tamo gde imam .then() 
         }
       } catch(error) {
         setError(error)
@@ -49,10 +55,7 @@ const PostContent = ({post}) => {
                   src={post.image}
                   alt="post-image"
                   style={{cursor: 'pointer'}}
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setIsImageViewerShown(true)
-                  }}
+                  onClick={handleImageViewer}
                 />
               )
             }

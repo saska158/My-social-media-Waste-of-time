@@ -9,7 +9,6 @@ const GroupChatLayout = () => {
     { path: "/music", label: "Music" }
   ]
 
-
   return (
     <div className="group-chat-layout-container">
       <div className="group-chat-layout-container-nav"> 

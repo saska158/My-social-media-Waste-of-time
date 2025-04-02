@@ -20,34 +20,27 @@ const NavigationLayout = () => {
               <NavLink
                 to="/"
                 style={({ isActive }) => ({
-                  color: 
-                    isActive 
-                    || location.pathname === '/movies' 
-                    || location.pathname === '/music' 
-                    || location.pathname === '/books' ? 'white' : 'black'
+                  color: isActive || 
+                  location.pathname === '/movies' || 
+                  location.pathname === '/music' || 
+                  location.pathname === '/books' ? 'white' : 'black'
                 })}
               >
                 Home
               </NavLink>
               <NavLink 
                 to={`/user/${user?.uid}`}
-                style={({ isActive }) => ({
-                  color: isActive ? 'white' : 'black'
-                })}
+                style={({ isActive }) => ({ color: isActive ? 'white' : 'black' })}
               >
                 My profile
               </NavLink>
               <NavLink 
                 to="/my-chats"
-                style={({ isActive }) => ({
-                  color: isActive ? 'white' : 'black'
-                })}
+                style={({ isActive }) => ({ color: isActive ? 'white' : 'black' })}
               >
                 My chats
               </NavLink>
-              <button onClick={logOut} className="sign-out-button">
-                sign out
-              </button>
+              <button onClick={logOut} className="sign-out-button">sign out</button>
             </>
           ) : (
             <>

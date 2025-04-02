@@ -30,6 +30,7 @@ const UserProfileHeader = ({profile, profileUid, isFollowing, setIsEditPopupShow
             await updateDoc(otherUserProfileRef, {followers: arrayUnion(myProfileSnap.data())})
         } 
       } catch(error) {
+        console.error(error)
           setError(error)
       } finally {
         setLoadingState(prev => ({...prev, upload: false}))
@@ -52,9 +53,7 @@ const UserProfileHeader = ({profile, profileUid, isFollowing, setIsEditPopupShow
                   alt="profile-picture" 
                   className="user-profile-profile-picture"
                 />
-                <p className="user-profile-displayName">
-                  {profile.displayName}
-                </p>
+                <p className="user-profile-displayName">{profile.displayName}</p>
               </div>
               {
                 user && !isMyProfile ? (

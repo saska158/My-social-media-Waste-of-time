@@ -6,11 +6,7 @@ const PostHeader = ({creatorUid, profile}) => {
           <div className="post-header-container">
             {
               profile?.photoURL ? (
-                <img 
-                  src={profile.photoURL} 
-                  alt="profile" 
-                  className="post-header-profile-image"
-                />
+                <img src={profile.photoURL} alt="profile" className="post-header-profile-image" />
               ) : null
             }
             <div>

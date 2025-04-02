@@ -32,7 +32,6 @@ const GroupChat = () => {
   useInfiniteScroll(fetchMorePosts, hasMore, postsRef)
 
   // Functions
-
   const handleNewPost = (e) => {
     e.stopPropagation()
     if(!user) {
@@ -41,7 +40,6 @@ const GroupChat = () => {
       setIsPopupShown(true)
     }
   }
-
 
   // Effects
 

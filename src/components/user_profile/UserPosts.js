@@ -8,7 +8,7 @@ const UserPosts = ({room, setRoom, profileUid}) => {
 
     useEffect(() => {
       const roomRef = collection(firestore, room)
-      const unsubscribe = onSnapshot(roomRef, (snapshot) => {
+      const unsubscribe = onSnapshot(roomRef, (snapshot) => { //ovde neki loading state i skeleton
         if(!snapshot.empty) {
           const postsArray = snapshot.docs.map(doc => ({
             id: doc.id,
@@ -27,9 +27,7 @@ const UserPosts = ({room, setRoom, profileUid}) => {
           <div>
             {
               roomTags.map(tag => (
-                <button onClick={() => setRoom(tag)} style={{color: room === tag ? "white" : ""}}>
-                  {tag}
-                </button>
+                <button onClick={() => setRoom(tag)} style={{color: room === tag ? "white" : ""}}>{tag}</button>
               ))
             }
           </div>

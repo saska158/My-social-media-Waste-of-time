@@ -18,15 +18,15 @@ import {
 import { useLoading } from "../contexts/loadingContext"
 import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
 
-
 const useMessages = (chatId) => {
-    // State
-    const [messages, setMessages] = useState([])
-    const [lastVisible, setLastVisible] = useState(null)
-    const [hasMore, setHasMore] = useState(null)
+  // State
+  const [messages, setMessages] = useState([])
+  const [lastVisible, setLastVisible] = useState(null)
+  const [hasMore, setHasMore] = useState(null)
+  const [error, setError] = useState(null)
 
-    // Context
-    const { loadingState, setLoadingState } = useLoading()
+  // Context
+  const { loadingState, setLoadingState } = useLoading()
     
   // Effects  
 
@@ -37,7 +37,7 @@ const useMessages = (chatId) => {
     const messagesRef = collection(firestore, "chats", chatId, "messages")
     const messagesQuery = query(messagesRef, orderBy("timestamp", "desc"), limit(10))
 
-    const unsubscribe = onSnapshot(messagesQuery, (snapshot) => {
+    const unsubscribe = onSnapshot(messagesQuery, (snapshot) => { // neki loading i skeleton
       if(!snapshot.empty) {
         const newMessages = snapshot.docs.map(doc => ({
           id: doc.id,
@@ -70,7 +70,7 @@ const useMessages = (chatId) => {
       startAfter(lastVisible), 
       limit(10)
     )
-  
+    // neki loading, neki spinner
     try {
       const snapshot = await getDocs(messagesQuery)
   
@@ -89,7 +89,7 @@ const useMessages = (chatId) => {
       }
     } catch (error) {
       console.error("Error fetching more messages:", error)
-    }
+    } // finally loading false
   }, [lastVisible, hasMore])
 
   const sendMessage = async (userA, userBUid, message) => {
@@ -142,6 +142,7 @@ const useMessages = (chatId) => {
         console.log("Message sent successfully!")
       } catch(error) {
         console.error("Error sending message:", error)
+        setError(error)
       } finally {
         setLoadingState(prev => ({...prev, upload: false}))
       }

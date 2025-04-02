@@ -38,7 +38,7 @@ const ChatBoxForm = ({messages, chatPartnerUid, chatId}) => {
       setMessage(prevMessage => ({...prevMessage, text: prevMessage.text + emojiObject.emoji}))
   }
 
-  const handleImageChange = (e) => {
+  const handleImageChange = (e) => {// je l ovde treba da se hendlaju greske?
     const file = e.target.files[0]
     if (file) {
       const reader = new FileReader()
@@ -56,6 +56,7 @@ const ChatBoxForm = ({messages, chatPartnerUid, chatId}) => {
       await sendMessage(user, chatPartnerUid, message)
     } catch(error) {
       console.error(error)
+      setError(error) // mada ne znam sta ce biti error, da li ce ga biti, jer nije direktno firebase nego sendMessage
     } finally {
       setMessage(initialMessage)
       set(typingRef, false) // Stop typing indicator when message is sent
@@ -91,15 +92,7 @@ const ChatBoxForm = ({messages, chatPartnerUid, chatId}) => {
           style={{border: '0', fontSize: '1rem'}}
           ref={inputRef}
         />
-        {
-          imagePreview && (
-            <img
-              src={imagePreview}
-              alt="image-post"
-              className="chat-box-image-preview"
-            />
-          )
-        }
+        { imagePreview && <img src={imagePreview} alt="image-post" className="chat-box-image-preview" /> }
         <label className="chat-box-image-input-label">
           <button onClick={(e) => {e.preventDefault()}} className="chat-box-image-input-button">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="chat-box-image-icon" /*className="size-6" style={{width: '100%', color: 'salmon'}}*/>

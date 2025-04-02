@@ -4,16 +4,8 @@ pogledacu koja su sva rerenderovanja zbog promene state-a
 ostavicu neke komentare mozda u zavrsnoj verziji kako bi videli kako sam razmisljala
 */
 
-import { 
-    auth, 
-    database, 
-    ref, 
-    update, 
-    onAuthStateChanged, 
-    signOut,
-} from "../api/firebase"
+import { auth, database, ref, update, onAuthStateChanged, signOut } from "../api/firebase"
 import { useState, useEffect, createContext, useContext } from "react"
-
 
 const AuthContext = createContext()
 
@@ -24,7 +16,7 @@ export const AuthProvider = ({children}) => {
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            setUser(user)
+            setUser(user) // kako onAuthStateChanged, onValue i onSnapshot hendluju greske i loading??
         })
 
         return () => unsubscribe()
@@ -43,12 +35,10 @@ export const AuthProvider = ({children}) => {
             }
         } catch(error) {
             console.error("Greška prilikom odjavljivanja:", error.message)
+            // je l treba neki setError?
         }
     }
-
-
-    return (
-        <AuthContext.Provider value={{user, logOut, setUser}}>{children}</AuthContext.Provider>
-    )
+    
+    return <AuthContext.Provider value={{user, logOut, setUser}}>{children}</AuthContext.Provider>
 }
 

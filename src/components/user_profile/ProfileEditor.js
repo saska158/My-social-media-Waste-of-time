@@ -21,7 +21,7 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
     const handleImageChange = (e) => {
       const file = e.target.files[0]
       if (file) {
-        const reader = new FileReader()
+        const reader = new FileReader() // greske
         reader.onloadend = () => {
           setImagePreview(reader.result)
         }
@@ -66,6 +66,7 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
       
           }      
         } catch(error) {
+          console.error(error)
           setError(error)
         } finally {
           setLoadingState(prev => ({...prev, upload: false}))

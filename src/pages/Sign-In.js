@@ -63,18 +63,12 @@ const SignIn = () => {
     }
 
     if(error) {
-        return (
-          <p>{error}</p>
-        )
+        return <p>{error}</p>
     }
     
     return (
         <>
-          {
-            location.state?.message ?
-              <p>{location.state.message}</p> :
-              null
-          }
+          { location.state?.message ? <p>{location.state.message}</p> : null }
          <h4>Sign in to your account</h4>
          <form className="sign-in-up-form">
             <input 
@@ -92,14 +86,8 @@ const SignIn = () => {
               required
             />
             {
-              loadingState.auth ? (
-                <PulseLoader size={10}  color="white"/>
-              ) : (
-                <button 
-                  onClick={e => handleSignIn(e)}
-                  disabled={loadingState.auth}
-                  className="sign-in-up-button"
-                >
+              loadingState.auth ? <PulseLoader size={10}  color="white"/> : (
+                <button onClick={e => handleSignIn(e)} disabled={loadingState.auth} className="sign-in-up-button">
                   SIGN IN
                 </button>
               )

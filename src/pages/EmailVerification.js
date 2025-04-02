@@ -23,12 +23,9 @@ const EmailVerification = () => {
         setVerificationMessage("Your email is not verified yet. Please check your email and verify your account.")
       } 
     } catch(error) {
+      console.error(error)
       setError(error)
-    }
-    /*
-    razmisli o svemu u ovoj funkciji, mozda moze i jednostavnije...
-    nemas try/catch
-    */
+    } // finally i loading state
   }
 
   // Effects

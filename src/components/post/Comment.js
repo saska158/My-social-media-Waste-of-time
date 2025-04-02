@@ -5,15 +5,23 @@ import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
 
 const Comment = ({comment, index}) => {
+  // State
   const [linkData, setLinkData] = useState(null)
   const [isImageViewerShown, setIsImageViewerShown] = useState(false)
 
+  // Functions
+  const handleImageViewer = (e) => {
+    e.stopPropagation()
+    setIsImageViewerShown(true)
+  }
+ 
+  // Effects
   useEffect(() => {
     if(comment.content.text) {
-      const urls = extractUrls(comment.content.text)
+      const urls = extractUrls(comment.content.text) // treba li greska? ili je u okviru extractUrls
       if (urls && urls.length > 0) {
-        fetchLinkPreview(urls[0]).then(setLinkData) 
-      } else {
+        fetchLinkPreview(urls[0]).then(setLinkData) // ovde sigurno treba, nema catch. mislim da sam negde
+      } else {                                      // vec napravila sa async/await
         setLinkData(null) 
       }
     }
@@ -21,11 +29,7 @@ const Comment = ({comment, index}) => {
 
   return (
     <div key={index} className="comment-container">
-      <img
-        src={comment.photoURL}
-        alt="profile"
-        className="comment-profile-image"
-      />
+      <img src={comment.photoURL} alt="profile" className="comment-profile-image" />
       <div className="comment-content">
         <p>{comment.name}</p>
         {
@@ -38,10 +42,7 @@ const Comment = ({comment, index}) => {
                     src={comment.content.image}
                     alt="comment-image"
                     className="comment-content-image"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setIsImageViewerShown(true)
-                    }}
+                    onClick={handleImageViewer}
                   />
                 )
               }

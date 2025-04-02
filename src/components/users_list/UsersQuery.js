@@ -1,11 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { useLocation } from "react-router-dom"
 import { useAuth } from "../../contexts/authContext"
-import { 
-    collection,
-    firestore,
-    onSnapshot
-} from "../../api/firebase"
+import { collection, firestore, onSnapshot } from "../../api/firebase"
 import PopUp from "../PopUp"
 import UserItem from "./UserItem"
 
@@ -30,7 +26,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
   useEffect(() => {
     if(user) {
       const usersRef = collection(firestore, 'profiles')
-      const unsubscribe = onSnapshot(usersRef, (snapshot) => {
+      const unsubscribe = onSnapshot(usersRef, (snapshot) => { // loading, skeleton?
         if(!snapshot.empty) {
           const usersArray = snapshot.docs.map((doc) => ({
             ...doc.data(),
@@ -57,7 +53,6 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
       user.displayName.toLowerCase().startsWith(searchQuery.toLowerCase())
   )
 
-
   return (
     <PopUp setIsPopUpShown={setIsUsersQueryShown} style={{overflow: 'auto'}}>
       <input
@@ -67,11 +62,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
         onChange={handleSearchChange}
         style={{margin: '1em', alignSelf: 'flex-start'}}
       />
-      {
-        filteredUsers.filter(usr => usr.uid !== user.uid).map(usr => (
-          <UserItem userItem={usr} users={users} />
-        ))
-      }
+      { filteredUsers.filter(usr => usr.uid !== user.uid).map(usr => <UserItem userItem={usr} users={users} />) }
     </PopUp>
   )
 }

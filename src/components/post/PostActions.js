@@ -20,6 +20,7 @@ const PostActions = ({roomId, id}) => {
   const [comments, setComments] = useState([])
   const [showComments, setShowComments] = useState(false) 
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false) 
+  const [error, setError] = useState(null)
 
   // Memoized Values (`useMemo`)
   const postRef = useMemo(() => {
@@ -46,6 +47,7 @@ const PostActions = ({roomId, id}) => {
           }
        } catch (error) {
           console.error("Error updating like:", error)
+          setError(error)
        }
     } 
   }

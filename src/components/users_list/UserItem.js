@@ -9,13 +9,13 @@ const UserItem = ({userItem, users}) => {
     const { user } = useAuth()
 
     // State
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false) // useLoading??
     const [error, setError] = useState(null)
 
     // Functions
     const handleFollowToggle = async (userUid, e) => {
       e.stopPropagation()
-      setLoading(true)
+      setLoading(true)  // neki skeleton?
     
       try {
         const myProfileRef = doc(firestore, "profiles", user.uid)
@@ -32,6 +32,7 @@ const UserItem = ({userItem, users}) => {
             await updateDoc(myProfileRef, {following: arrayUnion(otherUserProfileSnap.data())})
         }
       } catch(error) {
+          console.error(error)
           setError(error)
       } finally {
           setLoading(false)
@@ -42,11 +43,7 @@ const UserItem = ({userItem, users}) => {
         <div key={userItem.uid} className="user-item-container">
           <Link to={`user/${userItem.uid}`}>
             <div className="user-item-infos">
-              <img
-                src={userItem.photoURL}
-                alt="profile"
-                className="user-item-profile-image"
-              />
+              <img src={userItem.photoURL} alt="profile" className="user-item-profile-image"/>
               <span>{userItem.displayName}</span>
             </div>
           </Link>
