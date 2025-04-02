@@ -843,6 +843,7 @@ textarea {
 
 .active-user-container {
   display: flex;
+  align-items: center;
 }
 
 .active-user-profile-image {
