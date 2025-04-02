@@ -844,6 +844,7 @@ textarea {
 .active-user-container {
   display: flex;
   align-items: center;
+  gap: .5em;
 }
 
 .active-user-profile-image {
