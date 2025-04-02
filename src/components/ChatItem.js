@@ -10,32 +10,14 @@ const ChatItem = ({chat, setIsChatBoxVisible, setChatPartner}) => {
     return (
         <div 
           key={id} 
-          style={{ 
-            background: 'white',
-            borderRadius: '20px',
-            margin: '0 1em 1em',
-            padding: '.5em', 
-            cursor: 'pointer'
-          }}
+          className="chat-item-container"
           onClick={() => pickChat(chatPartnerUid, chatPartner, setIsChatBoxVisible)}
         >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center'
-            }}
-          >
+          <div className="chat-item-infos">
             <img 
               src={chatPartner.photoURL} 
               alt="sender" 
-              style={{
-                width: '30px', 
-                height: '30px', 
-                display: 'inline',
-                borderRadius: '50%',
-                objectFit: 'cover',
-                objectPosition: 'top'
-              }}
+              className="chat-item-profile-image"
             />
             <span>{chatPartner.displayName}</span>
           </div>

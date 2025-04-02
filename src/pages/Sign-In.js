@@ -78,15 +78,7 @@ const SignIn = () => {
               null
           }
          <h4>Sign in to your account</h4>
-         <form
-           style={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'flex-start',
-            gap: '.5em',
-            padding: '1em'
-           }}
-         >
+         <form className="sign-in-up-form">
             <Input 
               type="email"
               placeholder="E-MAIL" 
@@ -108,11 +100,7 @@ const SignIn = () => {
                 <Button 
                   onClick={e => handleSignIn(e)}
                   disabled={loadingState.auth}
-                  style={{
-                    background: '#fff',
-                    padding: '1em 1.2em',
-                    borderRadius: '20px',
-                  }}
+                  className="sign-in-up-button"
                 >
                   SIGN IN
                 </Button>

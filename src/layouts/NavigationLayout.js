@@ -1,6 +1,6 @@
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom"
 import { useAuth } from "../contexts/authContext"
-import UsersList from "../components/UsersList"
+import UsersList from "../components/users_list/UsersList"
 
 
 const NavigationLayout = () => {
@@ -11,31 +11,9 @@ const NavigationLayout = () => {
   const location = useLocation()
 
   return (
-    <div style={{
-      backgroundColor: 'rgb(238, 171, 163)',
-      display: 'flex',
-      height: '100vh'
-      }}
-    >
-      <nav style={{
-        backgroundColor: 'rgb(241, 137, 125)',
-        padding: '.5em 2em',
-        width: '27%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        }}
-      > 
-        <Link 
-          to="/" 
-          style={{
-            fontSize: '2rem',
-            textTransform: 'initial',
-            color: 'white'
-          }}
-        >
-          Razgovori
-        </Link>
+    <div className="navigation-layout-container">
+      <nav> 
+        <Link to="/" className="logo-link">Razgovori</Link>
         {
           user ? (
             <>
@@ -67,17 +45,7 @@ const NavigationLayout = () => {
               >
                 My chats
               </NavLink>
-              <button 
-                onClick={logOut}
-                style={{
-                  border: '.3px solid salmon',
-                  color: 'salmon',
-                  background: 'rgb(253, 248, 248)',
-                  width: '80px',
-                  borderRadius: '30px',
-                  padding: '.7em',
-                }}
-              >
+              <button onClick={logOut} className="sign-out-button">
                 sign out
               </button>
             </>

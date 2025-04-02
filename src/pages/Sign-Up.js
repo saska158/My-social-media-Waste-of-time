@@ -116,21 +116,9 @@ const SignUp = () => {
   }
 
   return (
-    <div 
-      style={{
-      background: 'salmon'
-      }}
-    >
+    <div>
       <h4>Personal details</h4>
-      <form
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          gap: '.5em',
-          padding: '1em'
-        }}
-      >
+      <form className="sign-in-up-form">
         <Input 
           type="email"
           placeholder="E-MAIL"
@@ -172,11 +160,7 @@ const SignUp = () => {
             <Button 
               onClick={(e) => handleSignUp(e)}
               disabled={loadingState.auth}
-              style={{
-                background: '#fff',
-                padding: '1em 1.2em',
-                borderRadius: '20px',
-              }}
+              className="sign-in-up-button"
             >
               CREATE ACCOUNT
             </Button>

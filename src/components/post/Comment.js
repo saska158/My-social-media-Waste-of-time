@@ -22,31 +22,34 @@ const Comment = ({comment, index}) => {
   return (
     <div 
       key={index} 
-      style={{
+      className="comment-container"
+      /*style={{
         display: 'flex', 
         alignItems: 'flex-start',
         gap: '.3em',
         marginBottom: '1em'
-      }}
+      }}*/
     >
       <img
         src={comment.photoURL}
         alt="profile"
-        style={{
+        className="comment-profile-image"
+        /*style={{
           width: '30px', 
           height: '30px',
           objectFit: 'cover',
           objectPosition: 'top',
           display: 'inline',
           borderRadius: '50%',
-        }}
+        }}*/
       />
       <div
-        style={{
+        className="comment-content"
+        /*style={{
           background: '#f7d4d1',
           borderRadius: '10px',
           padding: '1em'
-        }}
+        }}*/
       >
         <p>{comment.name}</p>
         {
@@ -64,10 +67,11 @@ const Comment = ({comment, index}) => {
                   <img
                     src={comment.content.image}
                     alt="comment-image"
-                    style={{
+                    className="comment-content-image"
+                    /*style={{
                       width: '100px',
                       cursor: 'pointer'
-                    }}
+                    }}*/
                     onClick={(e) => {
                       e.stopPropagation()
                       setIsImageViewerShown(true)

@@ -59,39 +59,19 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
           )
         }
         <div 
-          style={{
-            width: 'fit-content',
-            maxWidth: '50%',
-            margin: '1em',
-            marginLeft: message.senderName === user?.displayName ? 'auto' : '0',
-            borderRadius: '30%',
-            fontSize: '.7rem',
-            textTransform: 'lowercase',
-            display: 'flex'
-          }}
+          className="message-container"
+          style={{marginLeft: message.senderName === user?.displayName ? 'auto' : '0'}}
           data-timestamp={message.timestamp}
           ref={(el) => (messageRefs.current[index] = el)} // Assign ref dynamically
         >
           <img 
             src={userProfile.photoURL} 
             alt="profile" 
-            style={{
-              width: '20px', 
-              height: '20px',
-              objectFit: 'cover',
-              objectPosition: 'top',
-              display: 'inline', 
-              borderRadius: '50%',
-              alignSelf: 'start'
-            }}
+            className="message-profile-image"
           />
           <div 
-            style={{
-              backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey',
-              padding: '.5em',
-              borderRadius: '15px',
-              width:'fit-content',
-            }}
+            className="message-content"
+            style={{backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey'}}
           >
             {
               linkData ? (
@@ -108,9 +88,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
                       <img
                         src={message.content.image}
                         alt="message-image"
-                        style={{
-                          cursor: 'pointer'
-                        }}
+                        style={{cursor: 'pointer'}}
                         onClick={(e) => {
                           e.stopPropagation()
                           setIsImageViewerShown(true)

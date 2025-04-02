@@ -53,9 +53,7 @@ const PostContent = ({post}) => {
                 <img
                   src={post.image}
                   alt="post-image"
-                  style={{
-                    cursor: 'pointer'
-                  }}
+                  style={{cursor: 'pointer'}}
                   onClick={(e) => {
                     e.stopPropagation()
                     setIsImageViewerShown(true)
@@ -71,10 +69,7 @@ const PostContent = ({post}) => {
           <PopUp
             setIsPopUpShown={setIsImageViewerShown}
           >
-            <img
-              src={post.image}
-              alt="image viewer"
-            />
+            <img src={post.image} alt="image viewer" />
           </PopUp>
         )
       }

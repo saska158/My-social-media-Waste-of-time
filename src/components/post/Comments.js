@@ -4,7 +4,6 @@ import { useAuth } from "../../contexts/authContext"
 import EmojiPicker from "emoji-picker-react"
 import ChatSmiley from "../ChatSmiley"
 import Comment from "./Comment"
-import Button from "../Button"
 import uploadToCloudinaryAndGetUrl from "../../api/uploadToCloudinaryAndGetUrl"
 import { ClipLoader } from "react-spinners"
 
@@ -99,19 +98,12 @@ const Comments = ({comments, roomId, id}) => {
   }, [comments])
 
   return (
-    <div style={{fontSize: '.7rem', marginLeft: '2em', padding: '1em', position: 'relative'}}>
+    <div className="comments-container">
       <form 
         onSubmit={addComment}
         style={{display: 'flex'}}
       >
-        <label 
-          style={{
-            borderRadius: '20px', 
-            border: '.3px solid salmon', 
-            display: 'flex', 
-            alignItems: 'center'
-          }}
-        >
+        <label className="comments-main-label">
           <input
             type="text"
             placeholder="Add a comment"
@@ -126,49 +118,24 @@ const Comments = ({comments, roomId, id}) => {
               <img
                 src={imagePreview}
                 alt="image-post"
-                style={{
-                  width: '40px', 
-                  height: '40px', 
-                  objectFit: 'cover', 
-                  objectPosition: 'top',
-                  margin: '.5em'
-                  }}
+                className="comments-form-image-preview"
               />
             )
           }
           {/* ovo je za slike */}
-          <label
-            style={{
-              position: 'relative',
-              display: 'inline-block',
-              cursor: 'pointer',
-              width: '20px',
-              height: '20px',
-            }}
-          >
-            <Button
+          <label className="comments-image-input-label">
+            <button
               onClick={(e) => {e.preventDefault()}}
-              style={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                padding: '0'
-              }}
+              className="comments-image-input-button"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '100%', color: 'salmon'}}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
               </svg>
-            </Button>
+            </button>
             <input 
               type="file"
               accept="image/*"
-              style={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                cursor: 'pointer',
-                opacity: '0'
-              }}
+              className="comments-image-input"
               onChange={handleImageChange}
               ref={imageInputRef}
             />
@@ -200,12 +167,7 @@ const Comments = ({comments, roomId, id}) => {
           <div>
             <EmojiPicker 
               onEmojiClick={handleEmojiClick} 
-              style={{
-                position: 'absolute',
-                top: '0',
-                left: '0',
-                width: '50%',
-              }}
+              className="comments-emoji-picker"
             />
           </div>
         )

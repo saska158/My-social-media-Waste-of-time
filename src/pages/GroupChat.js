@@ -51,26 +51,9 @@ const GroupChat = () => {
   }, [posts])*/
 
   return (
-    <div 
-      style={{ 
-        display: 'flex', 
-        flexDirection: "column",
-      }}
-    >
+    <div className="group-chat-container">
       <button
-        style={{
-          border: '.3px solid salmon',
-          color: 'salmon',
-          background: 'rgb(253, 248, 248)',
-          width: '150px',
-          borderRadius: '30px',
-          padding: '1em 1.5em',
-          margin: '.7em',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: '.5em'
-        }}
+        className="new-post-button"
         onClick={(e) => {
           e.stopPropagation()
           if(!user) {
@@ -96,16 +79,10 @@ const GroupChat = () => {
           )
         }
         <div 
-          style={{
-            background: 'rgb(253, 239, 237)',
-            display: 'flex',
-            flexDirection: "column-reverse",
-            alignItems: 'center',
-            //flex: '1',
-            height: '500px',
-            overflowY: 'auto',
-            //border: '1px solid red'
-          }}
+          className="posts-container"
+          style={{height: '500px', overflowY: 'auto', display: 'flex',
+            flexDirection: 'column-reverse',
+            alignItems: 'center'}}
           ref={postsRef}
         >
           {

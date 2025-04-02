@@ -79,16 +79,7 @@ const PostActions = ({roomId, id}) => {
 
   return (
     <div>
-      <div 
-        style={{
-          fontSize: '.7rem', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'space-between',
-          padding: '.5em',
-          color: 'salmon'
-        }}
-      >
+      <div className="post-actions-container">
         <span>
           {
             likesArray.length === 0 ? `0 likes` :
@@ -100,24 +91,9 @@ const PostActions = ({roomId, id}) => {
       </div>
 
       <div>
-        <div 
-          style={{
-            display: 'flex',
-            gap: '2em', 
-            borderTop: '.5px solid rgb(247, 198, 193)', 
-            fontSize: '.7rem',
-            color: 'rgb(243, 85, 68)',
-            padding: '.5em',
-          }}
-        >
+        <div className="post-actions-buttons">
           <button 
-            style={{
-              display: 'flex', 
-              justifyContent: 'center', 
-              alignItems: 'center', 
-              gap: '.5em',
-              color: 'salmon'
-            }}
+            className="post-actions-like-button"
             onClick={handleLike}
           >
             {
@@ -134,13 +110,7 @@ const PostActions = ({roomId, id}) => {
             like
           </button>
           <button 
-            style={{
-              display: 'flex', 
-              justifyContent: 'center', 
-              alignItems: 'center', 
-              gap: '.5em',
-              color: 'salmon'
-            }}
+            className="post-actions-like-button"
             onClick={(e) => {
               e.stopPropagation()
               if(!user) {

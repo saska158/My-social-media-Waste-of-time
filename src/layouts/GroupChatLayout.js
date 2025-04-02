@@ -11,36 +11,20 @@ const GroupChatLayout = () => {
 
 
   return (
-    <div 
-      style={{ 
-        display: 'flex', 
-        flexDirection: 'column',
-        width: '100%',
-        background: 'white'
-      }}
-    >
-      <nav 
-        style={{
-          display: 'flex', 
-          justifyContent: 'flex-start', 
-          gap: '1em', 
-          color: 'white',
-          backgroundColor: 'salmon',
-          padding: '1em'
-        }}
-      >
+    <div className="group-chat-layout-container">
+      <div className="group-chat-layout-container-nav"> 
         {routes.map(({ path, label }) => (
           <NavLink
             key={path}
             to={path}
             style={({ isActive }) => ({
-              borderBottom: isActive ? ".5px solid white" : "none"
+              borderBottom: isActive ? ".5px solid white" : "none",
             })}
           >
             {label}
           </NavLink>
         ))}
-      </nav>
+      </div>
       <Outlet />
     </div>
   )

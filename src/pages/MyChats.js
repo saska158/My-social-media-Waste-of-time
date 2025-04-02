@@ -60,18 +60,13 @@ const MyChats = () => {
     }, [user.uid])
 
     return (
-        <div style={{width: '30%'}}>
+        <div className="my-chats-container">
             {
                 !isChatBoxVisible ? (
                     <div>
-                      <p
-                        style={{
-                          margin: '1em 1em .5em', 
-                          fontSize: '1.2rem'
-                        }}
-                      >
+                      <h2>
                         My chats
-                      </p>
+                      </h2>
                       {
                         chats.length > 0 ? (
                             chats.map((chat, index) => (

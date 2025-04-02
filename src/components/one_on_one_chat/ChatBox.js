@@ -11,9 +11,7 @@ import {
     database, 
     onValue
 } from "../../api/firebase"
-import Input from '../Input'
-import Button from '../Button'
-import TypingIndicator from "../TypingIndicator"
+import TypingIndicator from "./TypingIndicator"
 import Messages from "./Messages"
 import { useAuth } from "../../contexts/authContext"
 import ChatSmiley from "../ChatSmiley"
@@ -155,29 +153,21 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
   }, [messages])
     
   return (
-    <div className="chat-box" style={{position: 'relative', overflowX: 'hidden'}}>
+    <div className="chat-box">
       <ChatBoxHeader chatPartnerProfile={chatPartnerProfile} setIsChatBoxVisible={setIsChatBoxVisible} />
       <div className="chat-box-messages" ref={chatRef}>
         <span className="date">{visibleDate}</span>
         <Messages messages={messages} />
       </div>
       {isTyping && (
-        <div style={{display: 'flex', alignItems: 'center'}}>
+        <div className="typing-container">
           <span>{chatPartnerProfile.displayName} is typing</span>
           <TypingIndicator />
         </div>
       )}
-      <form style={{display: 'flex'}}>
-        <label 
-          style={{
-            border: '.3px solid salmon', 
-            borderRadius: '20px',
-            background: 'white',
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        > 
-          <Input 
+      <form>
+        <label className="chat-box-main-label"> 
+          <input 
             type='text'
             placeholder='Message...'
             value={message.text}
@@ -193,48 +183,23 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
               <img
                 src={imagePreview}
                 alt="image-post"
-                style={{
-                  width: '50px', 
-                  height: '50px', 
-                  objectFit: 'cover', 
-                  objectPosition: 'top',
-                  margin: '.5em'
-                }}
+                className="chat-box-image-preview"
               />
             )
           }
-            <label
-              style={{
-                position: 'relative',
-                display: 'inline-block',
-                cursor: 'pointer',
-                width: '20px',
-                height: '20px',
-              }}
-            >
-              <Button
+            <label className="chat-box-image-input-label">
+              <button
                 onClick={(e) => {e.preventDefault()}}
-                style={{
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  padding: '0'
-                }}
+                className="chat-box-image-input-button"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '100%', color: 'salmon'}}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="chat-box-image-icon" /*className="size-6" style={{width: '100%', color: 'salmon'}}*/>
                   <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                 </svg>
-              </Button>
+              </button>
               <input 
                 type="file"
                 accept="image/*"
-                style={{
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  cursor: 'pointer',
-                  opacity: '0'
-                }}
+                className="chat-box-image-input"
                 onChange={handleImageChange}
               />
             </label>
@@ -242,7 +207,7 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
           </label>
           {
             message.text || message.image ? (
-              <Button 
+              <button 
                 onClick={(e) => handleSendMessage(e, user, chatPartnerUid, message)}
                 style={{marginLeft: 'auto'}}
                 disabled={loadingState.upload}
@@ -256,7 +221,7 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
                     </svg>
                   )
                 }
-              </Button>
+              </button>
             ) : null
           }
           {
@@ -264,13 +229,7 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
               <div>
                 <EmojiPicker 
                   onEmojiClick={handleEmojiClick} 
-                  style={{
-                    position: 'absolute',
-                    bottom: '0',
-                    left: '0',
-                    width: '60%',
-                    height: '60%' 
-                  }}
+                  className="chat-box-emoji-picker"
                 />
               </div>
             )

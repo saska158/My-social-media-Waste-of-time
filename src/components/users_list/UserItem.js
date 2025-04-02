@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { useAuth } from "../contexts/authContext"
-import { firestore, doc, getDoc, updateDoc, arrayUnion } from "../api/firebase"
+import { useAuth } from "../../contexts/authContext"
+import { firestore, doc, getDoc, updateDoc, arrayUnion } from "../../api/firebase"
 import { ClipLoader } from "react-spinners"
 
 const UserItem = ({userItem, users}) => {
@@ -25,11 +25,9 @@ const UserItem = ({userItem, users}) => {
     
         const followedByMe = users.some(usr => usr.uid === userUid && usr.followedByMe)
         if(followedByMe) {
-          // Unfollow: remove user from followers/following
           await updateDoc(myProfileRef, {following: myProfileSnap.data().following?.filter(profile => profile.uid !== userUid)})
           await updateDoc(otherUserProfileRef, {followers: otherUserProfileSnap.data().followers?.filter(follower => follower.uid !== user.uid)})
         } else {
-            // Follow: add user to followers/following
             await updateDoc(otherUserProfileRef, {followers: arrayUnion(myProfileSnap.data())})
             await updateDoc(myProfileRef, {following: arrayUnion(otherUserProfileSnap.data())})
         }
@@ -43,35 +41,14 @@ const UserItem = ({userItem, users}) => {
     return (
         <div 
           key={userItem.uid}
-          style={{
-            padding: '2em',
-            borderBottom: '.5px solid salmon',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-            gap: '.5em',
-            height: '100px'
-          }}
+          className="user-item-container"
         >
           <Link to={`user/${userItem.uid}`}>
-            <div 
-              style={{
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '.3em'
-              }}
-            >
+            <div className="user-item-infos">
               <img
                 src={userItem.photoURL}
                 alt="profile"
-                style={{
-                  width: '40px', 
-                  height: '40px',
-                  objectFit: 'cover',
-                  objectPosition: 'top',
-                  display: 'inline',
-                  borderRadius: '50%',
-                }}
+                className="user-item-profile-image"
               />
               <span>{userItem.displayName}</span>
             </div>
@@ -84,15 +61,8 @@ const UserItem = ({userItem, users}) => {
                 <button 
                   onClick={(e) => handleFollowToggle(userItem.uid, e)}
                   disabled={loading}
-                  style={{
-                    border: loading ? '0' : '.5px solid salmon',
-                    color: 'salmon',
-                    padding: '.5em .8em',
-                    borderRadius: '30px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '1em',
-                  }}
+                  className="user-item-follow-toggle-button"
+                  style={{border: loading ? '0' : '.5px solid salmon'}}
                 >
                   {
                     userItem.followedByMe ? (

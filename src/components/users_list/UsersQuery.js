@@ -1,12 +1,12 @@
 import { useState, useEffect, useRef } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { useAuth } from "../contexts/authContext"
+import { useAuth } from "../../contexts/authContext"
 import { 
     collection,
     firestore,
     onSnapshot
-} from "../api/firebase"
-import PopUp from "./PopUp"
+} from "../../api/firebase"
+import PopUp from "../PopUp"
 import UserItem from "./UserItem"
 
 const UsersQuery = ({setIsUsersQueryShown}) => {
@@ -61,9 +61,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
   return (
     <PopUp 
       setIsPopUpShown={setIsUsersQueryShown}
-      style={{
-        overflow: 'auto',
-      }}
+      style={{overflow: 'auto'}}
     >
       <input
         type="text"

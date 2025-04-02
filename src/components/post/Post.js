@@ -42,14 +42,7 @@ const Post = ({id, creatorUid, post, roomId}) => {
   return (
     <div 
       key={id}
-      style={{
-        background: 'white',
-        border: '.5px solid rgb(247, 198, 193)',
-        borderRadius: '10px',
-        width: '70%',
-        margin: '1em',
-        padding: '1em'
-      }}
+      className="post-container"
     >
       <PostHeader
         creatorUid={creatorUid}

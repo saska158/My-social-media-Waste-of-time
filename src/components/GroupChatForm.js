@@ -6,7 +6,6 @@ import EmojiPicker from "emoji-picker-react"
 import ChatSmiley from "../components/ChatSmiley"
 import LinkPreview from "../components/LinkPreview"
 import { PulseLoader } from "react-spinners"
-import Button from "../components/Button"
 import PopUp from "./PopUp"
 import fetchLinkPreview from "../api/fetchLinkPreview"
 import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
@@ -117,27 +116,14 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomRef, roomId}) => {
     
     return (
         <PopUp setIsPopUpShown={setIsPopupShown} setShowEmojiPicker={setShowEmojiPicker}>
-              <form 
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '1em',
-                  height: '100%',
-                  overflow: 'auto'
-                }}
-                ref={formRef}
-              >
+              <form className="group-chat-form" ref={formRef}>
                 <div style={{border: '.3px solid salmon', borderRadius: '20px', padding: '1em'}}>
                   <textarea
                     value={post.text}
                     onChange={handleTextChange}
                     placeholder="let's waste time"
-                    style={{
-                      width: '100%', 
-                      minHeight: imagePreview ? '50px' : '200px', 
-                      maxHeight: '300px', 
-                      padding: '1em'
-                    }}
+                    className="group-chat-textarea"
+                    style={{minHeight: imagePreview ? '50px' : '200px'}}
                     ref={textareaRef}
                   />
                   {
@@ -145,68 +131,38 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomRef, roomId}) => {
                       <img
                         src={imagePreview}
                         alt="image-post"
-                        style={{width: '500px', height: '350px', objectFit: 'cover', objectPosition: 'top'}}
+                        className="group-chat-image-preview"
                       />
                     )
                   }
                 </div>
-                <Button 
+                <button 
                   onClick={createPost}
+                  className="group-chat-form-button"
                   style={{
                     background: loadingState.upload ? 'none' : 'rgb(253, 248, 248)',
-                    alignSelf: 'flex-end',
                     border: loadingState.upload ? '0' : '.3px solid salmon',
-                    color: 'salmon',
-                    width: '150px',
-                    borderRadius: '30px',
-                    padding: '1em',
                   }}
                   disabled={loadingState.upload}
                 >
                   {
                     loadingState.upload ? <PulseLoader size={10} color="salmon" /> : 'post'
                   }
-                </Button>  
-                <div 
-                  style={{
-                    display: 'flex',
-                    gap: '.5em',
-                    marginTop: 'auto',
-                    justifyContent: 'flex-end'
-                  }}
-                >
-                  <label
-                    style={{
-                      position: 'relative',
-                      display: 'inline-block',
-                      cursor: 'pointer',
-                      width: '25px',
-                      height: '25px',
-                    }}
-                  >
-                    <Button
+                </button>  
+                <div className="group-chat-form-icons">
+                  <label className="group-chat-form-label">
+                    <button
                       onClick={(e) => {e.preventDefault()}}
-                      style={{
-                          position: 'absolute',
-                          width: '100%',
-                          height: '100%',
-                          padding: '0'
-                      }}
+                      className="group-chat-form-label-button"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '100%', color: 'salmon'}}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
                       </svg>
-                    </Button>
+                    </button>
                     <input 
                       type="file"
                       accept="image/*"
-                      style={{
-                        position: 'absolute',
-                        width: '100%',
-                        height: '100%',
-                        cursor: 'pointer',
-                        opacity: '0'
-                      }}
+                      className="group-chat-input-image"
                       onChange={handleImageChange}
                       ref={imageInputRef}
                     />
@@ -215,18 +171,12 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomRef, roomId}) => {
                 </div>
                 {
                   showEmojiPicker && (
-                    <div>
+                    //<div>
                       <EmojiPicker 
                         onEmojiClick={handleEmojiClick} 
-                        style={{
-                          position: 'absolute',
-                          bottom: '0',
-                          left: '0',
-                          width: '70%',
-                          height: '75%' 
-                        }}
+                        className="group-chat-form-emoji-picker"
                       />
-                    </div>
+                    //</div>
                   )
                 }
                 {
