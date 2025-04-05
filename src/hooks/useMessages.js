@@ -92,7 +92,7 @@ const useMessages = (chatId) => {
     } // finally loading false
   }, [lastVisible, hasMore])
 
-  const sendMessage = async (userA, userBUid, message) => {
+  const sendMessage = async (userA, userBUid, receiverName, receiverPhoto, message) => {
     if(!chatId) return
     if(message.text || message.image) {
       let imageUrl = ''
@@ -115,9 +115,9 @@ const useMessages = (chatId) => {
         if(chatSnapshot.empty) {
             // Chat doesn't exist, create a new one
             await setDoc(chatDoc, {
-                participants: [userA.uid, userBUid],
-                createdAt: serverTimestamp(),
-                lastMessage: null
+              participants: [userA.uid, userBUid],
+              createdAt: serverTimestamp(),
+              lastMessage: null
             })
         }
         // Add the message to the messages subcollection of the chat
@@ -136,7 +136,12 @@ const useMessages = (chatId) => {
                 senderUid: userA.uid,
                 senderName: userA.displayName,
                 senderPhoto: userA.photoURL,
-                content: message.text || message.image, 
+                receiverPhoto,  
+                receiverName,
+                receiverUid: userBUid,
+                //content: message.text || message.image, 
+                contentText: message.text,
+                contentImage: message.image,
                 timestamp: serverTimestamp() },
           })
         console.log("Message sent successfully!")

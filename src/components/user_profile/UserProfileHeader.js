@@ -1,20 +1,19 @@
 import { useState } from "react"
 import { useAuth } from "../../contexts/authContext"
-import { useLoading } from "../../contexts/loadingContext"
 import { firestore, doc, getDoc, updateDoc, arrayUnion } from "../../api/firebase"
 import { PulseLoader } from "react-spinners"
 
 const UserProfileHeader = ({profile, profileUid, isFollowing, setIsEditPopupShown}) => {
     // Context
     const { user } = useAuth()
-    const { loadingState, setLoadingState } = useLoading()
 
     // State
     const [error, setError] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     // Functions
     const handleFollowToggle = async (otherUserUid) => {
-      setLoadingState(prev => ({...prev, upload: true}))
+      setLoading(true)
         
       try {
         const myProfileRef = doc(firestore, "profiles", user.uid)
@@ -31,9 +30,9 @@ const UserProfileHeader = ({profile, profileUid, isFollowing, setIsEditPopupShow
         } 
       } catch(error) {
         console.error(error)
-          setError(error)
+        setError(error)
       } finally {
-        setLoadingState(prev => ({...prev, upload: false}))
+        setLoading(false)
       }
     }
 
@@ -57,11 +56,11 @@ const UserProfileHeader = ({profile, profileUid, isFollowing, setIsEditPopupShow
               </div>
               {
                 user && !isMyProfile ? (
-                  loadingState.upload ? <PulseLoader color="white" /> :
+                  loading ? <PulseLoader color="white" /> :
                     <button
                       className="follow-toggle-button"
                       onClick={() => handleFollowToggle(profileUid)}
-                      disabled={loadingState.upload}
+                      disabled={loading}
                     >
                       {
                         isFollowing ? (

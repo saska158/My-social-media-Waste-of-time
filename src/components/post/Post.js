@@ -1,20 +1,13 @@
 import { useState, useEffect } from "react"
-import { 
-  firestore,
-  collection, 
-  query, 
-  where, 
-  getDocs 
-} from "../../api/firebase"
+import { firestore, collection, query, where, getDocs } from "../../api/firebase"
 import PostHeader from "./PostHeader"
 import PostContent from "./PostContent"
 import PostActions from "./PostActions"
 import Skeleton from "react-loading-skeleton"
 import "react-loading-skeleton/dist/skeleton.css"
 
-//const PostSkeleton = () => <Skeleton height={20} width={200} borderRadius={8} />
-
 const Post = ({id, creatorUid, post, roomId}) => {
+  console.log("Post rerendered")
   // State
   const [profile, setProfile] = useState(null)
   const [error, setError] = useState(null)

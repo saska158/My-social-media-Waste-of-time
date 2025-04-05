@@ -14,7 +14,6 @@ import { AuthProvider } from './contexts/authContext'
 import { LoadingProvider } from './contexts/loadingContext'
 
 function App() {
-
   return (
     <LoadingProvider>
       <AuthProvider>

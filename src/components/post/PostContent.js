@@ -1,18 +1,19 @@
 import { useState, useEffect, useRef } from "react"
 import fetchLinkPreview from "../../api/fetchLinkPreview"
 import extractUrls from "../../utils/extractUrls"
-import { useLoading } from "../../contexts/loadingContext"
+//import { useLoading } from "../../contexts/loadingContext"
 import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
 
 const PostContent = ({post}) => {
   // Context
-  const { loadingState, setLoadingState } = useLoading() 
+ // const { loadingState, setLoadingState } = useLoading() 
 
   // State  
   const [linkData, setLinkData] = useState(null)
   const [isImageViewerShown, setIsImageViewerShown] = useState(false)
   const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
 
   // Hooks that don't trigger re-renders
   const linkPreviewRef = useRef(null)  
@@ -26,8 +27,9 @@ const PostContent = ({post}) => {
   // Effects
   /* effect to detect and fetch preview when user types a URL */
   useEffect(() => {
+    setLoading(true)
     const fetchData = async () => {
-      setLoadingState(prev => ({...prev, upload: true}))
+      //setLoadingState(prev => ({...prev, upload: true}))
       try {
         const urls = extractUrls(post.text)
         if(urls && urls.length > 0) {
@@ -37,7 +39,8 @@ const PostContent = ({post}) => {
       } catch(error) {
         setError(error)
       } finally {
-        setLoadingState(prev => ({...prev, upload: false}))
+        //setLoadingState(prev => ({...prev, upload: false}))
+        setLoading(false)
       }
     }
     fetchData()

@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef, useEffect } from "react"
-import { doc, firestore, updateDoc, arrayUnion } from "../../api/firebase"
+import { firestore, collection, addDoc, serverTimestamp } from "../../api/firebase"
 import { useAuth } from "../../contexts/authContext"
 import EmojiPicker from "emoji-picker-react"
 import ChatSmiley from "../ChatSmiley"
@@ -7,7 +7,7 @@ import Comment from "./Comment"
 import uploadToCloudinaryAndGetUrl from "../../api/uploadToCloudinaryAndGetUrl"
 import { ClipLoader } from "react-spinners"
 
-const Comments = ({comments, roomId, id}) => {
+const Comments = ({comments, roomId, id, commentsBoxRef}) => {
   const initialComment = {text: '', image: ''}
 
   // Context
@@ -24,10 +24,11 @@ const Comments = ({comments, roomId, id}) => {
   const imageInputRef = useRef(null)
   const inputRef = useRef(null)
 
-  const postRef = useMemo(() => {
+  // Memoized values
+  const room = useMemo(() => {
     const room = roomId ? `${roomId}` : `main`
-    return doc(firestore, room, id)
-  }, [roomId, id])
+    return room
+  }, [roomId])
 
   // Functions
   const handleComment = (e) => {
@@ -52,6 +53,7 @@ const Comments = ({comments, roomId, id}) => {
 
   const addComment = async (e) => {
     e.preventDefault()
+    const commentsRef = collection(firestore, room, id, "comments")
 
     if(comment.text || comment.image) {
       const imageFile = imageInputRef.current.files[0]
@@ -72,9 +74,9 @@ const Comments = ({comments, roomId, id}) => {
           name: user.displayName,
           photoURL: user.photoURL,
           content: newComment,
-          timestamp: Date.now()//popravi
+          timestamp: serverTimestamp()
         }
-        await updateDoc(postRef, {comments: arrayUnion(newCommentData)})
+        await addDoc(commentsRef, newCommentData)
         setComment(initialComment)  
       } catch(error) {
             console.error("Error sending comment", error)
@@ -95,7 +97,15 @@ const Comments = ({comments, roomId, id}) => {
 
   return (
     <div className="comments-container">
-      <form onSubmit={addComment} style={{display: 'flex'}}>
+      { showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} className="comments-emoji-picker"/> }
+      <div className="comments-box" ref={commentsBoxRef}>
+        {
+          comments.length > 0 ? (
+            comments.map((comment, index) => <Comment {...{comment, index}} />)
+          ) : <p>No comments yet</p>
+        }
+      </div>
+      <form onSubmit={addComment} className="comments-form">
         <label className="comments-main-label">
           <input
             type="text"
@@ -136,14 +146,6 @@ const Comments = ({comments, roomId, id}) => {
           ) : null
         }
       </form>
-      { showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} className="comments-emoji-picker"/> }
-      <div style={{padding: '1em 0'}}>
-        {
-          comments.length > 0 ? (
-            comments.map((comment, index) => <Comment {...{comment, index}} />)
-          ) : <p>No comments yet</p>
-        }
-      </div>
     </div>
   )
 }

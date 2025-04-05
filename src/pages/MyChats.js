@@ -1,16 +1,9 @@
 import { useState, useEffect } from "react"
-import { 
-    firestore,
-    collection,
-    doc,
-    getDoc,
-    query,
-    where,
-    onSnapshot
- } from "../api/firebase"
+import { firestore, collection, query, where, onSnapshot, doc, getDoc } from "../api/firebase"
 import { useAuth } from "../contexts/authContext"
 import ChatBox from "../components/one_on_one_chat/ChatBox"
-import ChatItem from "../components/ChatItem"
+import ChatPreview from "../components/ChatPreview"
+import ChatItemSkeleton from "../components/skeletons/ChatItemSkeleton"
 
 const MyChats = () => {
     // Context
@@ -18,74 +11,90 @@ const MyChats = () => {
     
     // State
     const [chats, setChats] = useState([])
+    const [chatPartnerProfile, setChatPartnerProfile] = useState(null)
     const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
-    const [chatPartner, setChatPartner] = useState({ 
-        uid: '',
-        profile: ''
-    })
+    const [chatPartnerUid, setChatPartnerUid] = useState(null)
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+    console.log('partner', chats.map(chat => chat.participants.filter(par => par !== user.uid)[0]))
 
     // Effects
     useEffect(() => {
-      if (!user.uid) return
-
       const chatsRef = collection(firestore, 'chats')
       const chatsQuery = query(chatsRef, where('participants', 'array-contains', user.uid))
 
-      const unsubscribe = onSnapshot(chatsQuery, async (snapshot) => { 
-        const chatData = await Promise.all( // Razmisli o ovome Promise.all i sta se sve ovde desava
-          snapshot.docs.map(async (docSnap) => { // mozda treba negde drugde isto to da se primeni
-            const chat = docSnap.data()
-
-            // Find the other participant
-            const chatPartnerUid = chat.participants.find(uid => uid !== user.uid)
-
-            // Fetch the other user's profile
-            const chatPartherRef = doc(firestore, 'profiles', chatPartnerUid)
-            const chatPartnerSnap = await getDoc(chatPartherRef)
-            const chatPartnerData = chatPartnerSnap.exists() ? chatPartnerSnap.data() : null
-
-            return {
-              id: docSnap.id,
-              lastMessage: chat.lastMessage || null,
-              chatPartnerUid,
-              chatPartner: chatPartnerData,
-              timestamp: docSnap.data().createdAt ? docSnap.data().createdAt.toDate() : null
-            }
-          })
-        )
-        setChats(chatData)
+      const unsubscribe = onSnapshot(chatsQuery, (snapshot) => {
+        const chatsArray = snapshot.docs.map(doc => ({...doc.data()}))
+        setChats(chatsArray)
+        setLoading(false)
       })
 
       return () => unsubscribe
     }, [user.uid])
 
+    useEffect(() => {
+      if(chatPartnerUid) {
+        const fetchProfile = async () => {
+          const profileRef = doc(firestore, "profiles", chatPartnerUid)
+          try {
+            const snapshot = await getDoc(profileRef)
+            if(snapshot.exists()) {
+              setChatPartnerProfile(snapshot.data())
+            }
+          } catch(error) {
+            console.error(error)
+            setError(error)  
+          } 
+        }
+        
+        fetchProfile()
+      }
+    }, [chatPartnerUid])
+
+    // Functions
+    const pickChat = (chatPartnerUid, setIsChatBoxVisible) => {
+      setIsChatBoxVisible(true)
+      setChatPartnerUid(chatPartnerUid)
+    }
+
     return (
-        <div className="my-chats-container">
-          {
-            !isChatBoxVisible ? (
-              <div>
-                <h2>My chats</h2>
-                {
+      <div className="my-chats-container">
+        {
+          !isChatBoxVisible ? (
+            <div>
+              <h2>My chats</h2>
+              {
+                loading ? <ChatItemSkeleton /> : (
                   chats.length > 0 ? (
-                    chats.map((chat, index) => <ChatItem 
-                                                key={index} 
-                                                {...{ chat, setIsChatBoxVisible, setChatPartner }} 
-                                               />
-                    )
-                  ) : <p>You still don't have any chats.</p>
-                }
-              </div>
-            ) : (
-              <ChatBox 
-                chatPartnerUid={chatPartner.uid} 
-                chatPartnerProfile={chatPartner.profile} 
-                setIsChatBoxVisible={setIsChatBoxVisible} 
-              />
-            )
-          }
-          
-        </div>
+                    chats.map((chat, index) => {
+                      const { receiverUid, receiverPhoto, receiverName, senderPhoto, senderName, contentText, contentImage, timestamp } = chat.lastMessage
+                      const chatPartnerUid = chat.participants.filter(participant => participant !== user.uid)[0]
+                      return (
+                        <ChatPreview {...{
+                          index,
+                          chatPartnerUid, 
+                          setIsChatBoxVisible, 
+                          receiverUid, 
+                          receiverPhoto, 
+                          receiverName, senderPhoto, 
+                          senderName, 
+                          contentText, 
+                          contentImage,
+                          pickChat,
+                          timestamp
+                        }}/>
+                      )
+                      })
+                  ) : (
+                      <p>There's no chats yet.</p>
+                  )
+                )
+              }
+            </div>
+          ) : <ChatBox {...{chatPartnerProfile, setIsChatBoxVisible}}/>
+        }  
+      </div>
     )
 }
-
+//Array(5).fill(0).map((_, i) => <ChatItemSkeleton key={i} />
 export default MyChats

@@ -1,16 +1,16 @@
 import { useState, useEffect, useCallback, useMemo } from "react"
 import { useParams } from "react-router-dom"
-import { useLoading } from "../contexts/loadingContext"
 import { query, orderBy, limit, onSnapshot, getDocs, startAfter, collection, firestore } from "../api/firebase"
 
 const usePosts = (elementRef) => {
     // State
     const [posts, setPosts] = useState([])
     const [lastVisible, setLastVisible] = useState(null)
-    const [hasMore, setHasMore] = useState(null)
-
-    // Context
-    const { loadingState, setLoadingState } = useLoading()
+    //const [hasMore, setHasMore] = useState(null)
+    const [loading, setLoading] = useState({
+      posts: true,
+      morePosts: false
+    })
 
     // Hooks that don't trigger re-renders  
     const { roomId } = useParams()
@@ -24,6 +24,7 @@ const usePosts = (elementRef) => {
     // Effects
     useEffect(() => {
       if(!roomRef) return
+      //console.log("effects from usePosts")
 
       const postsQuery = query(roomRef, orderBy("timestamp", "desc"), limit(3))
 
@@ -36,10 +37,11 @@ const usePosts = (elementRef) => {
           }))
           setPosts(newPosts.reverse())
           setLastVisible(snapshot.docs[snapshot.docs.length - 1])
-          setHasMore(snapshot.docs.length === 3)
-        } else {
-          setHasMore(false)
-        }
+          //setHasMore(snapshot.docs.length === 3)
+          setLoading(prevLoading => ({...prevLoading, posts: false}))
+        } //else {
+          //setHasMore(false)
+        //}
       })
           
       return () => unsubscribe()
@@ -48,9 +50,10 @@ const usePosts = (elementRef) => {
     // Functions
     const fetchMorePosts = useCallback(async () => {
       console.log("fetching")
-      if(!hasMore || !lastVisible) return
+      if(/*!hasMore || */!lastVisible) return
 
       const postsQuery = query(roomRef, orderBy("timestamp", "desc"), startAfter(lastVisible), limit(3))
+      setLoading(prevLoading => ({...prevLoading, morePosts: true}))
       // loading i spinner
       try {
         const snapshot = await getDocs(postsQuery)
@@ -63,17 +66,19 @@ const usePosts = (elementRef) => {
   
           setPosts(prevPosts => [...newPosts, ...prevPosts])
           setLastVisible(snapshot.docs[snapshot.docs.length - 1])
-          setHasMore(snapshot.docs.length === 3)
-        } else {
-          setHasMore(false)
-        }
+          //setHasMore(snapshot.docs.length === 3)
+        } //else {
+          //setHasMore(false)
+        //}
       } catch (error) {
         console.error("Error fetching more messages:", error)
         // setError(error)
-      } // finally loading false
-    }, [lastVisible, hasMore])
+      } finally {
+        setLoading(prevLoading => ({...prevLoading, morePosts: false}))
+      } 
+    }, [lastVisible, /*hasMore*/])
 
-    return { posts, fetchMorePosts, hasMore, loadingState }
+    return { posts, fetchMorePosts,/* hasMore,*/ loading }
 }
 
 export default usePosts

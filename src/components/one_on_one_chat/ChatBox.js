@@ -1,15 +1,5 @@
 import { useState, useEffect, useRef, useLayoutEffect } from "react"
-import {
-    firestore, 
-    collection,
-    query, 
-    where, 
-    getDocs, 
-    updateDoc,
-    ref,
-    database, 
-    onValue
-} from "../../api/firebase"
+import { firestore, collection, query, where, getDocs, updateDoc, ref, database, onValue } from "../../api/firebase"
 import TypingIndicator from "./TypingIndicator"
 import Messages from "./Messages"
 import { useAuth } from "../../contexts/authContext"
@@ -19,7 +9,7 @@ import useMessages from "../../hooks/useMessages"
 import useInfiniteScroll from "../../hooks/useInfiniteScroll"
 
 
-const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
+const ChatBox = ({/*chatPartnerUid,*/ chatPartnerProfile, setIsChatBoxVisible}) => {
   // Context
   const { user } = useAuth()
 
@@ -27,20 +17,25 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
   const [chatId, setChatId] = useState('')
   const [visibleDate, setVisibleDate] = useState("")
   const [isTyping, setIsTyping] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+
+  console.log("partner", chatPartnerProfile)
 
   // Hooks that don't trigger re-renders 
   const chatRef = useRef(null)
 
   // Custom hooks
   const { messages, fetchMoreMessages, hasMore } = useMessages(chatId)
-  useInfiniteScroll(fetchMoreMessages, hasMore, chatRef)
+  //useInfiniteScroll(fetchMoreMessages, hasMore, chatRef)
 
   // Effects
   /* create or get the chatId when the component mounts or user UIDs change */
   useEffect(() => {
-    const generatedChatId = [user?.uid, chatPartnerUid].sort().join("_")
+    const generatedChatId = [user?.uid, chatPartnerProfile?.uid].sort().join("_")
     setChatId(generatedChatId)
-  }, [user?.uid, chatPartnerUid])
+  }, [user?.uid, chatPartnerProfile?.uid])
+
 
   useEffect(() => {
     if(!chatId) return
@@ -58,18 +53,18 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
     }
 
     markMessagesAsSeen()
-  }, [chatId, user.uid, messages]) 
+  }, [chatId, user?.uid, messages]) 
 
   useEffect(() => {
-    if (!chatId || !chatPartnerUid) return
+    if (!chatId || !chatPartnerProfile) return
 
-    const otherTypingRef = ref(database, `typingStatus/${chatId}/${chatPartnerUid}`)
+    const otherTypingRef = ref(database, `typingStatus/${chatId}/${chatPartnerProfile.uid}`)
     const unsubscribe = onValue(otherTypingRef, (snapshot) => {
       setIsTyping(snapshot.val() === true)
     })
 
     return () => unsubscribe()
-  }, [chatId, chatPartnerUid])
+  }, [chatId, chatPartnerProfile?.uid])
 
   useLayoutEffect(() => {
     const chatBox = chatRef.current
@@ -82,13 +77,14 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
 
     return () => clearTimeout(timeoutId)
   }, [messages])
+
     
   return (
     <div className="chat-box">
-      <ChatBoxHeader chatPartnerProfile={chatPartnerProfile} setIsChatBoxVisible={setIsChatBoxVisible} />
+      <ChatBoxHeader {...{chatPartnerProfile, setIsChatBoxVisible}} />
       <div className="chat-box-messages" ref={chatRef}>
         <span className="date">{visibleDate}</span>
-        <Messages messages={messages} />
+        <Messages {...{messages}} />
       </div>
       {isTyping && (
         <div className="typing-container">
@@ -96,7 +92,7 @@ const ChatBox = ({chatPartnerUid, chatPartnerProfile, setIsChatBoxVisible}) => {
           <TypingIndicator />
         </div>
       )}
-      <ChatBoxForm {...{messages, chatPartnerUid, chatId}}/>
+      <ChatBoxForm {...{messages, chatPartnerProfile, chatId}}/>
     </div>
   )
 }

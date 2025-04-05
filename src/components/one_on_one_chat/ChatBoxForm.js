@@ -6,7 +6,7 @@ import ChatSmiley from "../ChatSmiley"
 import { ClipLoader } from "react-spinners"
 import useMessages from "../../hooks/useMessages"
 
-const ChatBoxForm = ({messages, chatPartnerUid, chatId}) => {
+const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
   const initialMessage = {text: '', image: ''}
 
   // Context
@@ -23,7 +23,7 @@ const ChatBoxForm = ({messages, chatPartnerUid, chatId}) => {
   const inputRef = useRef(null)
 
   // Custom hooks
-  const { sendMessage, loadingState } = useMessages(chatId)
+  const { sendMessage, loadingState } = useMessages(chatId, chatPartnerProfile)
 
   // Firebase ref
   const typingRef = ref(database, `typingStatus/${chatId}/${user.uid}`)
@@ -50,10 +50,10 @@ const ChatBoxForm = ({messages, chatPartnerUid, chatId}) => {
     }
   }
 
-  const handleSendMessage = async (e, user, chatPartnerUid, message) => {
+  const handleSendMessage = async (e) => {
     e.preventDefault()
     try {
-      await sendMessage(user, chatPartnerUid, message)
+      await sendMessage(user, chatPartnerProfile.uid, chatPartnerProfile.displayName, chatPartnerProfile.photoURL, message)
     } catch(error) {
       console.error(error)
       setError(error) // mada ne znam sta ce biti error, da li ce ga biti, jer nije direktno firebase nego sendMessage
@@ -111,7 +111,7 @@ const ChatBoxForm = ({messages, chatPartnerUid, chatId}) => {
       {
         message.text || message.image ? (
           <button 
-            onClick={(e) => handleSendMessage(e, user, chatPartnerUid, message)}
+            onClick={(e) => handleSendMessage(e)}
             style={{marginLeft: 'auto'}}
             disabled={loadingState.upload}
           >

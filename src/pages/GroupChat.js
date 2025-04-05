@@ -5,8 +5,10 @@ import { useAuth } from '../contexts/authContext'
 import Post from "../components/post/Post"
 import JoinPopUp from "../components/JoinPopUp"
 import GroupChatForm from "../components/GroupChatForm"
+import PostSkeleton from "../components/skeletons/PostSkeleton"
 import usePosts from "../hooks/usePosts"
 import useInfiniteScroll from "../hooks/useInfiniteScroll"
+import { ClipLoader } from "react-spinners"
 
 const GroupChat = () => {
   // Context
@@ -28,8 +30,8 @@ const GroupChat = () => {
   }, [roomId])
 
   // Custom hooks
-  const { posts, fetchMorePosts, hasMore, loadingState } = usePosts(postsRef)
-  useInfiniteScroll(fetchMorePosts, hasMore, postsRef)
+  const { posts, fetchMorePosts,/* hasMore,*/ loading } = usePosts(postsRef)
+  //useInfiniteScroll(fetchMorePosts, hasMore, postsRef)
 
   // Functions
   const handleNewPost = (e) => {
@@ -79,9 +81,19 @@ const GroupChat = () => {
                 roomId={roomId}
               />
             )) : (
-              <div>There's no posts in this room yet</div>
+              //<div>There's no posts in this room yet</div>
+              <PostSkeleton />
             )
           }
+          <div style={{position: 'absolute', bottom: '0', padding: '1em'}}>
+            {
+              loading.morePosts ? (
+                <ClipLoader color="salmon" />
+              ) : (
+                <button onClick={fetchMorePosts} >load more</button>
+              )
+            }
+          </div>
         </div>
         { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
     </div>

@@ -102,6 +102,8 @@ textarea {
   align-items: center;
   height: 500px;
   overflow-y: auto;
+  position: relative;
+  padding-bottom: 3em;
 }
 
 /* HOMEPAGE */
@@ -193,6 +195,8 @@ textarea {
 .user-profile-description {
   background: #f7a1a1;
   padding: 1em;
+  height: 400px;
+  overflow-y: auto;
 }
 
 .message-button {
@@ -301,6 +305,7 @@ textarea {
   padding: .7em;
 }
 
+/*======= COMPONENTS =======*/
   
 /* CHAT BOX */
 
@@ -560,9 +565,18 @@ textarea {
 
 .comments-container {
   font-size: .7rem; 
-  margin-left: 2em; 
-  padding: 1em; 
+  /*margin-left: 2em;*/ 
   position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.comments-form {
+  display: flex;
+  padding: 2em;
+  background-color: #fff;
+  border-top: .5px solid salmon;
 }
 
 .comments-main-label {
@@ -570,6 +584,7 @@ textarea {
   border: .3px solid salmon; 
   display: flex;
   align-items: center;
+  gap: 1em;
 }
 
 .comments-form-image-preview {
@@ -608,6 +623,13 @@ textarea {
   top: 0;
   left: 0;
   width: 50%;
+}
+
+.comments-box {
+  border: 1px solid pink;
+  height: 500px;
+  overflow-y: auto;
+  padding: 1em;
 }
 
 /* POST */
@@ -653,6 +675,7 @@ textarea {
 
 .post-header-container {
   display: flex; 
+  gap: .5em;
   padding: .5em; 
   cursor: pointer;
 }
@@ -688,6 +711,12 @@ textarea {
   border-radius: 50%;
   object-fit: cover;
   object-position: top;
+}
+
+.chat-item-content {
+  font-size: .8rem;
+  color: salmon;
+  margin-top: .3em;
 }
 
 /* GROUP CHAT FORM */
@@ -867,4 +896,16 @@ textarea {
   display: flex;
   align-items: center;
   gap: .3em;
+}
+
+/*=======SKELETON=======*/
+
+.skeleton {
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
 }

@@ -1,15 +1,12 @@
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { useAuth } from "../../contexts/authContext"
-import {    
-  firestore,
-  doc,
-  getDoc, 
-  updateDoc,
-  onSnapshot,
-  deleteField
-} from "../../api/firebase"
+import { firestore, collection, doc, getDoc, updateDoc, onSnapshot, deleteField } from "../../api/firebase"
+import Post from "./Post"
 import Comments from "./Comments"
 import JoinPopUp from "../JoinPopUp"
+import useComments from "../../hooks/useComments"
+import useInfiniteScroll from "../../hooks/useInfiniteScroll"
+import PopUp from "../PopUp"
 
 const PostActions = ({roomId, id}) => {
   // Context
@@ -17,16 +14,23 @@ const PostActions = ({roomId, id}) => {
 
   // State
   const [likes, setLikes] = useState()  
-  const [comments, setComments] = useState([])
+  const [numberOfComments, setNumberOfComments] = useState(0)
   const [showComments, setShowComments] = useState(false) 
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false) 
   const [error, setError] = useState(null)
 
-  // Memoized Values (`useMemo`)
-  const postRef = useMemo(() => {
+  // Hooks that don't trigger re-renders 
+  const commentsBoxRef = useRef(null)
+
+  // Memoized Values 
+  const room = useMemo(() => {
     const room = roomId ? `${roomId}` : `main`
-    return doc(firestore, room, id)
-  }, [roomId, id])
+    return room
+  }, [roomId])
+  
+  // Custom hooks
+  const { comments, fetchMoreComments, hasMore, loading } = useComments(id)
+  //useInfiniteScroll(fetchMoreComments, hasMore, commentsBoxRef)
 
   // Functions
   const handleLike = async (e) => {
@@ -34,6 +38,7 @@ const PostActions = ({roomId, id}) => {
     if(!user) {
       setIsJoinPopupShown(true)
     } else {
+       const postRef = doc(firestore, room, id)
        try {
           const snapshot = await getDoc(postRef)
           const likes = snapshot.data().likes || {}
@@ -63,6 +68,7 @@ const PostActions = ({roomId, id}) => {
 
   // Effects
   useEffect(() => {
+    const postRef = doc(firestore, room, id)
     const unsubscribe = onSnapshot(postRef, (snapshot) => {
       if(!snapshot.empty) {
         const likes = snapshot.data().likes
@@ -71,19 +77,18 @@ const PostActions = ({roomId, id}) => {
     })
 
     return () => unsubscribe()
-  }, [id, postRef])
+  }, [id])
+
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(postRef, (snapshot) => {
+    const commentsRef = collection(firestore, room, id, 'comments')
+    const unsubscribe = onSnapshot(commentsRef, (snapshot) => { 
       if(!snapshot.empty) {
-        const comments = snapshot.data().comments
-        console.log('snap com', comments)
-        setComments(comments)
-      }
-    })
-
+        setNumberOfComments(snapshot.size)
+    }})
+              
     return () => unsubscribe()
-  }, [id, postRef])
+  }, [roomId])
 
   const isLiked = !!(likes && likes[user?.uid])
   const likesArray = Object.values(likes || {})
@@ -98,7 +103,8 @@ const PostActions = ({roomId, id}) => {
             `${likesArray[0].name} and ${likesArray.length - 1} ${likesArray.length - 1 === 1 ? 'other' : 'others'}`
           }
         </span>
-        <span>{comments.length} {comments.length === 1 ? 'comment' : 'comments'}</span>
+        {/*<span>{comments.length} {comments.length === 1 ? 'comment' : 'comments'}</span>*/}
+        <span>{numberOfComments} {numberOfComments === 1 ? 'comment' : 'comments'}</span>
       </div>
       <div>
         <div className="post-actions-buttons">
@@ -126,7 +132,11 @@ const PostActions = ({roomId, id}) => {
             comment
           </button>
         </div>
-        { showComments && <Comments {...{comments, roomId, id}} /> }
+        { showComments && (
+          <PopUp setIsPopUpShown={setShowComments} style={{padding: 0}}> 
+            <Comments {...{comments, roomId, id, commentsBoxRef}} />
+          </PopUp>
+        ) }
       </div> 
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
     </div>

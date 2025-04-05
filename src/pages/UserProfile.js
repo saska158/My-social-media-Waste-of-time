@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { firestore, doc, onSnapshot } from '../api/firebase'
+import { firestore, doc, getDoc, onSnapshot } from '../api/firebase'
 import { useAuth } from "../contexts/authContext"
 import ChatBox from '../components/one_on_one_chat/ChatBox'
 import PopUp from "../components/PopUp"
@@ -16,6 +16,7 @@ const UserProfile = () => {
  
   // State
   const [profile, setProfile] = useState({
+    uid: "",
     displayName: "",
     description: "",
     musicTaste: "",
@@ -23,14 +24,16 @@ const UserProfile = () => {
     photoURL: "",
     followers: [],
     following: []
-  }) //treba li i uid?
-  
+  }) 
+  console.log("profile", profile)
   const [isFollowing, setIsFollowing] = useState(false)
   const [room, setRoom] = useState('main') 
   const [activeSection, setActiveSection] = useState("description")
   const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
   const [isFollowPopupShown, setIsFollowPopupShown] = useState(false)
   const [isEditPopupShown, setIsEditPopupShown] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   // Hooks that don't trigger re-renders 
   const { profileUid } = useParams()
@@ -52,20 +55,49 @@ const UserProfile = () => {
   
   // Effects
   useEffect(() => {
-    const profileRef = doc(firestore, "profiles", profileUid)
-    const unsubscribe = onSnapshot(profileRef, (snapshot) => { // neki loading, skeleton?
-      if(snapshot.exists()) {
-        const profileData = snapshot.data()
-        setProfile(profileData)
-        if(user) {
-          setIsFollowing(profileData.followers?.some(follower => follower.uid === user?.uid))
+    /*const fetchProfile = async () => {
+      const profileRef = doc(firestore, "profiles", profileUid)
+      setLoading(true)
+      try {
+        const snapshot = await getDoc(profileRef)
+        if(snapshot.exists()) {
+          setProfile(snapshot.data())
         }
+      } catch(error) {
+        console.error(error)
+        setError(error)  
+      } finally {
+        setLoading(false)
       }
-    })
+    }
+
+    fetchProfile()*/
+    const profileRef = doc(firestore, "profiles", profileUid)
+    setLoading(true)
+
+    const unsubscribe = onSnapshot(
+      profileRef, 
+      (snapshot) => {
+        if(!snapshot.empty) {
+          setProfile(snapshot.data())
+          setError(null)
+        }
+        setLoading(false)
+      },
+      (error) => {
+        console.error(error)
+        setError(error)
+        setLoading(false)
+      }
+    )
 
     return () => unsubscribe()
 
-  }, [profileUid, user, user?.uid])
+  }, [profileUid])
+
+  useEffect(() => {
+    setIsFollowing(profile.followers.some(follower => follower.uid === user.uid))
+  }, [profile])
 
   useEffect(() => {
     setIsChatBoxVisible(false)
@@ -87,7 +119,6 @@ const UserProfile = () => {
             }
           </>
         ) : <ChatBox 
-              chatPartnerUid={profileUid} 
               chatPartnerProfile={profile} 
               setIsChatBoxVisible={setIsChatBoxVisible} 
             />
