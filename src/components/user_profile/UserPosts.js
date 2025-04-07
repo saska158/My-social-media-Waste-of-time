@@ -1,26 +1,21 @@
-import { useState, useEffect } from "react"
-import { firestore, collection, onSnapshot } from "../../api/firebase"
+import { useMemo } from "react"
 import Post from "../post/Post"
+import useFirestoreBatch from "../../hooks/useFirestoreBatch"
+import { ClipLoader } from "react-spinners"
+import { firestore, collection } from "../../api/firebase"
+
 
 const UserPosts = ({room, setRoom, profileUid}) => {
-    const [userPosts, setUserPosts] = useState([])
     const roomTags = ['main', 'movies', 'books', 'music']
 
-    useEffect(() => {
-      const roomRef = collection(firestore, room)
-      const unsubscribe = onSnapshot(roomRef, (snapshot) => { //ovde neki loading state i skeleton
-        if(!snapshot.empty) {
-          const postsArray = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data(),
-            timestamp: doc.data().timestamp ? doc.data().timestamp.toDate() : null
-          }))
-          const userPostsArray = postsArray.filter(post => post.creatorUid === profileUid)
-          setUserPosts(userPostsArray)
-        }
-      })
-      return () => unsubscribe()
-    }, [profileUid, room])
+    const postsRef = useMemo(() => {
+      return collection(firestore, room)
+    }, [room])
+
+    // Custom hooks
+    const { data: posts, loading, fetchMore, hasMore } = useFirestoreBatch(postsRef, 2)
+
+    const userPosts = posts?.filter(post => post.creatorUid === profileUid).reverse()
 
     return (
         <div>
@@ -48,6 +43,15 @@ const UserPosts = ({room, setRoom, profileUid}) => {
               <p>There's no post yet</p>
             )
           } 
+          <div style={{position: 'absolute', bottom: '0', padding: '1em'}}>
+            {
+              loading ? (
+                <ClipLoader color="white" />
+              ) : (
+                hasMore && <button onClick={fetchMore} disabled={loading}>load more</button>
+              )
+            }
+          </div>
         </div>
     )
 }

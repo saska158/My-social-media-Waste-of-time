@@ -4,7 +4,7 @@ pogledacu koja su sva rerenderovanja zbog promene state-a
 ostavicu neke komentare mozda u zavrsnoj verziji kako bi videli kako sam razmisljala
 */
 
-import { auth, database, ref, update, onAuthStateChanged, signOut } from "../api/firebase"
+import { auth, firestore, doc, updateDoc, onAuthStateChanged, signOut } from "../api/firebase"
 import { useState, useEffect, createContext, useContext } from "react"
 
 const AuthContext = createContext()
@@ -27,8 +27,8 @@ export const AuthProvider = ({children}) => {
             const user = auth.currentUser
             if(user) {
                 const uid = user.uid
-                const userRef = ref(database, `users/${uid}`)
-                await update(userRef, { isActive: false })
+                const userRef = doc(firestore, 'profiles', uid)
+                await updateDoc(userRef, {isActive: false})
                 await signOut(auth)
                 setUser(null)
                 console.log("Korisnik odjavljen.")

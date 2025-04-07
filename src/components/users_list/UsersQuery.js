@@ -5,12 +5,12 @@ import { collection, firestore, onSnapshot } from "../../api/firebase"
 import PopUp from "../PopUp"
 import UserItem from "./UserItem"
 
-const UsersQuery = ({setIsUsersQueryShown}) => {
+const UsersQuery = ({users, setIsUsersQueryShown}) => {
   // Context
   const { user } = useAuth()  
   
   // State
-  const [users, setUsers] = useState([])
+  //const [users, setUsers] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
 
   // Hooks that don't trigger re-renders
@@ -23,7 +23,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
   }  
   
   // Effects
-  useEffect(() => {
+  /*useEffect(() => {
     if(user) {
       const usersRef = collection(firestore, 'profiles')
       const unsubscribe = onSnapshot(usersRef, (snapshot) => { // loading, skeleton?
@@ -40,7 +40,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
 
       return () => unsubscribe()
     }
-  }, [])
+  }, [])*/
 
   useEffect(() => {
     if(prevLocation.current !== location.pathname) {

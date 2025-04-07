@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react"
-import { addDoc, serverTimestamp } from "../api/firebase"
+import { useState, useEffect, useRef, useMemo } from "react"
+import { addDoc, serverTimestamp, firestore, collection } from "../api/firebase"
 import { useLoading } from '../contexts/loadingContext'
 import { useAuth } from "../contexts/authContext"
 import EmojiPicker from "emoji-picker-react"
@@ -11,7 +11,7 @@ import fetchLinkPreview from "../api/fetchLinkPreview"
 import uploadToCloudinaryAndGetUrl from "../api/uploadToCloudinaryAndGetUrl"
 import extractUrls from "../utils/extractUrls"
 
-const GroupChatForm = ({isPopupShown, setIsPopupShown, roomRef, roomId}) => {
+const GroupChatForm = ({isPopupShown, setIsPopupShown, roomId}) => {
     const initialPost = { text: "", image: "" }
 
     // Context
@@ -30,6 +30,12 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomRef, roomId}) => {
     const formRef = useRef(null)
     const imageInputRef = useRef(null)
     const textareaRef = useRef(null)
+
+    // Memoized values
+    const roomRef = useMemo(() => {
+      const room = roomId ? `${roomId}` : `main`
+      return collection(firestore, room)
+    }, [roomId])
 
     // Functions
     const handleTextChange = (e) => {

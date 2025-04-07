@@ -102,7 +102,7 @@ textarea {
   align-items: center;
   height: 500px;
   overflow-y: auto;
-  position: relative;
+  /*position: relative;*/
   padding-bottom: 3em;
 }
 

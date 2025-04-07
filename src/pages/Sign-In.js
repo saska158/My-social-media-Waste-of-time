@@ -3,9 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom"
 import { 
     auth, 
     signInWithEmailAndPassword, 
-    database, 
-    ref, 
-    update, 
+    firestore,
+    doc,
+    updateDoc, 
 } from "../api/firebase"
 import { useLoading } from "../contexts/loadingContext"
 import { PulseLoader } from "react-spinners"
@@ -25,8 +25,8 @@ const SignIn = () => {
     // Functions
     const updateUserActivity = async (uid) => {
         try {
-            const userRef = ref(database, `users/${uid}`)
-            await update(userRef, {isActive: true})
+           const userRef = doc(firestore, 'profiles', uid)
+           await updateDoc(userRef, {isActive: true})
             console.log(`Korisnik ${uid} prijavljen i aktiviran.`)
         } catch(error) {
             console.error("Greška prilikom prijavljivanja:", error.message)

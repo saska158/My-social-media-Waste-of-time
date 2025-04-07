@@ -1,14 +1,11 @@
 import { useState, useEffect, useRef } from "react"
 import fetchLinkPreview from "../../api/fetchLinkPreview"
 import extractUrls from "../../utils/extractUrls"
-//import { useLoading } from "../../contexts/loadingContext"
+
 import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
 
 const PostContent = ({post}) => {
-  // Context
- // const { loadingState, setLoadingState } = useLoading() 
-
   // State  
   const [linkData, setLinkData] = useState(null)
   const [isImageViewerShown, setIsImageViewerShown] = useState(false)

@@ -54,8 +54,8 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
                 displayName: profile.displayName,
                 photoURL: imageUrl
               })
-              const userRef = ref(database, `users/${user.uid}`)
-              await update(userRef, {photoURL: imageUrl})
+              /*const userRef = ref(database, `users/${user.uid}`)
+              await update(userRef, {photoURL: imageUrl})*/
               setProfile(prev => ({...prev, photoURL: imageUrl}))
             }
           } else {

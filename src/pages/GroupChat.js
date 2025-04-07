@@ -1,13 +1,12 @@
-import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react"
+import { useState, useMemo, useRef, useLayoutEffect } from "react"
 import { useParams } from "react-router-dom"
-import { firestore, collection } from "../api/firebase"
 import { useAuth } from '../contexts/authContext'
+import { firestore, collection } from "../api/firebase"
 import Post from "../components/post/Post"
 import JoinPopUp from "../components/JoinPopUp"
 import GroupChatForm from "../components/GroupChatForm"
 import PostSkeleton from "../components/skeletons/PostSkeleton"
-import usePosts from "../hooks/usePosts"
-import useInfiniteScroll from "../hooks/useInfiniteScroll"
+import useFirestoreBatch from "../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 
 const GroupChat = () => {
@@ -15,7 +14,6 @@ const GroupChat = () => {
   const { user } = useAuth()
 
   // State
-  //const [posts, setPosts] = useState([])
   const [isPopupShown, setIsPopupShown] = useState(false)
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
 
@@ -23,15 +21,17 @@ const GroupChat = () => {
   const { roomId } = useParams()
   const postsRef = useRef(null)
 
-  // Memoized Values (`useMemo`)
-  const roomRef = useMemo(() => {
-    const room = roomId ? `${roomId}` : `main`
-    return collection(firestore, room)
+  // Memoized values 
+  const room = useMemo(() => {
+    return  roomId ? `${roomId}` : `main` 
   }, [roomId])
 
+  const roomRef = useMemo(() => {
+    return collection(firestore, room)
+  }, [room])
+
   // Custom hooks
-  const { posts, fetchMorePosts,/* hasMore,*/ loading } = usePosts(postsRef)
-  //useInfiniteScroll(fetchMorePosts, hasMore, postsRef)
+  const { data: posts, loading, fetchMore, hasMore } = useFirestoreBatch(roomRef)
 
   // Functions
   const handleNewPost = (e) => {
@@ -43,24 +43,6 @@ const GroupChat = () => {
     }
   }
 
-  // Effects
-
- /* useEffect(() => {
-    const postsEl = postsRef.current
-    postsEl.addEventListener("scroll", () => {console.log(postsEl.scrollTop)})
-  }, [])
-*/
-  /*useLayoutEffect(() => {
-    const postsEl = postsRef.current
-    const timeoutId = setTimeout(() => {
-      if(postsEl) {
-        postsEl.scrollTop = postsEl.scrollTop - postsEl.scrollHeight
-      }
-    }, 100)
-
-    return () => clearTimeout(timeoutId)
-  }, [posts])*/
-
   return (
     <div className="group-chat-container">
       <button className="new-post-button" onClick={handleNewPost}>
@@ -69,7 +51,7 @@ const GroupChat = () => {
         </svg>
         <span>new post</span>
       </button>
-        { isPopupShown && <GroupChatForm {...{isPopupShown, setIsPopupShown, roomRef, roomId}}/> }
+        { isPopupShown && <GroupChatForm {...{isPopupShown, setIsPopupShown, roomId}}/> }
         <div className="posts-container" ref={postsRef}>
           {
             posts.length > 0 ? posts.map(postItem => (
@@ -87,10 +69,10 @@ const GroupChat = () => {
           }
           <div style={{position: 'absolute', bottom: '0', padding: '1em'}}>
             {
-              loading.morePosts ? (
+              loading ? (
                 <ClipLoader color="salmon" />
               ) : (
-                <button onClick={fetchMorePosts} >load more</button>
+                hasMore && <button onClick={fetchMore} disabled={loading}>load more</button>
               )
             }
           </div>

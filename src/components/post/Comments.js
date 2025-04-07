@@ -7,7 +7,7 @@ import Comment from "./Comment"
 import uploadToCloudinaryAndGetUrl from "../../api/uploadToCloudinaryAndGetUrl"
 import { ClipLoader } from "react-spinners"
 
-const Comments = ({comments, roomId, id, commentsBoxRef}) => {
+const Comments = ({comments, roomId, id, commentsBoxRef, fetchMore, loading, hasMore}) => {
   const initialComment = {text: '', image: ''}
 
   // Context
@@ -17,7 +17,7 @@ const Comments = ({comments, roomId, id, commentsBoxRef}) => {
   const [comment, setComment] = useState(initialComment)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [imagePreview, setImagePreview] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [loadingNewComment, setLoadingNewComment] = useState(false)
   const [error, setError] = useState(null)
   
   // Hooks that don't trigger re-renders 
@@ -58,7 +58,7 @@ const Comments = ({comments, roomId, id, commentsBoxRef}) => {
     if(comment.text || comment.image) {
       const imageFile = imageInputRef.current.files[0]
       let imageUrl = ''
-      setLoading(true)
+      setLoadingNewComment(true)
       try {
         if(imageFile) {
           imageUrl = await uploadToCloudinaryAndGetUrl(imageFile)
@@ -83,7 +83,7 @@ const Comments = ({comments, roomId, id, commentsBoxRef}) => {
             setError(error)
       } finally {
             setImagePreview(null)
-            setLoading(false)
+            setLoadingNewComment(false)
       }
     }
   }
@@ -104,6 +104,25 @@ const Comments = ({comments, roomId, id, commentsBoxRef}) => {
             comments.map((comment, index) => <Comment {...{comment, index}} />)
           ) : <p>No comments yet</p>
         }
+        <div style={{ padding: '1em'}}>
+          {
+            loading ? (
+              <ClipLoader color="salmon" />
+            ) : (
+              hasMore && (
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    fetchMore()
+                  }} 
+                  disabled={loading}
+                >
+                  load more
+                </button>
+              )
+            )
+          }
+        </div>
       </div>
       <form onSubmit={addComment} className="comments-form">
         <label className="comments-main-label">
@@ -134,9 +153,9 @@ const Comments = ({comments, roomId, id, commentsBoxRef}) => {
         </label>
         {
           comment.text || comment.image ? (
-            <button type="submit" style={{marginLeft: 'auto'}} disabled={loading}>
+            <button type="submit" style={{marginLeft: 'auto'}} disabled={loadingNewComment}>
               {
-                loading ? <ClipLoader color="salmon"/> : (
+                loadingNewComment ? <ClipLoader color="salmon"/> : (
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '25px', color: 'salmon'}}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                   </svg>

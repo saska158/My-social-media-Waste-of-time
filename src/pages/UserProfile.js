@@ -25,7 +25,6 @@ const UserProfile = () => {
     followers: [],
     following: []
   }) 
-  console.log("profile", profile)
   const [isFollowing, setIsFollowing] = useState(false)
   const [room, setRoom] = useState('main') 
   const [activeSection, setActiveSection] = useState("description")
@@ -55,23 +54,6 @@ const UserProfile = () => {
   
   // Effects
   useEffect(() => {
-    /*const fetchProfile = async () => {
-      const profileRef = doc(firestore, "profiles", profileUid)
-      setLoading(true)
-      try {
-        const snapshot = await getDoc(profileRef)
-        if(snapshot.exists()) {
-          setProfile(snapshot.data())
-        }
-      } catch(error) {
-        console.error(error)
-        setError(error)  
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchProfile()*/
     const profileRef = doc(firestore, "profiles", profileUid)
     setLoading(true)
 

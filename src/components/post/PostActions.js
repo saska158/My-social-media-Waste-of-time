@@ -1,11 +1,9 @@
 import { useState, useEffect, useMemo, useRef } from "react"
 import { useAuth } from "../../contexts/authContext"
 import { firestore, collection, doc, getDoc, updateDoc, onSnapshot, deleteField } from "../../api/firebase"
-import Post from "./Post"
 import Comments from "./Comments"
 import JoinPopUp from "../JoinPopUp"
-import useComments from "../../hooks/useComments"
-import useInfiniteScroll from "../../hooks/useInfiniteScroll"
+import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import PopUp from "../PopUp"
 
 const PostActions = ({roomId, id}) => {
@@ -24,13 +22,15 @@ const PostActions = ({roomId, id}) => {
 
   // Memoized Values 
   const room = useMemo(() => {
-    const room = roomId ? `${roomId}` : `main`
-    return room
+    return roomId ? `${roomId}` : `main`
   }, [roomId])
+
+  const commentsRef = useMemo(() => {
+    return collection(firestore, room, id, 'comments')
+  }, [room, id])
   
   // Custom hooks
-  const { comments, fetchMoreComments, hasMore, loading } = useComments(id)
-  //useInfiniteScroll(fetchMoreComments, hasMore, commentsBoxRef)
+  const {data: comments, loading, fetchMore, hasMore } = useFirestoreBatch(commentsRef, 3)
 
   // Functions
   const handleLike = async (e) => {
@@ -103,7 +103,6 @@ const PostActions = ({roomId, id}) => {
             `${likesArray[0].name} and ${likesArray.length - 1} ${likesArray.length - 1 === 1 ? 'other' : 'others'}`
           }
         </span>
-        {/*<span>{comments.length} {comments.length === 1 ? 'comment' : 'comments'}</span>*/}
         <span>{numberOfComments} {numberOfComments === 1 ? 'comment' : 'comments'}</span>
       </div>
       <div>
@@ -134,7 +133,7 @@ const PostActions = ({roomId, id}) => {
         </div>
         { showComments && (
           <PopUp setIsPopUpShown={setShowComments} style={{padding: 0}}> 
-            <Comments {...{comments, roomId, id, commentsBoxRef}} />
+            <Comments {...{comments, roomId, id, commentsBoxRef, fetchMore, loading, hasMore}} />
           </PopUp>
         ) }
       </div> 

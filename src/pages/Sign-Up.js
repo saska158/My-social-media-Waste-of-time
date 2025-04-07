@@ -5,9 +5,6 @@ import {
     createUserWithEmailAndPassword, 
     updateProfile, 
     sendEmailVerification,
-    database,
-    ref,
-    set,
     firestore,
     doc, 
     setDoc, 
@@ -43,16 +40,6 @@ const SignUp = () => {
     }))
   }
 
-  const saveUserToDatabase = (user) => {
-    set(ref(database, `users/${user.uid}`), { // je l ne treba async?
-      uid: user.uid,
-      email: user.email,
-      displayName: user.displayName,
-      isActive: false,
-      photoURL: ''
-    })
-  }
-
   const createUserProfile = async (user) => { // nema try/catch, loading i greske
     const userRef = doc(firestore, "profiles", user.uid)
     const userDoc = await getDoc(userRef)
@@ -84,7 +71,6 @@ const SignUp = () => {
       })
       await sendEmailVerification(user)
       console.log('User signed up successfully:', user)
-      saveUserToDatabase(user)
       createUserProfile(user)
       setFormData(initialState)
       navigate('/email-verification', {replace:true})// treba nesto da uradim povodom ovoga
