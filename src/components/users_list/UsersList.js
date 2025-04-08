@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from "react"
-import { firestore, collection, onSnapshot } from "../../api/firebase"
+import { useState, useMemo } from "react"
+import { firestore, collection } from "../../api/firebase"
 import { useAuth } from "../../contexts/authContext"
 import UsersQuery from "./UsersQuery"
 import JoinPopUp from "../JoinPopUp"
@@ -12,7 +12,6 @@ const UsersList = () => {
   const { user } = useAuth()
   
   // State
-  //const [listOfUsers, setListOfUsers] = useState([]) 
   const [isUsersQueryShown, setIsUsersQueryShown] = useState(false)
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
 
@@ -22,7 +21,7 @@ const UsersList = () => {
   }, [])
 
   // Custom hooks
-  const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 1)
+  const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 3)
 
   // Functions
   const findPeopleToFollow = (e) => {
@@ -34,21 +33,6 @@ const UsersList = () => {
     }
   }
 
-  // Effects
- /* useEffect(() => {
-    const usersRef = collection(firestore, 'profiles')
-    const unsubscribe = onSnapshot(usersRef, (snapshot) => {
-      if(!snapshot.empty) {
-        const profilesArray = snapshot.docs.map(doc => ({...doc.data()}))
-        console.log("profiles", profilesArray)
-        setListOfUsers(profilesArray)
-      }
-    })
-
-    return () => unsubscribe()
-  }, [])*/
-
-
   const activeUsersArray = users.filter(usr => usr.isActive && usr.uid !== user?.uid)
   const activeUsers = activeUsersArray.map(usr => <ActiveUser user={usr} />)
 
@@ -56,16 +40,16 @@ const UsersList = () => {
     <div className="users-list-container">
       <div>{activeUsers.length > 0 ? activeUsers : 'Noone is online.'}</div>
       <div style={{position: 'absolute', bottom: '0', padding: '1em'}}>
-            {
-              loading ? (
-                <ClipLoader color="salmon" />
-              ) : (
-                hasMore && <button onClick={fetchMore} disabled={loading}>load more</button>
-              )
-            }
-          </div>
+        {
+          loading ? (
+            <ClipLoader color="salmon" />
+          ) : (
+            hasMore && <button onClick={fetchMore} disabled={loading}>load more</button>
+          )
+        }
+      </div>
       <button onClick={findPeopleToFollow} className="users-list-follow-button">find people to follow</button>
-      { isUsersQueryShown && <UsersQuery {...{ users, setIsUsersQueryShown }}/>}
+      { isUsersQueryShown && <UsersQuery {...{ setIsUsersQueryShown }}/>}
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
     </div>
   )

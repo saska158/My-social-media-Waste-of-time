@@ -1,40 +1,9 @@
-import { useState } from "react"
 import { useAuth } from "../../contexts/authContext"
-import { firestore, doc, getDoc, updateDoc, arrayUnion } from "../../api/firebase"
-import { PulseLoader } from "react-spinners"
+import FollowButton from "../FollowButton"
 
 const UserProfileHeader = ({profile, profileUid, isFollowing, setIsEditPopupShown}) => {
     // Context
     const { user } = useAuth()
-
-    // State
-    const [error, setError] = useState(null)
-    const [loading, setLoading] = useState(false)
-
-    // Functions
-    const handleFollowToggle = async (otherUserUid) => {
-      setLoading(true)
-        
-      try {
-        const myProfileRef = doc(firestore, "profiles", user.uid)
-        const myProfileSnap = await getDoc(myProfileRef)
-        const otherUserProfileRef = doc(firestore, "profiles", otherUserUid)
-        const otherUserProfileSnap = await getDoc(otherUserProfileRef)
-    
-        if(isFollowing) {
-          await updateDoc(myProfileRef, {following: myProfileSnap.data().following.filter(profile => profile.uid !== profileUid)})
-          await updateDoc(otherUserProfileRef, {followers: profile.followers.filter(follower => follower.uid !== user.uid)})
-        } else {
-            await updateDoc(myProfileRef, {following: arrayUnion(otherUserProfileSnap.data())})
-            await updateDoc(otherUserProfileRef, {followers: arrayUnion(myProfileSnap.data())})
-        } 
-      } catch(error) {
-        console.error(error)
-        setError(error)
-      } finally {
-        setLoading(false)
-      }
-    }
 
     const handleEditButton = (e) => {
       e.stopPropagation()
@@ -48,7 +17,7 @@ const UserProfileHeader = ({profile, profileUid, isFollowing, setIsEditPopupShow
           <div className="user-profile-content">        
               <div>
                 <img 
-                  src={profile.photoURL || "/images/no-profile-picture.png"} 
+                  src={profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
                   alt="profile-picture" 
                   className="user-profile-profile-picture"
                 />
@@ -56,24 +25,10 @@ const UserProfileHeader = ({profile, profileUid, isFollowing, setIsEditPopupShow
               </div>
               {
                 user && !isMyProfile ? (
-                  loading ? <PulseLoader color="white" /> :
-                    <button
-                      className="follow-toggle-button"
-                      onClick={() => handleFollowToggle(profileUid)}
-                      disabled={loading}
-                    >
-                      {
-                        isFollowing ? (
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px'}}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M22 10.5h-6m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM4 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 10.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
-                          </svg>
-                        ) : (
-                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px'}}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z" />
-                          </svg>
-                        )
-                      }
-                    </button>
+                  <FollowButton
+                    currentUserUid={user.uid}
+                    targetUserUid={profileUid}
+                  />
                 ) : null
              }
              {

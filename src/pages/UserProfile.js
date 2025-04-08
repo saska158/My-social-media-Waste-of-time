@@ -78,7 +78,7 @@ const UserProfile = () => {
   }, [profileUid])
 
   useEffect(() => {
-    setIsFollowing(profile.followers.some(follower => follower.uid === user.uid))
+    setIsFollowing(profile.followers?.some(follower => follower.uid === user.uid))
   }, [profile])
 
   useEffect(() => {

@@ -8,9 +8,9 @@ import {
     firestore,
     doc, 
     setDoc, 
-    getDoc 
+    getDoc,
+    serverTimestamp
 } from "../api/firebase"
-import { useLoading } from "../contexts/loadingContext"
 import { PulseLoader } from "react-spinners"
 
 const SignUp = () => {
@@ -21,11 +21,9 @@ const SignUp = () => {
     terms: false
   }
 
-  // Context
-  const { loadingState, setLoadingState } = useLoading()
-
   // State
   const [formData, setFormData] = useState(initialState)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   // Hooks that don't trigger re-renders   
@@ -52,7 +50,9 @@ const SignUp = () => {
         musicTaste: "",
         politicalViews: "",
         photoURL: user.photoURL || "",
-        createdAt: new Date(),
+        followers: [],
+        following: [],
+        timestamp: serverTimestamp(),
       })
     }
   }
@@ -60,17 +60,15 @@ const SignUp = () => {
   const handleSignUp = async (e) => {
     e.preventDefault()
     const { email, password, name } = formData
-    setLoadingState(prev => ({...prev, auth: true}))
+    setLoading(true)
     setError(null)
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const user = userCredential.user
-      console.log('Ovo je user:', user)
       await updateProfile(user, {
         displayName: name
       })
       await sendEmailVerification(user)
-      console.log('User signed up successfully:', user)
       createUserProfile(user)
       setFormData(initialState)
       navigate('/email-verification', {replace:true})// treba nesto da uradim povodom ovoga
@@ -88,7 +86,7 @@ const SignUp = () => {
         console.error('Error signing up:', error)
         setError(customMessage)
     } finally {
-        setLoadingState(prev => ({...prev, auth: false}))
+        setLoading(false)
     }
   }
 
@@ -135,8 +133,8 @@ const SignUp = () => {
           I have read and understand the Privacy and Cookies Policy
         </label>
         {
-          loadingState.auth ? <PulseLoader size={10}  color="white"/> : (
-            <button onClick={(e) => handleSignUp(e)} disabled={loadingState.auth} className="sign-in-up-button">
+          loading ? <PulseLoader size={10}  color="white"/> : (
+            <button onClick={(e) => handleSignUp(e)} disabled={loading} className="sign-in-up-button">
               CREATE ACCOUNT
             </button>
           )

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { query, orderBy , limit, startAfter, getDocs, onSnapshot} from "../api/firebase"
 
 const useFirestoreBatch = (collectionRef, pageSize = 5) => {
-    console.log("Fetching more...")
+    //console.log("Fetching more...")
     const [data, setData] = useState([])
     const [lastDoc, setLastDoc] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -45,33 +45,33 @@ const useFirestoreBatch = (collectionRef, pageSize = 5) => {
     }, [])
 
     const fetchData = async () => {
-        console.log("Fetching more data...")
-        if(loading || !hasMore) return
+      //console.log("Fetching more data...")
+      if(loading || !hasMore) return
 
-        const q = query(
-            collectionRef,
-            orderBy("timestamp", "desc"), 
-            startAfter(lastDoc),
-            limit(pageSize)
-        )
+      const q = query(
+          collectionRef,
+          orderBy("timestamp", "desc"), 
+          startAfter(lastDoc),
+          limit(pageSize)
+      )
 
-        setLoading(true)
-        setError(null)
+      setLoading(true)
+      setError(null)
 
-        try {
-            const snapshot = await getDocs(q)
-            const newData = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()})).reverse()
+      try {
+          const snapshot = await getDocs(q)
+          const newData = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()})).reverse()
 
-            setData(prevData => ([...newData, ...prevData]))
-            setLastDoc(snapshot.docs[snapshot.docs.length - 1])
-            setHasMore(snapshot.docs.length === pageSize)
-        } catch(error) {
-            console.error(error)
-            setError(error.message)
-        } 
+          setData(prevData => ([...newData, ...prevData]))
+          setLastDoc(snapshot.docs[snapshot.docs.length - 1])
+          setHasMore(snapshot.docs.length === pageSize)
+      } catch(error) {
+          console.error(error)
+          setError(error.message)
+      } 
 
-        setLoading(false)
-    }
+      setLoading(false)
+  }
 
     return { data, loading, error, fetchMore: () => fetchData(), hasMore }
 }

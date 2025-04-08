@@ -7,15 +7,13 @@ import {
     doc,
     updateDoc, 
 } from "../api/firebase"
-import { useLoading } from "../contexts/loadingContext"
 import { PulseLoader } from "react-spinners"
 
 const SignIn = () => {
-    // Context
-    const { loadingState, setLoadingState } = useLoading()
     // State
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
     // Hooks that don't trigger re-renders  
@@ -35,7 +33,7 @@ const SignIn = () => {
 
     const handleSignIn = async (e) => {
         e.preventDefault()
-        setLoadingState(prev => ({...prev, auth: true}))
+        setLoading(true)
         setError(null)
         try{
             const userCredential = await signInWithEmailAndPassword(auth, email, password)
@@ -58,7 +56,7 @@ const SignIn = () => {
             console.error('Error signing up:', error)
             setError(customMessage)
         } finally {
-            setLoadingState(prev => ({...prev, auth: false}))
+            setLoading(false)
         }
     }
 
@@ -86,8 +84,8 @@ const SignIn = () => {
               required
             />
             {
-              loadingState.auth ? <PulseLoader size={10}  color="white"/> : (
-                <button onClick={e => handleSignIn(e)} disabled={loadingState.auth} className="sign-in-up-button">
+              loading ? <PulseLoader size={10}  color="white"/> : (
+                <button onClick={e => handleSignIn(e)} disabled={loading} className="sign-in-up-button">
                   SIGN IN
                 </button>
               )
