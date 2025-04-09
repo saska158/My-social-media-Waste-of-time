@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef, useLayoutEffect } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { useParams } from "react-router-dom"
 import { useAuth } from '../contexts/authContext'
 import { firestore, collection } from "../api/firebase"
@@ -8,6 +8,7 @@ import GroupChatForm from "../components/GroupChatForm"
 import PostSkeleton from "../components/skeletons/PostSkeleton"
 import useFirestoreBatch from "../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
+import InfiniteScroll from "react-infinite-scroll-component"
 
 const GroupChat = () => {
   // Context
@@ -22,13 +23,8 @@ const GroupChat = () => {
   const postsRef = useRef(null)
 
   // Memoized values 
-  const room = useMemo(() => {
-    return  roomId ? `${roomId}` : `main` 
-  }, [roomId])
-
-  const roomRef = useMemo(() => {
-    return collection(firestore, room)
-  }, [room])
+  const room = useMemo(() => roomId ? `${roomId}` : `main`, [roomId])
+  const roomRef = useMemo(() => collection(firestore, room), [room])
 
   // Custom hooks
   const { data: posts, loading, fetchMore, hasMore } = useFirestoreBatch(roomRef)
@@ -42,7 +38,7 @@ const GroupChat = () => {
       setIsPopupShown(true)
     }
   }
-
+  
   return (
     <div className="group-chat-container">
       <button className="new-post-button" onClick={handleNewPost}>
@@ -52,30 +48,39 @@ const GroupChat = () => {
         <span>new post</span>
       </button>
         { isPopupShown && <GroupChatForm {...{isPopupShown, setIsPopupShown, roomId}}/> }
-        <div className="posts-container" ref={postsRef}>
-          {
-            posts.length > 0 ? posts.map(postItem => (
-              <Post
-                key={postItem.id}
-                id={postItem.id}
-                creatorUid={postItem.creatorUid}
-                post={postItem.post}
-                roomId={roomId}
-              />
-            )) : (
-              //<div>There's no posts in this room yet</div>
-              <PostSkeleton />
-            )
-          }
-          <div style={{position: 'absolute', bottom: '0', padding: '1em'}}>
+        <div className="posts-container" ref={postsRef} id="scrollableDiv">
+           <InfiniteScroll
+             dataLength={posts.length}
+             next={fetchMore}
+             hasMore={hasMore}
+             loader={<ClipLoader color="salmon" />}
+             scrollThreshold={0.9}
+             endMessage={
+              <p style={{ textAlign: 'center' }}>
+               Yay! You have seen it all
+              </p>
+             }
+             scrollableTarget="scrollableDiv"
+             style={{width: '100%'}}
+           >
+           <div className="posts">
             {
-              loading ? (
-                <ClipLoader color="salmon" />
-              ) : (
-                hasMore && <button onClick={fetchMore} disabled={loading}>load more</button>
+              loading ? <PostSkeleton /> : (
+                posts.length > 0 ? posts.map(postItem => ( 
+                  <Post
+                    key={postItem.id}
+                    id={postItem.id}
+                    creatorUid={postItem.creatorUid}
+                    post={postItem.post}
+                    roomId={roomId}
+                  />
+                )) : (
+                  <div>There's no posts in this room yet</div>
+                )
               )
-            }
-          </div>
+            }    
+           </div> 
+           </InfiniteScroll>
         </div>
         { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
     </div>
@@ -83,4 +88,9 @@ const GroupChat = () => {
 }
 
 export default GroupChat
+
+
+
+
+
 

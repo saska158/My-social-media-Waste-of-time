@@ -1,6 +1,6 @@
 const PostSkeleton = () => {
   return (
-    <div className="post-container skeleton" style={{height: '400px'}}>
+    <div className="post-container skeleton" style={{height: '400px', width: '100%'}}>
       <div className="post-header-container">
         <div className="post-header-profile-image" style={{background: '#facdd4'}}></div>
         <div style={{background: '#facdd4', width: '100px', height: '30px', borderRadius: '15px'}}></div>

@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { query, orderBy , limit, startAfter, getDocs, onSnapshot} from "../api/firebase"
 
-const useFirestoreBatch = (collectionRef, pageSize = 5) => {
+const useFirestoreBatch = (collectionRef, pageSize = 3) => {
     //console.log("Fetching more...")
     const [data, setData] = useState([])
     const [lastDoc, setLastDoc] = useState(null)
@@ -25,7 +25,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 5) => {
               const newData = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
-              })).reverse()
+              }))
               setData(newData)
               setLastDoc(snapshot.docs[snapshot.docs.length - 1])
               setHasMore(snapshot.docs.length === pageSize)
@@ -44,34 +44,44 @@ const useFirestoreBatch = (collectionRef, pageSize = 5) => {
         return () => unsubscribe()
     }, [])
 
-    const fetchData = async () => {
-      //console.log("Fetching more data...")
-      if(loading || !hasMore) return
+    const fetchData = useCallback(async () => {
+      console.log("Fetching more data...")
+      if(loading || !hasMore || !lastDoc) return
 
-      const q = query(
+      setLoading(true)
+
+      try {
+        const q = query(
           collectionRef,
           orderBy("timestamp", "desc"), 
           startAfter(lastDoc),
-          limit(pageSize)
-      )
+          limit(pageSize + 1)
+        )
 
-      setLoading(true)
-      setError(null)
+        const snapshot = await getDocs(q)
+        const docs = snapshot.docs
 
-      try {
-          const snapshot = await getDocs(q)
-          const newData = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()})).reverse()
-
-          setData(prevData => ([...newData, ...prevData]))
-          setLastDoc(snapshot.docs[snapshot.docs.length - 1])
-          setHasMore(snapshot.docs.length === pageSize)
+        if (docs.length > pageSize) {
+          // We have more data, but we only need to store `pageSize` items
+          const newData = docs.slice(0, pageSize).map(doc => ({ id: doc.id, ...doc.data() }))
+          setData(prevData => [...prevData, ...newData])
+          setLastDoc(docs[pageSize - 1]) // Update lastDoc with the last item of the batch
+          setHasMore(true) // There is at least one more item to fetch
+        } else {
+          // Last batch, store only what's available
+          const newData = docs.map(doc => ({ id: doc.id, ...doc.data() }))
+          setData(prevData => [...prevData, ...newData])
+          setLastDoc(null) // No more documents to fetch
+          setHasMore(false) // Stop further requests
+        }
       } catch(error) {
-          console.error(error)
-          setError(error.message)
+        console.error(error)
+        setError(error.message)
+        setLoading(false)
       } 
 
       setLoading(false)
-  }
+  }, [loading, hasMore, collectionRef, lastDoc, pageSize])
 
     return { data, loading, error, fetchMore: () => fetchData(), hasMore }
 }

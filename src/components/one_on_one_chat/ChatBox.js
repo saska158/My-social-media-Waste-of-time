@@ -6,7 +6,7 @@ import { useAuth } from "../../contexts/authContext"
 import ChatBoxHeader from "./ChatBoxHeader"
 import ChatBoxForm from "./ChatBoxForm"
 import useMessages from "../../hooks/useMessages"
-import useInfiniteScroll from "../../hooks/useInfiniteScroll"
+//import useInfiniteScroll from "../../hooks/useInfiniteScroll"
 
 
 const ChatBox = ({/*chatPartnerUid,*/ chatPartnerProfile, setIsChatBoxVisible}) => {
