@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, memo } from "react"
 import { firestore, collection, query, where, getDocs } from "../../api/firebase"
 import PostHeader from "./PostHeader"
 import PostContent from "./PostContent"
@@ -7,6 +7,7 @@ import Skeleton from "react-loading-skeleton"
 import "react-loading-skeleton/dist/skeleton.css"
 
 const Post = ({id, creatorUid, post, roomId}) => {
+  console.log("Post rerendered")
   // State
   const [profile, setProfile] = useState(null)
   const [error, setError] = useState(null)
@@ -40,4 +41,4 @@ const Post = ({id, creatorUid, post, roomId}) => {
   )
 }
 
-export default Post
+export default memo(Post)

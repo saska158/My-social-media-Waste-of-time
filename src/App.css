@@ -650,7 +650,8 @@ textarea {
   background: white;
   border: .5px solid rgb(247, 198, 193);
   border-radius: 10px;
-  width: 70%;
+  width: 100%;
+  min-height: 300px;
   margin: 1em;
   padding: 1em;
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from "react"
+import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react"
 import { useParams } from "react-router-dom"
 import { useAuth } from '../contexts/authContext'
 import { firestore, collection } from "../api/firebase"
@@ -21,6 +21,7 @@ const GroupChat = () => {
   // Hooks that don't trigger re-renders  
   const { roomId } = useParams()
   const postsRef = useRef(null)
+  const scrollPositionRef = useRef(0)
 
   // Memoized values 
   const room = useMemo(() => roomId ? `${roomId}` : `main`, [roomId])
@@ -28,6 +29,7 @@ const GroupChat = () => {
 
   // Custom hooks
   const { data: posts, loading, fetchMore, hasMore } = useFirestoreBatch(roomRef)
+  const memoizedPosts = useMemo(() => posts, [posts])
 
   // Functions
   const handleNewPost = (e) => {
@@ -37,6 +39,23 @@ const GroupChat = () => {
     } else {
       setIsPopupShown(true)
     }
+  }
+
+  // Effects
+  useLayoutEffect(() => {
+    if (postsRef.current) {
+      postsRef.current.scrollTop = scrollPositionRef.current // Restore scroll
+    }
+  }, [posts.length]) // Runs after posts update
+
+  const loadMorePosts = async () => {
+    const scrollableDiv = postsRef.current
+
+    if (scrollableDiv) {
+      scrollPositionRef.current = scrollableDiv.scrollTop // Save scroll position
+    }
+
+    await fetchMore() // Fetch new posts
   }
   
   return (
@@ -50,8 +69,8 @@ const GroupChat = () => {
         { isPopupShown && <GroupChatForm {...{isPopupShown, setIsPopupShown, roomId}}/> }
         <div className="posts-container" ref={postsRef} id="scrollableDiv">
            <InfiniteScroll
-             dataLength={posts.length}
-             next={fetchMore}
+             dataLength={memoizedPosts.length}
+             next={loadMorePosts}
              hasMore={hasMore}
              loader={<ClipLoader color="salmon" />}
              scrollThreshold={0.9}
@@ -61,19 +80,19 @@ const GroupChat = () => {
               </p>
              }
              scrollableTarget="scrollableDiv"
-             style={{width: '100%'}}
+             style={{width: '500px'}}
            >
            <div className="posts">
             {
               loading ? <PostSkeleton /> : (
-                posts.length > 0 ? posts.map(postItem => ( 
+                memoizedPosts.length > 0 ? memoizedPosts.map(postItem => (
                   <Post
                     key={postItem.id}
                     id={postItem.id}
                     creatorUid={postItem.creatorUid}
                     post={postItem.post}
                     roomId={roomId}
-                  />
+                    />
                 )) : (
                   <div>There's no posts in this room yet</div>
                 )

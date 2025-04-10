@@ -48,7 +48,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 3) => {
       console.log("Fetching more data...")
       if(loading || !hasMore || !lastDoc) return
 
-      setLoading(true)
+      //setLoading(true)
 
       try {
         const q = query(
@@ -77,10 +77,10 @@ const useFirestoreBatch = (collectionRef, pageSize = 3) => {
       } catch(error) {
         console.error(error)
         setError(error.message)
-        setLoading(false)
+       // setLoading(false)
       } 
 
-      setLoading(false)
+      //setLoading(false)
   }, [loading, hasMore, collectionRef, lastDoc, pageSize])
 
     return { data, loading, error, fetchMore: () => fetchData(), hasMore }
