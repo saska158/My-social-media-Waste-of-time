@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react"
-import { query, orderBy , limit, startAfter, getDocs, onSnapshot} from "../api/firebase"
+import { useCallback, useEffect, useState, useMemo } from "react"
+import { query, orderBy , limit, startAfter, getDocs, onSnapshot } from "../api/firebase"
 
 const useFirestoreBatch = (collectionRef, pageSize = 3) => {
     //console.log("Fetching more...")
@@ -30,6 +30,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 3) => {
               setLastDoc(snapshot.docs[snapshot.docs.length - 1])
               setHasMore(snapshot.docs.length === pageSize)
             } else {
+                setData([])
                 setHasMore(false)
             }
             setLoading(false)
@@ -42,7 +43,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 3) => {
         )
 
         return () => unsubscribe()
-    }, [])
+    }, [collectionRef])
 
     const fetchData = useCallback(async () => {
       console.log("Fetching more data...")

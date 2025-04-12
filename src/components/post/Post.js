@@ -6,8 +6,7 @@ import PostActions from "./PostActions"
 import Skeleton from "react-loading-skeleton"
 import "react-loading-skeleton/dist/skeleton.css"
 
-const Post = ({id, creatorUid, post, roomId}) => {
-  console.log("Post rerendered")
+const Post = ({id, creatorUid, post, roomId, style}) => {
   // State
   const [profile, setProfile] = useState(null)
   const [error, setError] = useState(null)
@@ -33,7 +32,7 @@ const Post = ({id, creatorUid, post, roomId}) => {
   }, [creatorUid])
 
   return (
-    <div key={id} className="post-container">
+    <div key={id} className="post-container" style={style}>
       <PostHeader {...{creatorUid, profile}} />
       <PostContent {...{post}} />
       <PostActions {...{roomId, id}} />

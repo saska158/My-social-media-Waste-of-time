@@ -26,23 +26,26 @@ const UserPosts = ({room, setRoom, profileUid}) => {
               ))
             }
           </div>
-          {
-            userPosts.length > 0 ? (
-              userPosts.map((post, index) => (
-                <Post
-                  key={index}
-                  id={post.id}
-                  creatorUid={post.creatorUid}
-                  photoUrl={post.photoUrl}
-                  creatorName={post.creatorName}
-                  post={post.post}
-                  roomId={post.room}
-                />
-              ))
-            ) : (
-              <p>There's no post yet</p>
-            )
-          } 
+          <div>
+            {
+              userPosts.length > 0 ? (
+                userPosts.map((post, index) => (
+                  <Post
+                    key={index}
+                    id={post.id}
+                    creatorUid={post.creatorUid}
+                    photoUrl={post.photoUrl}
+                    creatorName={post.creatorName}
+                    post={post.post}
+                    roomId={post.room}
+                    style={{width: '50%', minHeight: '200px'}}
+                  />
+                ))
+              ) : (
+                <p>There's no post yet</p>
+              )
+            } 
+          </div>
           <div style={{position: 'absolute', bottom: '0', padding: '1em'}}>
             {
               loading ? (

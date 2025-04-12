@@ -11,7 +11,7 @@ const PostActions = ({roomId, id}) => {
   const { user } = useAuth()
 
   // State
-  const [likes, setLikes] = useState()  
+  const [likes, setLikes] = useState(null)  
   const [numberOfComments, setNumberOfComments] = useState(0)
   const [showComments, setShowComments] = useState(false) 
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false) 
@@ -28,6 +28,7 @@ const PostActions = ({roomId, id}) => {
   const commentsRef = useMemo(() => {
     return collection(firestore, room, id, 'comments')
   }, [room, id])
+
   
   // Custom hooks
   const {data: comments, loading, fetchMore, hasMore } = useFirestoreBatch(commentsRef, 3)
@@ -70,8 +71,8 @@ const PostActions = ({roomId, id}) => {
   useEffect(() => {
     const postRef = doc(firestore, room, id)
     const unsubscribe = onSnapshot(postRef, (snapshot) => {
-      if(!snapshot.empty) {
-        const likes = snapshot.data().likes
+      if(snapshot.exists()) {
+        const likes = snapshot.data()?.likes || {}
           setLikes(likes)
       }
     })

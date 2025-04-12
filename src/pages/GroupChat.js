@@ -17,15 +17,17 @@ const GroupChat = () => {
   // State
   const [isPopupShown, setIsPopupShown] = useState(false)
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
-
-  // Hooks that don't trigger re-renders  
+ 
   const { roomId } = useParams()
   const postsRef = useRef(null)
   const scrollPositionRef = useRef(0)
 
   // Memoized values 
-  const room = useMemo(() => roomId ? `${roomId}` : `main`, [roomId])
-  const roomRef = useMemo(() => collection(firestore, room), [room])
+  const roomRef = useMemo(() => {
+    const room = roomId ? `${roomId}` : `main`
+    return collection(firestore, room)
+  }, [roomId])
+
 
   // Custom hooks
   const { data: posts, loading, fetchMore, hasMore } = useFirestoreBatch(roomRef)
