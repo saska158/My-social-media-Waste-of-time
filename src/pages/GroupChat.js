@@ -33,6 +33,13 @@ const GroupChat = () => {
   const { data: posts, loading, fetchMore, hasMore } = useFirestoreBatch(roomRef)
   const memoizedPosts = useMemo(() => posts, [posts])
 
+  // Effects
+  /*useLayoutEffect(() => {
+    if (postsRef.current) {
+      postsRef.current.scrollTop = scrollPositionRef.current // Restore scroll
+    }
+  }, [posts.length]) // Runs after posts update*/
+
   // Functions
   const handleNewPost = (e) => {
     e.stopPropagation()
@@ -42,13 +49,6 @@ const GroupChat = () => {
       setIsPopupShown(true)
     }
   }
-
-  // Effects
-  useLayoutEffect(() => {
-    if (postsRef.current) {
-      postsRef.current.scrollTop = scrollPositionRef.current // Restore scroll
-    }
-  }, [posts.length]) // Runs after posts update
 
   const loadMorePosts = async () => {
     const scrollableDiv = postsRef.current

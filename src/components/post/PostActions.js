@@ -3,7 +3,6 @@ import { useAuth } from "../../contexts/authContext"
 import { firestore, collection, doc, getDoc, updateDoc, onSnapshot, deleteField } from "../../api/firebase"
 import Comments from "./Comments"
 import JoinPopUp from "../JoinPopUp"
-import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import PopUp from "../PopUp"
 
 const PostActions = ({roomId, id}) => {
@@ -17,21 +16,10 @@ const PostActions = ({roomId, id}) => {
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false) 
   const [error, setError] = useState(null)
 
-  // Hooks that don't trigger re-renders 
-  const commentsBoxRef = useRef(null)
-
   // Memoized Values 
   const room = useMemo(() => {
     return roomId ? `${roomId}` : `main`
   }, [roomId])
-
-  const commentsRef = useMemo(() => {
-    return collection(firestore, room, id, 'comments')
-  }, [room, id])
-
-  
-  // Custom hooks
-  const {data: comments, loading, fetchMore, hasMore } = useFirestoreBatch(commentsRef, 3)
 
   // Functions
   const handleLike = async (e) => {
@@ -134,7 +122,7 @@ const PostActions = ({roomId, id}) => {
         </div>
         { showComments && (
           <PopUp setIsPopUpShown={setShowComments} style={{padding: 0}}> 
-            <Comments {...{comments, roomId, id, commentsBoxRef, fetchMore, loading, hasMore}} />
+            <Comments {...{room, id}} />
           </PopUp>
         ) }
       </div> 

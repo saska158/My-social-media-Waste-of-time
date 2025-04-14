@@ -212,8 +212,8 @@ textarea {
 .user-profile-description {
   background: #f7a1a1;
   padding: 1em;
-  height: 400px;
-  overflow-y: auto;
+  /*height: 400px;
+  overflow-y: auto;*/
 }
 
 .message-button {
@@ -582,7 +582,6 @@ textarea {
 
 .comments-container {
   font-size: .7rem; 
-  /*margin-left: 2em;*/ 
   position: relative;
   height: 100%;
   display: flex;
@@ -591,7 +590,7 @@ textarea {
 
 .comments-form {
   display: flex;
-  padding: 2em;
+  padding: 1em;
   background-color: #fff;
   border-top: .5px solid salmon;
 }

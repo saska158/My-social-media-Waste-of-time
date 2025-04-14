@@ -5,9 +5,11 @@ import EmojiPicker from "emoji-picker-react"
 import ChatSmiley from "../ChatSmiley"
 import Comment from "./Comment"
 import uploadToCloudinaryAndGetUrl from "../../api/uploadToCloudinaryAndGetUrl"
+import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
+import PostSkeleton from "../skeletons/PostSkeleton"
 
-const Comments = ({comments, roomId, id, commentsBoxRef, fetchMore, loading, hasMore}) => {
+const Comments = ({room, id}) => {
   const initialComment = {text: '', image: ''}
 
   // Context
@@ -22,13 +24,15 @@ const Comments = ({comments, roomId, id, commentsBoxRef, fetchMore, loading, has
   
   // Hooks that don't trigger re-renders 
   const imageInputRef = useRef(null)
-  const inputRef = useRef(null)
-
+  const inputRef = useRef(null) 
+  
   // Memoized values
-  const room = useMemo(() => {
-    const room = roomId ? `${roomId}` : `main`
-    return room
-  }, [roomId])
+  const commentsRef = useMemo(() => {
+    return collection(firestore, room, id, 'comments')
+  }, [room, id])
+  
+  // Custom hooks
+  const {data: comments, loading, fetchMore, hasMore } = useFirestoreBatch(commentsRef, 6)
 
   // Functions
   const handleComment = (e) => {
@@ -98,31 +102,27 @@ const Comments = ({comments, roomId, id, commentsBoxRef, fetchMore, loading, has
   return (
     <div className="comments-container">
       { showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} className="comments-emoji-picker"/> }
-      <div className="comments-box" ref={commentsBoxRef}>
-        {
-          comments.length > 0 ? (
-            comments.map((comment, index) => <Comment {...{comment, index}} />)
-          ) : <p>No comments yet</p>
-        }
-        <div style={{ padding: '1em'}}>
+      <div className="comments-box">
           {
-            loading ? (
-              <ClipLoader color="salmon" />
-            ) : (
-              hasMore && (
-                <button 
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    fetchMore()
-                  }} 
-                  disabled={loading}
-                >
-                  load more
-                </button>
-              )
+            loading ? <PostSkeleton /> : (
+                comments.length > 0 ? (
+                  comments.map((comment, index) => <Comment key={index} {...{comment, index}} />)
+                ) : <p>No comments yet</p>
             )
           }
-        </div>
+          {
+            hasMore && (
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation()
+                  fetchMore()
+                }} 
+                disabled={loading}
+              >
+                load more
+              </button>
+            )
+          }
       </div>
       <form onSubmit={addComment} className="comments-form">
         <label className="comments-main-label">
