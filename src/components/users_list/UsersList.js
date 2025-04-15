@@ -7,6 +7,7 @@ import ActiveUser from "./ActiveUser"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { ClipLoader } from "react-spinners"
+import loadMoreItems from "../../utils/loadMoreItems"
 
 const UsersList = () => {
   // Context
@@ -37,16 +38,6 @@ const UsersList = () => {
     }
   }
 
-  const loadMorePosts = async () => {
-    const scrollableDiv = activeUsersRef.current
-  
-    if (scrollableDiv) {
-      scrollPositionRef.current = scrollableDiv.scrollTop // Save scroll position
-    }
-  
-    await fetchMore() 
-  }  
-
   return (
     <div className="users-list-container">
       <div 
@@ -56,7 +47,7 @@ const UsersList = () => {
       >
         <InfiniteScroll
           dataLength={users.length}
-          next={loadMorePosts}
+          next={() => loadMoreItems(activeUsersRef, scrollPositionRef, fetchMore)}
           hasMore={hasMore}
           loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}

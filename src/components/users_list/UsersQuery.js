@@ -7,6 +7,7 @@ import UserItem from "./UserItem"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import InfiniteScroll from "react-infinite-scroll-component"
+import loadMoreItems from "../../utils/loadMoreItems"
 
 const UsersQuery = ({setIsUsersQueryShown}) => {
   // Context
@@ -34,17 +35,6 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
     setSearchQuery(e.target.value)
   }  
 
-  const loadMorePosts = async () => {
-    console.log('loadMorePosts called')
-    const scrollableDiv =  usersContainerRef.current
-
-    if (scrollableDiv) {
-      scrollPositionRef.current = scrollableDiv.scrollTop // Save scroll position
-    }
-
-    await fetchMore() // Fetch new posts
-  }  
-
   // Effects
   useEffect(() => {
     if(prevLocation.current !== location.pathname) {
@@ -62,7 +52,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
   console.log("filtered", filteredUsers)
 
   return (
-    <PopUp setIsPopUpShown={setIsUsersQueryShown} /*style={{overflow: 'auto'}}*/>
+    <PopUp setIsPopUpShown={setIsUsersQueryShown}>
       <input
         type="text"
         placeholder="search users"
@@ -77,7 +67,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
       >
         <InfiniteScroll
           dataLength={filteredUsers.length}
-          next={loadMorePosts}
+          next={() => loadMoreItems(usersContainerRef, scrollPositionRef, fetchMore)}
           hasMore={hasMore}
           loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}

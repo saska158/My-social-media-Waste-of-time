@@ -6,6 +6,7 @@ import Post from "../post/Post"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { where } from "../../api/firebase"
+import loadMoreItems from "../../utils/loadMoreItems"
 
 
 const UserPosts = ({room, setRoom, profileUid}) => {
@@ -26,17 +27,6 @@ const UserPosts = ({room, setRoom, profileUid}) => {
       hasMore 
     } = useFirestoreBatch(postsRef, 2, [where("creatorUid", "==", profileUid)], profileUid)
 
-    // Functions
-    const loadMorePosts = async () => {
-      const scrollableDiv = postsContainerRef.current
-    
-      if (scrollableDiv) {
-        scrollPositionRef.current = scrollableDiv.scrollTop // Save scroll position
-      }
-    
-      await fetchMore() 
-    }  
-
     return (
         <div>
           <div>
@@ -53,7 +43,7 @@ const UserPosts = ({room, setRoom, profileUid}) => {
           >
             <InfiniteScroll
               dataLength={posts.length}
-              next={loadMorePosts}
+              next={() => loadMoreItems(postsContainerRef, scrollPositionRef, fetchMore)}
               hasMore={hasMore}
               loader={<ClipLoader color="salmon" />}
               scrollThreshold={0.9}

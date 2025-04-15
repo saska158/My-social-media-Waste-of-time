@@ -9,6 +9,7 @@ import PostSkeleton from "../components/skeletons/PostSkeleton"
 import useFirestoreBatch from "../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import InfiniteScroll from "react-infinite-scroll-component"
+import loadMoreItems from "../utils/loadMoreItems"
 
 const GroupChat = () => {
   // Context
@@ -42,16 +43,6 @@ const GroupChat = () => {
       setIsPopupShown(true)
     }
   }
-
-  const loadMorePosts = async () => {
-    const scrollableDiv = postsRef.current
-
-    if (scrollableDiv) {
-      scrollPositionRef.current = scrollableDiv.scrollTop // Save scroll position
-    }
-
-    await fetchMore() // Fetch new posts
-  }
   
   return (
     <div className="group-chat-container">
@@ -65,7 +56,7 @@ const GroupChat = () => {
         <div className="posts-container" ref={postsRef} id="scrollableDiv">
            <InfiniteScroll
              dataLength={memoizedPosts.length}
-             next={loadMorePosts}
+             next={() => loadMoreItems(postsRef, scrollPositionRef, fetchMore)}
              hasMore={hasMore}
              loader={<ClipLoader color="salmon" />}
              scrollThreshold={0.9}

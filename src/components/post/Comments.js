@@ -9,6 +9,7 @@ import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
+import loadMoreItems from "../../utils/loadMoreItems"
 
 const Comments = ({room, id}) => {
   const initialComment = {text: '', image: ''}
@@ -95,16 +96,6 @@ const Comments = ({room, id}) => {
     }
   }
 
-  const loadMorePosts = async () => {
-    const scrollableDiv = commentsContainerRef.current
-  
-    if (scrollableDiv) {
-      scrollPositionRef.current = scrollableDiv.scrollTop // Save scroll position
-    }
-  
-    await fetchMore() 
-  }  
-
   // Effects
   useEffect(() => {
     if(inputRef.current) {
@@ -122,7 +113,7 @@ const Comments = ({room, id}) => {
       >
         <InfiniteScroll
           dataLength={comments.length}
-          next={loadMorePosts}
+          next={() => loadMoreItems(commentsContainerRef, scrollPositionRef, fetchMore)}
           hasMore={hasMore}
           loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}
