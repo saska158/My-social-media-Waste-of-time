@@ -7,7 +7,6 @@ import ActiveUser from "./ActiveUser"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { ClipLoader } from "react-spinners"
-import loadMoreItems from "../../utils/loadMoreItems"
 
 const UsersList = () => {
   // Context
@@ -22,7 +21,6 @@ const UsersList = () => {
     return collection(firestore, 'profiles')
   }, [])
 
-  const scrollPositionRef = useRef(0)
   const activeUsersRef = useRef(null)
 
   // Custom hooks
@@ -47,7 +45,7 @@ const UsersList = () => {
       >
         <InfiniteScroll
           dataLength={users.length}
-          next={() => loadMoreItems(activeUsersRef, scrollPositionRef, fetchMore)}
+          next={fetchMore}
           hasMore={hasMore}
           loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}

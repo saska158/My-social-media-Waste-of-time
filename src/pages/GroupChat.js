@@ -9,7 +9,6 @@ import PostSkeleton from "../components/skeletons/PostSkeleton"
 import useFirestoreBatch from "../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import InfiniteScroll from "react-infinite-scroll-component"
-import loadMoreItems from "../utils/loadMoreItems"
 
 const GroupChat = () => {
   // Context
@@ -21,7 +20,6 @@ const GroupChat = () => {
  
   const { roomId } = useParams()
   const postsRef = useRef(null)
-  const scrollPositionRef = useRef(0)
 
   // Memoized values 
   const roomRef = useMemo(() => {
@@ -56,7 +54,7 @@ const GroupChat = () => {
         <div className="posts-container" ref={postsRef} id="scrollableDiv">
            <InfiniteScroll
              dataLength={memoizedPosts.length}
-             next={() => loadMoreItems(postsRef, scrollPositionRef, fetchMore)}
+             next={fetchMore}
              hasMore={hasMore}
              loader={<ClipLoader color="salmon" />}
              scrollThreshold={0.9}

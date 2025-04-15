@@ -6,7 +6,6 @@ import Post from "../post/Post"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { where } from "../../api/firebase"
-import loadMoreItems from "../../utils/loadMoreItems"
 
 
 const UserPosts = ({room, setRoom, profileUid}) => {
@@ -17,8 +16,7 @@ const UserPosts = ({room, setRoom, profileUid}) => {
     }, [room])
 
     const postsContainerRef = useRef(null)
-    const scrollPositionRef = useRef(0)
-
+  
     // Custom hooks
     const { 
       data: posts, 
@@ -43,7 +41,7 @@ const UserPosts = ({room, setRoom, profileUid}) => {
           >
             <InfiniteScroll
               dataLength={posts.length}
-              next={() => loadMoreItems(postsContainerRef, scrollPositionRef, fetchMore)}
+              next={fetchMore}
               hasMore={hasMore}
               loader={<ClipLoader color="salmon" />}
               scrollThreshold={0.9}

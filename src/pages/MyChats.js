@@ -7,7 +7,6 @@ import ChatItemSkeleton from "../components/skeletons/ChatItemSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
 import useFirestoreBatch from "../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
-import loadMoreItems from "../utils/loadMoreItems"
 
 const MyChats = () => {
     // Context
@@ -19,7 +18,6 @@ const MyChats = () => {
     const [chatPartnerUid, setChatPartnerUid] = useState(null)
     const [error, setError] = useState(null)
 
-    const scrollPositionRef = useRef(0)
     const chatsContainerRef = useRef(null)
 
     const chatsRef = useMemo(() => {
@@ -72,7 +70,7 @@ const MyChats = () => {
             >
               <InfiniteScroll
                 dataLength={chats.length}
-                next={() => loadMoreItems(chatsContainerRef, scrollPositionRef, fetchMore)}
+                next={fetchMore}
                 hasMore={hasMore}
                 loader={<ClipLoader color="salmon" />}
                 scrollThreshold={0.9}

@@ -9,7 +9,6 @@ import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
-import loadMoreItems from "../../utils/loadMoreItems"
 
 const Comments = ({room, id}) => {
   const initialComment = {text: '', image: ''}
@@ -27,7 +26,6 @@ const Comments = ({room, id}) => {
   // Hooks that don't trigger re-renders 
   const imageInputRef = useRef(null)
   const inputRef = useRef(null) 
-  const scrollPositionRef = useRef(0)
   const commentsContainerRef = useRef(null)
   
   // Memoized values
@@ -113,7 +111,7 @@ const Comments = ({room, id}) => {
       >
         <InfiniteScroll
           dataLength={comments.length}
-          next={() => loadMoreItems(commentsContainerRef, scrollPositionRef, fetchMore)}
+          next={fetchMore}
           hasMore={hasMore}
           loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}

@@ -7,7 +7,6 @@ import UserItem from "./UserItem"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import InfiniteScroll from "react-infinite-scroll-component"
-import loadMoreItems from "../../utils/loadMoreItems"
 
 const UsersQuery = ({setIsUsersQueryShown}) => {
   // Context
@@ -22,12 +21,11 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
   }, [])
   
   // Custom hooks
-  const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 3)
+  const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 4)
  
   // Hooks that don't trigger re-renders
   const location = useLocation()
   const prevLocation = useRef(location.pathname)
-  const scrollPositionRef = useRef(0)
   const usersContainerRef = useRef(null)
 
   // Functions
@@ -67,7 +65,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
       >
         <InfiniteScroll
           dataLength={filteredUsers.length}
-          next={() => loadMoreItems(usersContainerRef, scrollPositionRef, fetchMore)}
+          next={fetchMore}
           hasMore={hasMore}
           loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}
