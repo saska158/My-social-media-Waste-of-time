@@ -1,7 +1,7 @@
 import { useAuth } from "../../contexts/authContext"
 import FollowButton from "../FollowButton"
 
-const UserProfileHeader = ({profile, profileUid, isFollowing, setIsEditPopupShown}) => {
+const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown}) => {
     // Context
     const { user } = useAuth()
 

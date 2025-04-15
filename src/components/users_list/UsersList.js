@@ -70,7 +70,7 @@ const UsersList = () => {
           <div>
             {
               loading ? <p>loading...</p> : (
-                users.length > 0 ? (users.map(usr => <ActiveUser user={usr} />)) : <p>Noone is online.</p>
+                users.length > 0 ? (users.map((usr, index) => <ActiveUser key={index} user={usr} />)) : <p>Noone is online.</p>
               )
             }
           </div>

@@ -57,7 +57,9 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
     return users?.filter((usr) => (
       usr.uid !== user.uid && usr.displayName.toLowerCase().startsWith(searchQuery.toLowerCase())
     ))
-  }, [users.length])
+  }, [users, searchQuery])
+
+  console.log("filtered", filteredUsers)
 
   return (
     <PopUp setIsPopUpShown={setIsUsersQueryShown} /*style={{overflow: 'auto'}}*/>

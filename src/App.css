@@ -137,12 +137,9 @@ textarea {
 /* MY CHATS */
 
 .my-chats-container {
-  width: 30%;
-}
-
-.my-chats-container h2 {
-  margin: 1em 1em .5em; 
-  font-size: 1.2rem;
+  padding: 1em;
+  height: 100%;
+  overflow-y: auto;
 }
 
 /* SIGN IN/ SIGN UP */

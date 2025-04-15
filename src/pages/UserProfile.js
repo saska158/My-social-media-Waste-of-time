@@ -25,7 +25,6 @@ const UserProfile = () => {
     followers: [],
     following: []
   }) 
-  const [isFollowing, setIsFollowing] = useState(false)
   const [room, setRoom] = useState('main') 
   const [activeSection, setActiveSection] = useState("description")
   const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
@@ -42,8 +41,8 @@ const UserProfile = () => {
   // Functions
   const handleMessageButton = (e) => {
     e.stopPropagation()
-    const amIFollowingThisUser = profile.followers.some(follower => follower.uid === user.uid)
-    const isThisUserFollowingMe = profile.following ? profile.following.some(follower => follower.uid === user.uid) : false
+    const amIFollowingThisUser = profile.followers.some(follower => follower === user.uid)
+    const isThisUserFollowingMe = profile.following ? profile.following.some(follower => follower === user.uid) : false
 
     if(amIFollowingThisUser && isThisUserFollowingMe) {
       setIsChatBoxVisible(!isChatBoxVisible)
@@ -78,12 +77,6 @@ const UserProfile = () => {
   }, [profileUid])
 
   useEffect(() => {
-    if(user) {
-      setIsFollowing(profile.followers?.some(follower => follower.uid === user.uid))
-    }
-  }, [profile, user])
-
-  useEffect(() => {
     setIsChatBoxVisible(false)
   }, [profileUid])
 
@@ -92,7 +85,7 @@ const UserProfile = () => {
       {
         !isChatBoxVisible ? (
           <>
-            <UserProfileHeader {...{profile, profileUid, isFollowing, setIsEditPopupShown}} />
+            <UserProfileHeader {...{profile, profileUid, setIsEditPopupShown}} />
             <UserProfileNavigation {...{activeSection, setActiveSection}}/>  
             <div className="user-profile-description">
               <UserProfileTags {...{activeSection, profile}}/>

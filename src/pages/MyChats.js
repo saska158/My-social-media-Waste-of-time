@@ -1,37 +1,40 @@
-import { useState, useEffect } from "react"
-import { firestore, collection, query, where, onSnapshot, doc, getDoc } from "../api/firebase"
+import { useState, useEffect, useRef, useMemo } from "react"
+import { firestore, collection, where, doc, getDoc } from "../api/firebase"
 import { useAuth } from "../contexts/authContext"
 import ChatBox from "../components/one_on_one_chat/ChatBox"
 import ChatPreview from "../components/ChatPreview"
 import ChatItemSkeleton from "../components/skeletons/ChatItemSkeleton"
+import InfiniteScroll from "react-infinite-scroll-component"
+import useFirestoreBatch from "../hooks/useFirestoreBatch"
+import { ClipLoader } from "react-spinners"
 
 const MyChats = () => {
     // Context
     const { user } = useAuth()
     
     // State
-    const [chats, setChats] = useState([])
     const [chatPartnerProfile, setChatPartnerProfile] = useState(null)
     const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
     const [chatPartnerUid, setChatPartnerUid] = useState(null)
-    const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
+
+    const scrollPositionRef = useRef(0)
+    const chatsContainerRef = useRef(null)
+
+    const chatsRef = useMemo(() => {
+      return collection(firestore, 'chats')
+    }, [])
+
+    // Custom hooks
+    const { 
+      data: chats, 
+      loading, 
+      fetchMore, 
+      hasMore 
+    } = useFirestoreBatch(chatsRef, 10, [where("participants", "array-contains", user.uid)])
 
 
     // Effects
-    useEffect(() => {
-      const chatsRef = collection(firestore, 'chats')
-      const chatsQuery = query(chatsRef, where('participants', 'array-contains', user.uid))
-
-      const unsubscribe = onSnapshot(chatsQuery, (snapshot) => {
-        const chatsArray = snapshot.docs.map(doc => ({...doc.data()}))
-        setChats(chatsArray)
-        setLoading(false)
-      })
-
-      return () => unsubscribe
-    }, [user.uid])
-
     useEffect(() => {
       if(chatPartnerUid) {
         const fetchProfile = async () => {
@@ -57,13 +60,38 @@ const MyChats = () => {
       setChatPartnerUid(chatPartnerUid)
     }
 
+    const loadMorePosts = async () => {
+      const scrollableDiv = chatsContainerRef.current
+    
+      if (scrollableDiv) {
+        scrollPositionRef.current = scrollableDiv.scrollTop // Save scroll position
+      }
+    
+      await fetchMore() 
+    }  
+
     return (
-      <div className="my-chats-container">
+      <div style={{width: '30%'}}>
         {
           !isChatBoxVisible ? (
-            <div>
-              <h2>My chats</h2>
-              {
+            <div 
+              className="my-chats-container"
+              id="scrollableChatsDiv"
+              ref={chatsContainerRef}
+            >
+              <InfiniteScroll
+                dataLength={chats.length}
+                next={loadMorePosts}
+                hasMore={hasMore}
+                loader={<ClipLoader color="salmon" />}
+                scrollThreshold={0.9}
+                endMessage={
+                 <p style={{ textAlign: 'center' }}></p>
+                }
+                scrollableTarget="scrollableChatsDiv"
+              >
+                <div>
+                {
                 loading ? <ChatItemSkeleton /> : (
                   chats.length > 0 ? (
                     chats.map((chat, index) => {
@@ -71,7 +99,6 @@ const MyChats = () => {
                       const chatPartnerUid = chat.participants.filter(participant => participant !== user.uid)[0]
                       return (
                         <ChatPreview {...{
-                          index,
                           chatPartnerUid, 
                           setIsChatBoxVisible, 
                           receiverUid, 
@@ -82,7 +109,9 @@ const MyChats = () => {
                           contentImage,
                           pickChat,
                           timestamp
-                        }}/>
+                        }}
+                        key={index}
+                        />
                       )
                       })
                   ) : (
@@ -90,11 +119,13 @@ const MyChats = () => {
                   )
                 )
               }
+                </div>
+              </InfiniteScroll>
             </div>
           ) : <ChatBox {...{chatPartnerProfile, setIsChatBoxVisible}}/>
         }  
       </div>
     )
 }
-//Array(5).fill(0).map((_, i) => <ChatItemSkeleton key={i} />
+
 export default MyChats

@@ -1,7 +1,6 @@
 import { format } from "date-fns"
 
 const ChatPreview = ({
-    index,
     chatPartnerUid, 
     setIsChatBoxVisible, 
     receiverUid, 
@@ -13,10 +12,8 @@ const ChatPreview = ({
     pickChat,
     timestamp
 }) => {
-  console.log("time", timestamp)
     return (
         <div 
-          key={index} 
           className="chat-item-container"
           onClick={() => pickChat(chatPartnerUid, setIsChatBoxVisible)}
         >

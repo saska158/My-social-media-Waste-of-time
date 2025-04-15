@@ -116,7 +116,7 @@ const useMessages = (chatId) => {
             // Chat doesn't exist, create a new one
             await setDoc(chatDoc, {
               participants: [userA.uid, userBUid],
-              createdAt: serverTimestamp(),
+              timestamp: serverTimestamp(),
               lastMessage: null
             })
         }
