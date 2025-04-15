@@ -5,7 +5,6 @@ import UsersQuery from "./UsersQuery"
 import JoinPopUp from "../JoinPopUp"
 import ActiveUser from "./ActiveUser"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
-import { ClipLoader } from "react-spinners"
 
 const UsersList = () => {
   // Context
@@ -40,13 +39,6 @@ const UsersList = () => {
     <div className="users-list-container">
       <div>{activeUsers.length > 0 ? activeUsers : 'Noone is online.'}</div>
       <div style={{position: 'absolute', bottom: '0', padding: '1em'}}>
-        {
-          loading ? (
-            <ClipLoader color="salmon" />
-          ) : (
-            hasMore && <button onClick={fetchMore} disabled={loading}>load more</button>
-          )
-        }
       </div>
       <button onClick={findPeopleToFollow} className="users-list-follow-button">find people to follow</button>
       { isUsersQueryShown && <UsersQuery {...{ setIsUsersQueryShown }}/>}

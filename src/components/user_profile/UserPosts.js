@@ -1,10 +1,11 @@
-import { useMemo, useRef, useLayoutEffect } from "react"
+import { useMemo, useRef } from "react"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import { firestore, collection } from "../../api/firebase"
 import Post from "../post/Post"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
+import { where } from "../../api/firebase"
 
 
 const UserPosts = ({room, setRoom, profileUid}) => {
@@ -18,25 +19,22 @@ const UserPosts = ({room, setRoom, profileUid}) => {
     const scrollPositionRef = useRef(0)
 
     // Custom hooks
-    const { data: posts, loading, fetchMore, hasMore } = useFirestoreBatch(postsRef, 2)
-    const userPosts = posts?.filter(post => post.creatorUid === profileUid)
+    const { 
+      data: posts, 
+      loading, 
+      fetchMore, 
+      hasMore 
+    } = useFirestoreBatch(postsRef, 2, [where("creatorUid", "==", profileUid)], profileUid)
 
-    // Effects
-     /* useLayoutEffect(() => {
-        if (postsContainerRef.current) {
-          postsContainerRef.current.scrollTop = scrollPositionRef.current // Restore scroll
-        }
-      }, [userPosts?.length]) // Runs after posts update*/
-
-      const loadMorePosts = async () => {
-        const scrollableDiv = postsContainerRef.current
+    const loadMorePosts = async () => {
+      const scrollableDiv = postsContainerRef.current
     
-        if (scrollableDiv) {
-          scrollPositionRef.current = scrollableDiv.scrollTop // Save scroll position
-        }
+      if (scrollableDiv) {
+        scrollPositionRef.current = scrollableDiv.scrollTop // Save scroll position
+      }
     
-        await fetchMore() // Fetch new posts
-      }  
+      await fetchMore() 
+    }  
 
     return (
         <div>
@@ -49,11 +47,11 @@ const UserPosts = ({room, setRoom, profileUid}) => {
           </div>
           <div 
             style={{padding: '.5em', height: '400px', overflowY: 'auto'}} 
-            id="scrollableDiv"
+            id="scrollableUserPostsDiv"
             ref={postsContainerRef}
           >
             <InfiniteScroll
-              dataLength={userPosts.length}
+              dataLength={posts.length}
               next={loadMorePosts}
               hasMore={hasMore}
               loader={<ClipLoader color="salmon" />}
@@ -63,13 +61,13 @@ const UserPosts = ({room, setRoom, profileUid}) => {
                 Yay! You have seen it all
                </p>
               }
-              scrollableTarget="scrollableDiv"
+              scrollableTarget="scrollableUserPostsDiv"
             >
               <div>
               {
                 loading ? <PostSkeleton /> : (
-                  userPosts.length > 0 ? (
-                    userPosts.map((post, index) => (
+                  posts.length > 0 ? (
+                    posts.map((post, index) => (
                       <Post
                         key={index}
                         id={post.id}
@@ -95,14 +93,3 @@ const UserPosts = ({room, setRoom, profileUid}) => {
 
 export default UserPosts
 
-/*
-<div style={{padding: '1em'}}>
-              {
-                loading ? (
-                  <ClipLoader color="white" />
-                ) : (
-                  hasMore && <button onClick={fetchMore} disabled={loading}>load more</button>
-                )
-              }
-            </div>
-*/

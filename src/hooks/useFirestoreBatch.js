@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState, useMemo } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { query, orderBy , limit, startAfter, getDocs, onSnapshot } from "../api/firebase"
 
-const useFirestoreBatch = (collectionRef, pageSize = 3) => {
+const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], profileUid=null) => {
     //console.log("Fetching more...")
     const [data, setData] = useState([])
     const [lastDoc, setLastDoc] = useState(null)
@@ -12,6 +12,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 3) => {
     useEffect(() => {
         const q = query(
             collectionRef,
+            ...queryConstraints,
             orderBy("timestamp", "desc"), 
             limit(pageSize)
         )
@@ -43,17 +44,16 @@ const useFirestoreBatch = (collectionRef, pageSize = 3) => {
         )
 
         return () => unsubscribe()
-    }, [collectionRef])
+    }, [collectionRef, profileUid])
 
     const fetchData = useCallback(async () => {
       console.log("Fetching more data...")
       if(loading || !hasMore || !lastDoc) return
 
-      //setLoading(true)
-
       try {
         const q = query(
           collectionRef,
+          ...queryConstraints,
           orderBy("timestamp", "desc"), 
           startAfter(lastDoc),
           limit(pageSize + 1)

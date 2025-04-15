@@ -8,6 +8,7 @@ import uploadToCloudinaryAndGetUrl from "../../api/uploadToCloudinaryAndGetUrl"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import PostSkeleton from "../skeletons/PostSkeleton"
+import InfiniteScroll from "react-infinite-scroll-component"
 
 const Comments = ({room, id}) => {
   const initialComment = {text: '', image: ''}
@@ -25,6 +26,8 @@ const Comments = ({room, id}) => {
   // Hooks that don't trigger re-renders 
   const imageInputRef = useRef(null)
   const inputRef = useRef(null) 
+  const scrollPositionRef = useRef(0)
+  const commentsContainerRef = useRef(null)
   
   // Memoized values
   const commentsRef = useMemo(() => {
@@ -92,6 +95,16 @@ const Comments = ({room, id}) => {
     }
   }
 
+  const loadMorePosts = async () => {
+    const scrollableDiv = commentsContainerRef.current
+  
+    if (scrollableDiv) {
+      scrollPositionRef.current = scrollableDiv.scrollTop // Save scroll position
+    }
+  
+    await fetchMore() 
+  }  
+
   // Effects
   useEffect(() => {
     if(inputRef.current) {
@@ -102,27 +115,34 @@ const Comments = ({room, id}) => {
   return (
     <div className="comments-container">
       { showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} className="comments-emoji-picker"/> }
-      <div className="comments-box">
-          {
-            loading ? <PostSkeleton /> : (
+      <div 
+        className="comments-box"
+        id="scrollableCommentsDiv"
+        ref={commentsContainerRef}
+      >
+        <InfiniteScroll
+          dataLength={comments.length}
+          next={loadMorePosts}
+          hasMore={hasMore}
+          loader={<ClipLoader color="salmon" />}
+          scrollThreshold={0.9}
+          endMessage={
+           <p style={{ textAlign: 'center' }}>
+            Yay! You have seen it all
+           </p>
+          }
+          scrollableTarget="scrollableCommentsDiv"
+        >
+          <div>
+            {
+              loading ? <PostSkeleton /> : (
                 comments.length > 0 ? (
                   comments.map((comment, index) => <Comment key={index} {...{comment, index}} />)
                 ) : <p>No comments yet</p>
-            )
-          }
-          {
-            hasMore && (
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation()
-                  fetchMore()
-                }} 
-                disabled={loading}
-              >
-                load more
-              </button>
-            )
-          }
+              )
+            }
+          </div>
+        </InfiniteScroll>
       </div>
       <form onSubmit={addComment} className="comments-form">
         <label className="comments-main-label">

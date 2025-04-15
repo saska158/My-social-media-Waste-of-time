@@ -6,6 +6,7 @@ import PopUp from "../PopUp"
 import UserItem from "./UserItem"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
+import InfiniteScroll from "react-infinite-scroll-component"
 
 const UsersQuery = ({setIsUsersQueryShown}) => {
   // Context
@@ -21,14 +22,27 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
   
   // Custom hooks
   const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 3)
-
+ 
   // Hooks that don't trigger re-renders
   const location = useLocation()
   const prevLocation = useRef(location.pathname)
+  const scrollPositionRef = useRef(0)
+  const usersContainerRef = useRef(null)
 
   // Functions
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value)
+  }  
+
+  const loadMorePosts = async () => {
+    console.log('loadMorePosts called')
+    const scrollableDiv =  usersContainerRef.current
+
+    if (scrollableDiv) {
+      scrollPositionRef.current = scrollableDiv.scrollTop // Save scroll position
+    }
+
+    await fetchMore() // Fetch new posts
   }  
 
   // Effects
@@ -39,12 +53,14 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
     prevLocation.current = location.pathname
   }, [location.pathname])
     
-  const filteredUsers = users?.filter((user) =>
-      user.displayName.toLowerCase().startsWith(searchQuery.toLowerCase())
-  )
+  const filteredUsers = useMemo(() => {
+    return users?.filter((usr) => (
+      usr.uid !== user.uid && usr.displayName.toLowerCase().startsWith(searchQuery.toLowerCase())
+    ))
+  }, [users.length])
 
   return (
-    <PopUp setIsPopUpShown={setIsUsersQueryShown} style={{overflow: 'auto'}}>
+    <PopUp setIsPopUpShown={setIsUsersQueryShown} /*style={{overflow: 'auto'}}*/>
       <input
         type="text"
         placeholder="search users"
@@ -52,28 +68,36 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
         onChange={handleSearchChange}
         style={{margin: '1em', alignSelf: 'flex-start'}}
       />
-      { filteredUsers
-          .filter(usr => usr.uid !== user.uid)
-          .map((usr, index) => <UserItem key={index} userItem={usr}/>) 
-      }
-      <div style={{position: 'absolute', bottom: '0', padding: '1em'}}>
-        {
-          loading ? (
-            <ClipLoader color="salmon" />
-          ) : (
-            hasMore && (
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation()
-                  fetchMore()
-                }} 
-                disabled={loading}
-              >
-                load more
-              </button>
-            )
-          )
-        }
+      <div 
+        style={{ height: '300px', overflowY: 'auto'}}
+        id="scrollableUsersDiv"
+        ref={usersContainerRef}
+      >
+        <InfiniteScroll
+          dataLength={filteredUsers.length}
+          next={loadMorePosts}
+          hasMore={hasMore}
+          loader={<ClipLoader color="salmon" />}
+          scrollThreshold={0.9}
+          endMessage={
+           <p style={{ textAlign: 'center' }}>
+            Yay! You have seen it all
+           </p>
+          }
+          scrollableTarget="scrollableUsersDiv"
+        >
+          <div>
+            {
+              loading ? <p>loading...</p> : (
+                filteredUsers.length > 0 ? (
+                  filteredUsers.map((usr, index) => <UserItem key={index} userItem={usr}/>) 
+                ) : (
+                  <p>There's no post yet</p>
+                )
+              )
+            }
+          </div>
+        </InfiniteScroll>
       </div>
     </PopUp>
   )

@@ -16,7 +16,7 @@ const MyChats = () => {
     const [chatPartnerUid, setChatPartnerUid] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
-    console.log('partner', chats.map(chat => chat.participants.filter(par => par !== user.uid)[0]))
+
 
     // Effects
     useEffect(() => {

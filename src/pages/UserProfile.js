@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
-import { firestore, doc, getDoc, onSnapshot } from '../api/firebase'
+import { firestore, doc, onSnapshot } from '../api/firebase'
 import { useAuth } from "../contexts/authContext"
 import ChatBox from '../components/one_on_one_chat/ChatBox'
 import PopUp from "../components/PopUp"
@@ -78,8 +78,10 @@ const UserProfile = () => {
   }, [profileUid])
 
   useEffect(() => {
-    setIsFollowing(profile.followers?.some(follower => follower.uid === user.uid))
-  }, [profile])
+    if(user) {
+      setIsFollowing(profile.followers?.some(follower => follower.uid === user.uid))
+    }
+  }, [profile, user])
 
   useEffect(() => {
     setIsChatBoxVisible(false)

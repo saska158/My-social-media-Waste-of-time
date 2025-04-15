@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useLayoutEffect } from "react"
+import { useState, useMemo, useRef } from "react"
 import { useParams } from "react-router-dom"
 import { useAuth } from '../contexts/authContext'
 import { firestore, collection } from "../api/firebase"
@@ -32,13 +32,6 @@ const GroupChat = () => {
   // Custom hooks
   const { data: posts, loading, fetchMore, hasMore } = useFirestoreBatch(roomRef)
   const memoizedPosts = useMemo(() => posts, [posts])
-
-  // Effects
-  /*useLayoutEffect(() => {
-    if (postsRef.current) {
-      postsRef.current.scrollTop = scrollPositionRef.current // Restore scroll
-    }
-  }, [posts.length]) // Runs after posts update*/
 
   // Functions
   const handleNewPost = (e) => {
