@@ -1,10 +1,12 @@
-import { useState, useMemo } from "react"
-import { firestore, collection } from "../../api/firebase"
+import { useState, useMemo, useRef } from "react"
+import { firestore, collection, where } from "../../api/firebase"
 import { useAuth } from "../../contexts/authContext"
 import UsersQuery from "./UsersQuery"
 import JoinPopUp from "../JoinPopUp"
 import ActiveUser from "./ActiveUser"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
+import InfiniteScroll from "react-infinite-scroll-component"
+import { ClipLoader } from "react-spinners"
 
 const UsersList = () => {
   // Context
@@ -19,8 +21,11 @@ const UsersList = () => {
     return collection(firestore, 'profiles')
   }, [])
 
+  const scrollPositionRef = useRef(0)
+  const activeUsersRef = useRef(null)
+
   // Custom hooks
-  const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 3)
+  const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 10, [where("isActive", "==", true)])
 
   // Functions
   const findPeopleToFollow = (e) => {
@@ -32,13 +37,44 @@ const UsersList = () => {
     }
   }
 
-  const activeUsersArray = users.filter(usr => usr.isActive && usr.uid !== user?.uid)
-  const activeUsers = activeUsersArray.map(usr => <ActiveUser user={usr} />)
+  const loadMorePosts = async () => {
+    const scrollableDiv = activeUsersRef.current
+  
+    if (scrollableDiv) {
+      scrollPositionRef.current = scrollableDiv.scrollTop // Save scroll position
+    }
+  
+    await fetchMore() 
+  }  
 
   return (
     <div className="users-list-container">
-      <div>{activeUsers.length > 0 ? activeUsers : 'Noone is online.'}</div>
-      <div style={{position: 'absolute', bottom: '0', padding: '1em'}}>
+      <div 
+        className="active-users-container"
+        id="scrollableActiveUsersDiv"
+        ref={activeUsersRef}
+      >
+        <InfiniteScroll
+          dataLength={users.length}
+          next={loadMorePosts}
+          hasMore={hasMore}
+          loader={<ClipLoader color="salmon" />}
+          scrollThreshold={0.9}
+          endMessage={
+           <p style={{ textAlign: 'center' }}>
+
+           </p>
+          }
+          scrollableTarget="scrollableActiveUsersDiv"
+        >
+          <div>
+            {
+              loading ? <p>loading...</p> : (
+                users.length > 0 ? (users.map(usr => <ActiveUser user={usr} />)) : <p>Noone is online.</p>
+              )
+            }
+          </div>
+        </InfiniteScroll>
       </div>
       <button onClick={findPeopleToFollow} className="users-list-follow-button">find people to follow</button>
       { isUsersQueryShown && <UsersQuery {...{ setIsUsersQueryShown }}/>}

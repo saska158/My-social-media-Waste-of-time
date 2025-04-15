@@ -875,6 +875,17 @@ textarea {
   width: 35%;
   padding: 1em .5em;
   color: salmon;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.active-users-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+  height: 80%;
+  overflow-y: auto;
 }
 
 .users-list-follow-button {
@@ -884,13 +895,13 @@ textarea {
   width: 150px;
   border-radius: 30px;
   padding: 1em;
-  margin-top: 1em;
 }
 
 .active-user-container {
   display: flex;
   align-items: center;
   gap: .5em;
+  margin-bottom: .5em;
 }
 
 .active-user-profile-image {

@@ -26,6 +26,7 @@ const UserPosts = ({room, setRoom, profileUid}) => {
       hasMore 
     } = useFirestoreBatch(postsRef, 2, [where("creatorUid", "==", profileUid)], profileUid)
 
+    // Functions
     const loadMorePosts = async () => {
       const scrollableDiv = postsContainerRef.current
     
