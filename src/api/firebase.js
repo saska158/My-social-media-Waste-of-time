@@ -15,7 +15,6 @@ import {
   startAt,
   endAt,
   limitToFirst,
-  limitToLast
 } from "firebase/database"
 
 import { 
@@ -44,7 +43,9 @@ import {
   onSnapshot,
   serverTimestamp,
   limit,
+  limitToLast,
   startAfter,
+  endBefore,
   arrayUnion,
   arrayRemove,
   deleteField,
@@ -87,7 +88,6 @@ export {
   startAt,
   endAt,
   limitToFirst,
-  limitToLast,
   update,
   onDisconnect,
   onAuthStateChanged, 
@@ -114,7 +114,9 @@ export {
   getToken,
   onMessage,
   limit,
+  limitToLast,
   startAfter,
+  endBefore,
   arrayUnion,
   arrayRemove,
   deleteField,

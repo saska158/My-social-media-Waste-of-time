@@ -5,11 +5,13 @@ import Message from "./Message"
 const Messages = ({messages}) => {
     let lastDate = null
     const messageRefs = useRef([])
+    console.log("messages", messages)
 
     return messages.map((message, index) => {
-      const messageDate = message.timestamp ? format(message.timestamp, "dd/MM/yyyy") : ''
-      const showDateDivider = lastDate !== messageDate
-      lastDate = messageDate
+      //const messageDate = message.timestamp ? format(message.timestamp, "dd/MM/yyyy") : ''
+      console.log(message.timestamp)
+      //const showDateDivider = lastDate !== messageDate
+      //lastDate = messageDate
 
       const isLastIndex = index === messages.length - 1
       return (
@@ -17,10 +19,10 @@ const Messages = ({messages}) => {
           key={index}
           index={index}
           message={message} 
-          showDateDivider={showDateDivider}
+          //showDateDivider={showDateDivider}
           messageRefs={messageRefs}
-          messageDate={messageDate}
-          isLastIndex={isLastIndex}
+          //messageDate={messageDate}
+          //isLastIndex={isLastIndex}
         />
       )
     })

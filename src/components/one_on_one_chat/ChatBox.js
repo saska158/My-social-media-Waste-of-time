@@ -1,15 +1,16 @@
-import { useState, useEffect, useRef, useLayoutEffect } from "react"
+import { useState, useEffect, useRef, useLayoutEffect, useMemo } from "react"
 import { firestore, collection, query, where, getDocs, updateDoc, ref, database, onValue } from "../../api/firebase"
 import TypingIndicator from "./TypingIndicator"
 import Messages from "./Messages"
 import { useAuth } from "../../contexts/authContext"
 import ChatBoxHeader from "./ChatBoxHeader"
 import ChatBoxForm from "./ChatBoxForm"
-import useMessages from "../../hooks/useMessages"
-//import useInfiniteScroll from "../../hooks/useInfiniteScroll"
+import InfiniteScroll from "react-infinite-scroll-component"
+import { ClipLoader } from "react-spinners"
+import useChatMessages from "../../hooks/useChatMessages"
 
 
-const ChatBox = ({/*chatPartnerUid,*/ chatPartnerProfile, setIsChatBoxVisible}) => {
+const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
   // Context
   const { user } = useAuth()
 
@@ -17,17 +18,19 @@ const ChatBox = ({/*chatPartnerUid,*/ chatPartnerProfile, setIsChatBoxVisible}) 
   const [chatId, setChatId] = useState('')
   const [visibleDate, setVisibleDate] = useState("")
   const [isTyping, setIsTyping] = useState(false)
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
-
-  console.log("partner", chatPartnerProfile)
 
   // Hooks that don't trigger re-renders 
   const chatRef = useRef(null)
 
+  // Memoized values
+  const messagesRef = useMemo(() => {
+    if (!chatId) return null
+    return collection(firestore, "chats", chatId, "messages")
+  }, [chatId])
+
   // Custom hooks
-  const { messages, fetchMoreMessages, hasMore } = useMessages(chatId)
-  //useInfiniteScroll(fetchMoreMessages, hasMore, chatRef)
+  const { data: messages, loading, fetchMore, hasMore } = useChatMessages(messagesRef, 10)
 
   // Effects
   /* create or get the chatId when the component mounts or user UIDs change */
@@ -66,25 +69,39 @@ const ChatBox = ({/*chatPartnerUid,*/ chatPartnerProfile, setIsChatBoxVisible}) 
     return () => unsubscribe()
   }, [chatId, chatPartnerProfile?.uid])
 
-  useLayoutEffect(() => {
-    const chatBox = chatRef.current
-    console.log(chatBox)
-    const timeoutId = setTimeout(() => {
-      if(chatBox) {
-        chatBox.scrollTop = chatBox.scrollHeight
-      }
-    }, 100)
-
-    return () => clearTimeout(timeoutId)
-  }, [messages])
-
     
   return (
     <div className="chat-box">
       <ChatBoxHeader {...{chatPartnerProfile, setIsChatBoxVisible}} />
-      <div className="chat-box-messages" ref={chatRef}>
+      <div 
+        className="chat-box-messages" 
+        ref={chatRef}
+        id="scrollableChatBoxDiv"
+      >
         <span className="date">{visibleDate}</span>
-        <Messages {...{messages}} />
+        <InfiniteScroll
+          dataLength={messages.length}
+          next={fetchMore}
+          hasMore={hasMore}
+          inverse={true}
+          loader={<ClipLoader color="salmon" />}
+          scrollThreshold={0.9}
+          endMessage={
+           <p style={{ textAlign: 'center' }}>
+            Yay! You have seen it all
+           </p>
+          }
+          scrollableTarget="scrollableChatBoxDiv"
+        >
+          <div>
+            {
+              loading ? <p>loading...</p> : (
+                messages.length > 0 ? <Messages {...{messages}} /> : <p>No messages yet</p>
+              )
+            }
+          </div>
+        </InfiniteScroll>
+        {/*<Messages {...{messages}} />*/}
       </div>
       {isTyping && (
         <div className="typing-container">

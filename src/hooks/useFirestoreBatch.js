@@ -10,6 +10,8 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
     const [hasMore, setHasMore] = useState(true)
 
     useEffect(() => {
+      if (!collectionRef) return
+
         const q = query(
             collectionRef,
             ...queryConstraints,

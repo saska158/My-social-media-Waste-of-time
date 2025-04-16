@@ -13,7 +13,7 @@ import extractUrls from "../../utils/extractUrls"
 import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
 
-const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDateDivider}) => {
+const Message = ({index, message, messageRefs, /*messageDate, isLastIndex, showDateDivider*/}) => {
   // Context
   const { user } = useAuth()
   
@@ -51,16 +51,16 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
   return (
     userProfile && (
       <>
-        {
+        {/*
           showDateDivider && (
             <div className="date-divider">
               <span style={{fontSize: '.6rem'}}>{messageDate}</span>
             </div>
           )
-        }
+        */}
         <div 
           className="message-container"
-          style={{marginLeft: message.senderName === user?.displayName ? 'auto' : '0'}}
+          style={{marginLeft: message.senderName === user?.displayName ? 'auto' : '0', height: '100px'}}
           data-timestamp={message.timestamp}
           ref={(el) => (messageRefs.current[index] = el)} // Assign ref dynamically
         >
@@ -93,12 +93,12 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
                 </div>
               )
             }
-            <p style={{textAlign: 'right'}}>{format(message.timestamp, "HH:mm")}</p>  
-            {
+            {/*<p style={{textAlign: 'right'}}>{format(message.timestamp, "HH:mm")}</p>*/}  
+            {/*
               isLastIndex && message.senderUid === user.uid && message.status === "seen" && (
                 <p style={{fontSize: '.6rem'}}>seen</p>
               )
-            }
+            */}
           </div>
         </div>
         {
