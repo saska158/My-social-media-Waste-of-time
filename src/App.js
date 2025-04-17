@@ -11,11 +11,9 @@ import MyChats from './pages/MyChats'
 import UserProfile from './pages/UserProfile'
 import AuthRequired from './components/AuthRequired'
 import { AuthProvider } from './contexts/authContext'
-import { LoadingProvider } from './contexts/loadingContext'
 
 function App() {
   return (
-    <LoadingProvider>
       <AuthProvider>
         <BrowserRouter>
          <Routes>
@@ -37,7 +35,6 @@ function App() {
          </Routes>
         </BrowserRouter>
       </AuthProvider>
-    </LoadingProvider>
   )
 }
 

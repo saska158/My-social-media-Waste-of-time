@@ -60,7 +60,7 @@ const Message = ({index, message, messageRefs, /*messageDate, isLastIndex, showD
         */}
         <div 
           className="message-container"
-          style={{marginLeft: message.senderName === user?.displayName ? 'auto' : '0', height: '100px'}}
+          style={{marginLeft: message.senderName === user?.displayName ? 'auto' : '0'}}
           data-timestamp={message.timestamp}
           ref={(el) => (messageRefs.current[index] = el)} // Assign ref dynamically
         >

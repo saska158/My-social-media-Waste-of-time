@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react"
-import { database, ref, set } from "../../api/firebase"
+import { database, ref, set, firestore, collection, query, addDoc, updateDoc, setDoc, getDocs, doc, where, serverTimestamp } from "../../api/firebase"
 import { useAuth } from "../../contexts/authContext"
+import uploadToCloudinaryAndGetUrl from "../../api/uploadToCloudinaryAndGetUrl"
 import EmojiPicker from "emoji-picker-react"
 import ChatSmiley from "../ChatSmiley"
 import { ClipLoader } from "react-spinners"
-import useMessages from "../../hooks/useMessages"
 
 const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
   const initialMessage = {text: '', image: ''}
@@ -16,14 +16,12 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
   const [message, setMessage] = useState(initialMessage)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false) 
   const [imagePreview, setImagePreview] = useState(null)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   // Hooks that don't trigger re-renders 
   const typingTimeoutRef = useRef(null)
   const inputRef = useRef(null)
-
-  // Custom hooks
-  const { sendMessage, loadingState } = useMessages(chatId, chatPartnerProfile)
 
   // Firebase ref
   const typingRef = ref(database, `typingStatus/${chatId}/${user.uid}`)
@@ -47,6 +45,68 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
         setMessage(prevMessage => ({...prevMessage, image: reader.result}))
       }
       reader.readAsDataURL(file)
+    }
+  }
+
+  const sendMessage = async (userA, userBUid, receiverName, receiverPhoto, message) => {
+    if(!chatId) return
+    if(message.text || message.image) {
+      let imageUrl = ''
+      const chatsRef = collection(firestore, 'chats')
+      const chatDoc = doc(chatsRef, chatId)
+      const messagesRef = collection(chatDoc, "messages")
+
+      setLoading(true)
+
+      try {
+        if(message.image) {
+          imageUrl = await uploadToCloudinaryAndGetUrl(message.image)
+        }
+        const newMessage = {
+          ...message,
+          image: imageUrl
+        }
+        // Check if the chat exists, if not create it
+        const chatSnapshot = await getDocs(query(chatsRef, where("__name__", "==", chatId)))
+        if(chatSnapshot.empty) {
+            // Chat doesn't exist, create a new one
+            await setDoc(chatDoc, {
+              participants: [userA.uid, userBUid],
+              timestamp: serverTimestamp(),
+              lastMessage: null
+            })
+        }
+        // Add the message to the messages subcollection of the chat
+        await addDoc(messagesRef, {
+            receiverUid: userBUid,
+            senderUid: userA.uid,
+            senderName: userA.displayName,
+            senderPhoto: userA.photoURL,
+            content: newMessage,
+            timestamp: serverTimestamp(),
+            status: 'sent' 
+        })
+        //update the lastMessage field in the chat document
+        await updateDoc(chatDoc, {
+            lastMessage: {  
+                senderUid: userA.uid,
+                senderName: userA.displayName,
+                senderPhoto: userA.photoURL,
+                receiverPhoto,  
+                receiverName,
+                receiverUid: userBUid,
+                //content: message.text || message.image, 
+                contentText: message.text,
+                contentImage: message.image,
+                timestamp: serverTimestamp() },
+          })
+        console.log("Message sent successfully!")
+      } catch(error) {
+        console.error("Error sending message:", error)
+        setError(error)
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
@@ -113,10 +173,10 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
           <button 
             onClick={(e) => handleSendMessage(e)}
             style={{marginLeft: 'auto'}}
-            disabled={loadingState.upload}
+            disabled={loading}
           >
             {
-              loadingState.upload ? (
+              loading ? (
                 <ClipLoader color="white"/>
               ) : (
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: 'white'}}>

@@ -5,11 +5,10 @@ import Message from "./Message"
 const Messages = ({messages}) => {
     let lastDate = null
     const messageRefs = useRef([])
-    console.log("messages", messages)
 
     return messages.map((message, index) => {
       //const messageDate = message.timestamp ? format(message.timestamp, "dd/MM/yyyy") : ''
-      console.log(message.timestamp)
+  
       //const showDateDivider = lastDate !== messageDate
       //lastDate = messageDate
 
