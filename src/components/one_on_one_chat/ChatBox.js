@@ -6,12 +6,10 @@ import { useAuth } from "../../contexts/authContext"
 import ChatBoxHeader from "./ChatBoxHeader"
 import ChatBoxForm from "./ChatBoxForm"
 import InfiniteScroll from "react-infinite-scroll-component"
-import { ClipLoader } from "react-spinners"
 import useChatMessages from "../../hooks/useChatMessages"
 
 
 const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
-  console.log("Chat Box rerendered")
   // Context
   const { user } = useAuth()
 

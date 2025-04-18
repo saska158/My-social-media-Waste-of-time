@@ -11,6 +11,7 @@ import { where } from "../../api/firebase"
 const UserPosts = ({room, setRoom, profileUid}) => {
     const roomTags = ['main', 'movies', 'books', 'music']
 
+
     const postsRef = useMemo(() => {
       return collection(firestore, room)
     }, [room])

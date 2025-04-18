@@ -23,20 +23,21 @@ const NavigationLayout = () => {
                   color: isActive || 
                   location.pathname === '/movies' || 
                   location.pathname === '/music' || 
-                  location.pathname === '/books' ? 'white' : 'black'
+                  location.pathname === '/books' ? 'white' : 'black',
+                  textTransform: 'uppercase'
                 })}
               >
                 Home
               </NavLink>
               <NavLink 
                 to={`/user/${user?.uid}`}
-                style={({ isActive }) => ({ color: isActive ? 'white' : 'black' })}
+                style={({ isActive }) => ({ color: isActive ? 'white' : 'black', textTransform: 'uppercase' })}
               >
                 My profile
               </NavLink>
               <NavLink 
                 to="/my-chats"
-                style={({ isActive }) => ({ color: isActive ? 'white' : 'black' })}
+                style={({ isActive }) => ({ color: isActive ? 'white' : 'black', textTransform: 'uppercase' })}
               >
                 My chats
               </NavLink>

@@ -7,6 +7,7 @@ import ActiveUser from "./ActiveUser"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { ClipLoader } from "react-spinners"
+import UserSkeleton from "../skeletons/UserSkeleton"
 
 const UsersList = () => {
   // Context
@@ -47,7 +48,7 @@ const UsersList = () => {
           dataLength={users.length}
           next={fetchMore}
           hasMore={hasMore}
-          loader={<ClipLoader color="salmon" />}
+          //loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}
           endMessage={
            <p style={{ textAlign: 'center' }}>
@@ -58,7 +59,7 @@ const UsersList = () => {
         >
           <div>
             {
-              loading ? <p>loading...</p> : (
+              loading ? <UserSkeleton /> : (
                 users.length > 0 ? (users.map((usr, index) => <ActiveUser key={index} user={usr} />)) : <p>Noone is online.</p>
               )
             }

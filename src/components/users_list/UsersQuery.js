@@ -7,6 +7,7 @@ import UserItem from "./UserItem"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import InfiniteScroll from "react-infinite-scroll-component"
+import UserSkeleton from "../skeletons/UserSkeleton"
 
 const UsersQuery = ({setIsUsersQueryShown}) => {
   // Context
@@ -21,7 +22,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
   }, [])
   
   // Custom hooks
-  const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 4)
+  const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 5)
  
   // Hooks that don't trigger re-renders
   const location = useLocation()
@@ -47,7 +48,6 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
     ))
   }, [users, searchQuery])
 
-  console.log("filtered", filteredUsers)
 
   return (
     <PopUp setIsPopUpShown={setIsUsersQueryShown}>
@@ -67,7 +67,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
           dataLength={filteredUsers.length}
           next={fetchMore}
           hasMore={hasMore}
-          loader={<ClipLoader color="salmon" />}
+          //loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}
           endMessage={
            <p style={{ textAlign: 'center' }}>
@@ -78,7 +78,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
         >
           <div>
             {
-              loading ? <p>loading...</p> : (
+              loading ? <UserSkeleton /> : (
                 filteredUsers.length > 0 ? (
                   filteredUsers.map((usr, index) => <UserItem key={index} userItem={usr}/>) 
                 ) : (
