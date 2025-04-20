@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react"
 const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children, style}) => {
     const popUpRef = useRef(null)
 
-    const defaultStyle = {
+    /*const defaultStyle = {
       position: 'fixed',
       top: '50%',
       left: '50%',
@@ -19,7 +19,7 @@ const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children, style}
       display: 'flex',
       flexDirection: 'column',
       gap: '1em',
-    }
+    }*/
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -35,7 +35,7 @@ const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children, style}
 
     return (
       <div className="pop-up-container">
-        <div style={{...defaultStyle, ...style}} ref={popUpRef}>
+        <div className="pop-up-box" style={{...style}} ref={popUpRef}>
           { children }
           <button className="close-pop-up-button" onClick={() => setIsPopUpShown(false)}>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>

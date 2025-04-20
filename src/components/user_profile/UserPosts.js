@@ -9,7 +9,7 @@ import { where } from "../../api/firebase"
 
 
 const UserPosts = ({profileUid}) => {
-    const roomTags = ['main', 'movies', 'books', 'music']
+    const roomTags = ['main', 'watching', 'reading', 'listening']
     const [room, setRoom] = useState('main')
 
 
@@ -67,11 +67,11 @@ const UserPosts = ({profileUid}) => {
                         creatorName={post.creatorName}
                         post={post.post}
                         roomId={post.room}
-                        style={{ width: '400px', minHeight: '200px'}}
+                        style={{width: '70%'}}
                       />
                     ))
                   ) : (
-                    <p>There's no post yet</p>
+                    <p>No posts yet</p>
                   )
                 )
               } 

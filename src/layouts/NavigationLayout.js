@@ -16,13 +16,7 @@ const NavigationLayout = () => {
         <Link to="/" className="logo-link">Waste of time</Link>
         {
           user ? (
-            <div 
-              style={{
-                display: 'flex', 
-                flexDirection: 'column', 
-                gap: '.8em',
-                fontSize: '1.2rem'
-              }}>
+            <div className="navigation-layout-nav-links">
               <NavLink
                 to="/"
                 style={({ isActive }) => ({

@@ -84,7 +84,6 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
     
     return (
       <div style={{width: '100%', height: '100%', overflowY: 'auto'}}>
-        <p>Edit your profile</p>
         <form className="edit-profile-form">
           <label className="edit-image-label">
             <img src={imagePreview || profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} alt="profile" className="edit-image" />

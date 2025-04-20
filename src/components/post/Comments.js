@@ -103,7 +103,17 @@ const Comments = ({room, id}) => {
 
   return (
     <div className="comments-container">
-      { showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} className="comments-emoji-picker"/> }
+      { showEmojiPicker && (
+        <EmojiPicker 
+          onEmojiClick={handleEmojiClick} 
+          style={{
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            width: '35%'
+          }}
+        />
+      )}
       <div 
         className="comments-box"
         id="scrollableCommentsDiv"
