@@ -13,7 +13,7 @@ const NavigationLayout = () => {
   return (
     <div className="navigation-layout-container">
       <nav> 
-        <Link to="/" className="logo-link">Razgovori</Link>
+        <Link to="/" className="logo-link">Waste of time</Link>
         {
           user ? (
             <>

@@ -1,5 +1,5 @@
 const UserProfileNavigation = ({activeSection, setActiveSection}) => {
-    const sections = ['description', 'musicTaste', 'politicalViews', 'posts']
+    const sections = ['bio', 'currently', 'favorites', 'posts']
     return (
         <div className="user-profile-container-nav">
             {
@@ -7,7 +7,7 @@ const UserProfileNavigation = ({activeSection, setActiveSection}) => {
                   <button
                     key={section}
                     onClick={() => setActiveSection(section)}
-                    style={{color: activeSection === section ? "white" : ''}}
+                    style={{color: activeSection === section ? "white" : '', textTransform: 'uppercase'}}
                   >
                     {section}
                   </button>

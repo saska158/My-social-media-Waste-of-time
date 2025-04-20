@@ -7,8 +7,7 @@ import PopUp from "../components/PopUp"
 import ProfileEditor from "../components/user_profile/ProfileEditor"
 import UserProfileHeader from "../components/user_profile/UserProfileHeader"
 import UserProfileNavigation from "../components/user_profile/UserProfileNavigation"
-import UserProfileTags from "../components/user_profile/UserProfileTags"
-import UserPosts from "../components/user_profile/UserPosts"
+import UserProfileContent from "../components/user_profile/UserProfileContent"
 
 const UserProfile = () => {
   // Context
@@ -18,15 +17,22 @@ const UserProfile = () => {
   const [profile, setProfile] = useState({
     uid: "",
     displayName: "",
-    description: "",
-    musicTaste: "",
-    politicalViews: "",
+    bio: "", 
+    currently: {
+      watching: '',
+      reading: '',
+      listening: ''
+    },
+    favorites: {
+      watching: '',
+      reading: '',
+      listening: ''
+    },
     photoURL: "",
     followers: [],
     following: []
-  }) 
-  const [room, setRoom] = useState('main') 
-  const [activeSection, setActiveSection] = useState("description")
+  })  
+  const [activeSection, setActiveSection] = useState("bio")
   const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
   const [isFollowPopupShown, setIsFollowPopupShown] = useState(false)
   const [isEditPopupShown, setIsEditPopupShown] = useState(false)
@@ -87,12 +93,11 @@ const UserProfile = () => {
           <>
             <UserProfileHeader {...{profile, profileUid, setIsEditPopupShown}} />
             <UserProfileNavigation {...{activeSection, setActiveSection}}/>  
-            <div className="user-profile-description">
-              <UserProfileTags {...{activeSection, profile}}/>
-              { activeSection === "posts" && <UserPosts {...{room, setRoom, profileUid}} /> }
-            </div>
+            <UserProfileContent {...{activeSection, profile, profileUid}}/>
             {
-              user && !isMyProfile ? <button className="message-button" onClick={handleMessageButton}>message</button> : null
+              user && !isMyProfile ? (
+                <button className="message-button" onClick={handleMessageButton}>message</button>
+              ) : null
             }
           </>
         ) : <ChatBox 
@@ -103,7 +108,7 @@ const UserProfile = () => {
     
       {
         isEditPopupShown && (
-          <PopUp setIsPopUpShown={setIsEditPopupShown}>
+          <PopUp setIsPopUpShown={setIsEditPopupShown} style={{overflowY: 'auto'}}>
             <ProfileEditor {...{profile, setProfile, profileUid}} />
           </PopUp>
         )

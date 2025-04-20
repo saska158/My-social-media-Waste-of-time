@@ -46,9 +46,17 @@ const SignUp = () => {
       await setDoc(userRef, {
         uid: user.uid,
         displayName: user.displayName || "",
-        description: "", // ove propertije promeni tako da mogu i da budu prikazani(bio, music, politics...)
-        musicTaste: "",
-        politicalViews: "",
+        bio: "", 
+        currently: {
+          watching: '',
+          reading: '',
+          listening: ''
+        },
+        favorites: {
+          watching: '',
+          reading: '',
+          listening: ''
+        },
         photoURL: user.photoURL || "",
         followers: [],
         following: [],

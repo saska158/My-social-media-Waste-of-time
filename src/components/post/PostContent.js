@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import fetchLinkPreview from "../../api/fetchLinkPreview"
 import extractUrls from "../../utils/extractUrls"
-
 import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
 
@@ -22,11 +21,9 @@ const PostContent = ({post}) => {
   }
 
   // Effects
-  /* effect to detect and fetch preview when user types a URL */
   useEffect(() => {
     setLoading(true)
     const fetchData = async () => {
-      //setLoadingState(prev => ({...prev, upload: true}))
       try {
         const urls = extractUrls(post.text)
         if(urls && urls.length > 0) {
@@ -36,7 +33,6 @@ const PostContent = ({post}) => {
       } catch(error) {
         setError(error)
       } finally {
-        //setLoadingState(prev => ({...prev, upload: false}))
         setLoading(false)
       }
     }

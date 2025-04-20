@@ -1,8 +1,7 @@
 const fetchLinkPreview = async (url) => {
-    const apiKey = 'faf544d8f3ee079721267922823df559'  // Replace with your actual API key
+    const apiKey = 'faf544d8f3ee079721267922823df559'  
     const apiUrl = `https://api.linkpreview.net?key=${apiKey}&q=${encodeURIComponent(url)}`
-    // treba li ova func da proizvodi greske?
-    // nije firebase i ne daje greske ili mozda ovaj servis isto daje?
+
     try {
         const response = await fetch(apiUrl)
         const data = await response.json()
@@ -20,3 +19,6 @@ const fetchLinkPreview = async (url) => {
 }
 
 export default fetchLinkPreview
+
+// treba li ova func da proizvodi greske?
+// nije firebase i ne daje greske ili mozda ovaj servis isto daje?

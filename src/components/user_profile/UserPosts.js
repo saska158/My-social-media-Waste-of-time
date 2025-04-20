@@ -1,4 +1,4 @@
-import { useMemo, useRef } from "react"
+import { useMemo, useRef, useState } from "react"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import { firestore, collection } from "../../api/firebase"
@@ -8,8 +8,9 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import { where } from "../../api/firebase"
 
 
-const UserPosts = ({room, setRoom, profileUid}) => {
+const UserPosts = ({profileUid}) => {
     const roomTags = ['main', 'movies', 'books', 'music']
+    const [room, setRoom] = useState('main')
 
 
     const postsRef = useMemo(() => {

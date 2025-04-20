@@ -1,17 +1,16 @@
 import { useState, useRef } from "react"
 import { firestore, doc, updateProfile, ref, database, update, updateDoc} from "../../api/firebase"
 import { useAuth } from "../../contexts/authContext"
-import { useLoading } from "../../contexts/loadingContext"
 import uploadToCloudinaryAndGetUrl from "../../api/uploadToCloudinaryAndGetUrl"
 import { PulseLoader } from "react-spinners"
 
 const ProfileEditor = ({profile, setProfile, profileUid}) => {
     // Context
     const { user } = useAuth()
-    const { loadingState, setLoadingState } = useLoading()
 
     // State
     const [imagePreview, setImagePreview] = useState(null)
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
     // Hooks that don't trigger re-renders 
@@ -31,7 +30,19 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
   
     const handleInputChange = (e) => {
       const { value, name } = e.target
-      setProfile(prevProfile => ({...prevProfile, [name]: value})) 
+      if(name.includes(".")) {
+        const [section, key] = name.split(".")
+
+        setProfile(prev => ({
+          ...prev,
+          [section]: {
+            ...prev[section],
+            [key]: value
+          }
+        }))
+      } else {
+        setProfile(prev => ({...prev, [name]: value})) 
+      }
     } 
 
     const saveProfileChanges = async (e) => {
@@ -39,7 +50,7 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
         const profileRef = doc(firestore, "profiles", profileUid)
         const imageFile = imageInputRef.current.files[0]
         
-        setLoadingState(prev => ({...prev, upload: true}))
+        setLoading(true)
     
         let imageUrl = ''
     
@@ -54,8 +65,6 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
                 displayName: profile.displayName,
                 photoURL: imageUrl
               })
-              /*const userRef = ref(database, `users/${user.uid}`)
-              await update(userRef, {photoURL: imageUrl})*/
               setProfile(prev => ({...prev, photoURL: imageUrl}))
             }
           } else {
@@ -69,7 +78,7 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
           console.error(error)
           setError(error)
         } finally {
-          setLoadingState(prev => ({...prev, upload: false}))
+          setLoading(false)
         }
     }
     
@@ -98,34 +107,80 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
             onChange={handleInputChange}
             placeholder="name"
           />
-          <input
-            type="text"
-            value={profile.description}
-            name="description"
+          <textarea
+            value={profile.bio}
+            name="bio"
             onChange={handleInputChange}
             placeholder="bio"
+            style={{minHeight: '100px', border: '.5px solid salmon', borderRadius: '20px'}}
           />
-          <input
-            type="text"
-            value={profile.musicTaste}
-            name="musicTaste"
-            onChange={handleInputChange}
-            placeholder="music taste"
-          />
-          <input
-            type="text"
-            value={profile.politicalViews}
-            name="politicalViews"
-            onChange={handleInputChange}
-            placeholder="political views"
-          />
+          <label
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '.5em'
+            }}
+          >
+            Currently:
+            <input
+              type="text"
+              value={profile.currently.watching}
+              name="currently.watching"
+              onChange={handleInputChange}
+              placeholder="watching..."
+            />
+            <input
+              type="text"
+              value={profile.currently.reading}
+              name="currently.reading"
+              onChange={handleInputChange}
+              placeholder="reading..."
+            />
+            <input
+              type="text"
+              value={profile.currently.listening}
+              name="currently.listening"
+              onChange={handleInputChange}
+              placeholder="listening..."
+            />
+          </label>
+          <label
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '.5em'
+            }}
+          >
+            Favorites:
+            <input
+              type="text"
+              value={profile.favorites.watching}
+              name="favorites.watching"
+              onChange={handleInputChange}
+              placeholder="watching..."
+            />
+            <input
+              type="text"
+              value={profile.favorites.reading}
+              name="favorites.reading"
+              onChange={handleInputChange}
+              placeholder="reading"
+            />
+            <input
+              type="text"
+              value={profile.favorites.listening}
+              name="favorites.listening"
+              onChange={handleInputChange}
+              placeholder="listening"
+            />
+          </label>
           <button 
-            style={{background: loadingState.upload ? 'none' : 'salmon'}}
+            style={{background: loading ? 'none' : 'salmon'}}
             className="save-changes-button"
             onClick={saveProfileChanges}
-            disabled={loadingState.upload}
+            disabled={loading}
           >
-            { loadingState.upload ? <PulseLoader color="salmon" /> : 'save changes' }
+            { loading ? <PulseLoader color="salmon" /> : 'save changes' }
           </button>
         </form>
       </div>
