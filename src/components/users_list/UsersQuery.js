@@ -69,11 +69,6 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
           hasMore={hasMore}
           //loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}
-          endMessage={
-           <p style={{ textAlign: 'center' }}>
-            Yay! You have seen it all
-           </p>
-          }
           scrollableTarget="scrollableUsersDiv"
         >
           <div>
@@ -82,7 +77,7 @@ const UsersQuery = ({setIsUsersQueryShown}) => {
                 filteredUsers.length > 0 ? (
                   filteredUsers.map((usr, index) => <UserItem key={index} userItem={usr}/>) 
                 ) : (
-                  <p>There's no post yet</p>
+                  <p>There's no users yet.</p>
                 )
               )
             }

@@ -47,11 +47,11 @@ const UserPosts = ({profileUid}) => {
               hasMore={hasMore}
               loader={<ClipLoader color="salmon" />}
               scrollThreshold={0.9}
-              endMessage={
+              /*endMessage={
                <p style={{ textAlign: 'center' }}>
                 Yay! You have seen it all
                </p>
-              }
+              }*/
               scrollableTarget="scrollableUserPostsDiv"
             >
               <div>

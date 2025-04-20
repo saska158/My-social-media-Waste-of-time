@@ -18,8 +18,8 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
 
   // State
   const [message, setMessage] = useState(initialMessage)
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false) 
   const [imagePreview, setImagePreview] = useState(null)
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false) 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -74,6 +74,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
       setMessage(initialMessage)
       setImagePreview(null)
       set(typingRef, false)
+      setShowEmojiPicker(false)
     } catch (error) {
       console.error("Error sending message:", error)
       setError(error)
@@ -90,7 +91,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
   }, [messages])
 
   return (
-    <form>
+    <form style={{position: 'relative'}}>
       <label className="chat-box-main-label"> 
         <input 
           type='text'
@@ -123,7 +124,18 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
           </button>
         ) : null
       }
-      {showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} className="chat-box-emoji-picker"/>}
+
+      {showEmojiPicker && (
+        <EmojiPicker 
+          onEmojiClick={handleEmojiClick} 
+          style={{
+            position: 'fixed',
+            bottom: '10%',
+            left: '10%',
+            width: '30%',
+          }}
+        />
+      )}        
     </form>
   )
 }

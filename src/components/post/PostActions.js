@@ -83,7 +83,7 @@ const PostActions = ({roomId, id}) => {
   const likesArray = Object.values(likes || {})
 
   return (
-    <div>
+    <div className="post-actions">
       <div className="post-actions-container">
         <span>
           {

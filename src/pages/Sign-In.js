@@ -65,7 +65,7 @@ const SignIn = () => {
     }
     
     return (
-        <>
+        <div className="sign-in-up-container">
           { location.state?.message ? <p>{location.state.message}</p> : null }
          <h4>Sign in to your account</h4>
          <form className="sign-in-up-form">
@@ -84,14 +84,14 @@ const SignIn = () => {
               required
             />
             {
-              loading ? <PulseLoader size={10}  color="white"/> : (
+              loading ? <PulseLoader size={10}  color="salmon"/> : (
                 <button onClick={e => handleSignIn(e)} disabled={loading} className="sign-in-up-button">
                   SIGN IN
                 </button>
               )
             }
          </form>
-        </>
+        </div>
     )
 }
 

@@ -60,7 +60,7 @@ const MyChats = () => {
     }
 
     return (
-      <div style={{width: '30%'}}>
+      <div style={{width: '100%'}}>
         {
           !isChatBoxVisible ? (
             <div 

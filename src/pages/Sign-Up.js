@@ -103,7 +103,7 @@ const SignUp = () => {
   }
 
   return (
-    <div>
+    <div className="sign-in-up-container">
       <h4>Personal details</h4>
       <form className="sign-in-up-form">
         <input 
@@ -130,7 +130,7 @@ const SignUp = () => {
           onChange={handleChange}
           required
         />
-        <label htmlFor="checkbox2" className="checkbox-label">
+        <label htmlFor="checkbox2" className="checkbox-label" style={{fontSize: '.8rem'}}>
           <input 
             type="checkbox"
             checked={formData.terms}
@@ -141,7 +141,7 @@ const SignUp = () => {
           I have read and understand the Privacy and Cookies Policy
         </label>
         {
-          loading ? <PulseLoader size={10}  color="white"/> : (
+          loading ? <PulseLoader size={10}  color="salmon"/> : (
             <button onClick={(e) => handleSignUp(e)} disabled={loading} className="sign-in-up-button">
               CREATE ACCOUNT
             </button>

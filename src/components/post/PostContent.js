@@ -40,7 +40,7 @@ const PostContent = ({post}) => {
   }, [post.text]) 
 
   return (
-    <div>
+    <div className="post-content">
       {
         linkData ? <LinkPreview {...{linkData, linkPreviewRef}}/> : (
           <div>

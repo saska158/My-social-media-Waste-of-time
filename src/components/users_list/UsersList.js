@@ -50,11 +50,11 @@ const UsersList = () => {
           hasMore={hasMore}
           //loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}
-          endMessage={
+          /*endMessage={
            <p style={{ textAlign: 'center' }}>
 
            </p>
-          }
+          }*/
           scrollableTarget="scrollableActiveUsersDiv"
         >
           <div>

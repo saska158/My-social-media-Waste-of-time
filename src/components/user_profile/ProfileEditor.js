@@ -83,7 +83,7 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
     }
     
     return (
-      <div style={{width: '80%'}}>
+      <div style={{width: '100%', height: '100%', overflowY: 'auto'}}>
         <p>Edit your profile</p>
         <form className="edit-profile-form">
           <label className="edit-image-label">

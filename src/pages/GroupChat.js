@@ -50,23 +50,23 @@ const GroupChat = () => {
         </svg>
         <span>new post</span>
       </button>
-        { isPopupShown && <GroupChatForm {...{isPopupShown, setIsPopupShown, roomId}}/> }
-        <div className="posts-container" ref={postsRef} id="scrollableDiv">
-           <InfiniteScroll
-             dataLength={memoizedPosts.length}
-             next={fetchMore}
-             hasMore={hasMore}
-             //loader={<ClipLoader color="salmon" />}
-             scrollThreshold={0.9}
-             endMessage={
-              <p style={{ textAlign: 'center' }}>
-               Yay! You have seen it all
-              </p>
-             }
-             scrollableTarget="scrollableDiv"
-             style={{width: '500px'}}
-           >
-           <div className="posts">
+      { isPopupShown && <GroupChatForm {...{isPopupShown, setIsPopupShown, roomId}}/> }
+      <div className="posts-container" ref={postsRef} id="scrollableDiv">
+        <InfiniteScroll
+          dataLength={memoizedPosts.length}
+          next={fetchMore}
+          hasMore={hasMore}
+          //loader={<ClipLoader color="salmon" />}
+          scrollThreshold={0.9}
+          /*endMessage={
+            <p style={{ textAlign: 'center' }}>
+              Yay! You have seen it all
+            </p>
+          }*/
+          scrollableTarget="scrollableDiv"
+          style={{width: '500px'}}
+        >
+          <div className="posts">
             {
               loading ? <PostSkeleton /> : (
                 memoizedPosts.length > 0 ? memoizedPosts.map(postItem => (
@@ -78,14 +78,14 @@ const GroupChat = () => {
                     roomId={roomId}
                     />
                 )) : (
-                  <div>There's no posts in this room yet</div>
+                  <div>No posts in this room yet</div>
                 )
               )
             }    
-           </div> 
-           </InfiniteScroll>
-        </div>
-        { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
+          </div> 
+        </InfiniteScroll>
+      </div>
+      { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
     </div>
   )
 }

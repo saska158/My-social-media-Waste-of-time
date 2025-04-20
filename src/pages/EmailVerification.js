@@ -36,7 +36,7 @@ const EmailVerification = () => {
   }, [user]) //Cudno, razmisli...ne bi ni bili na ovoj strani da nema user-a...
 
   return (
-    <>
+    <div className="sign-in-up-container">
       {
         !isEmailVerified ? (
           <div className="content-container">
@@ -48,13 +48,18 @@ const EmailVerification = () => {
               <p>
                 2. Once you have verified your email, click the button below to confirm your verification status.
               </p><br />
-              <button onClick={checkEmailVerified}>I've Verified My Email</button>
+              <button 
+                onClick={checkEmailVerified}
+                className="sign-in-up-button"
+              >
+                I've Verified My Email
+              </button>
               { verificationMessage && <p>{verificationMessage}</p> }
             </div>
           </div>
         ) : <Navigate to="/" />//treba da vrati na sobu odakle ga je prebacilo na pravljenje naloga
       }
-    </>
+    </div>
   )
 }
 

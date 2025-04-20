@@ -16,7 +16,13 @@ const NavigationLayout = () => {
         <Link to="/" className="logo-link">Waste of time</Link>
         {
           user ? (
-            <>
+            <div 
+              style={{
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: '.8em',
+                fontSize: '1.2rem'
+              }}>
               <NavLink
                 to="/"
                 style={({ isActive }) => ({
@@ -42,13 +48,13 @@ const NavigationLayout = () => {
                 My chats
               </NavLink>
               <button onClick={logOut} className="sign-out-button">sign out</button>
-            </>
+            </div>
           ) : (
-            <>
+            <div style={{display: 'flex', flexDirection: 'column'}}>
               <p style={{fontSize: '2rem'}}>Join us</p>
-              <Link to='/sign-up'>create account</Link>
-              <Link to='/sign-in'>sign in</Link>
-            </>
+              <Link to='/sign-up' style={{textTransform: 'uppercase'}}>create account</Link>
+              <Link to='/sign-in' style={{textTransform: 'uppercase'}}>sign in</Link>
+            </div>
           )
         }
       </nav>

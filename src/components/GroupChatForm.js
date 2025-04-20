@@ -144,7 +144,18 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomId}) => {
             <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
           </div>
           {
-            showEmojiPicker && <EmojiPicker onEmojiClick={handleEmojiClick} className="group-chat-form-emoji-picker"/>
+            showEmojiPicker && (
+              <EmojiPicker 
+                onEmojiClick={handleEmojiClick} 
+                style={{
+                  position: 'absolute',
+                  bottom: '0',
+                  left: '0',
+                  width: '70%',
+                  height: '75%'
+                }}
+              />
+            )
           }
           {
             linkData && (

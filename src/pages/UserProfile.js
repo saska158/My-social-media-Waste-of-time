@@ -42,21 +42,6 @@ const UserProfile = () => {
   // Hooks that don't trigger re-renders 
   const { profileUid } = useParams()
 
-  const isMyProfile = profileUid === user?.uid
-
-  // Functions
-  const handleMessageButton = (e) => {
-    e.stopPropagation()
-    const amIFollowingThisUser = profile.followers.some(follower => follower === user.uid)
-    const isThisUserFollowingMe = profile.following ? profile.following.some(follower => follower === user.uid) : false
-
-    if(amIFollowingThisUser && isThisUserFollowingMe) {
-      setIsChatBoxVisible(!isChatBoxVisible)
-    } else {
-      setIsFollowPopupShown(true)
-    }
-  }
-  
   // Effects
   useEffect(() => {
     const profileRef = doc(firestore, "profiles", profileUid)
@@ -90,16 +75,11 @@ const UserProfile = () => {
     <div className="user-profile-container">
       {
         !isChatBoxVisible ? (
-          <>
-            <UserProfileHeader {...{profile, profileUid, setIsEditPopupShown}} />
+          <div style={{display: 'flex', flexDirection: 'column'}}>
+            <UserProfileHeader {...{profile, profileUid, setIsEditPopupShown, isChatBoxVisible, setIsChatBoxVisible, setIsFollowPopupShown}} />
             <UserProfileNavigation {...{activeSection, setActiveSection}}/>  
             <UserProfileContent {...{activeSection, profile, profileUid}}/>
-            {
-              user && !isMyProfile ? (
-                <button className="message-button" onClick={handleMessageButton}>message</button>
-              ) : null
-            }
-          </>
+          </div>
         ) : <ChatBox 
               chatPartnerProfile={profile} 
               setIsChatBoxVisible={setIsChatBoxVisible} 
@@ -108,7 +88,7 @@ const UserProfile = () => {
     
       {
         isEditPopupShown && (
-          <PopUp setIsPopUpShown={setIsEditPopupShown} style={{overflowY: 'auto'}}>
+          <PopUp setIsPopUpShown={setIsEditPopupShown}>
             <ProfileEditor {...{profile, setProfile, profileUid}} />
           </PopUp>
         )
