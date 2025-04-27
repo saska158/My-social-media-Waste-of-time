@@ -4,9 +4,9 @@ const GroupChatLayout = () => {
 
   const routes = [
     { path: "/", label: "Main" },
-    { path: "/movies", label: "Watching" },
-    { path: "/books", label: "Reading" },
-    { path: "/music", label: "Listening" }
+    { path: "/watching", label: "Watching" },
+    { path: "/reading", label: "Reading" },
+    { path: "/listening", label: "Listening" }
   ]
 
   return (
