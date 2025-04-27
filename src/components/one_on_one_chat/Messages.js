@@ -1,30 +1,37 @@
-import { useRef } from "react"
+import { useRef, useEffect } from "react"
 import { format } from "date-fns"
 import Message from "./Message"
 
 const Messages = ({messages}) => {
-    let lastDate = null
-    const messageRefs = useRef([])
+  const messageRefs = useRef([])
 
-    return messages.map((message, index) => {
-      //const messageDate = message.timestamp ? format(message.timestamp, "dd/MM/yyyy") : ''
-  
-      //const showDateDivider = lastDate !== messageDate
-      //lastDate = messageDate
+  let lastDate = null
 
-      const isLastIndex = index === messages.length - 1
-      return (
-        <Message 
-          key={index}
-          index={index}
-          message={message} 
-          //showDateDivider={showDateDivider}
-          messageRefs={messageRefs}
-          //messageDate={messageDate}
-          //isLastIndex={isLastIndex}
-        />
-      )
-    })
+  return (
+    <div>
+      {
+        messages.map((message, index) => {
+          const messageDate = message.timestamp ? format(message.timestamp.toDate(), "dd/MM/yyyy") : ''
+        
+          const showDateDivider = lastDate !== messageDate
+          lastDate = messageDate
+      
+          const isLastIndex = index === messages.length - 1
+          return (
+            <Message 
+              key={index}
+              index={index}
+              message={message} 
+              showDateDivider={showDateDivider}
+              messageRefs={messageRefs}
+              messageDate={messageDate}
+              isLastIndex={isLastIndex}
+            />
+          )
+        })
+      }
+    </div>
+  )
 }
 
 export default Messages

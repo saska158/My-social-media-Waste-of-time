@@ -7,13 +7,13 @@ import {
     onSnapshot
 } from "../../api/firebase"
 import { useAuth } from "../../contexts/authContext"
-import { formatMessageTimestamp } from "../../utils/formatTimestamps"
+import { format } from "date-fns"
 import fetchLinkPreview from "../../api/fetchLinkPreview"
 import extractUrls from "../../utils/extractUrls"
 import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
 
-const Message = ({index, message, messageRefs, /*messageDate, isLastIndex, showDateDivider*/}) => {
+const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDateDivider}) => {
   // Context
   const { user } = useAuth()
   
@@ -51,17 +51,18 @@ const Message = ({index, message, messageRefs, /*messageDate, isLastIndex, showD
   return (
     userProfile && (
       <>
-        {/*
+        {
           showDateDivider && (
             <div className="date-divider">
               <span style={{fontSize: '.6rem'}}>{messageDate}</span>
             </div>
           )
-        */}
+        }
         <div 
           className="message-container"
           style={{marginLeft: message.senderName === user?.displayName ? 'auto' : '0'}}
-          data-timestamp={message.timestamp}
+          //data-timestamp={message.timestamp}
+          data-timestamp={messageDate}
           ref={(el) => (messageRefs.current[index] = el)} // Assign ref dynamically
         >
           <img 
@@ -93,7 +94,9 @@ const Message = ({index, message, messageRefs, /*messageDate, isLastIndex, showD
                 </div>
               )
             }
-            <p style={{textAlign: 'right'}}>{formatMessageTimestamp(message.timestamp)}</p>
+            {
+              message?.timestamp && <p style={{textAlign: 'right'}}>{format(message.timestamp.toDate(), 'p')}</p>
+            }
             {/*
               isLastIndex && message.senderUid === user.uid && message.status === "seen" && (
                 <p style={{fontSize: '.6rem'}}>seen</p>

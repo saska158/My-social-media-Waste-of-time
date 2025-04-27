@@ -6,7 +6,7 @@ import PostActions from "./PostActions"
 import Skeleton from "react-loading-skeleton"
 import "react-loading-skeleton/dist/skeleton.css"
 
-const Post = ({/*id, creatorUid,*/ postItem, roomId, /*style*/}) => {
+const Post = ({postItem, roomId, style}) => {
   const { id, creatorUid, post, timestamp } = postItem
   // State
   const [profile, setProfile] = useState(null)
@@ -33,7 +33,7 @@ const Post = ({/*id, creatorUid,*/ postItem, roomId, /*style*/}) => {
   }, [creatorUid])
 
   return (
-    <div key={id} className="post-container" /*style={style}*/>
+    <div key={id} className="post-container" style={style}>
       <PostHeader {...{creatorUid, timestamp, profile}} />
       <PostContent {...{post}} />
       <PostActions {...{roomId, id}} />

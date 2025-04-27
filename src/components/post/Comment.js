@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import fetchLinkPreview from "../../api/fetchLinkPreview"
 import extractUrls from "../../utils/extractUrls"
+import useFormattedTime from "../../hooks/useFormattedTime"
 import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
 
@@ -8,6 +9,9 @@ const Comment = ({comment, index}) => {
   // State
   const [linkData, setLinkData] = useState(null)
   const [isImageViewerShown, setIsImageViewerShown] = useState(false)
+
+  // Custom hooks
+  const formattedTime = useFormattedTime(comment.timestamp)
 
   // Functions
   const handleImageViewer = (e) => {
@@ -31,7 +35,17 @@ const Comment = ({comment, index}) => {
     <div key={index} className="comment-container">
       <img src={comment.photoURL} alt="profile" className="comment-profile-image" />
       <div className="comment-content">
-        <p>{comment.name}</p>
+        <div 
+          style={{
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            gap: '2em',
+          }}
+        >
+          <p>{comment.name}</p>
+          <p style={{fontSize: '.55rem'}}>{formattedTime}</p>
+        </div>
         {
           linkData ? <LinkPreview {...{linkData}} /> : (
             <div>

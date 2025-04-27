@@ -1,7 +1,8 @@
 import { Link } from "react-router-dom"
-import { formatPostTimestamp } from "../../utils/formatTimestamps"
+import useFormattedTime from "../../hooks/useFormattedTime"
 
 const PostHeader = ({creatorUid, timestamp, profile}) => {
+  const formattedTime = useFormattedTime(timestamp)
     return (
         <Link to={creatorUid ? `/user/${creatorUid}` : '/my-profile'}>
           <div className="post-header-container">
@@ -12,7 +13,7 @@ const PostHeader = ({creatorUid, timestamp, profile}) => {
             }
             <div>
               <p>{profile?.displayName}</p>
-              <p style={{fontSize: '.65rem'}}>{formatPostTimestamp(timestamp)}</p>
+              {timestamp && <p style={{fontSize: '.65rem'}}>{formattedTime}</p>}
             </div>
           </div>
         </Link>

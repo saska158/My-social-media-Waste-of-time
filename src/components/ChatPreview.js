@@ -1,4 +1,4 @@
-import { formatMessageTimestamp } from "../utils/formatTimestamps"
+import useFormattedTime from "../hooks/useFormattedTime"
 
 const ChatPreview = ({
     chatPartnerUid, 
@@ -12,6 +12,8 @@ const ChatPreview = ({
     pickChat,
     timestamp
 }) => {
+
+  const formattedTime = useFormattedTime(timestamp)
     return (
         <div 
           className="chat-item-container"
@@ -38,7 +40,7 @@ const ChatPreview = ({
                 <p>{contentText}</p>
               )
             }
-            <span style={{color: 'salmon', fontSize: '.7rem'}}>{formatMessageTimestamp(timestamp)}</span>
+            <span style={{color: 'salmon', fontSize: '.7rem'}}>{formattedTime}</span>
           </div>
         </div>
     )

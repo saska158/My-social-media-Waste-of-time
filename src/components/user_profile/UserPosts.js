@@ -61,11 +61,7 @@ const UserPosts = ({profileUid}) => {
                     posts.map((post, index) => (
                       <Post
                         key={index}
-                        id={post.id}
-                        creatorUid={post.creatorUid}
-                        photoUrl={post.photoUrl}
-                        creatorName={post.creatorName}
-                        post={post.post}
+                        postItem={post}
                         roomId={post.room}
                         style={{width: '70%'}}
                       />
