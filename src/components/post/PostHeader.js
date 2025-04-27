@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
+import { formatPostTimestamp } from "../../utils/formatTimestamps"
 
-const PostHeader = ({creatorUid, profile}) => {
+const PostHeader = ({creatorUid, timestamp, profile}) => {
     return (
         <Link to={creatorUid ? `/user/${creatorUid}` : '/my-profile'}>
           <div className="post-header-container">
@@ -10,7 +11,8 @@ const PostHeader = ({creatorUid, profile}) => {
               ) : null
             }
             <div>
-              <p><strong>{profile?.displayName}</strong></p>
+              <p>{profile?.displayName}</p>
+              <p style={{fontSize: '.65rem'}}>{formatPostTimestamp(timestamp)}</p>
             </div>
           </div>
         </Link>

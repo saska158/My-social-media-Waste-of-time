@@ -7,7 +7,7 @@ import {
     onSnapshot
 } from "../../api/firebase"
 import { useAuth } from "../../contexts/authContext"
-import { format } from "date-fns"
+import { formatMessageTimestamp } from "../../utils/formatTimestamps"
 import fetchLinkPreview from "../../api/fetchLinkPreview"
 import extractUrls from "../../utils/extractUrls"
 import LinkPreview from "../LinkPreview"
@@ -93,7 +93,7 @@ const Message = ({index, message, messageRefs, /*messageDate, isLastIndex, showD
                 </div>
               )
             }
-            {/*<p style={{textAlign: 'right'}}>{format(message.timestamp, "HH:mm")}</p>*/}  
+            <p style={{textAlign: 'right'}}>{formatMessageTimestamp(message.timestamp)}</p>
             {/*
               isLastIndex && message.senderUid === user.uid && message.status === "seen" && (
                 <p style={{fontSize: '.6rem'}}>seen</p>

@@ -69,15 +69,17 @@ const GroupChat = () => {
           <div className="posts">
             {
               loading ? <PostSkeleton /> : (
-                memoizedPosts.length > 0 ? memoizedPosts.map(postItem => (
-                  <Post
+                memoizedPosts.length > 0 ? memoizedPosts.map(postItem => {
+                  console.log("postitem", postItem)
+                  return <Post
                     key={postItem.id}
-                    id={postItem.id}
-                    creatorUid={postItem.creatorUid}
-                    post={postItem.post}
+                    //id={postItem.id}
+                    //creatorUid={postItem.creatorUid}
+                    //post={postItem.post}
+                    postItem={postItem}
                     roomId={roomId}
                     />
-                )) : (
+                  }) : (
                   <div>No posts in this room yet</div>
                 )
               )

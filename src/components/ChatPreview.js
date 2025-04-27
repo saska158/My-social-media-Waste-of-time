@@ -1,4 +1,4 @@
-import { format } from "date-fns"
+import { formatMessageTimestamp } from "../utils/formatTimestamps"
 
 const ChatPreview = ({
     chatPartnerUid, 
@@ -25,7 +25,6 @@ const ChatPreview = ({
               className="chat-item-profile-image"
             />
             <span>{receiverUid === chatPartnerUid ? receiverName : senderName}</span>
-            {/*<span style={{color: 'salmon', fontSize: '.7rem'}}>{format(timestamp, "HH:mm")}</span>*/}
           </div>
           <div className="chat-item-content">
             {
@@ -39,6 +38,7 @@ const ChatPreview = ({
                 <p>{contentText}</p>
               )
             }
+            <span style={{color: 'salmon', fontSize: '.7rem'}}>{formatMessageTimestamp(timestamp)}</span>
           </div>
         </div>
     )
