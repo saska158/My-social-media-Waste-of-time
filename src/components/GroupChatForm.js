@@ -31,6 +31,7 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomId}) => {
     const linkPreviewRef = useRef(null) 
     const formRef = useRef(null)
     const textareaRef = useRef(null)
+    const fileInputRef = useRef(null)
 
     // Memoized values
     const roomRef = useMemo(() => {
@@ -70,6 +71,8 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomId}) => {
           comments: []
         })
         setPost(initialPost)
+        setImagePreview(null)
+        fileInputRef.current.value = null
       } catch(error) {
         console.error("Error while creating a post", error)
         setError(error)
@@ -97,15 +100,30 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomId}) => {
       )
     }
 
+    const cancelLink = (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      setLinkData(null)
+      setPost(prev => ({...prev, text: ''}))
+    }
+
     // Effects
     useEffect(() => {
-      const urls = extractUrls(post.text)
-    
-      if (urls && urls.length > 0) {
-        fetchLinkPreview(urls[0]).then(setLinkData) // async/await i greske
-      } else {
-        setLinkData(null) 
+      setLoading(true)
+      const fetchData = async () => {
+        try {
+          const urls = extractUrls(post.text)
+          if(urls && urls.length > 0) {
+            const linkDetails = await fetchLinkPreview(urls[0]) //mislim da je ovo primer kako sam resila
+            setLinkData(linkDetails)                            // pomocu async/await tamo gde imam .then() 
+          }
+        } catch(error) {
+          setError(error)
+        } finally {
+          setLoading(false)
+        }
       }
+      fetchData()
     }, [post.text]) 
 
     useEffect(() => {
@@ -126,7 +144,7 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomId}) => {
               style={{minHeight: imagePreview ? '50px' : '200px'}}
               ref={textareaRef}
             />
-            { imagePreview && <ImagePreview {...{imagePreview}} /> }
+            { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setPost} /> }
           </div>
           <button 
             onClick={createPost}
@@ -140,7 +158,7 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomId}) => {
             { loading ? <PulseLoader size={10} color="salmon" /> : 'post' }
           </button>  
           <div className="group-chat-form-icons">
-            <ImageUploadButton {...{handleImageChange}} />
+            <ImageUploadButton {...{handleImageChange, fileInputRef}} />
             <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
           </div>
           {
@@ -159,13 +177,15 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomId}) => {
           }
           {
             linkData && (
-              <LinkPreview {...{linkData, linkPreviewRef}}>
-                <button>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </LinkPreview>
+              <div style={{width: '50%', border: '2px solid red'}}>
+                <LinkPreview {...{linkData, linkPreviewRef}}>
+                  <button onClick={cancelLink}>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </LinkPreview>
+              </div>
             )
           }
         </form> 

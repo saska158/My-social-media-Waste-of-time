@@ -5,10 +5,13 @@ import EmojiPicker from "emoji-picker-react"
 import ChatSmiley from "../ChatSmiley"
 import ImageUploadButton from "../ImageUploadButton"
 import ImagePreview from "../ImagePreview"
+import LinkPreview from "../LinkPreview"
 import { ClipLoader } from "react-spinners"
 import { sendMessageToFirestore } from "../../api/chatApi"
 import { readImageAsDataURL } from "../../utils/readImageAsDataURL"
 import useTypingIndicator from "../../hooks/useTypingIndicator"
+import extractUrls from "../../utils/extractUrls"
+import fetchLinkPreview from "../../api/fetchLinkPreview"
 
 const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
   const initialMessage = {text: '', image: ''}
@@ -20,12 +23,14 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
   const [message, setMessage] = useState(initialMessage)
   const [imagePreview, setImagePreview] = useState(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false) 
+  const [linkData, setLinkData] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   // Hooks that don't trigger re-renders 
   const inputRef = useRef(null)
   const fileInputRef = useRef(null)
+  const linkPreviewRef = useRef(null) 
 
   // Firebase ref
   const typingRef = ref(database, `typingStatus/${chatId}/${user.uid}`)
@@ -75,6 +80,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
       setImagePreview(null)
       set(typingRef, false)
       setShowEmojiPicker(false)
+      fileInputRef.current.value = null
     } catch (error) {
       console.error("Error sending message:", error)
       setError(error)
@@ -83,12 +89,38 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
     }
   }
 
+  const cancelLink = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setLinkData(null)
+    setMessage(prev => ({...prev, text: ''}))
+  }
+
   // Effects
   useEffect(() => {
     if(inputRef.current) {
       inputRef.current.focus()
     }
   }, [messages])
+
+  useEffect(() => {
+    if(!message.text) return
+    setLoading(true)
+    const fetchData = async () => {
+      try {
+        const urls = extractUrls(message.content.text)
+        if(urls && urls.length > 0) {
+          const linkDetails = await fetchLinkPreview(urls[0]) //mislim da je ovo primer kako sam resila
+          setLinkData(linkDetails)                            // pomocu async/await tamo gde imam .then() 
+        }
+      } catch(error) {
+        setError(error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [message?.content?.text])
 
   return (
     <form style={{position: 'relative'}}>
@@ -101,8 +133,8 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
           style={{border: '0', fontSize: '1rem'}}
           ref={inputRef}
         />
-        { imagePreview && <ImagePreview {...{imagePreview}} /> }
-        <ImageUploadButton {...{handleImageChange}} />
+        { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setMessage} /> }
+        <ImageUploadButton {...{handleImageChange, fileInputRef}} />
         <ChatSmiley setShowEmojiPicker={setShowEmojiPicker}/>
       </label>
       {
@@ -125,17 +157,32 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
         ) : null
       }
 
-      {showEmojiPicker && (
-        <EmojiPicker 
-          onEmojiClick={handleEmojiClick} 
-          style={{
-            position: 'fixed',
-            bottom: '10%',
-            left: '10%',
-            width: '30%',
-          }}
-        />
-      )}        
+      {
+        showEmojiPicker && (
+          <EmojiPicker 
+            onEmojiClick={handleEmojiClick} 
+            style={{
+              position: 'fixed',
+              bottom: '10%',
+              left: '10%',
+              width: '30%',
+            }}
+          />
+        )
+      }  
+      {
+        linkData && (
+          <div style={{width: '50%', border: '2px solid red'}}>
+            <LinkPreview {...{linkData, linkPreviewRef}}>
+              <button onClick={cancelLink}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </LinkPreview>
+          </div>
+        )
+      }      
     </form>
   )
 }

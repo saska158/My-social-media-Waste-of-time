@@ -1,4 +1,4 @@
-const ImageUploadButton = ({handleImageChange}) => {
+const ImageUploadButton = ({handleImageChange, fileInputRef}) => {
     return (
         <label className="image-input-label">
           <button onClick={(e) => {e.preventDefault()}} className="image-input-button">
@@ -11,6 +11,7 @@ const ImageUploadButton = ({handleImageChange}) => {
             accept="image/*"
             className="image-input"
             onChange={handleImageChange}
+            ref={fileInputRef}
           />
         </label>
     )

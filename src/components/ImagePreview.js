@@ -1,6 +1,9 @@
-const ImagePreview = ({imagePreview}) => {
+const ImagePreview = ({imagePreview, setImagePreview, fileInputRef, setState}) => {
     const cancelImage = (e) => {
-        e.preventDefault()
+        e.stopPropagation()
+        setState(prev => ({...prev, image: ''}))
+        setImagePreview(null)
+        fileInputRef.current.value = null
         console.log("image cancelled")
     }
     return (

@@ -10,9 +10,7 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import useChatMessages from "../../hooks/useChatMessages"
 import { format } from "date-fns"
 
-
 const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
-  console.log("rerendered")
   // Context
   const { user } = useAuth()
 
@@ -39,12 +37,10 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
   const { data: messages, loading, fetchMore, hasMore } = useChatMessages(messagesRef, 15)
 
   // Effects
-  /* create or get the chatId when the component mounts or user UIDs change */
   useEffect(() => {
     const generatedChatId = [user?.uid, chatPartnerProfile?.uid].sort().join("_")
     setChatId(generatedChatId)
   }, [user?.uid, chatPartnerProfile?.uid])
-
 
   useEffect(() => {
     if(!chatId) return
@@ -74,34 +70,47 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
 
     return () => unsubscribe()
   }, [chatId, chatPartnerProfile?.uid])
-
+  
   useEffect(() => {
     const handleScroll = () => {
-      if(!messageRefs.current.length) return
-
+      if (!chatRef.current || messageRefs.current.length === 0) return
+  
       const chatTop = chatRef.current.getBoundingClientRect().top
+  
+      let closestMessage = null
+      let closestDistance = Infinity
+  
       messageRefs.current.forEach(ref => {
-        const refTop = ref.getBoundingClientRect().top
-
-        if(refTop >= chatTop) {
-          const date = ref.dataset.timestamp
-          setVisibleDate(date)
+        if (!ref) return
+  
+        const rect = ref.getBoundingClientRect()
+        const distance = Math.abs(rect.top - chatTop)
+  
+        if (rect.top >= chatTop && distance < closestDistance) {
+          closestDistance = distance
+          closestMessage = ref
         }
       })
+  
+      if (closestMessage) {
+        const date = closestMessage.dataset.timestamp
+        setVisibleDate(date)
+      }
     }
-
-    if(chatRef.current) {
+  
+    if (chatRef.current) {
       chatRef.current.addEventListener('scroll', handleScroll)
     }
-
+  
     return () => {
-      if(chatRef.current) {
+      if (chatRef.current) {
         chatRef.current.removeEventListener('scroll', handleScroll)
       }
     }
-  }, [])
+  }, [messages])
   
-    
+
+
   return (
     <div className="chat-box">
       <ChatBoxHeader {...{chatPartnerProfile, setIsChatBoxVisible}} />
@@ -124,16 +133,11 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
           <div>
             {/* razmisli o ovome */}
             {/*loading && <ClipLoader color="salmon" size={20} style={{ alignSelf: 'center', margin: '10px 0' }} />*/}
-            {/*!hasMore && (
-              <p style={{ textAlign: 'center', margin: '10px 0', color: '#999' }}>
-                Yay! You have seen it all
-              </p>
-            )*/}
             {
               loading ? <p>loading...</p> : (
                 //messages.length > 0 ? <Messages {...{messages}} /> : <p>No messages yet</p>
                 messages.length > 0 && (
-                  <>
+                  <div>
                     {
                     messages.map((message, index) => {
                       const messageDate = message.timestamp ? format(message.timestamp.toDate(), "dd/MM/yyyy") : ''
@@ -155,15 +159,13 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
                       )
                     })
                   }
-                  </>
-                ) //: <p>No messages yet</p>
+                  </div>
+                ) 
               )
             }
           </div>
         </InfiniteScroll>
-        {
-          messages.length > 0 && <p className="date">{visibleDate}</p>
-        }
+        { messages.length > 0 && <p className="date">{visibleDate}</p> }
       </div>
       {isTyping && (
         <div className="typing-container">

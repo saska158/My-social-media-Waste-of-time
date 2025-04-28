@@ -9,6 +9,8 @@ const Comment = ({comment, index}) => {
   // State
   const [linkData, setLinkData] = useState(null)
   const [isImageViewerShown, setIsImageViewerShown] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   // Custom hooks
   const formattedTime = useFormattedTime(comment.timestamp)
@@ -21,14 +23,22 @@ const Comment = ({comment, index}) => {
  
   // Effects
   useEffect(() => {
-    if(comment.content.text) {
-      const urls = extractUrls(comment.content.text) // treba li greska? ili je u okviru extractUrls
-      if (urls && urls.length > 0) {
-        fetchLinkPreview(urls[0]).then(setLinkData) // ovde sigurno treba, nema catch. mislim da sam negde
-      } else {                                      // vec napravila sa async/await
-        setLinkData(null) 
+    if(!comment.content.text) return
+    setLoading(true)
+    const fetchData = async () => {
+      try {
+        const urls = extractUrls(comment.content.text)
+        if(urls && urls.length > 0) {
+          const linkDetails = await fetchLinkPreview(urls[0]) //mislim da je ovo primer kako sam resila
+          setLinkData(linkDetails)                            // pomocu async/await tamo gde imam .then() 
+        }
+      } catch(error) {
+        setError(error)
+      } finally {
+        setLoading(false)
       }
     }
+    fetchData()
   }, [comment.content.text])
 
   return (

@@ -21,17 +21,26 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
   const [userProfile, setUserProfile] = useState(null)
   const [linkData, setLinkData] = useState(null)
   const [isImageViewerShown, setIsImageViewerShown] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   // Effects
   useEffect(() => {
-    if(message) {
-      const urls = extractUrls(message.content.text) // treba li greska? ili je u okviru extractUrls
-      if (urls && urls.length > 0) {
-        fetchLinkPreview(urls[0]).then(setLinkData)  // ovde sigurno treba, nema catch. mislim da sam negde
-      } else {                                       // vec napravila sa async/await
-          setLinkData(null) 
+    setLoading(true)
+    const fetchData = async () => {
+      try {
+        const urls = extractUrls(message.content.text)
+        if(urls && urls.length > 0) {
+          const linkDetails = await fetchLinkPreview(urls[0]) //mislim da je ovo primer kako sam resila
+          setLinkData(linkDetails)                            // pomocu async/await tamo gde imam .then() 
+        }
+      } catch(error) {
+        setError(error)
+      } finally {
+        setLoading(false)
       }
     }
+    fetchData()
   }, [message.content.text])
     
   useEffect(() => {
@@ -50,7 +59,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
 
   return (
     userProfile && (
-      <>
+      <div style={{display: 'flex', flexDirection: 'column'}}>
         {
           showDateDivider && (
             <div className="date-divider">
@@ -60,16 +69,23 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
         }
         <div 
           className="message-container"
-          style={{marginLeft: message.senderName === user?.displayName ? 'auto' : '0'}}
+          style={{
+            alignSelf: message.senderName === user?.displayName ? 'flex-end' : 'flex-start',
+            justifyContent: message.senderName === user?.displayName ? 'flex-end' : 'flex-start'
+          }}
           //data-timestamp={message.timestamp}
           data-timestamp={messageDate}
           ref={(el) => (messageRefs.current[index] = el)} // Assign ref dynamically
         >
-          <img 
-            src={userProfile.photoURL} 
-            alt="profile" 
-            className="message-profile-image"
-          />
+          {
+            message.senderName !== user?.displayName && (
+              <img 
+                src={userProfile.photoURL} 
+                alt="profile" 
+                className="message-profile-image"
+              />
+            )
+          }
           <div 
             className="message-content"
             style={{backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey'}}
@@ -111,7 +127,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             </PopUp>
           )
         }
-      </>
+      </div>
     )
   )
 }
