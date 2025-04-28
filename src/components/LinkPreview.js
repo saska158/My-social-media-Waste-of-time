@@ -1,12 +1,6 @@
 const LinkPreview = ({linkData, linkPreviewRef=null, children}) => {
     return (
-        <div 
-          style={{
-            marginTop: "10px",
-            border: '2px solid green',
-          }} 
-          ref={linkPreviewRef}
-        >
+        <div ref={linkPreviewRef}>
           {
             linkData.description === 'Too many requests / rate limit exceeded' ? (
               <p style={{fontSize: '.8rem'}}>
