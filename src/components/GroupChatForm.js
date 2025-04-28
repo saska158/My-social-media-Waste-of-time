@@ -132,6 +132,8 @@ const GroupChatForm = ({isPopupShown, setIsPopupShown, roomId}) => {
       }
     }, [isPopupShown])  
 
+    console.log("linkData", linkData)
+
     return (
       <PopUp setIsPopUpShown={setIsPopupShown} setShowEmojiPicker={setShowEmojiPicker}>
         <form className="group-chat-form" ref={formRef}>

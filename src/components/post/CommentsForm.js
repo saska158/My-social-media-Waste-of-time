@@ -111,11 +111,11 @@ const CommentsForm = ({room, id, comments}) => {
   }, [comments])
 
   useEffect(() => {
-    if(!comment?.content?.text) return
+    if(!comment.text) return
     setLoading(true)
     const fetchData = async () => {
       try {
-        const urls = extractUrls(comment.content.text)
+        const urls = extractUrls(comment.text)
         if(urls && urls.length > 0) {
           const linkDetails = await fetchLinkPreview(urls[0]) //mislim da je ovo primer kako sam resila
           setLinkData(linkDetails)                            // pomocu async/await tamo gde imam .then() 
@@ -127,7 +127,7 @@ const CommentsForm = ({room, id, comments}) => {
       }
     }
     fetchData()
-  }, [comment?.content?.text])
+  }, [comment.text])
 
   return (
     <form onSubmit={addComment} className="comments-form">

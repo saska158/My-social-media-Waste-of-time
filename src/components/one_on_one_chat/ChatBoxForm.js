@@ -108,7 +108,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
     setLoading(true)
     const fetchData = async () => {
       try {
-        const urls = extractUrls(message.content.text)
+        const urls = extractUrls(message.text)
         if(urls && urls.length > 0) {
           const linkDetails = await fetchLinkPreview(urls[0]) //mislim da je ovo primer kako sam resila
           setLinkData(linkDetails)                            // pomocu async/await tamo gde imam .then() 
@@ -120,7 +120,9 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
       }
     }
     fetchData()
-  }, [message?.content?.text])
+  }, [message.text])
+
+  console.log("linkData", linkData)
 
   return (
     <form style={{position: 'relative'}}>
@@ -136,6 +138,19 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
         { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setMessage} /> }
         <ImageUploadButton {...{handleImageChange, fileInputRef}} />
         <ChatSmiley setShowEmojiPicker={setShowEmojiPicker}/>
+        {
+        linkData && (
+          <div style={{width: '100%', border: '2px solid red'}}>
+            <LinkPreview {...{linkData, linkPreviewRef}}>
+              <button onClick={cancelLink}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </LinkPreview>
+          </div>
+        )
+      }      
       </label>
       {
         message.text || message.image ? (
@@ -170,19 +185,6 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
           />
         )
       }  
-      {
-        linkData && (
-          <div style={{width: '50%', border: '2px solid red'}}>
-            <LinkPreview {...{linkData, linkPreviewRef}}>
-              <button onClick={cancelLink}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </LinkPreview>
-          </div>
-        )
-      }      
     </form>
   )
 }
