@@ -12,7 +12,6 @@ import { readImageAsDataURL } from "../../utils/readImageAsDataURL"
 import extractUrls from "../../utils/extractUrls"
 import fetchLinkPreview from "../../api/fetchLinkPreview"
 
-
 const CommentsForm = ({room, id, comments}) => {
   const initialComment = {text: '', image: ''}
 
@@ -81,6 +80,8 @@ const CommentsForm = ({room, id, comments}) => {
           name: user.displayName,
           photoURL: user.photoURL,
           content: newComment,
+          likes: [],
+          replies: [],
           timestamp: serverTimestamp()
         }
         await addDoc(commentsRef, newCommentData)
@@ -145,9 +146,10 @@ const CommentsForm = ({room, id, comments}) => {
           )
         }    
         <div style={{display: 'flex'}}>
+          <img src={user.photoURL} alt="profile-img" className="comment-profile-image" />
           <input
             type="text"
-            placeholder="Add a comment"
+            placeholder="Add a comment..."
             value={comment.text}
             onChange={handleComment}
             style={{border: '0'}}

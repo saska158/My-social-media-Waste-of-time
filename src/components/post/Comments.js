@@ -41,7 +41,7 @@ const Comments = ({room, id}) => {
             {
               loading ? <PostSkeleton /> : (
                 comments.length > 0 ? (
-                  comments.map((comment, index) => <Comment key={index} {...{comment, index}} />)
+                  comments.map((comment, index) => <Comment key={index} {...{comment, index, room, id}} />)
                 ) : <p>No comments yet</p>
               )
             }

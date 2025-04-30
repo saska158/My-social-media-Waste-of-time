@@ -4,8 +4,10 @@ import extractUrls from "../../utils/extractUrls"
 import useFormattedTime from "../../hooks/useFormattedTime"
 import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
+import CommentActions from "./CommentActions"
 
-const Comment = ({comment, index}) => {
+const Comment = ({comment, index, room, id}) => {
+  const { id: commentId } = comment
   // State
   const [linkData, setLinkData] = useState(null)
   const [isImageViewerShown, setIsImageViewerShown] = useState(false)
@@ -53,7 +55,7 @@ const Comment = ({comment, index}) => {
             gap: '2em',
           }}
         >
-          <p>{comment.name}</p>
+          <p style={{fontSize: '.8rem', fontWeight: '700'}}>{comment.name}</p>
           <p style={{fontSize: '.55rem'}}>{formattedTime}</p>
         </div>
         {
@@ -73,6 +75,7 @@ const Comment = ({comment, index}) => {
             </div>
           )
         }
+        <CommentActions {...{comment, room, id, commentId}}/>
       </div>
       {
         isImageViewerShown && (
