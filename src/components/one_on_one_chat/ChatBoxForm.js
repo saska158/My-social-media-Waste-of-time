@@ -80,6 +80,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
       setImagePreview(null)
       set(typingRef, false)
       setShowEmojiPicker(false)
+      setLinkData(null)
       fileInputRef.current.value = null
     } catch (error) {
       console.error("Error sending message:", error)
@@ -93,7 +94,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
     e.preventDefault()
     e.stopPropagation()
     setLinkData(null)
-    setMessage(prev => ({...prev, text: ''}))
+    //setMessage(prev => ({...prev, text: ''}))
   }
 
   // Effects
@@ -127,30 +128,32 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
   return (
     <form style={{position: 'relative'}}>
       <label className="chat-box-main-label"> 
+      {
+        linkData && (
+          <LinkPreview {...{linkData, linkPreviewRef}} style={{display: 'flex', alignItems: 'flex-start'}} imgStyle={{width: '30%'}}>
+            <button onClick={cancelLink}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '15px'}} /*className="size-6"*/>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </LinkPreview>
+        )
+      }    
+      <div style={{display: 'flex'}}>
         <input 
           type='text'
           placeholder='Message...'
           value={message.text}
           onChange={handleMessageChange}
-          style={{border: '0', fontSize: '1rem'}}
+          style={{border: '0', fontSize: '1rem', padding: '1em'}}
           ref={inputRef}
         />
-        { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setMessage} /> }
-        <ImageUploadButton {...{handleImageChange, fileInputRef}} />
-        <ChatSmiley setShowEmojiPicker={setShowEmojiPicker}/>
-        {
-        linkData && (
-          <div style={{width: '100%'}}>
-            <LinkPreview {...{linkData, linkPreviewRef}}>
-              <button onClick={cancelLink}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </LinkPreview>
-          </div>
-        )
-      }      
+        <div>
+          { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setMessage} /> }
+          <ImageUploadButton {...{handleImageChange, fileInputRef}} />
+          <ChatSmiley setShowEmojiPicker={setShowEmojiPicker}/>
+        </div>
+      </div>
       </label>
       {
         message.text || message.image ? (

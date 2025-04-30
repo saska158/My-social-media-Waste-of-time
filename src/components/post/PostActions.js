@@ -121,7 +121,7 @@ const PostActions = ({roomId, id}) => {
           </button>
         </div>
         { showComments && (
-          <PopUp setIsPopUpShown={setShowComments} style={{padding: 0}}> 
+          <PopUp setIsPopUpShown={setShowComments} style={{paddingTop: '2em'}}> 
             <Comments {...{room, id}} />
           </PopUp>
         ) }

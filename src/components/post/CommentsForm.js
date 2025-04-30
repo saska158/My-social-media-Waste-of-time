@@ -86,6 +86,7 @@ const CommentsForm = ({room, id, comments}) => {
         await addDoc(commentsRef, newCommentData)
         setComment(initialComment)  
         setImagePreview(null)
+        setLinkData(null)
         fileInputRef.current.value = null
       } catch(error) {
         console.error("Error sending comment", error)
@@ -100,7 +101,7 @@ const CommentsForm = ({room, id, comments}) => {
     e.preventDefault()
     e.stopPropagation()
     setLinkData(null)
-    setComment(prev => ({...prev, text: ''}))
+    //setComment(prev => ({...prev, text: ''}))
   }
   
   // Effects
@@ -131,7 +132,19 @@ const CommentsForm = ({room, id, comments}) => {
 
   return (
     <form onSubmit={addComment} className="comments-form">
-        <label className="comments-main-label">
+      <label className="comments-main-label">
+        {
+          linkData && (
+            <LinkPreview {...{linkData, linkPreviewRef}} style={{display: 'flex', alignItems: 'flex-start'}} imgStyle={{width: '30%'}}>
+              <button onClick={cancelLink}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '15px'}} /*className="size-6"*/>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </LinkPreview>
+          )
+        }    
+        <div style={{display: 'flex'}}>
           <input
             type="text"
             placeholder="Add a comment"
@@ -140,9 +153,12 @@ const CommentsForm = ({room, id, comments}) => {
             style={{border: '0'}}
             ref={inputRef}
           />
-          { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setComment} /> }
-          <ImageUploadButton {...{handleImageChange, fileInputRef}} />
-          <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
+          <div>
+            { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setComment} /> }
+            <ImageUploadButton {...{handleImageChange, fileInputRef}} />
+            <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
+          </div>
+          </div>
         </label>
         {
           comment.text || comment.image ? (
@@ -169,20 +185,7 @@ const CommentsForm = ({room, id, comments}) => {
               }}
             />
           )
-        }
-        {
-          linkData && (
-            <div style={{width: '50%'}}>
-              <LinkPreview {...{linkData, linkPreviewRef}}>
-                <button onClick={cancelLink}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '20px'}} /*className="size-6"*/>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </LinkPreview>
-            </div>
-          )
-        }        
+        }    
       </form>
   )
 }

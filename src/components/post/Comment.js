@@ -57,7 +57,7 @@ const Comment = ({comment, index}) => {
           <p style={{fontSize: '.55rem'}}>{formattedTime}</p>
         </div>
         {
-          linkData ? <LinkPreview {...{linkData}} /> : (
+          linkData ? <LinkPreview {...{linkData}} style={{width: '50%'}} /> : (
             <div>
               { comment.content.text && <p>{comment.content.text}</p> }
               {

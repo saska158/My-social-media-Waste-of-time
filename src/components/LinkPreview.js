@@ -1,4 +1,5 @@
-const LinkPreview = ({linkData, linkPreviewRef=null, children}) => {
+const LinkPreview = ({linkData, linkPreviewRef=null, children, style=null, imgStyle=null}) => {
+
     return (
         <div ref={linkPreviewRef}>
           {
@@ -8,18 +9,24 @@ const LinkPreview = ({linkData, linkPreviewRef=null, children}) => {
                 Link can't be shown.
               </p>
             ) : (
-              <div>
-                {children}
-                <a href={linkData.url} target="_blank" rel="noopener noreferrer">
+              <div style={{display: 'flex', alignItems: 'flex-start'}}>
+                <a 
+                  href={linkData.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  style={style}
+                >
                   <img
                     src={linkData.image}
                     alt={linkData.title}
-                    style={{ width: "100%"}}
+                    style={imgStyle}
                   />
                   <div>
-                    <p style={{textTransform: 'initial'}}>{linkData.title}</p>
+                    <p style={{textTransform: 'initial', fontSize: '.75rem'}}>{linkData.title}</p>
+                    <p style={{fontSize: '.6rem', color: 'grey'}}>{linkData.description}</p>
                   </div>
                 </a>
+                {children}
               </div>
             )
           }
