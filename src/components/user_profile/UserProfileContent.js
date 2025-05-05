@@ -5,7 +5,7 @@ const UserProfileContent = ({activeSection, profile, profileUid}) => {
         <div className="user-profile-description">
             {
                 activeSection === "bio" ? <p>{profile[activeSection]}</p> :
-                activeSection === 'posts' ? (
+                activeSection === 'posts' && profileUid ? (
                     <UserPosts {...{profileUid}} />
                 ) : (
                     <div style={{display: 'flex', flexDirection: 'column', gap: '1em'}}>

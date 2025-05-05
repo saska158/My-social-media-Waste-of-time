@@ -1,107 +1,97 @@
-import { useState, useEffect, useMemo, useRef } from "react"
-import { useAuth } from "../../contexts/authContext"
-import { firestore, collection, doc, getDoc, updateDoc, onSnapshot, deleteField } from "../../api/firebase"
-import Comments from "./Comments"
-import JoinPopUp from "../JoinPopUp"
-import PopUp from "../PopUp"
+import { useState, useEffect } from "react"
+import { useAuth } from "../contexts/authContext"
+import { firestore, collection, doc, getDoc, updateDoc, onSnapshot, deleteField } from "../api/firebase"
+import PopUp from "./PopUp"
+import JoinPopUp from "./JoinPopUp"
+import Comments from "./post/Comments"
 
-const PostActions = ({roomId=null, room, postId, showComments, setShowComments}) => {
+const ItemActions = ({room, id, commentId=null, type}) => {
+    // Context
+      const { user } = useAuth()
+    
+    // State
+    const [likes, setLikes] = useState(null)  
+    const [numberOfItems, setNumberOfItems] = useState(0)
+    const [showItems, setShowItems] = useState(false) 
+    const [isJoinPopupShown, setIsJoinPopupShown] = useState(false) 
+    const [error, setError] = useState(null)
 
-  // Context
-  const { user } = useAuth()
-
-  // State
-  const [likes, setLikes] = useState(null)  
-  const [numberOfComments, setNumberOfComments] = useState(0)
-  //const [showComments, setShowComments] = useState(false) 
-  const [isJoinPopupShown, setIsJoinPopupShown] = useState(false) 
-  const [error, setError] = useState(null)
-
-  // Memoized Values 
-  /*const room = useMemo(() => {
-    return roomId ? `${roomId}` : `main`
-  }, [roomId])*/
-
-
-  // Functions
-  const handleLike = async (e) => {
-    e.stopPropagation()
-    if(!user) {
-      setIsJoinPopupShown(true)
-    } else {
-       const postRef = doc(firestore, room, postId)
-       try {
-          const snapshot = await getDoc(postRef)
+    // Functions
+    const handleLike = async (e) => {
+      e.stopPropagation()
+      if(!user) {
+        setIsJoinPopupShown(true)
+      } else {
+        const itemRef = type === 'posts' ? doc(firestore, room, id) : doc(firestore, room, id, 'comments', commentId)
+        try {
+          const snapshot = await getDoc(itemRef)
           const likes = snapshot.data().likes || {}
 
           if (likes[user?.uid]) {
-            await updateDoc(postRef, {[`likes.${user.uid}`]: deleteField()})
+            await updateDoc(itemRef, {[`likes.${user.uid}`]: deleteField()})
             console.log("Unliked")
           } else {
-            await updateDoc(postRef, {[`likes.${user.uid}`]: {name: user.displayName}})
+            await updateDoc(itemRef, {[`likes.${user.uid}`]: {name: user.displayName}})
             console.log("Liked")
           }
-       } catch (error) {
+        } catch (error) {
           console.error("Error updating like:", error)
           setError(error)
-       }
-    } 
-  }
-
-  const handleComment = (e) => {
-    e.stopPropagation()
-    if(!user) {
-      setIsJoinPopupShown(true)
-    } else {
-      setShowComments(!showComments)
+        }
+      } 
     }
-  }
 
-  // Effects
-  useEffect(() => {
-
-      const postRef = doc(firestore, room, postId)
-    const unsubscribe = onSnapshot(postRef, (snapshot) => {
-      if(snapshot.exists()) {
-        const likes = snapshot.data()?.likes || {}
-          setLikes(likes)
+    const showMore = (e) => {
+      e.stopPropagation()
+      if(!user) {
+        setIsJoinPopupShown(true)
+      } else {
+        setShowItems(!showItems)
       }
-    })
+    }
 
-    return () => unsubscribe()
+    // Effects
+    useEffect(() => {
+      const itemRef = type === 'posts' ? doc(firestore, room, id) : doc(firestore, room, id, 'comments', commentId)
+      const unsubscribe = onSnapshot(itemRef, (snapshot) => {
+        if(snapshot.exists()) {
+          const likes = snapshot.data()?.likes || {}
+            setLikes(likes)
+        }
+      })
 
-  }, [postId])
+      return () => unsubscribe()
+    }, [id])
 
 
-  useEffect(() => {
-
-      const commentsRef = collection(firestore, room, postId, 'comments')
-
-    const unsubscribe = onSnapshot(commentsRef, (snapshot) => { 
-      if(!snapshot.empty) {
-        setNumberOfComments(snapshot.size)
-    }})
+    useEffect(() => {
+      const itemsRef = type === 'posts' ? 
+        collection(firestore, room, id, 'comments') : 
+        collection(firestore, room, id, 'comments', commentId, 'replies') //comments treba da je reusable
+      const unsubscribe = onSnapshot(itemsRef, (snapshot) => { 
+        if(!snapshot.empty) {
+          setNumberOfItems(snapshot.size)
+      }})
               
-    return () => unsubscribe()
+      return () => unsubscribe()
+    }, [room])
 
-  }, [room])
-
-  const isLiked = !!(likes && likes[user?.uid])
-  const likesArray = Object.values(likes || {})
-
-  return (
-    <div className="post-actions">
-      <div className="post-actions-container">
-        <span>
-          {
-            likesArray.length === 0 ? `0 likes` :
-            likesArray.length === 1 ? `${likesArray[0]?.name} likes` :
-            `${likesArray[0].name} and ${likesArray.length - 1} ${likesArray.length - 1 === 1 ? 'other' : 'others'}`
-          }
-        </span>
-        <span>{numberOfComments} {numberOfComments === 1 ? 'comment' : 'comments'}</span>
-      </div>
-      <div>
+    const isLiked = !!(likes && likes[user?.uid])
+    const likesArray = Object.values(likes || {})
+    
+    return (
+        <div className="post-actions">
+          <div className="post-actions-container">
+            <span>
+              {
+                likesArray.length === 0 ? `0 likes` :
+                likesArray.length === 1 ? `${likesArray[0]?.name} likes` :
+                `${likesArray[0].name} and ${likesArray.length - 1} ${likesArray.length - 1 === 1 ? 'other' : 'others'}`
+              }
+            </span>
+            <span>{numberOfItems} {numberOfItems === 1 ? type === 'posts' ? 'comment' : 'reply' : type !== "posts" ? 'comments' : 'replies'}</span>
+          </div>
+        <div>
         <div className="post-actions-buttons">
           <button className="post-actions-like-button" onClick={handleLike}>
             {
@@ -119,18 +109,27 @@ const PostActions = ({roomId=null, room, postId, showComments, setShowComments})
           </button>
           <button 
             className="post-actions-like-button"
-            onClick={handleComment}
+            onClick={showMore}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px'}}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
             </svg>
-            comment
+            { type === 'posts' ? 'comment' : 'reply' }
           </button>
         </div>
+        { showItems && (
+          <PopUp setIsPopUpShown={setShowItems} style={{paddingTop: '2em'}}> 
+            {
+                type === 'posts' && (
+                    <Comments {...{room, id}} />
+                ) 
+            }
+          </PopUp>
+        ) }
       </div> 
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
     </div>
-  )
+    )
 }
 
-export default PostActions
+export default ItemActions

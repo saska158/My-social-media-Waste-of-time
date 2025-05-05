@@ -1,26 +1,23 @@
 import { useMemo, useRef } from "react"
 import { firestore, collection } from "../../api/firebase"
 import Comment from "./Comment"
-import CommentsForm from "./CommentsForm"
+import PostForm from "../PostForm"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
 
-const Comments = ({room, id}) => {
-   
+const Comments = ({room, postId, firestoreRef, type}) => {
+
   // Hooks that don't trigger re-renders 
   const commentsContainerRef = useRef(null)
   
   // Memoized values
-  const commentsRef = useMemo(() => {
-    return collection(firestore, room, id, 'comments')
-  }, [room, id])
-  
-  // Custom hooks
-  const {data: comments, loading, fetchMore, hasMore } = useFirestoreBatch(commentsRef, 6)
 
-  
+  // Custom hooks
+  const {data: comments, loading, fetchMore, hasMore } = useFirestoreBatch(firestoreRef, 6)
+
+  console.log("comments", comments)
 
   return (
     <div className="comments-container">
@@ -41,14 +38,14 @@ const Comments = ({room, id}) => {
             {
               loading ? <PostSkeleton /> : (
                 comments.length > 0 ? (
-                  comments.map((comment, index) => <Comment key={index} {...{comment, index, room, id}} />)
+                  comments.map((comment, index) => <Comment key={index} {...{comment, room, postId, type}} />)
                 ) : <p>No comments yet</p>
               )
             }
           </div>
         </InfiniteScroll>
       </div>
-      <CommentsForm {...{room, id, comments}} />
+      <PostForm {...{firestoreRef}} placeholder="Add comment..." type="comments" />
     </div>
   )
 }

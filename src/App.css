@@ -61,9 +61,11 @@ input {
 }
 textarea {
   resize: none;
-  overflow-y: auto;
+  /*overflow-y: auto;*/
+  overflow-y: hidden;
   scrollbar-gutter: stable;
-  border: none;
+  border: .3px solid salmon;
+  border-radius: 20px;
 }
 
 .image-input-label {
@@ -601,7 +603,6 @@ textarea {
   align-items: flex-start;
   gap: .3em;
   margin-bottom: 1em;
-  border: 2px solid blue;
 }
 
 .comment-profile-image {
@@ -617,7 +618,7 @@ textarea {
   background: #f7d4d1;
   border-radius: 10px;
   padding: .5em;
-  width: 30%;
+  width: 60%;
   display: flex;
   flex-direction: column;
   gap: 1em;
@@ -642,19 +643,27 @@ textarea {
   display: flex;
   padding: 1em;
   background-color: #fff;
-  border-top: .5px solid salmon;
+ /* border-top: .5px solid salmon;*/
 }
 
 .comments-main-label {
-  border-radius: 20px; 
-  border: .3px solid salmon; 
+  /*border-radius: 20px; 
+  border: .3px solid salmon; */
   display: flex;
   flex-direction: column;
   gap: 1em;
   padding: .5em;
 }
 
-.comments-form-image-preview {
+.comments-profile-image {
+  width: 35px; 
+  height: 35px;
+  object-fit: cover;
+  object-position: top;
+  display: inline;
+  border-radius: 50%;
+}
+/*.comments-form-image-preview {
   width: 40px; 
   height: 40px; 
   object-fit: cover; 
@@ -690,7 +699,7 @@ textarea {
   top: 0;
   left: 0;
   width: 50%;
-}
+}*/
 
 .comments-box {
   /*border: 1px solid pink;*/
@@ -811,7 +820,7 @@ textarea {
 
 /* GROUP CHAT FORM */
 
-.group-chat-form {
+.create-post-form {
   display: flex;
   flex-direction: column;
   gap: 1em;
@@ -820,13 +829,7 @@ textarea {
   position: relative;
 }
 
-.group-chat-textarea {
-  width: 100%;
-  max-height: 300px; 
-  padding: 1em;
-}
-
-.group-chat-form-button {
+.create-post-form-btn {
   align-self: flex-end;
   color: salmon;
   width: 150px;
@@ -834,19 +837,20 @@ textarea {
   padding: 1em;
 }
 
-.group-chat-form-icons {
+.create-post-main-label {
   display: flex;
-  gap: .5em;
-  margin-top: auto;
-  justify-content: flex-end;
+  flex-direction: column;
+  gap: 1em;
+  padding: .5em;
 }
 
-.group-chat-form-emoji-picker {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 70%;
-  height: 75%; 
+.create-post-profile-image {
+  width: 35px; 
+  height: 35px;
+  object-fit: cover;
+  object-position: top;
+  display: inline;
+  border-radius: 50%;
 }
 
 /* JOIN POP UP */

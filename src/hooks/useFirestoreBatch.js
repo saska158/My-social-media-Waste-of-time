@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { query, orderBy , limit, startAfter, getDocs, onSnapshot } from "../api/firebase"
 
 const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], profileUid=null) => {
-    //console.log("Fetching more...")
+    console.log("profileUid:", profileUid)
     const [data, setData] = useState([])
     const [lastDoc, setLastDoc] = useState(null)
     const [loading, setLoading] = useState(false)
@@ -10,7 +10,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
     const [hasMore, setHasMore] = useState(true)
 
     useEffect(() => {
-      if (!collectionRef) return
+      if (!collectionRef && !profileUid) return
 
         const q = query(
             collectionRef,
@@ -49,7 +49,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
     }, [collectionRef, profileUid])
 
     const fetchData = useCallback(async () => {
-      console.log("Fetching more data...")
+      //console.log("Fetching more data...")
       if(loading || !hasMore || !lastDoc) return
 
       try {

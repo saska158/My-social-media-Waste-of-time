@@ -1,19 +1,18 @@
-import { useMemo, useRef, useState } from "react"
+import { useMemo, useRef, useState, useEffect } from "react"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
-import { firestore, collection } from "../../api/firebase"
+import { firestore, collection, where } from "../../api/firebase"
 import Post from "../post/Post"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
-import { where } from "../../api/firebase"
 
 
 const UserPosts = ({profileUid}) => {
     const roomTags = ['main', 'watching', 'reading', 'listening']
     const [room, setRoom] = useState('main')
 
-
-    const postsRef = useMemo(() => {
+    console.log("uid", profileUid)
+    const userPostsRef = useMemo(() => {
       return collection(firestore, room)
     }, [room])
 
@@ -25,7 +24,8 @@ const UserPosts = ({profileUid}) => {
       loading, 
       fetchMore, 
       hasMore 
-    } = useFirestoreBatch(postsRef, 2, [where("creatorUid", "==", profileUid)], profileUid)
+    } = useFirestoreBatch(userPostsRef, 2, [where("creatorUid", "==", profileUid)], profileUid)
+
 
     return (
         <div>
@@ -61,7 +61,7 @@ const UserPosts = ({profileUid}) => {
                     posts.map((post, index) => (
                       <Post
                         key={index}
-                        postItem={post}
+                        post={post}
                         roomId={post.room}
                         style={{width: '70%'}}
                       />

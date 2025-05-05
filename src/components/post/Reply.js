@@ -14,20 +14,18 @@ import Replies from "./Replies"
 import { collection } from "firebase/firestore"
 import { firestore } from "../../api/firebase"
 
-const Comment = ({comment, room, postId, type}) => {
-  const { id: commentId, creatorUid, creatorName, content, timestamp } = comment
+const Reply = ({reply}) => {
+  const { creatorUid, content, timestamp } = reply
   // State
   const [profile, setProfile] = useState(null)
   const [linkData, setLinkData] = useState(null)
   const [isImageViewerShown, setIsImageViewerShown] = useState(false)
-  const [showReplies, setShowReplies] = useState(false)
-  const [numberOfReplies, setNumberOfReplies] = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  const repliesRef = useMemo(() => {
-    return collection(firestore, room, postId, 'comments', commentId, 'replies')
-  }, [room, postId, commentId])
+
+  // Custom hooks
+  const formattedTime = useFormattedTime(timestamp)
 
   // Functions
   const handleImageViewer = (e) => {
@@ -70,18 +68,9 @@ const Comment = ({comment, room, postId, type}) => {
 
   return (
     <div className="comment-container">
-      <div className="comment-content" style={{background: showReplies ? '#f8a9a2' : '#f7d4d1'}}>
+      <div className="comment-content" style={{background: 'white', width: '80%', marginLeft: '2em'}}>
         <PostHeader {...{creatorUid, timestamp, profile}} />
         <PostContent {...{content}} />
-        {
-          type === "comments" && <CommentActions {...{room, postId, commentId, showReplies, setShowReplies, numberOfReplies, setNumberOfReplies}} />
-        }
-        {
-          showReplies && (
-           // <Comments {...{room, postId}} firestoreRef={repliesRef} type="comments" />
-           <Replies firestoreRef={repliesRef} creatorName={creatorName} />
-          )
-        }
       </div>
       {
         isImageViewerShown && (
@@ -94,4 +83,4 @@ const Comment = ({comment, room, postId, type}) => {
   )
 }
 
-export default Comment
+export default Reply

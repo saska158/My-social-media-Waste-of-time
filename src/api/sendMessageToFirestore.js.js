@@ -1,7 +1,7 @@
 import { firestore, collection, doc, getDocs, setDoc, addDoc, updateDoc, serverTimestamp, where, query } from "./firebase"
 import uploadToCloudinaryAndGetUrl from "./uploadToCloudinaryAndGetUrl"
 
-export const sendMessageToFirestore = async (chatId, userA, userBUid, receiverName, receiverPhoto, message) => {
+const sendMessageToFirestore = async (chatId, userA, userBUid, receiverName, receiverPhoto, message) => {
     if(!chatId || (!message.text && !message.image)) return
 
     const chatsRef = collection(firestore, 'chats')
@@ -50,3 +50,5 @@ export const sendMessageToFirestore = async (chatId, userA, userBUid, receiverNa
       }
     })
 } 
+
+export default sendMessageToFirestore

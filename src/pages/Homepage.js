@@ -4,13 +4,14 @@ import { useAuth } from '../contexts/authContext'
 import { firestore, collection } from "../api/firebase"
 import Post from "../components/post/Post"
 import JoinPopUp from "../components/JoinPopUp"
-import GroupChatForm from "../components/GroupChatForm"
+import PostForm from "../components/PostForm"
+import PopUp from "../components/PopUp"
 import PostSkeleton from "../components/skeletons/PostSkeleton"
 import useFirestoreBatch from "../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import InfiniteScroll from "react-infinite-scroll-component"
 
-const GroupChat = () => {
+const Homepage = () => {
   // Context
   const { user } = useAuth()
 
@@ -19,9 +20,12 @@ const GroupChat = () => {
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
  
   const { roomId } = useParams()
-  const postsRef = useRef(null)
 
   // Memoized values 
+  const room = useMemo(() => {
+    return roomId ? `${roomId}` : `main`
+  }, [roomId])
+
   const roomRef = useMemo(() => {
     const room = roomId ? `${roomId}` : `main`
     return collection(firestore, room)
@@ -50,30 +54,32 @@ const GroupChat = () => {
         </svg>
         <span>new post</span>
       </button>
-      { isPopupShown && <GroupChatForm {...{isPopupShown, setIsPopupShown, roomId}}/> }
-      <div className="posts-container" ref={postsRef} id="scrollableDiv">
+      { 
+        isPopupShown && (
+          <PopUp setIsPopUpShown={setIsPopupShown} /*setShowEmojiPicker={setShowEmojiPicker}*/>
+            <PostForm firestoreRef={roomRef} placeholder="let's waste time..." type="create-post" setIsPopupShown={setIsPopupShown}/>
+          </PopUp>
+        ) 
+      }
+      <div className="posts-container" id="scrollableDiv">
         <InfiniteScroll
           dataLength={memoizedPosts.length}
           next={fetchMore}
           hasMore={hasMore}
           //loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}
-          /*endMessage={
-            <p style={{ textAlign: 'center' }}>
-              Yay! You have seen it all
-            </p>
-          }*/
           scrollableTarget="scrollableDiv"
           style={{width: '500px'}}
         >
           <div className="posts">
             {
               loading ? <PostSkeleton /> : (
-                memoizedPosts.length > 0 ? memoizedPosts.map(postItem => (
+                memoizedPosts.length > 0 ? memoizedPosts.map(post=> (
                   <Post
-                    key={postItem.id}
-                    postItem={postItem}
+                    key={post.id}
+                    post={post}
                     roomId={roomId}
+                    room={room}
                   />
                 )) : (
                   <div>No posts in this room yet</div>
@@ -88,7 +94,7 @@ const GroupChat = () => {
   )
 }
 
-export default GroupChat
+export default Homepage
 
 
 

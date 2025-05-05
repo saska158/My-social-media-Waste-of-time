@@ -42,6 +42,8 @@ const UserProfile = () => {
   // Hooks that don't trigger re-renders 
   const { profileUid } = useParams()
 
+  //console.log("profileUid", profileUid)
+
   // Effects
   useEffect(() => {
     const profileRef = doc(firestore, "profiles", profileUid)
@@ -78,7 +80,9 @@ const UserProfile = () => {
           <div style={{display: 'flex', flexDirection: 'column'}}>
             <UserProfileHeader {...{profile, profileUid, setIsEditPopupShown, isChatBoxVisible, setIsChatBoxVisible, setIsFollowPopupShown}} />
             <UserProfileNavigation {...{activeSection, setActiveSection}}/>  
-            <UserProfileContent {...{activeSection, profile, profileUid}}/>
+            {
+              profileUid && <UserProfileContent {...{activeSection, profile, profileUid}}/>
+            }
           </div>
         ) : <ChatBox 
               chatPartnerProfile={profile} 

@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from "react"
-import fetchLinkPreview from "../../api/fetchLinkPreview"
-import extractUrls from "../../utils/extractUrls"
-import LinkPreview from "../LinkPreview"
-import PopUp from "../PopUp"
+import extractUrls from "../utils/extractUrls"
+import fetchLinkPreview from "../api/fetchLinkPreview"
+import LinkPreview from "./LinkPreview"
+import PopUp from "./PopUp"
 
-const PostContent = ({content}) => {
+const ItemContent = ({content}) => {
   // State  
   const [linkData, setLinkData] = useState(null)
   const [isImageViewerShown, setIsImageViewerShown] = useState(false)
@@ -71,4 +71,4 @@ const PostContent = ({content}) => {
   )
 }
 
-export default PostContent
+export default ItemContent

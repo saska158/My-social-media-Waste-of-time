@@ -7,7 +7,7 @@ import ImageUploadButton from "../ImageUploadButton"
 import ImagePreview from "../ImagePreview"
 import LinkPreview from "../LinkPreview"
 import { ClipLoader } from "react-spinners"
-import { sendMessageToFirestore } from "../../api/chatApi"
+import sendMessageToFirestore from "../../api/sendMessageToFirestore.js"
 import { readImageAsDataURL } from "../../utils/readImageAsDataURL"
 import useTypingIndicator from "../../hooks/useTypingIndicator"
 import extractUrls from "../../utils/extractUrls"
@@ -94,7 +94,6 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
     e.preventDefault()
     e.stopPropagation()
     setLinkData(null)
-    //setMessage(prev => ({...prev, text: ''}))
   }
 
   // Effects
@@ -123,7 +122,6 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
     fetchData()
   }, [message.text])
 
-  console.log("linkData", linkData)
 
   return (
     <form style={{position: 'relative'}}>
