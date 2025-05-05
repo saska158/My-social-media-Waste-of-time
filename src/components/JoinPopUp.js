@@ -4,7 +4,7 @@ import PopUp from "./PopUp"
 const JoinPopUp = ({setIsPopUpShown}) => {
     return (
       <PopUp setIsPopUpShown={setIsPopUpShown}>
-        <h1>Razgovori</h1>
+        <h1>Waste of Time</h1>
         <p>Sign in or create your account to join the conversation!</p>
         <Link to="/sign-up">
           <button className="join-button" style={{color: 'white'}}>Create an account</button>

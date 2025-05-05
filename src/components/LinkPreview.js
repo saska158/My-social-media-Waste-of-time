@@ -1,12 +1,13 @@
-const LinkPreview = ({linkData, linkPreviewRef=null, children, style=null, imgStyle=null}) => {
+const LinkPreview = ({linkData, linkPreviewRef=null, children, style=null, imgStyle=null, content=null}) => {
 
     return (
         <div ref={linkPreviewRef}>
           {
             linkData.description === 'Too many requests / rate limit exceeded' ? (
               <p style={{fontSize: '.8rem'}}>
-                Too many requests / rate limit exceeded.
-                Link can't be shown.
+                {/*Too many requests / rate limit exceeded.
+                Link can't be shown.*/}
+                { content.text }
               </p>
             ) : (
               <div style={{display: 'flex', alignItems: 'flex-start'}}>

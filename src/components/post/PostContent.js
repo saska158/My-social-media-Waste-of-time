@@ -43,7 +43,7 @@ const PostContent = ({content}) => {
     <div className="post-content">
       {
         linkData ? (
-          <LinkPreview {...{linkData, linkPreviewRef}} style={{display: 'flex', flexDirection: 'column'}} imgStyle={{width: '100%'}}/>
+          <LinkPreview {...{linkData, linkPreviewRef, content}} style={{display: 'flex', flexDirection: 'column'}} imgStyle={{width: '100%'}}/>
         ) : (
           <div>
             <p style={{fontSize: '.8rem', padding: '0 .5em'}}>{content?.text}</p>
