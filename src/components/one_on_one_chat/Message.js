@@ -10,10 +10,12 @@ import { useAuth } from "../../contexts/authContext"
 import { format } from "date-fns"
 import fetchLinkPreview from "../../api/fetchLinkPreview"
 import extractUrls from "../../utils/extractUrls"
+import linkify from "../../utils/linkify"
 import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
 
 const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDateDivider}) => {
+  const { content, senderUid, senderName, timestamp } = message
   // Context
   const { user } = useAuth()
   
@@ -29,7 +31,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
     setLoading(true)
     const fetchData = async () => {
       try {
-        const urls = extractUrls(message.content.text)
+        const urls = extractUrls(content.text)
         if(urls && urls.length > 0) {
           const linkDetails = await fetchLinkPreview(urls[0]) //mislim da je ovo primer kako sam resila
           setLinkData(linkDetails)                            // pomocu async/await tamo gde imam .then() 
@@ -41,11 +43,11 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
       }
     }
     fetchData()
-  }, [message.content.text])
+  }, [content.text])
     
   useEffect(() => {
     const profilesRef = collection(firestore, "profiles")
-    const q = query(profilesRef, where("uid", "==", message.senderUid))
+    const q = query(profilesRef, where("uid", "==", senderUid))
     const unsubscribe = onSnapshot(q, (snapshot) => {
       if(!snapshot.empty) {
         setUserProfile(snapshot.docs[0].data())
@@ -55,7 +57,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
     })
   
     return () => unsubscribe()
-  }, [message.senderUid])
+  }, [senderUid])
 
   return (
     userProfile && (
@@ -70,15 +72,15 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
         <div 
           className="message-container"
           style={{
-            alignSelf: message.senderName === user?.displayName ? 'flex-end' : 'flex-start',
-            justifyContent: message.senderName === user?.displayName ? 'flex-end' : 'flex-start'
+            alignSelf: senderName === user?.displayName ? 'flex-end' : 'flex-start',
+            justifyContent: senderName === user?.displayName ? 'flex-end' : 'flex-start'
           }}
           //data-timestamp={message.timestamp}
           data-timestamp={messageDate}
           ref={(el) => (messageRefs.current[index] = el)} // Assign ref dynamically
         >
           {
-            message.senderName !== user?.displayName && (
+            senderName !== user?.displayName && (
               <img 
                 src={userProfile.photoURL} 
                 alt="profile" 
@@ -88,30 +90,27 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
           }
           <div 
             className="message-content"
-            style={{backgroundColor: message.senderName === user?.displayName ? 'salmon' : 'grey'}}
+            style={{backgroundColor: senderName === user?.displayName ? 'salmon' : 'grey'}}
           >
-            {
-              linkData ? <LinkPreview {...{linkData}}/> : (
-                <div>
-                  { message.content.text && <p>{message.content.text}</p> }
-                  {
-                    message.content.image && (
-                      <img
-                        src={message.content.image}
-                        alt="message-image"
-                        style={{cursor: 'pointer'}}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setIsImageViewerShown(true)
-                        }}
-                      />
-                    )
-                  }
+            <div>
+              { content.text && <p>{linkify(content.text)}</p> }
+              {
+                content.image && (
+                  <img
+                    src={content.image}
+                    alt="message-image"
+                    style={{cursor: 'pointer'}}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      setIsImageViewerShown(true)
+                    }}
+                  />
+                )
+              }
                 </div>
-              )
-            }
+            { linkData && <LinkPreview {...{linkData, content}}/> } 
             {
-              message?.timestamp && <p style={{textAlign: 'right'}}>{format(message.timestamp.toDate(), 'p')}</p>
+              timestamp && <p style={{textAlign: 'right'}}>{format(timestamp.toDate(), 'p')}</p>
             }
             {/*
               isLastIndex && message.senderUid === user.uid && message.status === "seen" && (
@@ -123,7 +122,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
         {
           isImageViewerShown && (
             <PopUp setIsPopUpShown={setIsImageViewerShown}>
-              <img src={message.content.image} alt="image viewer" />
+              <img src={content.image} alt="image viewer" />
             </PopUp>
           )
         }

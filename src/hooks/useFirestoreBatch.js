@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react"
 import { query, orderBy , limit, startAfter, getDocs, onSnapshot } from "../api/firebase"
 
 const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], profileUid=null) => {
-    console.log("profileUid:", profileUid)
     const [data, setData] = useState([])
     const [lastDoc, setLastDoc] = useState(null)
     const [loading, setLoading] = useState(false)

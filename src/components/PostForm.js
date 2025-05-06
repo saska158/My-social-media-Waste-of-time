@@ -26,17 +26,21 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
   const [imagePreview, setImagePreview] = useState(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false) 
   const [linkData, setLinkData] = useState(null)
+  const [linkFromText, setLinkFromText] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   // Hooks that don't trigger re-renders 
   const textareaRef = useRef(null)
-  const fileInputRef = useRef(null)
-  const linkPreviewRef = useRef(null) 
+  const fileInputRef = useRef(null) 
   const formRef = useRef(null)
 
   // Functions
   const handleDataChange = (e) => {
+    //const urls = extractUrls(e.target.value)
+    //f(urls && urls.length > 0) {
+      //setLinkFromText(urls[0])
+    //}
     setData(prev => ({...prev, text: e.target.value}))
   }
 
@@ -62,6 +66,7 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
     e.preventDefault()
     e.stopPropagation()
     setLinkData(null)
+    setLinkFromText(null)
   }
 
   const handleOnSubmit = async (e) => {
@@ -74,6 +79,7 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
       setImagePreview(null)
       setShowEmojiPicker(false)
       setLinkData(null)
+      setLinkFromText(null)
       fileInputRef.current.value = null
       setIsPopupShown(false)
     } catch (error) {
@@ -93,12 +99,14 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
 
   useEffect(() => {
     if(!data.text) return
+    //if (!linkFromText) return
     setLoading(true)
     const fetchData = async () => {
       try {
         const urls = extractUrls(data.text)
         if(urls && urls.length > 0) {
           const linkDetails = await fetchLinkPreview(urls[0]) 
+          //const linkDetails = await fetchLinkPreview(linkFromText) 
           setLinkData(linkDetails)                            
         }
       } catch(error) {
@@ -108,7 +116,7 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
       }
     }
     fetchData()
-  }, [data.text])
+  }, [data.text/*linkFromText*/])
 
 
   return (
@@ -116,7 +124,7 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
       <label className={`${type}-main-label`}>
         {
           linkData && (
-            <LinkPreview {...{linkData, linkPreviewRef}} style={{display: 'flex', alignItems: 'flex-start'}} imgStyle={{width: '30%'}}>
+            <LinkPreview {...{linkData /*linkFromText*/}} content={data} style={{display: 'flex', alignItems: 'flex-start'}} imgStyle={{width: '30%'}}>
               <button onClick={cancelLink}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '15px'}} /*className="size-6"*/>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -130,10 +138,10 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
             display: 'flex', 
             alignItems: type === 'create-post' ? 'flex-start' : 'center', 
             flexDirection: type === 'create-post' ? 'column' : 'row',
-            gap: '1em'
+            gap: '1em',
           }}
         >
-          <div style={{display: 'flex', gap: '.3em'}}>
+          <div style={{display: 'flex', gap: '.3em', }}>
             <img src={user.photoURL} alt="profile-img" className={`${type}-profile-image`} />
             {
               type === 'create-post' && <span>{user.displayName}</span>
@@ -146,7 +154,7 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
             textareaRef={textareaRef}
             type={type}
           />
-          <div>
+          <div style={{display: 'flex', alignItems: 'center'}}>
             { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setData} /> }
             <ImageUploadButton {...{handleImageChange, fileInputRef}} />
             <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />

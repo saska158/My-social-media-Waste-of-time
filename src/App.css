@@ -643,7 +643,6 @@ textarea {
   display: flex;
   padding: 1em;
   background-color: #fff;
- /* border-top: .5px solid salmon;*/
 }
 
 .comments-main-label {

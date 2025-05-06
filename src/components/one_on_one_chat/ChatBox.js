@@ -36,6 +36,8 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
   // Custom hooks
   const { data: messages, loading, fetchMore, hasMore } = useChatMessages(messagesRef, 15)
 
+  console.log("messages", messages)
+
   // Effects
   useEffect(() => {
     const generatedChatId = [user?.uid, chatPartnerProfile?.uid].sort().join("_")
