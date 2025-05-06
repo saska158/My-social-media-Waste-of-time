@@ -965,7 +965,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: .5em;
-  margin-bottom: .5em;
+  margin-bottom: 1em;
 }
 
 .active-user-profile-image {

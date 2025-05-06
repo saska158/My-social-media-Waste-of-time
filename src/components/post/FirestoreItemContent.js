@@ -5,7 +5,7 @@ import linkify from "../../utils/linkify"
 import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
 
-const PostContent = ({content}) => {
+const FirestoreItemContent = ({content}) => {
   // State  
   const [linkData, setLinkData] = useState(null)
   const [linkFromText, setLinkFromText] = useState(null)
@@ -73,4 +73,4 @@ const PostContent = ({content}) => {
   )
 }
 
-export default PostContent
+export default FirestoreItemContent

@@ -3,18 +3,8 @@ import { initializeApp } from "firebase/app"
 import { 
   getDatabase, 
   ref, 
-  push, 
   set, 
-  get,
-  remove, 
-  onValue, 
-  update, 
-  onDisconnect,
-  orderByChild,
-  orderByKey,
-  startAt,
-  endAt,
-  limitToFirst,
+  onValue
 } from "firebase/database"
 
 import { 
@@ -52,8 +42,6 @@ import {
   runTransaction
 } from "firebase/firestore"
 
-import { getMessaging, getToken, onMessage } from "firebase/messaging"
-
 const firebaseConfig = {
   apiKey: "AIzaSyC0t2HSwwWi7Ok2AzIqWdfRd35cCF7ocLU",
   authDomain: "razgovori-270c3.firebaseapp.com",
@@ -69,27 +57,15 @@ const app = initializeApp(firebaseConfig)
 const database = getDatabase(app)
 const auth = getAuth(app) //proveri
 const firestore = getFirestore(app)
-const messaging = getMessaging(app)
 
 export { 
   app, 
   database, 
   firestore,
   auth,
-  messaging,
   ref,
-  push,
   set,
-  get,
-  remove,
   onValue,
-  orderByChild,
-  orderByKey,
-  startAt,
-  endAt,
-  limitToFirst,
-  update,
-  onDisconnect,
   onAuthStateChanged, 
   signOut, 
   reload,
@@ -110,9 +86,6 @@ export {
   orderBy,
   onSnapshot,
   serverTimestamp,
-  getMessaging,
-  getToken,
-  onMessage,
   limit,
   limitToLast,
   startAfter,

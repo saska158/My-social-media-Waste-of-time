@@ -1,6 +1,4 @@
-import { useMemo, useRef } from "react"
-import { firestore, collection } from "../../api/firebase"
-import Comment from "./Comment"
+import { useRef } from "react"
 import PostForm from "../PostForm"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"

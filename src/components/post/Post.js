@@ -1,13 +1,13 @@
 import { useState, useEffect, memo, useMemo } from "react"
-import { firestore, collection } from "../../api/firebase"
+import { firestore, collection, doc } from "../../api/firebase"
 import fetchProfile from "../../api/fetchProfile"
-import PostHeader from "./PostHeader"
-import PostContent from "./PostContent"
-import PostActions from "./PostActions"
+import FirestoreItemHeader from "./FirestoreItemHeader"
+import FirestoreItemContent from "./FirestoreItemContent"
+import FirestoreItemActions from "./FirestoreItemActions"
 import PopUp from "../PopUp"
 import Comments from "./Comments"
 
-const Post = ({post, roomId, room,  style}) => {
+const Post = ({post, room,  style}) => {
   const { id: postId, creatorUid, content, timestamp } = post
 
   // State
@@ -15,9 +15,13 @@ const Post = ({post, roomId, room,  style}) => {
   const [showComments, setShowComments] = useState(false) 
   const [error, setError] = useState(null)
 
+  const postRef = useMemo(() => {
+    return doc(firestore, room, postId)
+  }, [room, postId])
+
   const commentsRef = useMemo(() => {
     return collection(firestore, room, postId, 'comments')
-  }, [room])
+  }, [room, postId])
 
   // Effects
   useEffect(() => {
@@ -35,14 +39,18 @@ const Post = ({post, roomId, room,  style}) => {
 
   return (
     <div key={postId} className="post-container" style={style}>
-      <PostHeader {...{creatorUid, timestamp, profile}} />
-      <PostContent {...{content}} />
-      <PostActions {...{roomId, room, postId, showComments, setShowComments}} />
+      <FirestoreItemHeader {...{creatorUid, timestamp, profile}} />
+      <FirestoreItemContent {...{content}} />
+      <FirestoreItemActions 
+        firestoreDoc={postRef} 
+        firestoreCollection={commentsRef} 
+        {...{postId, room, showComments, setShowComments}}
+      />
 
       { 
         showComments && (
           <PopUp setIsPopUpShown={setShowComments} style={{paddingTop: '2em'}}> 
-            <Comments {...{room, postId}} firestoreRef={commentsRef} type="comments" />
+            <Comments {...{room, postId}} firestoreRef={commentsRef} />
           </PopUp>
         ) 
       }

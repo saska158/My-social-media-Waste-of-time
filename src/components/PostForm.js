@@ -37,10 +37,6 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
 
   // Functions
   const handleDataChange = (e) => {
-    //const urls = extractUrls(e.target.value)
-    //f(urls && urls.length > 0) {
-      //setLinkFromText(urls[0])
-    //}
     setData(prev => ({...prev, text: e.target.value}))
   }
 
@@ -106,7 +102,6 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
         const urls = extractUrls(data.text)
         if(urls && urls.length > 0) {
           const linkDetails = await fetchLinkPreview(urls[0]) 
-          //const linkDetails = await fetchLinkPreview(linkFromText) 
           setLinkData(linkDetails)                            
         }
       } catch(error) {
@@ -116,7 +111,7 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
       }
     }
     fetchData()
-  }, [data.text/*linkFromText*/])
+  }, [data.text])
 
 
   return (
@@ -124,7 +119,7 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
       <label className={`${type}-main-label`}>
         {
           linkData && (
-            <LinkPreview {...{linkData /*linkFromText*/}} content={data} style={{display: 'flex', alignItems: 'flex-start'}} imgStyle={{width: '30%'}}>
+            <LinkPreview {...{linkData}} content={data} style={{display: 'flex', alignItems: 'flex-start'}} imgStyle={{width: '30%'}}>
               <button onClick={cancelLink}>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '15px'}} /*className="size-6"*/>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />

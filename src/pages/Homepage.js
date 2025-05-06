@@ -78,7 +78,6 @@ const Homepage = () => {
                   <Post
                     key={post.id}
                     post={post}
-                    roomId={roomId}
                     room={room}
                   />
                 )) : (

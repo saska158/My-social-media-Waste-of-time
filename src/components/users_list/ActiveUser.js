@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 const ActiveUser = ({user}) => {
     return (
       <div key={user.uid} className="active-user-container">
-        <div className="activity-btn"></div>
+        {/*<div className="activity-btn" style={{background: user.isActive ? 'green' : 'grey'}}></div>*/}
         <Link to={`user/${user.uid}`}>
           <div className="active-user">
             <img 

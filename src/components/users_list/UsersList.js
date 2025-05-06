@@ -26,6 +26,8 @@ const UsersList = () => {
 
   // Custom hooks
   const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 10, [where("isActive", "==", true)])
+  //const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 10)
+
 
   // Functions
   const findPeopleToFollow = (e) => {
@@ -39,6 +41,7 @@ const UsersList = () => {
 
   return (
     <div className="users-list-container">
+      <p>ONLINE:</p>
       <div 
         className="active-users-container"
         id="scrollableActiveUsersDiv"

@@ -1,96 +1,84 @@
-import { useState, useEffect, useMemo, useRef } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/authContext"
-import { firestore, collection, doc, getDoc, updateDoc, onSnapshot, deleteField } from "../../api/firebase"
-import Comments from "./Comments"
+import { getDoc, updateDoc, onSnapshot, deleteField } from "../../api/firebase"
 import JoinPopUp from "../JoinPopUp"
-import PopUp from "../PopUp"
 
-const PostActions = ({roomId=null, room, postId, showComments, setShowComments}) => {
+const FirestoreItemActions = ({firestoreDoc, firestoreCollection, postId=null, commentId=null, room, showComments, setShowComments}) => {
 
   // Context
   const { user } = useAuth()
-
+  
   // State
   const [likes, setLikes] = useState(null)  
-  const [numberOfComments, setNumberOfComments] = useState(0)
-  //const [showComments, setShowComments] = useState(false) 
+  const [numberOfComments, setNumberOfComments] = useState(0)  
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false) 
   const [error, setError] = useState(null)
 
-  // Memoized Values 
-  /*const room = useMemo(() => {
-    return roomId ? `${roomId}` : `main`
-  }, [roomId])*/
-
-
   // Functions
-  const handleLike = async (e) => {
-    e.stopPropagation()
-    if(!user) {
-      setIsJoinPopupShown(true)
-    } else {
-       const postRef = doc(firestore, room, postId)
-       try {
-          const snapshot = await getDoc(postRef)
-          const likes = snapshot.data().likes || {}
-
-          if (likes[user?.uid]) {
-            await updateDoc(postRef, {[`likes.${user.uid}`]: deleteField()})
-            console.log("Unliked")
-          } else {
-            await updateDoc(postRef, {[`likes.${user.uid}`]: {name: user.displayName}})
-            console.log("Liked")
-          }
-       } catch (error) {
-          console.error("Error updating like:", error)
-          setError(error)
-       }
-    } 
-  }
-
-  const handleComment = (e) => {
-    e.stopPropagation()
-    if(!user) {
-      setIsJoinPopupShown(true)
-    } else {
-      setShowComments(!showComments)
+    const handleLike = async (e) => {
+      e.stopPropagation()
+      if(!user) {
+        setIsJoinPopupShown(true)
+      } else {
+         try {
+            const snapshot = await getDoc(firestoreDoc)
+            const likes = snapshot.data().likes || {}
+  
+            if (likes[user?.uid]) {
+              await updateDoc(firestoreDoc, {[`likes.${user.uid}`]: deleteField()})
+              console.log("Unliked")
+            } else {
+              await updateDoc(firestoreDoc, {[`likes.${user.uid}`]: {name: user.displayName}})
+              console.log("Liked")
+            }
+         } catch (error) {
+            console.error("Error updating like:", error)
+            setError(error)
+         }
+      } 
     }
-  }
-
-  // Effects
-  useEffect(() => {
-
-      const postRef = doc(firestore, room, postId)
-    const unsubscribe = onSnapshot(postRef, (snapshot) => {
-      if(snapshot.exists()) {
-        const likes = snapshot.data()?.likes || {}
-          setLikes(likes)
+  
+    const handleComment = (e) => {
+      e.stopPropagation()
+      if(!user) {
+        setIsJoinPopupShown(true)
+      } else {
+        setShowComments(!showComments)
       }
-    })
+    }
 
-    return () => unsubscribe()
-
-  }, [postId])
-
-
+    // Effects
   useEffect(() => {
+  const unsubscribe = onSnapshot(firestoreDoc, (snapshot) => {
+    if(snapshot.exists()) {
+      const likes = snapshot.data()?.likes || {}
+        setLikes(likes)
+    }
+  })
 
-      const commentsRef = collection(firestore, room, postId, 'comments')
+  return () => unsubscribe()
 
-    const unsubscribe = onSnapshot(commentsRef, (snapshot) => { 
-      if(!snapshot.empty) {
-        setNumberOfComments(snapshot.size)
-    }})
-              
-    return () => unsubscribe()
+}, [room, postId, commentId])
 
-  }, [room])
 
-  const isLiked = !!(likes && likes[user?.uid])
-  const likesArray = Object.values(likes || {})
+useEffect(() => {
+  const unsubscribe = onSnapshot(firestoreCollection, (snapshot) => { 
+    if(!snapshot.empty) {
+      setNumberOfComments(snapshot.size)
+    } else {
+      setNumberOfComments(0)
+    }
+  })
+            
+  return () => unsubscribe()
 
-  return (
-    <div className="post-actions">
+}, [room, postId, commentId])
+
+const isLiked = !!(likes && likes[user?.uid])
+const likesArray = Object.values(likes || {})
+
+    return (
+        <div className="post-actions">
       <div className="post-actions-container">
         <span>
           {
@@ -130,7 +118,7 @@ const PostActions = ({roomId=null, room, postId, showComments, setShowComments})
       </div> 
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
     </div>
-  )
+    )
 }
 
-export default PostActions
+export default FirestoreItemActions

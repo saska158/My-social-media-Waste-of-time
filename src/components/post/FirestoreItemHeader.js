@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom"
 import useFormattedTime from "../../hooks/useFormattedTime"
 
-const PostHeader = ({creatorUid, timestamp, profile}) => {
+const FirestoreItemHeader = ({creatorUid, timestamp, profile}) => {
   const formattedTime = useFormattedTime(timestamp)
     return (
         <Link to={creatorUid ? `/user/${creatorUid}` : '/my-profile'}>
@@ -20,4 +20,4 @@ const PostHeader = ({creatorUid, timestamp, profile}) => {
     )
 }
 
-export default PostHeader
+export default FirestoreItemHeader
