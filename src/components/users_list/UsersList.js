@@ -42,6 +42,7 @@ const UsersList = () => {
 
   return (
     <div className="users-list-container">
+      <button onClick={findPeopleToFollow} className="users-list-follow-button">search people</button>
       <span>online:</span>
       <div 
         className="active-users-container"
@@ -65,7 +66,6 @@ const UsersList = () => {
           </div>
         </InfiniteScroll>
       </div>
-      <button onClick={findPeopleToFollow} className="users-list-follow-button">search people</button>
       { isUsersQueryShown && <UsersSearch {...{ setIsUsersQueryShown }}/>}
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
     </div>

@@ -127,9 +127,12 @@ console.log("likesArray", likesArray)
             `${likesArray[0].displayName} and ${likesArray.length - 1} ${likesArray.length - 1 === 1 ? 'other' : 'others'}`
           }
         </button>
-        <span>
+        <button
+          style={{fontSize: '.7rem', color: 'salmon'}}
+          onClick={handleShowComments}
+        >
           {numberOfComments} {numberOfComments === 1 ? 'comment' : 'comments'}
-        </span>
+        </button>
       </div>
       <div>
         <div className="post-actions-buttons">

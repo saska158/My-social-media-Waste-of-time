@@ -6,6 +6,7 @@ import FirestoreItemContent from "./FirestoreItemContent"
 import FirestoreItemActions from "./FirestoreItemActions"
 import PopUp from "../PopUp"
 import Comments from "./Comments"
+import PostForm from "../PostForm"
 
 const Post = ({post, room,  style}) => {
   const { id: postId, creatorUid, content, timestamp } = post
@@ -50,7 +51,7 @@ const Post = ({post, room,  style}) => {
 
       { 
         showComments && (
-          <PopUp setIsPopUpShown={setShowComments} style={{paddingTop: '2em'}}> 
+          <PopUp setIsPopUpShown={setShowComments}> 
             <Comments {...{room, postId}} firestoreRef={commentsRef} />
           </PopUp>
         ) 
