@@ -45,7 +45,7 @@ const SignUp = () => {
     if (!userDoc.exists()) {
       await setDoc(userRef, {
         uid: user.uid,
-        displayName: user.displayName || "",
+        displayName: user.displayName.toLowercase() || "",
         bio: "", 
         currently: {
           watching: '',

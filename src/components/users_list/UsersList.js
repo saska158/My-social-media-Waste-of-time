@@ -1,9 +1,9 @@
 import { useState, useMemo, useRef } from "react"
-import { firestore, collection, where } from "../../api/firebase"
+import { firestore, collection } from "../../api/firebase"
 import { useAuth } from "../../contexts/authContext"
-import UsersQuery from "./UsersQuery"
+import UsersSearch from "./UsersSearch"
 import JoinPopUp from "../JoinPopUp"
-import ActiveUser from "./ActiveUser"
+import UserItem from "./UserItem"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { ClipLoader } from "react-spinners"
@@ -22,11 +22,10 @@ const UsersList = () => {
     return collection(firestore, 'profiles')
   }, [])
 
-  const activeUsersRef = useRef(null)
+  const usersContainerRef = useRef(null)
 
   // Custom hooks
-  const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 10, [where("isActive", "==", true)])
-  //const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 10)
+  const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 10)
 
 
   // Functions
@@ -41,11 +40,10 @@ const UsersList = () => {
 
   return (
     <div className="users-list-container">
-      <p>ONLINE:</p>
       <div 
         className="active-users-container"
         id="scrollableActiveUsersDiv"
-        ref={activeUsersRef}
+        ref={usersContainerRef}
       >
         <InfiniteScroll
           dataLength={users.length}
@@ -53,24 +51,19 @@ const UsersList = () => {
           hasMore={hasMore}
           //loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}
-          /*endMessage={
-           <p style={{ textAlign: 'center' }}>
-
-           </p>
-          }*/
           scrollableTarget="scrollableActiveUsersDiv"
         >
           <div>
             {
               loading ? <UserSkeleton /> : (
-                users.length > 0 ? (users.map((usr, index) => <ActiveUser key={index} user={usr} />)) : <p>Noone is online.</p>
+                users.length > 0 ? (users.map((usr, index) => <UserItem key={index} user={usr} />)) : <p>No users yet.</p>
               )
             }
           </div>
         </InfiniteScroll>
       </div>
       <button onClick={findPeopleToFollow} className="users-list-follow-button">find people to follow</button>
-      { isUsersQueryShown && <UsersQuery {...{ setIsUsersQueryShown }}/>}
+      { isUsersQueryShown && <UsersSearch {...{ setIsUsersQueryShown }}/>}
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
     </div>
   )

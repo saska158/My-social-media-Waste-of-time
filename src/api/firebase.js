@@ -35,7 +35,9 @@ import {
   limit,
   limitToLast,
   startAfter,
+  startAt,
   endBefore,
+  endAt,
   arrayUnion,
   arrayRemove,
   deleteField,
@@ -93,6 +95,8 @@ export {
   arrayUnion,
   arrayRemove,
   deleteField,
-  runTransaction
+  runTransaction,
+  startAt,
+  endAt
 }
 

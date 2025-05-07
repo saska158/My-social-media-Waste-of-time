@@ -1,28 +1,21 @@
 import { Link } from "react-router-dom"
-import { useAuth } from "../../contexts/authContext"
-import FollowButton from "../FollowButton"
 
-const UserItem = ({userItem}) => {
-    // Context
-    const { user } = useAuth()
-
+const UserItem = ({user}) => {
     return (
-        <div className="user-item-container">
-          <Link to={`user/${userItem.uid}`}>
-            <div className="user-item-infos">
-              <img src={userItem.photoURL} alt="profile" className="user-item-profile-image"/>
-              <span>{userItem.displayName}</span>
-            </div>
-          </Link>
-          <div style={{width: '50%'}}>
-            <FollowButton 
-              currentUserUid={user.uid} 
-              targetUserUid={userItem.uid} 
+      <div key={user.uid} className="active-user-container">
+        <div className="activity-btn" style={{background: user.isActive ? 'green' : 'grey'}}></div>
+        <Link to={`user/${user.uid}`}>
+          <div className="active-user">
+            <img 
+              src={user.photoURL || "/images/no-profile-picture.png"} 
+              alt="profile"
+              className="active-user-profile-image"
             />
+            <span>{user.displayName}</span>
           </div>
-        </div>
+        </Link>
+      </div>
     )
 }
 
 export default UserItem
-

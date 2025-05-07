@@ -9,7 +9,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
     const [hasMore, setHasMore] = useState(true)
 
     useEffect(() => {
-      if (!collectionRef && !profileUid) return
+      if (!collectionRef /*&& !profileUid*/) return //cudno ovo sa profileUid, izbrisacu iz dependency array
 
         const q = query(
             collectionRef,
@@ -45,7 +45,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
         )
 
         return () => unsubscribe()
-    }, [collectionRef, profileUid])
+    }, [collectionRef/*, profileUid*/])
 
     const fetchData = useCallback(async () => {
       //console.log("Fetching more data...")
