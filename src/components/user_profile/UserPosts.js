@@ -62,7 +62,7 @@ const UserPosts = ({profileUid}) => {
                       <Post
                         key={index}
                         post={post}
-                        roomId={post.room}
+                        room={room}
                         style={{width: '70%'}}
                       />
                     ))

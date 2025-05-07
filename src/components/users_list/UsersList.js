@@ -57,7 +57,7 @@ const UsersList = () => {
             {
               loading ? <UserSkeleton /> : (
                 users.length > 0 ? (users.map((usr, index) => (
-                  <div style={{display: 'flex', alignItems: 'center', gap: '.3em'}}>
+                  <div key={index} style={{display: 'flex', alignItems: 'center', gap: '.3em'}}>
                     <div className="activity-btn" style={{background: usr.isActive ? 'green' : 'grey'}}></div>
                     <UserItem key={index} user={usr} />
                   </div>
