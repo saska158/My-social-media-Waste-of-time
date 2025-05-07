@@ -12,7 +12,8 @@ const Post = ({post, room,  style}) => {
 
   // State
   const [profile, setProfile] = useState(null)
-  const [showComments, setShowComments] = useState(false) 
+  const [addComment, setAddComment] = useState(false) 
+  const [showComments, setShowComments] = useState(false)
   const [error, setError] = useState(null)
 
   const postRef = useMemo(() => {

@@ -1,8 +1,8 @@
 import {  firestore, collection, query, where, getDocs} from "./firebase"
 
-const fetchProfile = async (creatorUid, setProfile) => {
+const fetchProfile = async (userUid, setProfile) => {
     const profilesRef = collection(firestore, "profiles")
-    const q = query(profilesRef, where("uid", "==", creatorUid))
+    const q = query(profilesRef, where("uid", "==", userUid))
 
     const querySnapshot = await getDocs(q)
     if (!querySnapshot.empty) {

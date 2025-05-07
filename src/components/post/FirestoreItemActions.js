@@ -1,16 +1,29 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/authContext"
+import fetchProfile from "../../api/fetchProfile"
 import { getDoc, updateDoc, onSnapshot, deleteField } from "../../api/firebase"
+import PopUp from "../PopUp"
 import JoinPopUp from "../JoinPopUp"
+import UserItem from "../users_list/UserItem"
 
-const FirestoreItemActions = ({firestoreDoc, firestoreCollection, postId=null, commentId=null, room, showComments, setShowComments}) => {
+const FirestoreItemActions = ({
+  firestoreDoc, 
+  firestoreCollection, 
+  postId=null, 
+  commentId=null, 
+  room, 
+  showComments,
+  setShowComments
+}) => {
 
   // Context
   const { user } = useAuth()
   
   // State
   const [likes, setLikes] = useState(null)  
+  const [showLikes, setShowLikes] = useState(false)
   const [numberOfComments, setNumberOfComments] = useState(0)  
+  const [profile, setProfile] = useState(null)
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false) 
   const [error, setError] = useState(null)
 
@@ -28,7 +41,7 @@ const FirestoreItemActions = ({firestoreDoc, firestoreCollection, postId=null, c
               await updateDoc(firestoreDoc, {[`likes.${user.uid}`]: deleteField()})
               console.log("Unliked")
             } else {
-              await updateDoc(firestoreDoc, {[`likes.${user.uid}`]: {name: user.displayName}})
+              await updateDoc(firestoreDoc, {[`likes.${user.uid}`]: profile})
               console.log("Liked")
             }
          } catch (error) {
@@ -38,12 +51,21 @@ const FirestoreItemActions = ({firestoreDoc, firestoreCollection, postId=null, c
       } 
     }
   
-    const handleComment = (e) => {
+    const handleShowComments = (e) => {
       e.stopPropagation()
       if(!user) {
         setIsJoinPopupShown(true)
       } else {
         setShowComments(!showComments)
+      }
+    }
+
+    const handleShowLikes = (e) => {
+      e.stopPropagation()
+      if(!user) {
+        setIsJoinPopupShown(true)
+      } else {
+        setShowLikes(!showLikes)
       }
     }
 
@@ -74,20 +96,40 @@ useEffect(() => {
 
 }, [room, postId, commentId])
 
+useEffect(() => {
+  if(!user) return
+  const getProfile = async () => {
+    try {
+      await fetchProfile(user.uid, setProfile)
+    } catch(error) {
+      console.error("Error fetching profile:", error)
+      setError(error)
+    }
+  }
+
+  getProfile()
+}, [user?.uid])
+
 const isLiked = !!(likes && likes[user?.uid])
 const likesArray = Object.values(likes || {})
+console.log("likesArray", likesArray)
 
     return (
         <div className="post-actions">
       <div className="post-actions-container">
-        <span>
+        <button
+          style={{fontSize: '.7rem', color: 'salmon'}}
+          onClick={handleShowLikes}
+        >
           {
             likesArray.length === 0 ? `0 likes` :
-            likesArray.length === 1 ? `${likesArray[0]?.name} likes` :
-            `${likesArray[0].name} and ${likesArray.length - 1} ${likesArray.length - 1 === 1 ? 'other' : 'others'}`
+            likesArray.length === 1 ? `${likesArray[0]?.displayName} likes` :
+            `${likesArray[0].displayName} and ${likesArray.length - 1} ${likesArray.length - 1 === 1 ? 'other' : 'others'}`
           }
+        </button>
+        <span>
+          {numberOfComments} {numberOfComments === 1 ? 'comment' : 'comments'}
         </span>
-        <span>{numberOfComments} {numberOfComments === 1 ? 'comment' : 'comments'}</span>
       </div>
       <div>
         <div className="post-actions-buttons">
@@ -107,7 +149,7 @@ const likesArray = Object.values(likes || {})
           </button>
           <button 
             className="post-actions-like-button"
-            onClick={handleComment}
+            onClick={handleShowComments}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px'}}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
@@ -116,6 +158,15 @@ const likesArray = Object.values(likes || {})
           </button>
         </div>
       </div> 
+      { showLikes && (
+        <PopUp setIsPopUpShown={setShowLikes}>
+          {
+           likesArray.length > 0 ? (
+            likesArray.map((profile, index) => <UserItem key={index} user={profile} />)
+           ) : 'nobody likes it'
+          }
+        </PopUp>
+      ) }
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
     </div>
     )
