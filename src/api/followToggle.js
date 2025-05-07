@@ -1,11 +1,11 @@
 import { firestore, doc, runTransaction, arrayUnion, arrayRemove } from "./firebase"
 
-const followToggle = async (e, currentUserUid, targetUserUid) => {
+const followToggle = async (e, currentUser, targetUser) => {
     e.stopPropagation()
-    if(currentUserUid === targetUserUid) return
+    if(currentUser.uid === targetUser.uid) return
 
-    const currentUserRef = doc(firestore, 'profiles', currentUserUid)
-    const targetUserRef = doc(firestore, 'profiles', targetUserUid)
+    const currentUserRef = doc(firestore, 'profiles', currentUser.uid)
+    const targetUserRef = doc(firestore, 'profiles', targetUser.uid)
     //setLoading(true)  // neki skeleton?
 
     try {
@@ -19,19 +19,19 @@ const followToggle = async (e, currentUserUid, targetUserUid) => {
     
         const currentFollowing = currentUserDoc.data().following || []
     
-        if (currentFollowing.includes(targetUserUid)) {
+        if (currentFollowing.some(user => user.uid === targetUser.uid)) {
           transaction.update(currentUserRef, {
-            following: arrayRemove(targetUserUid),
+            following: arrayRemove(targetUser)
           })
           transaction.update(targetUserRef, {
-            followers: arrayRemove(currentUserUid),
+            followers: arrayRemove(currentUser)
           })
         } else {
           transaction.update(currentUserRef, {
-            following: arrayUnion(targetUserUid),
+            following: arrayUnion(targetUser)
           })
           transaction.update(targetUserRef, {
-            followers: arrayUnion(currentUserUid),
+            followers: arrayUnion(currentUser)
           })
         }
       })

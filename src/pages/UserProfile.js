@@ -42,8 +42,6 @@ const UserProfile = () => {
   // Hooks that don't trigger re-renders 
   const { profileUid } = useParams()
 
-  //console.log("profileUid", profileUid)
-
   // Effects
   useEffect(() => {
     const profileRef = doc(firestore, "profiles", profileUid)

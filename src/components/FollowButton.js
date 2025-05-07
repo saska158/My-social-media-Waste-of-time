@@ -3,20 +3,20 @@ import { firestore, doc, getDoc } from "../api/firebase"
 import { ClipLoader } from "react-spinners"
 import followToggle from "../api/followToggle"
 
-const FollowButton = ({currentUserUid, targetUserUid}) => {
+const FollowButton = ({currentUser, targetUser}) => {
   const [isFollowing, setIsFollowing] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    if (!currentUserUid || !targetUserUid) return
+    if (!currentUser || !targetUser) return
 
     const checkFollowingStatus = async () => {
       try {
-        const currentUserDoc = await getDoc(doc(firestore, "profiles", currentUserUid))
+        const currentUserDoc = await getDoc(doc(firestore, "profiles", currentUser.uid))
         if (currentUserDoc.exists()) {
           const following = currentUserDoc.data().following || []
-          setIsFollowing(following.includes(targetUserUid))
+          setIsFollowing(following.some(user => user.uid === targetUser.uid))
         }
       } catch (error) {
         console.error("Error fetching following status:", error)
@@ -24,13 +24,13 @@ const FollowButton = ({currentUserUid, targetUserUid}) => {
     }
 
     checkFollowingStatus()
-  }, [currentUserUid, targetUserUid])
+  }, [currentUser, targetUser])
 
 
   const handleFollowToggle = async (e) => {
     setLoading(true)
     try {
-      await followToggle(e, currentUserUid, targetUserUid)
+      await followToggle(e, currentUser, targetUser)
     } catch(error) {
       console.error(error)
       setError(error)

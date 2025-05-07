@@ -1,5 +1,5 @@
 import { useState, useMemo, useRef } from "react"
-import { firestore, collection } from "../../api/firebase"
+import { firestore, collection, where } from "../../api/firebase"
 import { useAuth } from "../../contexts/authContext"
 import UsersSearch from "./UsersSearch"
 import JoinPopUp from "../JoinPopUp"
@@ -25,7 +25,7 @@ const UsersList = () => {
   const usersContainerRef = useRef(null)
 
   // Custom hooks
-  const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 10)
+  const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 20, [where("isActive", "==", true)])
 
 
   // Functions
@@ -38,8 +38,11 @@ const UsersList = () => {
     }
   }
 
+  
+
   return (
     <div className="users-list-container">
+      <span>online:</span>
       <div 
         className="active-users-container"
         id="scrollableActiveUsersDiv"
@@ -56,18 +59,13 @@ const UsersList = () => {
           <div>
             {
               loading ? <UserSkeleton /> : (
-                users.length > 0 ? (users.map((usr, index) => (
-                  <div key={index} style={{display: 'flex', alignItems: 'center', gap: '.3em'}}>
-                    <div className="activity-btn" style={{background: usr.isActive ? 'green' : 'grey'}}></div>
-                    <UserItem key={index} user={usr} />
-                  </div>
-                ))) : <p>No users yet.</p>
+                users.length > 0 ? (users.map((usr, index) => <UserItem key={index} user={usr} />)) : <p>No users yet.</p>
               )
             }
           </div>
         </InfiniteScroll>
       </div>
-      <button onClick={findPeopleToFollow} className="users-list-follow-button">find people to follow</button>
+      <button onClick={findPeopleToFollow} className="users-list-follow-button">search people</button>
       { isUsersQueryShown && <UsersSearch {...{ setIsUsersQueryShown }}/>}
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
     </div>

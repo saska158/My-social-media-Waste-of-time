@@ -1,11 +1,35 @@
+import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/authContext"
+import fetchProfile from "../../api/fetchProfile"
 import FollowButton from "../FollowButton"
+import UserItem from "../users_list/UserItem"
+import PopUp from "../PopUp"
 
 const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxVisible, setIsChatBoxVisible, setIsFollowPopupShown}) => {
     // Context
     const { user } = useAuth()
 
+    // State
+    const [currentUser, setCurrentUser] = useState(null)
+    const [showFollowers, setShowFollowers] = useState(false)
+    const [showFollowing, setShowFollowing] = useState(false)
+    const [error, setError] = useState(null)
+
     const isMyProfile = profileUid === user?.uid
+
+    useEffect(() => {
+      if(!user) return
+      const getProfile = async () => {
+        try {
+          await fetchProfile(user.uid, setCurrentUser)
+        } catch(error) {
+          console.error("Error fetching profile:", error)
+          setError(error)
+        }
+      }
+    
+      getProfile()
+    }, [user?.uid])
 
     // Functions
     const handleEditButton = (e) => {
@@ -25,6 +49,27 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
       }
     }
 
+    const handleShowFollowers = (e) => {
+      e.stopPropagation()
+      //if(!user) {
+        //setIsJoinPopupShown(true)
+      //} else {
+        setShowFollowers(!showFollowers)
+      //}
+    }
+
+
+    const handleShowFollowing = (e) => {
+      e.stopPropagation()
+      //if(!user) {
+        //setIsJoinPopupShown(true)
+      //} else {
+        setShowFollowing(!showFollowing)
+      //}
+    }
+
+    console.log("show", showFollowing)
+
     return (
         <>
           <div className="user-profile-content">        
@@ -39,8 +84,8 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
             {
               user && !isMyProfile ? (
                 <FollowButton
-                  currentUserUid={user.uid}
-                  targetUserUid={profileUid}
+                  currentUser={currentUser}
+                  targetUser={profile}
                 />
               ) : null
             }
@@ -63,14 +108,41 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
               background: '#f7a1a1'
             }}
           >
-            <span>
-              <strong>{profile.followers?.length || 0}</strong>
+            <button
+             onClick={handleShowFollowers}
+            >
+              {profile.followers?.length || 0}
               {profile.followers?.length === 1 ? 'follower' : 'followers'}
-            </span>
-            <span>
-              <strong>{profile.following?.length || 0}</strong>
+            </button>
+            <button
+              onClick={handleShowFollowing}
+            >
+              {profile.following?.length || 0}
               following
-            </span>
+            </button>
+
+            {
+            showFollowers && (
+              <PopUp setIsPopUpShown={setShowFollowers}>
+                {
+                  profile?.followers?.length > 0 ? (
+                    profile.followers.map(follower => <UserItem key={follower.uid} user={follower} />)
+                  ) : 'No followers'
+                }
+              </PopUp>
+            )
+          }
+          {
+            showFollowing && (
+              <PopUp setIsPopUpShown={setShowFollowing}>
+                {
+                  profile?.following?.length > 0 ? (
+                    profile.following.map(person => <UserItem key={person.uid} user={person} />)
+                  ) : 'No following'
+                }
+              </PopUp>
+            )
+          }
           </div>
         </>
     )
