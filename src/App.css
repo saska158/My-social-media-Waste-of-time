@@ -1044,10 +1044,6 @@ textarea {
   .users-list-container {
     width: 100%;
     border-top: 1px solid salmon;
- 
-    position: fixed;
-    bottom: 0;
-    right: 0;
   }
   .user-profile-description {
     padding-left: 0;
