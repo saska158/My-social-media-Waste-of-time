@@ -68,7 +68,10 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
   const handleOnSubmit = async (e) => {
     e.preventDefault()
     if (!data.text && !data.image) return
+
     setLoading(true)
+    setError(null)
+
     try {
       await sendPostToFirestore(user, data, firestoreRef)
       setData(initialData)

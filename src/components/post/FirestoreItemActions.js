@@ -25,6 +25,7 @@ const FirestoreItemActions = ({
   const [numberOfComments, setNumberOfComments] = useState(0)  
   const [profile, setProfile] = useState(null)
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false) 
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   // Functions
@@ -76,6 +77,8 @@ const FirestoreItemActions = ({
       const likes = snapshot.data()?.likes || {}
         setLikes(likes)
     }
+  }, (error) => {
+    setError(error.message)
   })
 
   return () => unsubscribe()
@@ -90,6 +93,8 @@ useEffect(() => {
     } else {
       setNumberOfComments(0)
     }
+  }, (error) => {
+    setError(error.message)
   })
             
   return () => unsubscribe()
@@ -98,12 +103,18 @@ useEffect(() => {
 
 useEffect(() => {
   if(!user) return
+
+  setLoading(true)
+  setError(null)
+
   const getProfile = async () => {
     try {
       await fetchProfile(user.uid, setProfile)
     } catch(error) {
       console.error("Error fetching profile:", error)
       setError(error)
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -112,7 +123,6 @@ useEffect(() => {
 
 const isLiked = !!(likes && likes[user?.uid])
 const likesArray = Object.values(likes || {})
-console.log("likesArray", likesArray)
 
     return (
         <div className="post-actions">

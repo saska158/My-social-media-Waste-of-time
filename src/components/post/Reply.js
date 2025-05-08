@@ -20,12 +20,17 @@ const Reply = ({reply}) => {
  
   // Effects
   useEffect(() => {
+    setLoading(true)
+    setError(null)
+
     const getProfile = async () => {
       try {
         await fetchProfile(creatorUid, setProfile)
       } catch(error) {
         console.error("Error fetching profile:", error)
         setError(error)
+      } finally {
+        setLoading(false)
       }
     }
 

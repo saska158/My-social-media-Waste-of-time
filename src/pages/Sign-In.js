@@ -1,12 +1,6 @@
 import { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { 
-    auth, 
-    signInWithEmailAndPassword, 
-    firestore,
-    doc,
-    updateDoc, 
-} from "../api/firebase"
+import { auth, signInWithEmailAndPassword, firestore, doc, updateDoc } from "../api/firebase"
 import { PulseLoader } from "react-spinners"
 
 const SignIn = () => {
@@ -35,6 +29,7 @@ const SignIn = () => {
         e.preventDefault()
         setLoading(true)
         setError(null)
+        
         try{
             const userCredential = await signInWithEmailAndPassword(auth, email, password)
             const user = userCredential.user

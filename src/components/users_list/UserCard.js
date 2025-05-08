@@ -10,17 +10,23 @@ const UserCard = ({userItem}) => {
 
     // State
     const [currentUser, setCurrentUser] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
     // Effects
     useEffect(() => {
       if(!user) return
+      setLoading(false)
+      setError(null)
+
       const getProfile = async () => {
         try {
           await fetchProfile(user.uid, setCurrentUser)
         } catch(error) {
           console.error("Error fetching profile:", error)
           setError(error)
+        } finally {
+          setLoading(false)
         }
       }
     

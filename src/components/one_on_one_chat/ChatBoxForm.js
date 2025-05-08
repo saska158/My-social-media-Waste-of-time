@@ -64,9 +64,11 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
   }
 
   const handleSendMessage = async (e) => {
-    console.log('sent')
     e.preventDefault()
+
     setLoading(true)
+    setError(null)
+
     try {
       await sendMessageToFirestore(
         chatId,
@@ -105,8 +107,11 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
 
   useEffect(() => {
     if(!message.text) return
-    setLoading(true)
+    
     const fetchData = async () => {
+      setLoading(true)
+      setError(null)
+      
       try {
         const urls = extractUrls(message.text)
         if(urls && urls.length > 0) {

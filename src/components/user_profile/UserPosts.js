@@ -11,7 +11,6 @@ const UserPosts = ({profileUid}) => {
     const roomTags = ['main', 'watching', 'reading', 'listening']
     const [room, setRoom] = useState('main')
 
-    console.log("uid", profileUid)
     const userPostsRef = useMemo(() => {
       return collection(firestore, room)
     }, [room])

@@ -13,16 +13,28 @@ export const useAuth = () => useContext(AuthContext)
 
 export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null)
+    const [authLoading, setAuthLoading] = useState(false)
+    const [authError, setAuthError] = useState(null)
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-            setUser(user) // kako onAuthStateChanged, onValue i onSnapshot hendluju greske i loading??
+        setAuthLoading(true)
+        setAuthError(null)
+
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            setUser(user) 
+            setAuthLoading(false)
+        }, (error) => {
+            setAuthError(error.message)
+            setAuthLoading(false)
         })
 
         return () => unsubscribe()
     }, [])
 
     const logOut = async () => {
+        setAuthLoading(true)
+        setAuthError(null)
+
         try {
             const user = auth.currentUser
             if(user) {
@@ -35,10 +47,16 @@ export const AuthProvider = ({children}) => {
             }
         } catch(error) {
             console.error("Greška prilikom odjavljivanja:", error.message)
-            // je l treba neki setError?
+            setAuthError(error.message)
+        } finally {
+            setAuthLoading(false)
         }
     }
     
-    return <AuthContext.Provider value={{user, logOut, setUser}}>{children}</AuthContext.Provider>
+    return (
+        <AuthContext.Provider value={{user, logOut, setUser, authLoading, authError}}>
+            {children}
+        </AuthContext.Provider>
+    )
 }
 

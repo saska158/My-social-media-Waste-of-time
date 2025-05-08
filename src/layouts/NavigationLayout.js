@@ -1,11 +1,11 @@
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom"
 import { useAuth } from "../contexts/authContext"
 import UsersList from "../components/users_list/UsersList"
-
+import { ClipLoader } from "react-spinners"
 
 const NavigationLayout = () => {
   // Context
-  const { user, logOut } = useAuth() 
+  const { user, logOut, authLoading } = useAuth() 
 
   // Hooks that don't trigger re-renders  
   const location = useLocation()
@@ -41,7 +41,19 @@ const NavigationLayout = () => {
               >
                 My chats
               </NavLink>
-              <button onClick={logOut} className="sign-out-button">sign out</button>
+              {
+                authLoading ? (
+                  <ClipLoader color="white" size={30} />
+                ) : (
+                  <button
+                    onClick={logOut} 
+                    className="sign-out-button"
+                    disabled={authLoading}
+                  >
+                    sign out
+                  </button>
+                )
+              }
             </div>
           ) : (
             <div style={{display: 'flex', flexDirection: 'column'}}>

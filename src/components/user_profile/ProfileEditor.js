@@ -51,6 +51,7 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
         const imageFile = imageInputRef.current.files[0]
         
         setLoading(true)
+        setError(null)
     
         let imageUrl = ''
     

@@ -6,7 +6,7 @@ import FirestoreItemContent from "./FirestoreItemContent"
 import FirestoreItemActions from "./FirestoreItemActions"
 import PopUp from "../PopUp"
 import Comments from "./Comments"
-import PostForm from "../PostForm"
+
 
 const Post = ({post, room,  style}) => {
   const { id: postId, creatorUid, content, timestamp } = post
@@ -15,6 +15,7 @@ const Post = ({post, room,  style}) => {
   const [profile, setProfile] = useState(null)
   const [addComment, setAddComment] = useState(false) 
   const [showComments, setShowComments] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   const postRef = useMemo(() => {
@@ -27,12 +28,17 @@ const Post = ({post, room,  style}) => {
 
   // Effects
   useEffect(() => {
+    setLoading(true)
+    setError(null)
+
     const getProfile = async () => {
       try {
         await fetchProfile(creatorUid, setProfile)
       } catch(error) {
         console.error("Error fetching profile:", error)
         setError(error)
+      } finally {
+        setLoading(false)
       }
     }
 

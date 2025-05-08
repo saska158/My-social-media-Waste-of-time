@@ -13,18 +13,25 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
     const [currentUser, setCurrentUser] = useState(null)
     const [showFollowers, setShowFollowers] = useState(false)
     const [showFollowing, setShowFollowing] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
     const isMyProfile = profileUid === user?.uid
 
     useEffect(() => {
       if(!user) return
+
+      setLoading(true)
+      setError(null)
+
       const getProfile = async () => {
         try {
           await fetchProfile(user.uid, setCurrentUser)
         } catch(error) {
           console.error("Error fetching profile:", error)
           setError(error)
+        } finally {
+          setLoading(false)
         }
       }
     
@@ -39,8 +46,8 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
 
     const handleMessageButton = (e) => {
       e.stopPropagation()
-      const amIFollowingThisUser = profile.followers.some(follower => follower === user.uid)
-      const isThisUserFollowingMe = profile.following ? profile.following.some(follower => follower === user.uid) : false
+      const amIFollowingThisUser = profile.followers.some(follower => follower.uid === user.uid)
+      const isThisUserFollowingMe = profile.following ? profile.following.some(follower => follower.uid === user.uid) : false
   
       if(amIFollowingThisUser && isThisUserFollowingMe) {
         setIsChatBoxVisible(!isChatBoxVisible)

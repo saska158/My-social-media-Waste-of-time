@@ -38,38 +38,50 @@ const SignUp = () => {
     }))
   }
 
-  const createUserProfile = async (user) => { // nema try/catch, loading i greske
+  const createUserProfile = async (user) => { 
     const userRef = doc(firestore, "profiles", user.uid)
-    const userDoc = await getDoc(userRef)
+    
+    setLoading(true)
+    setError(null)
 
-    if (!userDoc.exists()) {
-      await setDoc(userRef, {
-        uid: user.uid,
-        displayName: user.displayName.toLowercase() || "",
-        bio: "", 
-        currently: {
-          watching: '',
-          reading: '',
-          listening: ''
-        },
-        favorites: {
-          watching: '',
-          reading: '',
-          listening: ''
-        },
-        photoURL: user.photoURL || "",
-        followers: [],
-        following: [],
-        timestamp: serverTimestamp(),
-      })
+    try {
+      const userDoc = await getDoc(userRef)
+
+      if (!userDoc.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          displayName: user.displayName.toLowercase() || "",
+          bio: "", 
+          currently: {
+            watching: '',
+            reading: '',
+            listening: ''
+          },
+          favorites: {
+            watching: '',
+            reading: '',
+            listening: ''
+          },
+          photoURL: user.photoURL || "",
+          followers: [],
+          following: [],
+          timestamp: serverTimestamp(),
+        })
+      }
+    } catch(error) {
+      setError(error.message)
+    } finally {
+      setLoading(false)
     }
   }
 
   const handleSignUp = async (e) => {
     e.preventDefault()
     const { email, password, name } = formData
+
     setLoading(true)
     setError(null)
+    
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const user = userCredential.user

@@ -74,6 +74,7 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
         (error) => {
           console.error(error)
           setError(error.message)
+          setLoading(false)
         }
       )
 

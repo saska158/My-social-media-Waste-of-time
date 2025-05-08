@@ -28,13 +28,15 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
 
   // Effects
   useEffect(() => {
-    setLoading(true)
     const fetchData = async () => {
+      setLoading(true)
+      setError(null)
+
       try {
         const urls = extractUrls(content.text)
         if(urls && urls.length > 0) {
-          const linkDetails = await fetchLinkPreview(urls[0]) //mislim da je ovo primer kako sam resila
-          setLinkData(linkDetails)                            // pomocu async/await tamo gde imam .then() 
+          const linkDetails = await fetchLinkPreview(urls[0])
+          setLinkData(linkDetails)                            
         }
       } catch(error) {
         setError(error)
@@ -48,12 +50,18 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
   useEffect(() => {
     const profilesRef = collection(firestore, "profiles")
     const q = query(profilesRef, where("uid", "==", senderUid))
+
+    setLoading(true)
+    setError(null)
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
       if(!snapshot.empty) {
         setUserProfile(snapshot.docs[0].data())
-      } else {
-        console.log("Profile not found")
-      }
+        setLoading(false)
+      } 
+    }, (error) => {
+      setError(error.message)
+      setLoading(false)
     })
   
     return () => unsubscribe()

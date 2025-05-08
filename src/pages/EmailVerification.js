@@ -10,10 +10,14 @@ const EmailVerification = () => {
   // State
   const [isEmailVerified, setIsEmailVerified] = useState(user?.emailVerified)
   const [verificationMessage, setVerificationMessage] = useState('')
+  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   // Functions
   const checkEmailVerified = async () => {
+    setLoading(true)
+    setError(null)
+
     try {
       await reload(auth.currentUser)
       const updatedUser = auth.currentUser
@@ -25,7 +29,9 @@ const EmailVerification = () => {
     } catch(error) {
       console.error(error)
       setError(error)
-    } // finally i loading state
+    } finally {
+      setLoading(false)
+    }
   }
 
   // Effects

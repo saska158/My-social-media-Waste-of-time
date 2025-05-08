@@ -45,7 +45,9 @@ const UserProfile = () => {
   // Effects
   useEffect(() => {
     const profileRef = doc(firestore, "profiles", profileUid)
+
     setLoading(true)
+    setError(null)
 
     const unsubscribe = onSnapshot(
       profileRef, 

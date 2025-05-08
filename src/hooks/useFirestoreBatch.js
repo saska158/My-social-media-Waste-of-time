@@ -17,6 +17,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
             orderBy("timestamp", "desc"), 
             limit(pageSize)
         )
+
         setLoading(true)
         setError(null)
 
@@ -48,7 +49,6 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
     }, [collectionRef/*, profileUid*/])
 
     const fetchData = useCallback(async () => {
-      //console.log("Fetching more data...")
       if(loading || !hasMore || !lastDoc) return
 
       try {
@@ -79,10 +79,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
       } catch(error) {
         console.error(error)
         setError(error.message)
-       // setLoading(false)
       } 
-
-      //setLoading(false)
   }, [loading, hasMore, collectionRef, lastDoc, pageSize])
 
     return { data, loading, error, fetchMore: () => fetchData(), hasMore }

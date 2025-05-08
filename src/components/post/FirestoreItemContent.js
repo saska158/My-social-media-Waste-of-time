@@ -22,6 +22,8 @@ const FirestoreItemContent = ({content}) => {
   // Effects
   useEffect(() => {
     setLoading(true)
+    setError(null)
+    
     const fetchData = async () => {
       try {
         const urls = extractUrls(content.text)

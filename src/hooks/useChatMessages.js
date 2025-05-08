@@ -16,6 +16,7 @@ const useChatMessages = (collectionRef, pageSize = 10) => {
         orderBy("timestamp", "asc"), 
         limitToLast(pageSize)
       )
+
       setLoading(true)
       setError(null)
     
@@ -75,10 +76,8 @@ const useChatMessages = (collectionRef, pageSize = 10) => {
       } catch(error) {
         console.error(error)
         setError(error.message)
-       // setLoading(false)
       } 
     
-      //setLoading(false)
     }, [loading, hasMore, collectionRef, firstDoc, pageSize])
     
     return { data, loading, error, fetchMore: () => fetchData(), hasMore }
