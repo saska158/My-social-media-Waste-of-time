@@ -140,7 +140,7 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
           dataLength={filteredUsers.length}
           next={fetchMore}
           hasMore={hasMore}
-          //loader={<ClipLoader color="salmon" />}
+          loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}
           scrollableTarget="scrollableUsersDiv"
         >

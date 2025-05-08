@@ -34,7 +34,6 @@ const Homepage = () => {
 
   // Custom hooks
   const { data: posts, loading, fetchMore, hasMore } = useFirestoreBatch(roomRef)
-  const memoizedPosts = useMemo(() => posts, [posts])
 
   // Functions
   const handleNewPost = (e) => {
@@ -63,10 +62,10 @@ const Homepage = () => {
       }
       <div className="posts-container" id="scrollableDiv">
         <InfiniteScroll
-          dataLength={memoizedPosts.length}
+          dataLength={posts.length}
           next={fetchMore}
           hasMore={hasMore}
-          //loader={<ClipLoader color="salmon" />}
+          loader={<ClipLoader color="salmon" />}
           scrollThreshold={0.9}
           scrollableTarget="scrollableDiv"
           style={{width: '500px'}}
@@ -74,7 +73,7 @@ const Homepage = () => {
           <div className="posts">
             {
               loading ? <PostSkeleton /> : (
-                memoizedPosts.length > 0 ? memoizedPosts.map(post=> (
+                posts.length > 0 ? posts.map(post=> (
                   <Post
                     key={post.id}
                     post={post}
