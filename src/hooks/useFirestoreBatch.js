@@ -40,13 +40,22 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
           },
           (error) => {
             console.error(error)
-            setError(error.message)
+
+            let errorMessage
+            if (error.code === "permission-denied") {
+              errorMessage = "You don't have permission to access this data."
+            } else if (error.code === "unavailable" || error.code === "network-request-failed") {
+              errorMessage = "Network error. Please check your connection."
+            } else {
+              errorMessage = "Failed to fetch data. Please try again later."
+            }
+            setError(errorMessage)
             setLoading(false)
           }
         )
 
         return () => unsubscribe()
-    }, [collectionRef/*, profileUid*/])
+    }, [collectionRef, profileUid])
 
     const fetchData = useCallback(async () => {
       if(loading || !hasMore || !lastDoc) return
@@ -78,7 +87,16 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
         }
       } catch(error) {
         console.error(error)
-        setError(error.message)
+        let errorMessage
+        if (error.code === "permission-denied") {
+          errorMessage = "You don't have permission to access this data."
+        } else if (error.code === "unavailable" || error.code === "network-request-failed") {
+          errorMessage = "Network error. Please check your connection."
+        } else {
+          errorMessage = "Failed to fetch data. Please try again later."
+        }
+
+        setError(errorMessage)
       } 
   }, [loading, hasMore, collectionRef, lastDoc, pageSize])
 

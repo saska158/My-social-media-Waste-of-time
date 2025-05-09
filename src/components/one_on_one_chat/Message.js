@@ -13,6 +13,7 @@ import extractUrls from "../../utils/extractUrls"
 import linkify from "../../utils/linkify"
 import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
+import ErrorMessage from "../ErrorMessage"
 
 const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDateDivider}) => {
   const { content, senderUid, senderName, timestamp } = message
@@ -39,7 +40,8 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
           setLinkData(linkDetails)                            
         }
       } catch(error) {
-        setError(error)
+        console.error("Error fetching link preview:", error)
+        setError(error.message || "Failed to fetch link preview.")
       } finally {
         setLoading(false)
       }
@@ -60,12 +62,27 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
         setLoading(false)
       } 
     }, (error) => {
-      setError(error.message)
+      console.error("Error fetching user profile:", error)
+
+      let errorMessage
+      if (error.code === 'permission-denied') {
+        errorMessage = "You don’t have permission to access this profile."
+      } else if (error.code === 'unavailable') {
+        errorMessage = "Network issue. Please try again."
+      } else {
+        errorMessage = "Something went wrong while fetching the profile."
+      }
+
+      setError(errorMessage)
       setLoading(false)
     })
   
     return () => unsubscribe()
   }, [senderUid])
+
+  if(error) {
+    return <ErrorMessage message={error} />
+  }
 
   return (
     userProfile && (

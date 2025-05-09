@@ -8,6 +8,7 @@ import ProfileEditor from "../components/user_profile/ProfileEditor"
 import UserProfileHeader from "../components/user_profile/UserProfileHeader"
 import UserProfileNavigation from "../components/user_profile/UserProfileNavigation"
 import UserProfileContent from "../components/user_profile/UserProfileContent"
+import ErrorMessage from "../components/ErrorMessage"
 
 const UserProfile = () => {
   // Context
@@ -60,7 +61,17 @@ const UserProfile = () => {
       },
       (error) => {
         console.error(error)
-        setError(error)
+
+        let errorMessage
+        if (error.code === "unavailable" || error.code === "network-request-failed") {
+          errorMessage = "Network error. Please check your connection."
+        } else if (error.code === "permission-denied") {
+          errorMessage = "You don't have permission to access this profile."
+        } else {
+          errorMessage = "Failed to load profile. Please try again later."
+        }
+
+        setError(errorMessage) 
         setLoading(false)
       }
     )
@@ -72,6 +83,10 @@ const UserProfile = () => {
   useEffect(() => {
     setIsChatBoxVisible(false)
   }, [profileUid])
+
+  if(error) {
+    return <ErrorMessage message={error} />
+  }
 
   return (
     <div className="user-profile-container">

@@ -3,6 +3,7 @@ import { format, formatDistanceToNow } from "date-fns"
 
 const useFormattedTime = (timestamp) => {
     const [formattedTime, setFormattedTime] = useState('')
+    
     useEffect(() => {
         if(!timestamp) return
 

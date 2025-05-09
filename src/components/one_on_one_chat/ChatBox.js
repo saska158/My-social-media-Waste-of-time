@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react"
 import { firestore, collection, query, where, getDocs, updateDoc, ref, database, onValue } from "../../api/firebase"
 import TypingIndicator from "./TypingIndicator"
-import Messages from "./Messages"
 import Message from "./Message"
 import { useAuth } from "../../contexts/authContext"
 import ChatBoxHeader from "./ChatBoxHeader"
@@ -9,6 +8,7 @@ import ChatBoxForm from "./ChatBoxForm"
 import InfiniteScroll from "react-infinite-scroll-component"
 import useChatMessages from "../../hooks/useChatMessages"
 import { format } from "date-fns"
+import ErrorMessage from "../ErrorMessage"
 
 const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
   // Context
@@ -18,7 +18,6 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
   const [chatId, setChatId] = useState('')
   const [visibleDate, setVisibleDate] = useState('')
   const [isTyping, setIsTyping] = useState(false)
-  const [error, setError] = useState(null)
 
   // Hooks that don't trigger re-renders 
   const chatRef = useRef(null)
@@ -34,7 +33,7 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
 
 
   // Custom hooks
-  const { data: messages, loading, fetchMore, hasMore } = useChatMessages(messagesRef, 15)
+  const { data: messages, loading, error, fetchMore, hasMore } = useChatMessages(messagesRef, 15)
 
 
   // Effects
@@ -110,6 +109,9 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
     }
   }, [messages])
   
+  if(error) {
+    return <ErrorMessage message={error} />
+  }
 
 
   return (

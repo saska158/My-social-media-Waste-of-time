@@ -8,7 +8,7 @@ const fetchProfile = async (userUid, setProfile) => {
     if (!querySnapshot.empty) {
       setProfile(querySnapshot.docs[0].data()) 
     } else {
-      console.log("Profile not found")
+      throw new Error("Profile not found")
     }
 }
 

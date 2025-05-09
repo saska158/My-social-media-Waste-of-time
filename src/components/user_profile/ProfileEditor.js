@@ -49,11 +49,10 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
         e.preventDefault()
         const profileRef = doc(firestore, "profiles", profileUid)
         const imageFile = imageInputRef.current.files[0]
+        let imageUrl = ''
         
         setLoading(true)
         setError(null)
-    
-        let imageUrl = ''
     
         try {
           if(imageFile) {
@@ -76,8 +75,8 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
       
           }      
         } catch(error) {
-          console.error(error)
-          setError(error)
+          console.error("Error saving profile changes:", error)
+          setError(error.message || "An unexpected error occurred.")
         } finally {
           setLoading(false)
         }

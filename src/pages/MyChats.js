@@ -7,6 +7,7 @@ import ChatItemSkeleton from "../components/skeletons/ChatItemSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
 import useFirestoreBatch from "../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
+import ErrorMessage from "../components/ErrorMessage"
 
 const MyChats = () => {
     // Context
@@ -16,7 +17,7 @@ const MyChats = () => {
     const [chatPartnerProfile, setChatPartnerProfile] = useState(null)
     const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
     const [chatPartnerUid, setChatPartnerUid] = useState(null)
-    const [error, setError] = useState(null)
+    const [fetchProfileError, setFetchProfileError] = useState(null)
 
     const chatsContainerRef = useRef(null)
 
@@ -28,6 +29,7 @@ const MyChats = () => {
     const { 
       data: chats, 
       loading, 
+      error,
       fetchMore, 
       hasMore 
     } = useFirestoreBatch(chatsRef, 10, [where("participants", "array-contains", user.uid)])
@@ -44,8 +46,19 @@ const MyChats = () => {
               setChatPartnerProfile(snapshot.data())
             }
           } catch(error) {
-            console.error(error)
-            setError(error)  
+            console.error(error) 
+
+            let errorMessage
+
+            if (error.code === "permission-denied") {
+              errorMessage = "You don't have permission to access this document."
+            } else if (error.code === "unavailable" || error.code === "network-request-failed") {
+              errorMessage = "Network error. Please check your connection."
+            } else {
+              errorMessage = "Failed to fetch document. Please try again later."
+            }
+
+            setFetchProfileError(errorMessage)  
           } 
         }
         
@@ -57,6 +70,14 @@ const MyChats = () => {
     const pickChat = (chatPartnerUid, setIsChatBoxVisible) => {
       setIsChatBoxVisible(true)
       setChatPartnerUid(chatPartnerUid)
+    }
+
+    if(error) {
+      return <ErrorMessage message={error} />
+    }
+
+    if(fetchProfileError) {
+      return <ErrorMessage message={fetchProfileError} />
     }
 
     return (

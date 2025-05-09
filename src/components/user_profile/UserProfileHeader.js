@@ -21,15 +21,15 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
     useEffect(() => {
       if(!user) return
 
-      setLoading(true)
-      setError(null)
-
       const getProfile = async () => {
+        setLoading(true)
+        setError(null)
+        
         try {
           await fetchProfile(user.uid, setCurrentUser)
         } catch(error) {
           console.error("Error fetching profile:", error)
-          setError(error)
+          setError(error.message || "Failed to fetch profile")
         } finally {
           setLoading(false)
         }
@@ -74,8 +74,6 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
         setShowFollowing(!showFollowing)
       //}
     }
-
-    console.log("show", showFollowing)
 
     return (
         <>

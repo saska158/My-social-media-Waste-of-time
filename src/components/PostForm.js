@@ -11,6 +11,7 @@ import ChatSmiley from "./ChatSmiley"
 import EmojiPicker from "emoji-picker-react"
 import Textarea from "./Textarea"
 import { ClipLoader } from "react-spinners"
+import ErrorMessage from "./ErrorMessage"
 
 
 const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupShown=()=>{}, style=null}) => {
@@ -83,7 +84,18 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
       setIsPopupShown(false)
     } catch (error) {
       console.error("Error sending message:", error)
-      setError(error)
+
+      let errorMessage
+
+      if (error.code === 'permission-denied') {
+        errorMessage = "You don’t have permission to send this message."
+      } else if (error.code === 'unavailable') {
+        errorMessage = "Network issue. Please try again."
+      } else {
+        errorMessage = "Something went wrong. Please try again."
+      }
+
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -99,8 +111,10 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
   useEffect(() => {
     if(!data.text) return
     //if (!linkFromText) return
-    setLoading(true)
     const fetchData = async () => {
+      setLoading(true)
+      setError(null)
+
       try {
         const urls = extractUrls(data.text)
         if(urls && urls.length > 0) {
@@ -108,7 +122,8 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
           setLinkData(linkDetails)                            
         }
       } catch(error) {
-        setError(error)
+        console.error("Error fetching link preview:", error)
+        setError(error.message || "Failed to fetch link preview.")
       } finally {
         setLoading(false)
       }

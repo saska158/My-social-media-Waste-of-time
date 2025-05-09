@@ -32,15 +32,15 @@ const Comment = ({comment, room, postId}) => {
  
   // Effects
   useEffect(() => {
-    setLoading(false)
-    setError(null)
-
     const getProfile = async () => {
+      setLoading(true)
+      setError(null)
+
       try {
         await fetchProfile(creatorUid, setProfile)
       } catch(error) {
         console.error("Error fetching profile:", error)
-        setError(error)
+        setError(error.message || "Failed to fetch profile")
       } finally {
         setLoading(false)
       }

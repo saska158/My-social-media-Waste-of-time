@@ -8,6 +8,7 @@ import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { ClipLoader } from "react-spinners"
 import UserSkeleton from "../skeletons/UserSkeleton"
+import ErrorMessage from "../ErrorMessage"
 
 const UsersList = () => {
   // Context
@@ -25,7 +26,7 @@ const UsersList = () => {
   const usersContainerRef = useRef(null)
 
   // Custom hooks
-  const {data: users, loading, fetchMore, hasMore } = useFirestoreBatch(usersRef, 20, [where("isActive", "==", true)])
+  const {data: users, loading, error, fetchMore, hasMore } = useFirestoreBatch(usersRef, 20, [where("isActive", "==", true)])
 
 
   // Functions
@@ -38,7 +39,9 @@ const UsersList = () => {
     }
   }
 
-  
+  if(error) {
+    return <ErrorMessage message={error} />
+  }
 
   return (
     <div className="users-list-container">

@@ -5,6 +5,7 @@ import { ClipLoader } from "react-spinners"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
 import Reply from "./Reply"
+import ErrorMessage from "../ErrorMessage"
 
 const Replies = ({firestoreRef, creatorName}) => {
 
@@ -12,7 +13,11 @@ const Replies = ({firestoreRef, creatorName}) => {
   const repliesContainerRef = useRef(null)
 
   // Custom hooks
-  const {data: replies, loading, fetchMore, hasMore } = useFirestoreBatch(firestoreRef, 6)
+  const {data: replies, loading, error, fetchMore, hasMore } = useFirestoreBatch(firestoreRef, 6)
+
+  if(error) {
+    return <ErrorMessage message={error} />
+  }
 
   return (
     <div className="comments-container">

@@ -7,6 +7,7 @@ import ImageUploadButton from "../ImageUploadButton"
 import ImagePreview from "../ImagePreview"
 import LinkPreview from "../LinkPreview"
 import { ClipLoader } from "react-spinners"
+import ErrorMessage from "../ErrorMessage.js"
 import sendMessageToFirestore from "../../api/sendMessageToFirestore.js"
 import { readImageAsDataURL } from "../../utils/readImageAsDataURL"
 import useTypingIndicator from "../../hooks/useTypingIndicator"
@@ -86,7 +87,18 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
       fileInputRef.current.value = null
     } catch (error) {
       console.error("Error sending message:", error)
-      setError(error)
+
+      let errorMessage
+
+      if (error.code === 'permission-denied') {
+        errorMessage = "You don’t have permission to send this message."
+      } else if (error.code === 'unavailable') {
+        errorMessage = "Network issue. Please try again."
+      } else {
+        errorMessage = "Something went wrong. Please try again."
+      }
+
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -115,8 +127,8 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
       try {
         const urls = extractUrls(message.text)
         if(urls && urls.length > 0) {
-          const linkDetails = await fetchLinkPreview(urls[0]) //mislim da je ovo primer kako sam resila
-          setLinkData(linkDetails)                            // pomocu async/await tamo gde imam .then() 
+          const linkDetails = await fetchLinkPreview(urls[0]) 
+          setLinkData(linkDetails)                             
         }
       } catch(error) {
         setError(error)
@@ -126,6 +138,10 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
     }
     fetchData()
   }, [message.text])
+
+  if(error) {
+    return <ErrorMessage message={error} />
+  }
 
 
   return (

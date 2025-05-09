@@ -7,6 +7,7 @@ import UserCard from "./UserCard"
 import { ClipLoader } from "react-spinners"
 import InfiniteScroll from "react-infinite-scroll-component"
 import UserSkeleton from "../skeletons/UserSkeleton"
+import ErrorMessage from "../ErrorMessage"
 
 const UsersSearch = ({setIsUsersQueryShown}) => {
   // Context
@@ -73,8 +74,20 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
         },
         (error) => {
           console.error(error)
-          setError(error.message)
-          setLoading(false)
+
+          let errorMessage 
+
+          if (error.code === "permission-denied") {
+            errorMessage = "You don’t have permission to access the users' data."
+          } else if (error.code === "unavailable") {
+            errorMessage = "Network issue. Please try again later."
+          } else if (error.code === "not-found") {
+            errorMessage = "Requested data not found."
+          } else if (error.code === "cancelled") {
+            errorMessage = "The request was cancelled."
+          } else {
+          errorMessage = "Something went wrong. Please try again."
+          }
         }
       )
 
@@ -87,7 +100,6 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
   }  
 
   const fetchMore = async () => {
-    //console.log("Fetching more data...")
     if(loading || !hasMore || !lastDoc) return
   
     try {
@@ -111,15 +123,28 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
         setFilteredUsers(prev => [...prev, ...newData])
         setLastDoc(null) 
         setHasMore(false) 
-        setLoading(false)
       }
     } catch(error) {
       console.error(error)
-      setError(error.message)
-      // setLoading(false)
+      
+      let errorMessage 
+
+      if (error.code === "permission-denied") {
+        errorMessage = "You don’t have permission to access the users' data."
+      } else if (error.code === "unavailable") {
+        errorMessage = "Network issue. Please try again later."
+      } else if (error.code === "not-found") {
+        errorMessage = "Requested data not found."
+      } else if (error.code === "cancelled") {
+        errorMessage = "The request was cancelled."
+      } else {
+        errorMessage = "Something went wrong. Please try again."
+      }
     } 
-  
-    setLoading(false)
+  }
+
+  if(error) {
+    return <ErrorMessage message={error} />
   }
     
 

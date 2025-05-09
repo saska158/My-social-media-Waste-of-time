@@ -28,7 +28,17 @@ const EmailVerification = () => {
       } 
     } catch(error) {
       console.error(error)
-      setError(error)
+      let customError
+      if(error.code === "auth/network-request-failed") {
+        customError = "Network error. Please check your connection and try again."
+      } else if(error.code === "auth/user-token-expired") {
+        customError = "Your session expired. Please log in again."
+      } else if(error.code === "auth/user-not-found") {
+        customError = "User not found. Please sign in again."
+      } else {
+        customError = "Failed to reload user. Please try again later."
+      }
+      setError(customError)
     } finally {
       setLoading(false)
     }

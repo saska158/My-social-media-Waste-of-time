@@ -5,6 +5,7 @@ import { firestore, collection, where } from "../../api/firebase"
 import Post from "../post/Post"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
+import ErrorMessage from "../ErrorMessage"
 
 
 const UserPosts = ({profileUid}) => {
@@ -18,12 +19,11 @@ const UserPosts = ({profileUid}) => {
     const postsContainerRef = useRef(null)
   
     // Custom hooks
-    const { 
-      data: posts, 
-      loading, 
-      fetchMore, 
-      hasMore 
-    } = useFirestoreBatch(userPostsRef, 2, [where("creatorUid", "==", profileUid)], profileUid)
+    const { data: posts, loading, error, fetchMore, hasMore } = useFirestoreBatch(userPostsRef, 2, [where("creatorUid", "==", profileUid)], profileUid)
+
+    if(error) {
+      return <ErrorMessage message={error} />
+    }
 
 
     return (

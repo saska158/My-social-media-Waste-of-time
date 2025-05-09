@@ -16,15 +16,16 @@ const UserCard = ({userItem}) => {
     // Effects
     useEffect(() => {
       if(!user) return
-      setLoading(false)
-      setError(null)
-
+    
       const getProfile = async () => {
+        setLoading(true)
+        setError(null)
+
         try {
           await fetchProfile(user.uid, setCurrentUser)
         } catch(error) {
           console.error("Error fetching profile:", error)
-          setError(error)
+          setError(error.message || "Failed to fetch profile")
         } finally {
           setLoading(false)
         }

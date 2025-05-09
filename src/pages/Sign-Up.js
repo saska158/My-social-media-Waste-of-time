@@ -12,6 +12,7 @@ import {
     serverTimestamp
 } from "../api/firebase"
 import { PulseLoader } from "react-spinners"
+import ErrorMessage from "../components/ErrorMessage"
 
 const SignUp = () => {
   const initialState = {
@@ -69,7 +70,16 @@ const SignUp = () => {
         })
       }
     } catch(error) {
-      setError(error.message)
+      console.error(error)
+      let customError
+      if (error.code === "permission-denied") {
+        customError = "You don't have permission to access this data."
+      } else if (error.code === "unavailable" || error.code === "network-request-failed") {
+        customError = "Network error. Please check your connection."
+      } else {
+      customError = "Failed to load data. Please try again later."
+      }
+      setError(customError)
     } finally {
       setLoading(false)
     }
@@ -111,7 +121,7 @@ const SignUp = () => {
   }
 
   if(error) {
-    return <p>{error}</p>
+    return <ErrorMessage message={error} />
   }
 
   return (

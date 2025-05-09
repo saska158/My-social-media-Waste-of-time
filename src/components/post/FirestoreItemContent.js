@@ -20,20 +20,21 @@ const FirestoreItemContent = ({content}) => {
   }
 
   // Effects
-  useEffect(() => {
-    setLoading(true)
-    setError(null)
-    
+  useEffect(() => {    
     const fetchData = async () => {
+      setLoading(true)
+      setError(null)
+
       try {
         const urls = extractUrls(content.text)
         if(urls && urls.length > 0) {
-          const linkDetails = await fetchLinkPreview(urls[0]) //mislim da je ovo primer kako sam resila
+          const linkDetails = await fetchLinkPreview(urls[0]) 
           setLinkData(linkDetails)  
-          setLinkFromText(urls[0])                          // pomocu async/await tamo gde imam .then() 
+          setLinkFromText(urls[0])                          
         }
       } catch(error) {
-        setError(error)
+        console.error("Error fetching link preview:", error)
+        setError(error.message || "Failed to fetch link preview.")
       } finally {
         setLoading(false)
       }

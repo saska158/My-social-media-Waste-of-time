@@ -2,13 +2,18 @@ import { Link, NavLink, Outlet, useLocation } from "react-router-dom"
 import { useAuth } from "../contexts/authContext"
 import UsersList from "../components/users_list/UsersList"
 import { ClipLoader } from "react-spinners"
+import ErrorMessage from "../components/ErrorMessage"
 
 const NavigationLayout = () => {
   // Context
-  const { user, logOut, authLoading } = useAuth() 
+  const { user, logOut, authLoading, authError } = useAuth() 
 
   // Hooks that don't trigger re-renders  
   const location = useLocation()
+
+  if(authError) {
+    return <ErrorMessage message={authError} />
+  }
 
   return (
     <div className="navigation-layout-container">

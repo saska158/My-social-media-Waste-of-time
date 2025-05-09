@@ -39,7 +39,16 @@ const useChatMessages = (collectionRef, pageSize = 10) => {
         },
         (error) => {
           console.error(error)
-          setError(error.message)
+
+          let errorMessage
+          if (error.code === "permission-denied") {
+            errorMessage = "You don't have permission to access this data."
+          } else if (error.code === "unavailable" || error.code === "network-request-failed") {
+            errorMessage = "Network error. Please check your connection."
+          } else {
+            errorMessage = "Failed to fetch data. Please try again later."
+          }
+          setError(errorMessage)
           setLoading(false)
         }
       )
@@ -48,7 +57,6 @@ const useChatMessages = (collectionRef, pageSize = 10) => {
     }, [collectionRef])
     
     const fetchData = useCallback(async () => {
-      console.log("Fetching more data...")
       if(loading || !hasMore || !firstDoc) return
     
       try {
@@ -75,7 +83,16 @@ const useChatMessages = (collectionRef, pageSize = 10) => {
         }
       } catch(error) {
         console.error(error)
-        setError(error.message)
+        let errorMessage
+        if (error.code === "permission-denied") {
+          errorMessage = "You don't have permission to access this data."
+        } else if (error.code === "unavailable" || error.code === "network-request-failed") {
+          errorMessage = "Network error. Please check your connection."
+        } else {
+          errorMessage = "Failed to fetch data. Please try again later."
+        }
+
+        setError(errorMessage)
       } 
     
     }, [loading, hasMore, collectionRef, firstDoc, pageSize])

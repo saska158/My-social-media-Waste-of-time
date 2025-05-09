@@ -20,6 +20,7 @@ const FollowButton = ({currentUser, targetUser}) => {
         }
       } catch (error) {
         console.error("Error fetching following status:", error)
+        setError("Error fetching following status. Please try again.")
       }
     }
 
@@ -29,11 +30,13 @@ const FollowButton = ({currentUser, targetUser}) => {
 
   const handleFollowToggle = async (e) => {
     setLoading(true)
+    setError(null)
+
     try {
       await followToggle(e, currentUser, targetUser)
     } catch(error) {
-      console.error(error)
-      setError(error)
+      console.error("Error toggling follow:", error)
+      setError("Failed to toggle follow status. Please try again.")
     } finally {
       setLoading(false)
     }

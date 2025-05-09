@@ -2,6 +2,7 @@ import { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { auth, signInWithEmailAndPassword, firestore, doc, updateDoc } from "../api/firebase"
 import { PulseLoader } from "react-spinners"
+import ErrorMessage from "../components/ErrorMessage"
 
 const SignIn = () => {
     // State
@@ -19,9 +20,22 @@ const SignIn = () => {
         try {
            const userRef = doc(firestore, 'profiles', uid)
            await updateDoc(userRef, {isActive: true})
-            console.log(`Korisnik ${uid} prijavljen i aktiviran.`)
         } catch(error) {
-            console.error("Greška prilikom prijavljivanja:", error.message)
+          console.error("Error during login:", error.message)
+
+          let errorMessage
+    
+          if (error.code === "permission-denied") {
+            errorMessage = "You do not have permission to modify this data.";
+          } else if (error.code === "unavailable" || error.code === "network-request-failed") {
+            errorMessage = "Network issue occurred. Please check your connection."
+          } else if (error.code === "not-found") {
+            errorMessage = "User not found."
+          } else {
+            errorMessage = "Error updating data. Please try again later."
+          }
+
+          setError(errorMessage)
         }
     }
 
@@ -38,25 +52,32 @@ const SignIn = () => {
             navigate(location.state?.from || '/', {replace: true})
             updateUserActivity(user.uid)
         } catch(error) {
-            let customMessage
-            if(error.code === 'auth/invalid-credential') {
-                customMessage = `WARNING: The user name and password provided do not correspond to any account.`
-            }  else if (error.code === 'auth/invalid-email') {
-                customMessage = `WARNING: Enter a valid e-mail address.`
-            } else if (error.code === 'auth/missing-password') {
-                customMessage = `WARNING: Enter a password.`
-            }  else {
-                customMessage = `Error signing up: ${error.message}`;
+            console.error("Error during sign in:", error.message)
+
+            let errorMessage
+
+            if (error.code === "auth/invalid-email") {
+              errorMessage = "The email address is badly formatted."
+            } else if (error.code === "auth/user-disabled") {
+              errorMessage = "Your account has been disabled."
+            } else if (error.code === "auth/user-not-found") {
+              errorMessage = "No user found with this email address."
+            } else if (error.code === "auth/wrong-password") {
+              errorMessage = "The password is incorrect."
+            } else if (error.code === "auth/network-request-failed") {
+              errorMessage = "Network error. Please check your connection."
+            } else {
+              errorMessage = "An error occurred. Please try again later."
             }
-            console.error('Error signing up:', error)
-            setError(customMessage)
+
+            setError(errorMessage)
         } finally {
             setLoading(false)
         }
     }
 
     if(error) {
-        return <p>{error}</p>
+        return <ErrorMessage message={error} />
     }
     
     return (

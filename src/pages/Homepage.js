@@ -10,6 +10,7 @@ import PostSkeleton from "../components/skeletons/PostSkeleton"
 import useFirestoreBatch from "../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import InfiniteScroll from "react-infinite-scroll-component"
+import ErrorMessage from "../components/ErrorMessage"
 
 const Homepage = () => {
   // Context
@@ -33,7 +34,7 @@ const Homepage = () => {
 
 
   // Custom hooks
-  const { data: posts, loading, fetchMore, hasMore } = useFirestoreBatch(roomRef)
+  const { data: posts, loading, error, fetchMore, hasMore } = useFirestoreBatch(roomRef)
 
   // Functions
   const handleNewPost = (e) => {
@@ -43,6 +44,10 @@ const Homepage = () => {
     } else {
       setIsPopupShown(true)
     }
+  }
+
+  if(error) {
+    return <ErrorMessage message={error} />
   }
   
   return (

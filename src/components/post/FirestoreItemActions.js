@@ -78,6 +78,7 @@ const FirestoreItemActions = ({
         setLikes(likes)
     }
   }, (error) => {
+    console.error(error.message)
     setError(error.message)
   })
 
@@ -94,6 +95,7 @@ useEffect(() => {
       setNumberOfComments(0)
     }
   }, (error) => {
+    console.error(error.message)
     setError(error.message)
   })
             
@@ -112,7 +114,7 @@ useEffect(() => {
       await fetchProfile(user.uid, setProfile)
     } catch(error) {
       console.error("Error fetching profile:", error)
-      setError(error)
+      setError(error.message || "Failed to fetch profile")
     } finally {
       setLoading(false)
     }
