@@ -5,6 +5,7 @@ import { getDoc, updateDoc, onSnapshot, deleteField } from "../../api/firebase"
 import PopUp from "../PopUp"
 import JoinPopUp from "../JoinPopUp"
 import UserItem from "../users_list/UserItem"
+import ErrorMessage from "../ErrorMessage"
 
 const FirestoreItemActions = ({
   firestoreDoc, 
@@ -25,7 +26,6 @@ const FirestoreItemActions = ({
   const [numberOfComments, setNumberOfComments] = useState(0)  
   const [profile, setProfile] = useState(null)
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false) 
-  const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   // Functions
@@ -42,12 +42,16 @@ const FirestoreItemActions = ({
               await updateDoc(firestoreDoc, {[`likes.${user.uid}`]: deleteField()})
               console.log("Unliked")
             } else {
-              await updateDoc(firestoreDoc, {[`likes.${user.uid}`]: profile})
+              await updateDoc(firestoreDoc, {[`likes.${user.uid}`]: {
+                displayName: user.displayName,
+                photoURL: user.photoURL,
+                uid: user.uid
+              }})
               console.log("Liked")
             }
          } catch (error) {
             console.error("Error updating like:", error)
-            setError(error)
+            setError("There was an issue saving your like. Please try again.")
          }
       } 
     }
@@ -78,13 +82,12 @@ const FirestoreItemActions = ({
         setLikes(likes)
     }
   }, (error) => {
-    console.error(error.message)
-    setError(error.message)
+    console.error(error)
   })
 
   return () => unsubscribe()
 
-}, [room, postId, commentId])
+}, [/*room, postId, commentId*/firestoreDoc])
 
 
 useEffect(() => {
@@ -96,28 +99,21 @@ useEffect(() => {
     }
   }, (error) => {
     console.error(error.message)
-    setError(error.message)
   })
             
   return () => unsubscribe()
 
-}, [room, postId, commentId])
+}, [/*room, postId, commentId*/firestoreCollection])
 
 useEffect(() => {
-  if(!user) return
-
-  setLoading(true)
-  setError(null)
+  if (!user || profile) return
 
   const getProfile = async () => {
     try {
       await fetchProfile(user.uid, setProfile)
     } catch(error) {
       console.error("Error fetching profile:", error)
-      setError(error.message || "Failed to fetch profile")
-    } finally {
-      setLoading(false)
-    }
+    } 
   }
 
   getProfile()
@@ -126,8 +122,8 @@ useEffect(() => {
 const isLiked = !!(likes && likes[user?.uid])
 const likesArray = Object.values(likes || {})
 
-    return (
-        <div className="post-actions">
+  return (
+    <div className="post-actions">
       <div className="post-actions-container">
         <button
           style={{fontSize: '.7rem', color: 'salmon'}}
@@ -135,7 +131,7 @@ const likesArray = Object.values(likes || {})
         >
           {
             likesArray.length === 0 ? `0 likes` :
-            likesArray.length === 1 ? `${likesArray[0]?.displayName} likes` :
+            likesArray.length === 1 ? `${likesArray[0]?.displayName || 'Someone'} likes` :
             `${likesArray[0].displayName} and ${likesArray.length - 1} ${likesArray.length - 1 === 1 ? 'other' : 'others'}`
           }
         </button>
@@ -172,19 +168,20 @@ const likesArray = Object.values(likes || {})
             comment
           </button>
         </div>
+        {error && <ErrorMessage message={error} />}
       </div> 
       { showLikes && (
         <PopUp setIsPopUpShown={setShowLikes}>
           {
            likesArray.length > 0 ? (
-            likesArray.map((profile, index) => <UserItem key={index} user={profile} />)
+            likesArray.map((profileItem, index) => <UserItem key={index} user={profileItem} />)
            ) : 'nobody likes it'
           }
         </PopUp>
       ) }
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
     </div>
-    )
+  )
 }
 
 export default FirestoreItemActions

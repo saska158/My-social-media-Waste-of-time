@@ -24,15 +24,10 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
   const [userProfile, setUserProfile] = useState(null)
   const [linkData, setLinkData] = useState(null)
   const [isImageViewerShown, setIsImageViewerShown] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
 
   // Effects
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true)
-      setError(null)
-
       try {
         const urls = extractUrls(content.text)
         if(urls && urls.length > 0) {
@@ -41,10 +36,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
         }
       } catch(error) {
         console.error("Error fetching link preview:", error)
-        setError(error.message || "Failed to fetch link preview.")
-      } finally {
-        setLoading(false)
-      }
+      } 
     }
     fetchData()
   }, [content.text])
@@ -53,36 +45,16 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
     const profilesRef = collection(firestore, "profiles")
     const q = query(profilesRef, where("uid", "==", senderUid))
 
-    setLoading(true)
-    setError(null)
-
     const unsubscribe = onSnapshot(q, (snapshot) => {
       if(!snapshot.empty) {
         setUserProfile(snapshot.docs[0].data())
-        setLoading(false)
       } 
     }, (error) => {
       console.error("Error fetching user profile:", error)
-
-      let errorMessage
-      if (error.code === 'permission-denied') {
-        errorMessage = "You don’t have permission to access this profile."
-      } else if (error.code === 'unavailable') {
-        errorMessage = "Network issue. Please try again."
-      } else {
-        errorMessage = "Something went wrong while fetching the profile."
-      }
-
-      setError(errorMessage)
-      setLoading(false)
     })
   
     return () => unsubscribe()
   }, [senderUid])
-
-  if(error) {
-    return <ErrorMessage message={error} />
-  }
 
   return (
     userProfile && (
@@ -107,7 +79,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
           {
             senderName !== user?.displayName && (
               <img 
-                src={userProfile.photoURL} 
+                src={userProfile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
                 alt="profile" 
                 className="message-profile-image"
               />

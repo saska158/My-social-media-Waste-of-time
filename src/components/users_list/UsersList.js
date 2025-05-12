@@ -63,7 +63,7 @@ const UsersList = () => {
           <div>
             {
               loading ? <UserSkeleton /> : (
-                users.length > 0 ? (users.map((usr, index) => <UserItem key={index} user={usr} />)) : <p>No users yet.</p>
+                users.length > 0 ? (users.map((usr, index) => <UserItem key={index} user={usr} />)) : <p>Noone is online.</p>
               )
             }
           </div>

@@ -13,11 +13,7 @@ const Replies = ({firestoreRef, creatorName}) => {
   const repliesContainerRef = useRef(null)
 
   // Custom hooks
-  const {data: replies, loading, error, fetchMore, hasMore } = useFirestoreBatch(firestoreRef, 6)
-
-  if(error) {
-    return <ErrorMessage message={error} />
-  }
+  const {data: replies, loading, error, fetchMore, hasMore, refetch } = useFirestoreBatch(firestoreRef, 6)
 
   return (
     <div className="comments-container">
@@ -28,24 +24,31 @@ const Replies = ({firestoreRef, creatorName}) => {
         ref={repliesContainerRef}
         style={{height: '200px'}}
       >
-        <InfiniteScroll
-          dataLength={replies.length}
-          next={fetchMore}
-          hasMore={hasMore}
-          loader={<ClipLoader color="salmon" />}
-          scrollThreshold={0.9}
-          scrollableTarget="scrollableRepliesDiv"
-        >
-          <div>
-            {
-              loading ? <PostSkeleton /> : (
-                replies.length > 0 ? (
-                  replies.map((reply, index) => <Reply key={index} {...{reply}} />)
-                ) : <p>No comments yet</p>
-              )
-            }
-          </div>
-        </InfiniteScroll>
+        {error && (
+          <ErrorMessage message="Failed to load comments." onRetry={refetch} />
+        )}
+        {
+          loading && replies.length === 0 ? (
+            <PostSkeleton />
+          ) : (
+            <InfiniteScroll
+              dataLength={replies.length}
+              next={fetchMore}
+              hasMore={hasMore}
+              loader={<ClipLoader color="salmon" />}
+              scrollThreshold={0.9}
+              scrollableTarget="scrollableRepliesDiv"
+            >
+              <div>
+                {
+                  replies.length > 0 ? (
+                    replies.map((reply, index) => <Reply key={index} {...{reply}} />)
+                  ) : <p>No comments yet.</p>
+                }
+              </div>
+            </InfiniteScroll>
+          )
+        }
       </div>
     </div>
   )

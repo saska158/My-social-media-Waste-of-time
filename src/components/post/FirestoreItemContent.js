@@ -4,15 +4,12 @@ import extractUrls from "../../utils/extractUrls"
 import linkify from "../../utils/linkify"
 import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
-import ErrorMessage from "../ErrorMessage"
 
 const FirestoreItemContent = ({content}) => {
   // State  
   const [linkData, setLinkData] = useState(null)
   const [linkFromText, setLinkFromText] = useState(null)
   const [isImageViewerShown, setIsImageViewerShown] = useState(false)
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
 
   // Functions
   const handleImageViewer = (e) => {
@@ -23,9 +20,6 @@ const FirestoreItemContent = ({content}) => {
   // Effects
   useEffect(() => {    
     const fetchData = async () => {
-      setLoading(true)
-      setError(null)
-
       try {
         const urls = extractUrls(content.text)
         if(urls && urls.length > 0) {
@@ -35,10 +29,7 @@ const FirestoreItemContent = ({content}) => {
         }
       } catch(error) {
         console.error("Error fetching link preview:", error)
-        setError(error.message || "Failed to fetch link preview.")
-      } finally {
-        setLoading(false)
-      }
+      } 
     }
     fetchData()
   }, [content.text]) 
@@ -66,7 +57,6 @@ const FirestoreItemContent = ({content}) => {
           <LinkPreview {...{linkData, content}} style={{display: 'flex', flexDirection: 'column'}} imgStyle={{width: '100%'}}/>
         ) 
       }
-      { error && <ErrorMessage message={error} /> }
       {
         isImageViewerShown && (
           <PopUp setIsPopUpShown={setIsImageViewerShown}>

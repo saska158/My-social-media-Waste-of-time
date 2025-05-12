@@ -13,11 +13,7 @@ const Comments = ({room, postId, firestoreRef}) => {
   const commentsContainerRef = useRef(null)
 
   // Custom hooks
-  const {data: comments, loading, error, fetchMore, hasMore } = useFirestoreBatch(firestoreRef, 6)
-
-  if(error) {
-    return <ErrorMessage message={error} />
-  }
+  const {data: comments, loading, error, fetchMore, hasMore, refetch } = useFirestoreBatch(firestoreRef, 6)
 
   return (
     <div className="comments-container">
@@ -26,24 +22,31 @@ const Comments = ({room, postId, firestoreRef}) => {
         id="scrollableCommentsDiv"
         ref={commentsContainerRef}
       >
-        <InfiniteScroll
-          dataLength={comments.length}
-          next={fetchMore}
-          hasMore={hasMore}
-          loader={<ClipLoader color="salmon" />}
-          scrollThreshold={0.9}
-          scrollableTarget="scrollableCommentsDiv"
-        >
-          <div>
-            {
-              loading ? <PostSkeleton /> : (
-                comments.length > 0 ? (
-                  comments.map((comment, index) => <Comment key={index} {...{comment, room, postId}} />)
-                ) : <p>No comments yet</p>
-              )
-            }
-          </div>
-        </InfiniteScroll>
+        {error && (
+          <ErrorMessage message="Failed to load comments." onRetry={refetch} />
+        )}
+        {
+          loading && comments.length === 0 ? (
+            <PostSkeleton />
+          ) : (
+            <InfiniteScroll
+              dataLength={comments.length}
+              next={fetchMore}
+              hasMore={hasMore}
+              loader={<ClipLoader color="salmon" />}
+              scrollThreshold={0.9}
+              scrollableTarget="scrollableCommentsDiv"
+            >
+              <div>
+                {
+                  comments.length > 0 ? (
+                    comments.map((comment, index) => <Comment key={index} {...{comment, room, postId}} />)
+                  ) : <p>No comments yet.</p>
+                }
+              </div>
+            </InfiniteScroll>
+          )
+        }
       </div>
       <PostForm {...{firestoreRef}} placeholder="Add comment..." type="comments" />
     </div>

@@ -7,6 +7,7 @@ const useChatMessages = (collectionRef, pageSize = 10) => {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [hasMore, setHasMore] = useState(true)
+    const [retryFlag, setRetryFlag] = useState(0)
     
     useEffect(() => {
       if (!collectionRef) return
@@ -54,7 +55,7 @@ const useChatMessages = (collectionRef, pageSize = 10) => {
       )
     
       return () => unsubscribe()
-    }, [collectionRef])
+    }, [collectionRef, retryFlag])
     
     const fetchData = useCallback(async () => {
       if(loading || !hasMore || !firstDoc) return
@@ -96,8 +97,12 @@ const useChatMessages = (collectionRef, pageSize = 10) => {
       } 
     
     }, [loading, hasMore, collectionRef, firstDoc, pageSize])
+
+    const refetch = () => {
+      setRetryFlag(prev => prev + 1) 
+    }
     
-    return { data, loading, error, fetchMore: () => fetchData(), hasMore }
+    return { data, loading, error, fetchMore: () => fetchData(), hasMore, refetch }
 }
 
 export default useChatMessages

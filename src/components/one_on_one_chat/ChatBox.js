@@ -8,6 +8,7 @@ import ChatBoxForm from "./ChatBoxForm"
 import InfiniteScroll from "react-infinite-scroll-component"
 import useChatMessages from "../../hooks/useChatMessages"
 import { format } from "date-fns"
+import { ClipLoader } from "react-spinners"
 import ErrorMessage from "../ErrorMessage"
 
 const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
@@ -33,7 +34,7 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
 
 
   // Custom hooks
-  const { data: messages, loading, error, fetchMore, hasMore } = useChatMessages(messagesRef, 15)
+  const { data: messages, loading, error, fetchMore, hasMore, refetch } = useChatMessages(messagesRef, 15)
 
 
   // Effects
@@ -109,10 +110,6 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
     }
   }, [messages])
   
-  if(error) {
-    return <ErrorMessage message={error} />
-  }
-
 
   return (
     <div className="chat-box">
@@ -134,11 +131,10 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
           style={{ display: "flex", flexDirection: "column-reverse", overflow: "visible" }}
         >
           <div>
-            {/* razmisli o ovome */}
-            {/*loading && <ClipLoader color="salmon" size={20} style={{ alignSelf: 'center', margin: '10px 0' }} />*/}
             {
-              loading ? <p>loading...</p> : (
-                //messages.length > 0 ? <Messages {...{messages}} /> : <p>No messages yet</p>
+              loading ? (
+                <ClipLoader color="salmon" size={20} />
+              ) : (
                 messages.length > 0 && (
                   <div>
                     {
@@ -177,6 +173,7 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
         </div>
       )}
       <ChatBoxForm {...{messages, chatPartnerProfile, chatId}}/>
+      { error && <ErrorMessage message={error} isFatal={true} onRetry={refetch} /> }
     </div>
   )
 }

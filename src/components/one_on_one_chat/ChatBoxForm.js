@@ -139,13 +139,11 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
     fetchData()
   }, [message.text])
 
-  if(error) {
-    return <ErrorMessage message={error} />
-  }
-
 
   return (
-    <form style={{position: 'relative'}}>
+    <>
+      { error && <ErrorMessage message={error} /> }
+      <form style={{position: 'relative'}}>
       <label className="chat-box-main-label"> 
       {
         linkData && (
@@ -207,7 +205,8 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
           />
         )
       }  
-    </form>
+      </form>
+    </>
   )
 }
 

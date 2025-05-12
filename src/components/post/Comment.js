@@ -1,6 +1,5 @@
-import { useState, useEffect, useMemo } from "react"
+import { useState, useMemo } from "react"
 import { firestore, collection, doc } from "../../api/firebase"
-import fetchProfile from "../../api/fetchProfile"
 import PopUp from "../PopUp"
 import FirestoreItemHeader from "./FirestoreItemHeader"
 import FirestoreItemContent from "./FirestoreItemContent"
@@ -10,11 +9,8 @@ import Replies from "./Replies"
 const Comment = ({comment, room, postId}) => {
   const { id: commentId, creatorUid, creatorName, content, timestamp } = comment
   // State
-  const [profile, setProfile] = useState(null)
   const [isImageViewerShown, setIsImageViewerShown] = useState(false)
   const [showComments, setShowComments] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
 
   const commentRef = useMemo(() => {
     return doc(firestore, room, postId, 'comments', commentId)
@@ -29,30 +25,11 @@ const Comment = ({comment, room, postId}) => {
     e.stopPropagation()
     setIsImageViewerShown(true)
   }
- 
-  // Effects
-  useEffect(() => {
-    const getProfile = async () => {
-      setLoading(true)
-      setError(null)
-
-      try {
-        await fetchProfile(creatorUid, setProfile)
-      } catch(error) {
-        console.error("Error fetching profile:", error)
-        setError(error.message || "Failed to fetch profile")
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    getProfile()
-  }, [creatorUid])
 
   return (
     <div className="comment-container">
       <div className="comment-content" style={{background: showComments ? '#f8a9a2' : '#f7d4d1'}}>
-        <FirestoreItemHeader {...{creatorUid, timestamp, profile}} />
+        <FirestoreItemHeader {...{creatorUid, timestamp}} />
         <FirestoreItemContent {...{content}} />
         <FirestoreItemActions
           firestoreDoc={commentRef} 
