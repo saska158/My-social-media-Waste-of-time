@@ -9,6 +9,7 @@ import UserProfileHeader from "../components/user_profile/UserProfileHeader"
 import UserProfileNavigation from "../components/user_profile/UserProfileNavigation"
 import UserProfileContent from "../components/user_profile/UserProfileContent"
 import ErrorMessage from "../components/ErrorMessage"
+import UserProfileSkeleton from "../components/skeletons/UserProfileSkeleton"
 
 const UserProfile = () => {
   // Context
@@ -39,6 +40,7 @@ const UserProfile = () => {
   const [isEditPopupShown, setIsEditPopupShown] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [retryFlag, setRetryFlag] = useState(0)
 
   // Hooks that don't trigger re-renders 
   const { profileUid } = useParams()
@@ -53,7 +55,7 @@ const UserProfile = () => {
     const unsubscribe = onSnapshot(
       profileRef, 
       (snapshot) => {
-        if(!snapshot.empty) {
+        if(snapshot.exists()) {
           setProfile(snapshot.data())
           setError(null)
         }
@@ -78,19 +80,22 @@ const UserProfile = () => {
 
     return () => unsubscribe()
 
-  }, [profileUid])
+  }, [profileUid, retryFlag])
 
   useEffect(() => {
     setIsChatBoxVisible(false)
   }, [profileUid])
 
-  if(error) {
-    return <ErrorMessage message={error} />
+  const handleRetry = () => {
+    setLoading(true)
+    setRetryFlag(prev => prev + 1)
   }
 
   return (
     <div className="user-profile-container">
-      {
+      {loading ? <UserProfileSkeleton /> : (
+        <div>
+        {
         !isChatBoxVisible ? (
           <div style={{display: 'flex', flexDirection: 'column'}}>
             <UserProfileHeader {...{profile, profileUid, setIsEditPopupShown, isChatBoxVisible, setIsChatBoxVisible, setIsFollowPopupShown}} />
@@ -119,6 +124,9 @@ const UserProfile = () => {
           </PopUp>
         )
       }
+      </div>
+      )}
+      { error && <ErrorMessage message={error} isFatal={true} onRetry={handleRetry} /> }
     </div>
   )
 }

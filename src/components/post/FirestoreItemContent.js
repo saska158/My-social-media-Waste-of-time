@@ -4,6 +4,7 @@ import extractUrls from "../../utils/extractUrls"
 import linkify from "../../utils/linkify"
 import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
+import ErrorMessage from "../ErrorMessage"
 
 const FirestoreItemContent = ({content}) => {
   // State  
@@ -65,6 +66,7 @@ const FirestoreItemContent = ({content}) => {
           <LinkPreview {...{linkData, content}} style={{display: 'flex', flexDirection: 'column'}} imgStyle={{width: '100%'}}/>
         ) 
       }
+      { error && <ErrorMessage message={error} /> }
       {
         isImageViewerShown && (
           <PopUp setIsPopUpShown={setIsImageViewerShown}>

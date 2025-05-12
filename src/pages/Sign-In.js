@@ -58,12 +58,16 @@ const SignIn = () => {
 
             if (error.code === "auth/invalid-email") {
               errorMessage = "The email address is badly formatted."
+            } else if (error.code === "auth/missing-password") {
+              errorMessage = "Enter a password."
             } else if (error.code === "auth/user-disabled") {
               errorMessage = "Your account has been disabled."
             } else if (error.code === "auth/user-not-found") {
               errorMessage = "No user found with this email address."
             } else if (error.code === "auth/wrong-password") {
               errorMessage = "The password is incorrect."
+            } else if (error.code === "auth/invalid-credential") {
+              errorMessage = "The user name and password provided do not correspond to any account."
             } else if (error.code === "auth/network-request-failed") {
               errorMessage = "Network error. Please check your connection."
             } else {
@@ -74,10 +78,6 @@ const SignIn = () => {
         } finally {
             setLoading(false)
         }
-    }
-
-    if(error) {
-        return <ErrorMessage message={error} />
     }
     
     return (
@@ -107,6 +107,7 @@ const SignIn = () => {
               )
             }
          </form>
+         { error && <ErrorMessage message={error} /> }
         </div>
     )
 }

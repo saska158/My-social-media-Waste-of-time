@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react"
+import { useState, useMemo, useRef, use } from "react"
 import { useParams } from "react-router-dom"
 import { useAuth } from '../contexts/authContext'
 import { firestore, collection } from "../api/firebase"
@@ -34,7 +34,7 @@ const Homepage = () => {
 
 
   // Custom hooks
-  const { data: posts, loading, error, fetchMore, hasMore } = useFirestoreBatch(roomRef)
+  const { data: posts, loading, error, fetchMore, hasMore, refetch } = useFirestoreBatch(roomRef)
 
   // Functions
   const handleNewPost = (e) => {
@@ -47,7 +47,7 @@ const Homepage = () => {
   }
 
   if(error) {
-    return <ErrorMessage message={error} />
+    return <ErrorMessage message={error} isFatal={true} onRetry={refetch} />
   }
   
   return (

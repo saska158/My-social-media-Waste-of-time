@@ -4,9 +4,9 @@ const fetchLinkPreview = async (url) => {
 
     const response = await fetch(apiUrl)
 
-    if (!response.ok) {
+    /*if (!response.ok) {
         throw new Error(`Link preview failed with status ${response.status}`)
-    }
+    }*/
 
     const data = await response.json()
 

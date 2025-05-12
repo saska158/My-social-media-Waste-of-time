@@ -17,6 +17,7 @@ const MyChats = () => {
     const [chatPartnerProfile, setChatPartnerProfile] = useState(null)
     const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
     const [chatPartnerUid, setChatPartnerUid] = useState(null)
+    const [retryFlag, setRetryFlag] = useState(0)
     const [fetchProfileError, setFetchProfileError] = useState(null)
 
     const chatsContainerRef = useRef(null)
@@ -31,7 +32,8 @@ const MyChats = () => {
       loading, 
       error,
       fetchMore, 
-      hasMore 
+      hasMore,
+      refetch 
     } = useFirestoreBatch(chatsRef, 10, [where("participants", "array-contains", user.uid)])
 
 
@@ -64,7 +66,7 @@ const MyChats = () => {
         
         fetchProfile()
       }
-    }, [chatPartnerUid])
+    }, [chatPartnerUid, retryFlag])
 
     // Functions
     const pickChat = (chatPartnerUid, setIsChatBoxVisible) => {
@@ -73,15 +75,15 @@ const MyChats = () => {
     }
 
     if(error) {
-      return <ErrorMessage message={error} />
+      return <ErrorMessage message={error} isFatal={true} onRetry={refetch} />
     }
 
     if(fetchProfileError) {
-      return <ErrorMessage message={fetchProfileError} />
+      return <ErrorMessage message={fetchProfileError} isFatal={true} onRetry={() => setRetryFlag(prev => prev + 1)} />
     }
 
     return (
-      <div style={{width: '100%'}}>
+      <div style={{width: '100%', position: 'relative'}}>
         {
           !isChatBoxVisible ? (
             <div 
@@ -125,7 +127,7 @@ const MyChats = () => {
                       )
                       })
                   ) : (
-                      <p>There's no chats yet.</p>
+                      <p>Start a conversation to see your chats here.</p>
                   )
                 )
               }

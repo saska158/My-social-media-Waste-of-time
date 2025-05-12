@@ -2,6 +2,7 @@ import { auth, reload } from "../api/firebase"
 import { useState, useEffect } from "react"
 import { Navigate } from "react-router-dom"
 import { useAuth } from "../contexts/authContext"
+import ErrorMessage from "../components/ErrorMessage"
 
 const EmailVerification = () => {
   // Context
@@ -67,14 +68,21 @@ const EmailVerification = () => {
               <button 
                 onClick={checkEmailVerified}
                 className="sign-in-up-button"
+                disabled={loading}
               >
-                I've Verified My Email
+                {loading ? "Checking..." : "I've Verified My Email"}
               </button>
               { verificationMessage && <p>{verificationMessage}</p> }
+              {error && (
+                <p style={{ color: "red", marginTop: "10px" }}>
+                  {error}
+                </p>
+              )}
             </div>
           </div>
         ) : <Navigate to="/" />//treba da vrati na sobu odakle ga je prebacilo na pravljenje naloga
       }
+      { error && <ErrorMessage message={error} /> }
     </div>
   )
 }

@@ -7,9 +7,10 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [hasMore, setHasMore] = useState(true)
+    const [retryFlag, setRetryFlag] = useState(0)
 
     useEffect(() => {
-      if (!collectionRef /*&& !profileUid*/) return //cudno ovo sa profileUid, izbrisacu iz dependency array
+      if (!collectionRef /*&& !profileUid*/) return 
 
         const q = query(
             collectionRef,
@@ -55,7 +56,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
         )
 
         return () => unsubscribe()
-    }, [collectionRef, profileUid])
+    }, [collectionRef, profileUid, retryFlag])
 
     const fetchData = useCallback(async () => {
       if(loading || !hasMore || !lastDoc) return
@@ -86,7 +87,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
           setHasMore(false) // Stop further requests
         }
       } catch(error) {
-        console.error(error)
+        console.error('Error from useFirestoreBatch:', error)
         let errorMessage
         if (error.code === "permission-denied") {
           errorMessage = "You don't have permission to access this data."
@@ -100,7 +101,11 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
       } 
   }, [loading, hasMore, collectionRef, lastDoc, pageSize])
 
-    return { data, loading, error, fetchMore: () => fetchData(), hasMore }
+  const refetch = () => {
+    setRetryFlag(prev => prev + 1) 
+  }
+
+  return { data, loading, error, fetchMore: () => fetchData(), hasMore, refetch }
 }
 
 export default useFirestoreBatch

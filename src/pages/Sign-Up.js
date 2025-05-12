@@ -120,10 +120,6 @@ const SignUp = () => {
     }
   }
 
-  if(error) {
-    return <ErrorMessage message={error} />
-  }
-
   return (
     <div className="sign-in-up-container">
       <h4>Personal details</h4>
@@ -170,6 +166,7 @@ const SignUp = () => {
           )
         }
       </form>
+      { error && <ErrorMessage message={error} /> }
     </div>
   )
 }
