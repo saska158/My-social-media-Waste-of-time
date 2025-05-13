@@ -10,26 +10,33 @@ import MyChats from './pages/MyChats'
 import UserProfile from './pages/UserProfile'
 import AuthRequired from './components/AuthRequired'
 import { AuthProvider } from './contexts/authContext'
+import { ErrorBoundary } from 'react-error-boundary'
+import ErrorFallback from './components/errors/ErrorFallback'
 
-function App() {
+const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Routes>
-          <Route element={<NavigationLayout />}>
-            <Route path='/' element={<RoomsLayout />}>
-              <Route index element={<Homepage roomId="main" />} />
-              <Route path=':roomId' element={<Homepage />} />
+        <ErrorBoundary
+          FallbackComponent={ErrorFallback}
+          onReset={() => window.location.reload()}
+        >
+          <Routes>
+            <Route element={<NavigationLayout />}>
+              <Route path='/' element={<RoomsLayout />}>
+                <Route index element={<Homepage roomId="main" />} />
+                <Route path=':roomId' element={<Homepage />} />
+              </Route>
+              <Route element={<AuthRequired />}>
+                <Route path='my-chats' element={<MyChats />} />
+              </Route>
+              <Route path='user/:profileUid' element={<UserProfile />} />
             </Route>
-            <Route element={<AuthRequired />}>
-              <Route path='my-chats' element={<MyChats />} />
-            </Route>
-            <Route path='user/:profileUid' element={<UserProfile />} />
-          </Route>
-          <Route path='sign-in' element={<SignIn />} />
-          <Route path='sign-up' element={<SignUp />} /> 
-          <Route path='email-verification' element={<EmailVerification />} />
-        </Routes>
+            <Route path='sign-in' element={<SignIn />} />
+            <Route path='sign-up' element={<SignUp />} /> 
+            <Route path='email-verification' element={<EmailVerification />} />
+          </Routes>
+        </ErrorBoundary>
       </BrowserRouter>
     </AuthProvider>
   )
