@@ -6,21 +6,18 @@ const uploadToCloudinaryAndGetUrl = async (imageFile) => {
     formData.append("file", imageFile)
     formData.append("upload_preset", UPLOAD_PRESET)
 
-    // treba li ova func da proizvodi greske?
-    // nije firebase i ne daje greske ili mozda ovaj servis isto daje?
-    try {
-        const response = await fetch(CLOUDINARY_URL, {
-            method: 'POST',
-            body: formData
-        })
-        const data = await response.json()
-        
-        return data.secure_url
+    const response = await fetch(CLOUDINARY_URL, {
+        method: 'POST',
+        body: formData
+    })
+    const data = await response.json()
 
-    } catch(error) {
-        console.error("Upload failed:", error)
-        // return null da li treba kao u fetchLinkPreview...
+    if (!response.ok) {
+        const errorMessage = data.error?.message || "Image upload failed."
+        throw new Error(errorMessage)
     }
+        
+    return data.secure_url
 }
 
 export default uploadToCloudinaryAndGetUrl

@@ -3,6 +3,7 @@ import { firestore, doc, updateProfile, ref, database, update, updateDoc} from "
 import { useAuth } from "../../contexts/authContext"
 import uploadToCloudinaryAndGetUrl from "../../api/uploadToCloudinaryAndGetUrl"
 import { PulseLoader } from "react-spinners"
+import ErrorMessage from "../ErrorMessage"
 
 const ProfileEditor = ({profile, setProfile, profileUid}) => {
     // Context
@@ -76,7 +77,7 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
           }      
         } catch(error) {
           console.error("Error saving profile changes:", error)
-          setError(error.message || "An unexpected error occurred.")
+          setError("Something went wrong. Please try again.")
         } finally {
           setLoading(false)
         }
@@ -181,6 +182,7 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
           >
             { loading ? <PulseLoader color="salmon" /> : 'save changes' }
           </button>
+          {error && <ErrorMessage message={error} />}
         </form>
       </div>
     )

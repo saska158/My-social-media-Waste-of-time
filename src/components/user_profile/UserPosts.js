@@ -19,12 +19,7 @@ const UserPosts = ({profileUid}) => {
     const postsContainerRef = useRef(null)
   
     // Custom hooks
-    const { data: posts, loading, error, fetchMore, hasMore } = useFirestoreBatch(userPostsRef, 2, [where("creatorUid", "==", profileUid)], profileUid)
-
-    if(error) {
-      return <ErrorMessage message={error} />
-    }
-
+    const { data: posts, loading, error, fetchMore, hasMore, refetch } = useFirestoreBatch(userPostsRef, 2, [where("creatorUid", "==", profileUid)], profileUid)
 
     return (
         <div>
@@ -40,33 +35,38 @@ const UserPosts = ({profileUid}) => {
             id="scrollableUserPostsDiv"
             ref={postsContainerRef}
           >
-            <InfiniteScroll
-              dataLength={posts.length}
-              next={fetchMore}
-              hasMore={hasMore}
-              loader={<ClipLoader color="salmon" />}
-              scrollThreshold={0.9}
-              scrollableTarget="scrollableUserPostsDiv"
-            >
-              <div>
-              {
-                loading ? <PostSkeleton /> : (
-                  posts.length > 0 ? (
-                    posts.map((post, index) => (
-                      <Post
-                        key={index}
-                        post={post}
-                        room={room}
-                        style={{width: '70%'}}
-                      />
-                    ))
-                  ) : (
-                    <p>No posts yet</p>
-                  )
-                )
-              } 
-              </div>  
-            </InfiniteScroll>  
+            {error && (
+              <ErrorMessage message="Failed to load comments." onRetry={refetch} />
+            )}
+            {
+              loading && posts.length === 0 ? (
+                <PostSkeleton />
+              ) : (
+                <InfiniteScroll
+                  dataLength={posts.length}
+                  next={fetchMore}
+                  hasMore={hasMore}
+                  loader={<ClipLoader color="salmon" />}
+                  scrollThreshold={0.9}
+                  scrollableTarget="scrollableUserPostsDiv"
+                >
+                  <div>
+                    {
+                      posts.length > 0 ? (
+                        posts.map((post, index) => (
+                          <Post
+                            key={index}
+                            post={post}
+                            room={room}
+                            style={{width: '70%'}}
+                          />
+                        ))
+                      ) : <p>No posts yet.</p>
+                    } 
+                  </div>  
+                </InfiniteScroll>  
+              )
+            }
           </div>
         </div>
     )

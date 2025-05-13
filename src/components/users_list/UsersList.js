@@ -26,7 +26,11 @@ const UsersList = () => {
   const usersContainerRef = useRef(null)
 
   // Custom hooks
-  const {data: users, loading, error, fetchMore, hasMore } = useFirestoreBatch(usersRef, 20, [where("isActive", "==", true)])
+  const {data: users, loading, error, fetchMore, hasMore, refetch } = useFirestoreBatch(
+    usersRef, 
+    20, 
+    [where("isActive", "==", true)]
+  )
 
 
   // Functions
@@ -39,14 +43,11 @@ const UsersList = () => {
     }
   }
 
-  if(error) {
-    return <ErrorMessage message={error} />
-  }
-
   return (
     <div className="users-list-container">
       <button onClick={findPeopleToFollow} className="users-list-follow-button">search people</button>
       <span>online:</span>
+      {error && <ErrorMessage message={error} onRetry={refetch} />}
       <div 
         className="active-users-container"
         id="scrollableActiveUsersDiv"

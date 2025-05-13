@@ -20,6 +20,7 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
   const [error, setError] = useState(null)
   const [hasMore, setHasMore] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
+  const [retryFlag, setRetryFlag] = useState(0)
 
   // Memoized values
   const usersRef = useMemo(() => {
@@ -88,11 +89,12 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
           } else {
           errorMessage = "Something went wrong. Please try again."
           }
+          setError(errorMessage)
         }
       )
 
       return () => unsubscribe()
-  }, [searchQuery])
+  }, [searchQuery, retryFlag])
 
   // Functions
   const handleSearchChange = (e) => {
@@ -140,13 +142,9 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
       } else {
         errorMessage = "Something went wrong. Please try again."
       }
+      setError(errorMessage)
     } 
   }
-
-  if(error) {
-    return <ErrorMessage message={error} />
-  }
-    
 
   return (
     <PopUp setIsPopUpShown={setIsUsersQueryShown}>
@@ -162,6 +160,7 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
         id="scrollableUsersDiv"
         ref={usersContainerRef}
       >
+        {error && <ErrorMessage message={error} onRetry={() => setRetryFlag(prev => prev + 1)} />}
         <InfiniteScroll
           dataLength={filteredUsers.length}
           next={fetchMore}

@@ -3,6 +3,7 @@ import { useAuth } from "../../contexts/authContext"
 import fetchProfile from "../../api/fetchProfile"
 import FollowButton from "../FollowButton"
 import UserItem from "./UserItem"
+import ErrorMessage from "../ErrorMessage"
 
 const UserCard = ({userItem}) => {
     // Context
@@ -10,28 +11,23 @@ const UserCard = ({userItem}) => {
 
     // State
     const [currentUser, setCurrentUser] = useState(false)
-    const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
     // Effects
     useEffect(() => {
       if(!user) return
     
-      const getProfile = async () => {
-        setLoading(true)
+      const getCurrentUserProfile = async () => {
         setError(null)
-
         try {
           await fetchProfile(user.uid, setCurrentUser)
         } catch(error) {
           console.error("Error fetching profile:", error)
-          setError(error.message || "Failed to fetch profile")
-        } finally {
-          setLoading(false)
-        }
+          setError("Oops! Can’t follow the user. Please try again later.")
+        } 
       }
     
-      getProfile()
+      getCurrentUserProfile()
     }, [user?.uid])
 
     return (
@@ -46,6 +42,7 @@ const UserCard = ({userItem}) => {
             />
               )
             }
+            {error && <ErrorMessage message={error} />}     
           </div>
         </div>
     )

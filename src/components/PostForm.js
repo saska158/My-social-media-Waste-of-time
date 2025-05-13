@@ -112,9 +112,6 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
     if(!data.text) return
     //if (!linkFromText) return
     const fetchData = async () => {
-      setLoading(true)
-      setError(null)
-
       try {
         const urls = extractUrls(data.text)
         if(urls && urls.length > 0) {
@@ -123,10 +120,7 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
         }
       } catch(error) {
         console.error("Error fetching link preview:", error)
-        setError(error.message || "Failed to fetch link preview.")
-      } finally {
-        setLoading(false)
-      }
+      } 
     }
     fetchData()
   }, [data.text])
@@ -134,6 +128,7 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
 
   return (
     <form onSubmit={handleOnSubmit} ref={formRef} className={`${type}-form`} style={style}>
+      { error && <ErrorMessage message={error} /> }
       <label className={`${type}-main-label`}>
         {
           linkData && (

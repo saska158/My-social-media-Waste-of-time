@@ -4,6 +4,7 @@ import fetchProfile from "../../api/fetchProfile"
 import FollowButton from "../FollowButton"
 import UserItem from "../users_list/UserItem"
 import PopUp from "../PopUp"
+import ErrorMessage from "../ErrorMessage"
 
 const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxVisible, setIsChatBoxVisible, setIsFollowPopupShown}) => {
     // Context
@@ -13,7 +14,6 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
     const [currentUser, setCurrentUser] = useState(null)
     const [showFollowers, setShowFollowers] = useState(false)
     const [showFollowing, setShowFollowing] = useState(false)
-    const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
 
     const isMyProfile = profileUid === user?.uid
@@ -21,21 +21,17 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
     useEffect(() => {
       if(!user) return
 
-      const getProfile = async () => {
-        setLoading(true)
+      const getCurrentUserProfile = async () => {
         setError(null)
-        
         try {
           await fetchProfile(user.uid, setCurrentUser)
         } catch(error) {
           console.error("Error fetching profile:", error)
-          setError(error.message || "Failed to fetch profile")
-        } finally {
-          setLoading(false)
-        }
+          setError("Oops! Can’t follow the user. Please try again later.")
+        } 
       }
     
-      getProfile()
+      getCurrentUserProfile()
     }, [user?.uid])
 
     // Functions
@@ -77,7 +73,7 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
 
     return (
         <>
-          <div className="user-profile-content">        
+          <div className="user-profile-content">  
             <div>
               <img 
                 src={profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
@@ -94,6 +90,7 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
                 />
               ) : null
             }
+            {error && <ErrorMessage message={error} />}      
             {
               isMyProfile && <button className="edit-profile-button" onClick={handleEditButton}>Edit Profile</button>
             }

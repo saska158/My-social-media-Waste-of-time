@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { firestore, doc, getDoc } from "../api/firebase"
 import { ClipLoader } from "react-spinners"
 import followToggle from "../api/followToggle"
+import ErrorMessage from "./ErrorMessage"
 
 const FollowButton = ({currentUser, targetUser}) => {
   const [isFollowing, setIsFollowing] = useState(false)
@@ -44,12 +45,13 @@ const FollowButton = ({currentUser, targetUser}) => {
   }
 
   return (
-    <button 
-      onClick={handleFollowToggle} 
-      disabled={loading}
-      className="user-item-follow-toggle-button"
-      style={{border: loading ? '0' : '.5px solid #f7c7c7'}}
-    >
+    <div>
+      <button 
+        onClick={handleFollowToggle} 
+        disabled={loading}
+        className="user-item-follow-toggle-button"
+        style={{border: loading ? '0' : '.5px solid #f7c7c7'}}
+      >
         {
            loading ? <ClipLoader color="#f5b5cf" /> : (
             isFollowing ? (
@@ -63,7 +65,9 @@ const FollowButton = ({currentUser, targetUser}) => {
                )
            )
         }
-    </button>
+      </button>
+      {error && <ErrorMessage message={error} />}
+    </div>
   )
 }
 
