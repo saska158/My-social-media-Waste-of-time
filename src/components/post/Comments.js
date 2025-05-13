@@ -5,7 +5,7 @@ import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
-import ErrorMessage from "../ErrorMessage"
+import ErrorMessage from "../errors/ErrorMessage"
 
 const Comments = ({room, postId, firestoreRef}) => {
 

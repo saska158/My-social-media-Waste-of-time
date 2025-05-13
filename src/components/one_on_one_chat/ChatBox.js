@@ -9,7 +9,7 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import useChatMessages from "../../hooks/useChatMessages"
 import { format } from "date-fns"
 import { ClipLoader } from "react-spinners"
-import ErrorMessage from "../ErrorMessage"
+import ErrorMessage from "../errors/ErrorMessage"
 
 const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
   // Context

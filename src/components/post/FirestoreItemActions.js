@@ -5,7 +5,7 @@ import { getDoc, updateDoc, onSnapshot, deleteField } from "../../api/firebase"
 import PopUp from "../PopUp"
 import JoinPopUp from "../JoinPopUp"
 import UserItem from "../users_list/UserItem"
-import ErrorMessage from "../ErrorMessage"
+import ErrorMessage from "../errors/ErrorMessage"
 
 const FirestoreItemActions = ({
   firestoreDoc, 

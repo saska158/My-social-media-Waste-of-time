@@ -2,7 +2,7 @@ import { Link, NavLink, Outlet, useLocation } from "react-router-dom"
 import { useAuth } from "../contexts/authContext"
 import UsersList from "../components/users_list/UsersList"
 import { ClipLoader } from "react-spinners"
-import ErrorMessage from "../components/ErrorMessage"
+import ErrorMessage from "../components/errors/ErrorMessage"
 
 const NavigationLayout = () => {
   // Context

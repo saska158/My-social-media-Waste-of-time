@@ -2,7 +2,7 @@ import { auth, reload } from "../api/firebase"
 import { useState, useEffect } from "react"
 import { Navigate } from "react-router-dom"
 import { useAuth } from "../contexts/authContext"
-import ErrorMessage from "../components/ErrorMessage"
+import ErrorMessage from "../components/errors/ErrorMessage"
 
 const EmailVerification = () => {
   // Context

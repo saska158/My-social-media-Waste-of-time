@@ -6,7 +6,6 @@ import FirestoreItemActions from "./FirestoreItemActions"
 import PopUp from "../PopUp"
 import Comments from "./Comments"
 
-
 const Post = ({post, room,  style}) => {
   const { id: postId, creatorUid, content, timestamp } = post
 

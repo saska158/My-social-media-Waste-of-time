@@ -11,7 +11,7 @@ import ChatSmiley from "./ChatSmiley"
 import EmojiPicker from "emoji-picker-react"
 import Textarea from "./Textarea"
 import { ClipLoader } from "react-spinners"
-import ErrorMessage from "./ErrorMessage"
+import ErrorMessage from "./errors/ErrorMessage"
 
 
 const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupShown=()=>{}, style=null}) => {

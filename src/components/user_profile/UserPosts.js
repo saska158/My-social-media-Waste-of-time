@@ -5,8 +5,7 @@ import { firestore, collection, where } from "../../api/firebase"
 import Post from "../post/Post"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
-import ErrorMessage from "../ErrorMessage"
-
+import ErrorMessage from "../errors/ErrorMessage"
 
 const UserPosts = ({profileUid}) => {
     const roomTags = ['main', 'watching', 'reading', 'listening']

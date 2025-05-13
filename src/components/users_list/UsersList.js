@@ -8,7 +8,7 @@ import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { ClipLoader } from "react-spinners"
 import UserSkeleton from "../skeletons/UserSkeleton"
-import ErrorMessage from "../ErrorMessage"
+import ErrorMessage from "../errors/ErrorMessage"
 
 const UsersList = () => {
   // Context

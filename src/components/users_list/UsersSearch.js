@@ -7,7 +7,7 @@ import UserCard from "./UserCard"
 import { ClipLoader } from "react-spinners"
 import InfiniteScroll from "react-infinite-scroll-component"
 import UserSkeleton from "../skeletons/UserSkeleton"
-import ErrorMessage from "../ErrorMessage"
+import ErrorMessage from "../errors/ErrorMessage"
 
 const UsersSearch = ({setIsUsersQueryShown}) => {
   // Context

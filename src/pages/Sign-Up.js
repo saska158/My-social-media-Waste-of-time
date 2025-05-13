@@ -12,7 +12,7 @@ import {
     serverTimestamp
 } from "../api/firebase"
 import { PulseLoader } from "react-spinners"
-import ErrorMessage from "../components/ErrorMessage"
+import ErrorMessage from "../components/errors/ErrorMessage"
 
 const SignUp = () => {
   const initialState = {

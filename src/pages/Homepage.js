@@ -10,7 +10,7 @@ import PostSkeleton from "../components/skeletons/PostSkeleton"
 import useFirestoreBatch from "../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import InfiniteScroll from "react-infinite-scroll-component"
-import ErrorMessage from "../components/ErrorMessage"
+import ErrorMessage from "../components/errors/ErrorMessage"
 
 const Homepage = () => {
   // Context

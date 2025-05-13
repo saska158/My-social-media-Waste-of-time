@@ -1,11 +1,5 @@
 import { useState, useEffect } from "react"
-import {
-    firestore,
-    collection,
-    query,
-    where,
-    onSnapshot
-} from "../../api/firebase"
+import { firestore, collection, query, where, onSnapshot } from "../../api/firebase"
 import { useAuth } from "../../contexts/authContext"
 import { format } from "date-fns"
 import fetchLinkPreview from "../../api/fetchLinkPreview"
@@ -13,7 +7,6 @@ import extractUrls from "../../utils/extractUrls"
 import linkify from "../../utils/linkify"
 import LinkPreview from "../LinkPreview"
 import PopUp from "../PopUp"
-import ErrorMessage from "../ErrorMessage"
 
 const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDateDivider}) => {
   const { content, senderUid, senderName, timestamp } = message

@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import { auth, signInWithEmailAndPassword, firestore, doc, updateDoc } from "../api/firebase"
 import { PulseLoader } from "react-spinners"
-import ErrorMessage from "../components/ErrorMessage"
+import ErrorMessage from "../components/errors/ErrorMessage"
 
 const SignIn = () => {
     // State

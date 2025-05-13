@@ -7,7 +7,7 @@ import ChatItemSkeleton from "../components/skeletons/ChatItemSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
 import useFirestoreBatch from "../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
-import ErrorMessage from "../components/ErrorMessage"
+import ErrorMessage from "../components/errors/ErrorMessage"
 
 const MyChats = () => {
     // Context

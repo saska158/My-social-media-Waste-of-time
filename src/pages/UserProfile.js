@@ -8,7 +8,7 @@ import ProfileEditor from "../components/user_profile/ProfileEditor"
 import UserProfileHeader from "../components/user_profile/UserProfileHeader"
 import UserProfileNavigation from "../components/user_profile/UserProfileNavigation"
 import UserProfileContent from "../components/user_profile/UserProfileContent"
-import ErrorMessage from "../components/ErrorMessage"
+import ErrorMessage from "../components/errors/ErrorMessage"
 import UserProfileSkeleton from "../components/skeletons/UserProfileSkeleton"
 
 const UserProfile = () => {

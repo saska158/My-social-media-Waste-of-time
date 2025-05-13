@@ -4,7 +4,7 @@ import fetchProfile from "../../api/fetchProfile"
 import FollowButton from "../FollowButton"
 import UserItem from "../users_list/UserItem"
 import PopUp from "../PopUp"
-import ErrorMessage from "../ErrorMessage"
+import ErrorMessage from "../errors/ErrorMessage"
 
 const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxVisible, setIsChatBoxVisible, setIsFollowPopupShown}) => {
     // Context

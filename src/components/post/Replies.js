@@ -5,7 +5,7 @@ import { ClipLoader } from "react-spinners"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
 import Reply from "./Reply"
-import ErrorMessage from "../ErrorMessage"
+import ErrorMessage from "../errors/ErrorMessage"
 
 const Replies = ({firestoreRef, creatorName}) => {
 

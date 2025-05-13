@@ -3,7 +3,7 @@ import { useAuth } from "../../contexts/authContext"
 import fetchProfile from "../../api/fetchProfile"
 import FollowButton from "../FollowButton"
 import UserItem from "./UserItem"
-import ErrorMessage from "../ErrorMessage"
+import ErrorMessage from "../errors/ErrorMessage"
 
 const UserCard = ({userItem}) => {
     // Context

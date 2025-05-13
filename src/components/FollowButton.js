@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { firestore, doc, getDoc } from "../api/firebase"
 import { ClipLoader } from "react-spinners"
 import followToggle from "../api/followToggle"
-import ErrorMessage from "./ErrorMessage"
+import ErrorMessage from "./errors/ErrorMessage"
 
 const FollowButton = ({currentUser, targetUser}) => {
   const [isFollowing, setIsFollowing] = useState(false)
