@@ -47,6 +47,7 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
   /* handle 'seen' status of a message */
   useEffect(() => {
     if(!chatId) return
+
     const markMessagesAsSeen = async () => { 
       const messagesRef = collection(firestore, "chats", chatId, "messages")
       const unseenMessagesQuery = query(
@@ -55,9 +56,12 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
         where("status", "==", "sent")
       )
       const querySnapshot = await getDocs(unseenMessagesQuery)
-      querySnapshot.forEach(async doc => {
+
+      if(!querySnapshot.empty) {
+        querySnapshot.forEach(async doc => {
         await updateDoc(doc.ref, {status: 'seen'})
       })
+      }
     }
 
     markMessagesAsSeen()
