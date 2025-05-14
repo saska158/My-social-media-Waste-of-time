@@ -49,18 +49,26 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
     if(!chatId) return
 
     const markMessagesAsSeen = async () => { 
-      const messagesRef = collection(firestore, "chats", chatId, "messages")
-      const unseenMessagesQuery = query(
-        messagesRef,
-        where("receiverUid", "==", user.uid),
-        where("status", "==", "sent")
-      )
-      const querySnapshot = await getDocs(unseenMessagesQuery)
+      try {
+        const messagesRef = collection(firestore, "chats", chatId, "messages")
+        const unseenMessagesQuery = query(
+          messagesRef,
+          where("receiverUid", "==", user.uid),
+          where("status", "==", "sent")
+        )
+        const querySnapshot = await getDocs(unseenMessagesQuery)
 
-      if(!querySnapshot.empty) {
-        querySnapshot.forEach(async doc => {
-        await updateDoc(doc.ref, {status: 'seen'})
-      })
+        if(!querySnapshot.empty) {
+          querySnapshot.forEach(async doc => {
+            try {
+              await updateDoc(doc.ref, {status: 'seen'})
+            } catch(error) {
+              console.error('Error updating message to seen:', error)
+            }
+          })
+        }
+      } catch(error) {
+        console.error('Error marking messages as seen:', error)
       }
     }
 
