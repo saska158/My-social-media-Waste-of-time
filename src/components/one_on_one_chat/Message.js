@@ -102,11 +102,11 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             {
               timestamp && <p style={{textAlign: 'right'}}>{format(timestamp.toDate(), 'p')}</p>
             }
-            {/*
+            {
               isLastIndex && message.senderUid === user.uid && message.status === "seen" && (
                 <p style={{fontSize: '.6rem'}}>seen</p>
               )
-            */}
+            }
           </div>
         </div>
         {
