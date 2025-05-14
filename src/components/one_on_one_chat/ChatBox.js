@@ -38,11 +38,13 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
 
 
   // Effects
+  /* generate chat id */
   useEffect(() => {
     const generatedChatId = [user?.uid, chatPartnerProfile?.uid].sort().join("_")
     setChatId(generatedChatId)
   }, [user?.uid, chatPartnerProfile?.uid])
 
+  /* handle 'seen' status of a message */
   useEffect(() => {
     if(!chatId) return
     const markMessagesAsSeen = async () => { //nemas try/catch
@@ -61,17 +63,27 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
     markMessagesAsSeen()
   }, [chatId, user?.uid, messages]) 
 
+
+  /* chat-partner typing status */
   useEffect(() => {
     if (!chatId || !chatPartnerProfile) return
 
     const otherTypingRef = ref(database, `typingStatus/${chatId}/${chatPartnerProfile.uid}`)
-    const unsubscribe = onValue(otherTypingRef, (snapshot) => {
-      setIsTyping(snapshot.val() === true)
-    })
+    const unsubscribe = onValue(
+      otherTypingRef, 
+      (snapshot) => {
+        setIsTyping(snapshot.val() === true)
+      },
+      (error) => {
+        console.error('Error listening to typing status:', error)
+      }
+    )
 
     return () => unsubscribe()
   }, [chatId, chatPartnerProfile?.uid])
-  
+
+
+  /* handle chat scrolling */
   useEffect(() => {
     const handleScroll = () => {
       if (!chatRef.current || messageRefs.current.length === 0) return

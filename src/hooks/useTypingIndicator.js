@@ -6,12 +6,12 @@ const useTypingIndicator = (chatId, userUid) => {
     const typingRef = ref(database, `typingStatus/${chatId}/${userUid}`)
 
     const handleTyping = () => {
-      set(typingRef, true)
+      set(typingRef, true).catch(error => {console.error('Failed to set typing status to true:', error)})
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current)
       }
       typingTimeoutRef.current = setTimeout(() => {
-        set(typingRef, false)
+        set(typingRef, false).catch(error => {console.error('Failed to set typing status to false:', error)})
       }, 1500)
     }
 
