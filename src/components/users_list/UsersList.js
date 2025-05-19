@@ -51,7 +51,7 @@ const UsersList = () => {
     <div className="users-list-container">
       <div style={{display: 'flex', alignItems: 'center', gap: '.5em', width: '100%'}}>
         { 
-          isMobile && (
+          isMobile && user && (
             <img 
               src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
               alt="user-profile-image" 
