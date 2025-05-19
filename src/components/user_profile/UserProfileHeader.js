@@ -18,6 +18,7 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
 
     const isMyProfile = profileUid === user?.uid
 
+    // Effects
     useEffect(() => {
       if(!user) return
 
@@ -33,6 +34,7 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
     
       getCurrentUserProfile()
     }, [user?.uid])
+
 
     // Functions
     const handleEditButton = (e) => {

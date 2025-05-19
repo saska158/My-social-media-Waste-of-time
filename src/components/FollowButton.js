@@ -22,14 +22,14 @@ const FollowButton = ({currentUser, targetUser}) => {
       } catch (error) {
         console.error("Error fetching following status:", error)
         setError("Error fetching following status. Please try again.")
-      }
+      } 
     }
 
     checkFollowingStatus()
   }, [currentUser, targetUser])
 
 
-  const handleFollowToggle = async (e) => {
+  const handleFollowToggle = async (e, currentUser, targetUser) => {
     setLoading(true)
     setError(null)
 
@@ -47,7 +47,7 @@ const FollowButton = ({currentUser, targetUser}) => {
   return (
     <div>
       <button 
-        onClick={handleFollowToggle} 
+        onClick={(e) => handleFollowToggle(e, currentUser, targetUser)} 
         disabled={loading}
         className="user-item-follow-toggle-button"
         style={{border: loading ? '0' : '.5px solid #f7c7c7'}}

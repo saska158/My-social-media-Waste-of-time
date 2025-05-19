@@ -59,6 +59,11 @@ input {
   border: .3px solid salmon;
   border-radius: 20px;
 }
+
+input::placeholder {
+  color: inherit;
+}
+
 textarea {
   resize: none;
   /*overflow-y: auto;*/
@@ -131,6 +136,7 @@ textarea {
   display: flex;
   flex-direction: column;
   width: 100%;
+  height: 100vh;
   background: rgb(253, 239, 237);
 }
 
@@ -870,6 +876,7 @@ textarea {
   width: 100%;
   height: 100%;
   background: rgba(238, 171, 163, .8);
+  z-index: 9999;
 }
 
 .pop-up-box {
@@ -953,12 +960,15 @@ textarea {
 }
 
 .users-list-follow-button {
-  border: .3px solid salmon;
+  /*border: .3px solid salmon;*/
   color: salmon;
-  background: rgb(253, 248, 248);
-  width: 150px;
+  background: rgb(252, 239, 239);
+  width: 250px;
   border-radius: 30px;
   padding: 1em;
+  display: flex;
+  align-items: center;
+  gap: .5em;
 }
 
 .active-user-container {
@@ -988,6 +998,23 @@ textarea {
   display: flex;
   align-items: center;
   gap: .3em;
+}
+
+.input-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.input-wrapper svg {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  width: 16px;
+}
+
+.input-wrapper input {
+  padding-left: 32px;
 }
 
 /*=======SKELETON=======*/
@@ -1060,6 +1087,15 @@ textarea {
     height: 500px;
   }
 
+  .posts-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 700px;
+    overflow-y: auto;
+  }
+
   .post-container {
     width: 60%;
   }
@@ -1068,13 +1104,14 @@ textarea {
     width: 80%;
   }
 
-  .users-list-container {
-    width: 100%;
-    border-top: 1px solid salmon;
-  }
   .user-profile-description {
     padding-left: 0;
   }
+
+  .users-list-container {
+  background-color: transparent; 
+  padding: 0;
+}
 
   .chat-box {
     width: 100%;

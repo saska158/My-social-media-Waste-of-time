@@ -3,10 +3,14 @@ import { useAuth } from "../contexts/authContext"
 import UsersList from "../components/users_list/UsersList"
 import { ClipLoader } from "react-spinners"
 import ErrorMessage from "../components/errors/ErrorMessage"
+import { useMediaQuery } from "react-responsive"
 
 const NavigationLayout = () => {
   // Context
   const { user, logOut, authLoading, authError } = useAuth() 
+
+  const isMobile = useMediaQuery({ maxWidth: 767 })
+  const isDesktop = useMediaQuery({ minWidth: 768 })
 
   // Hooks that don't trigger re-renders  
   const location = useLocation()
@@ -19,6 +23,7 @@ const NavigationLayout = () => {
     <div className="navigation-layout-container">
       <nav> 
         <Link to="/" className="logo-link">Waste of time</Link>
+        { isMobile && <UsersList /> }
         {
           user ? (
             <div className="navigation-layout-nav-links">
@@ -70,7 +75,7 @@ const NavigationLayout = () => {
         }
       </nav>
       <Outlet />
-      <UsersList />
+      { isDesktop && <UsersList /> }
     </div>
   )
 }
