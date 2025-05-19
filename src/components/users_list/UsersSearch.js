@@ -98,7 +98,7 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
 
   // Functions
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value)
+    setSearchQuery(e.target.value.toLowerCase())
   }  
 
   const fetchMore = async () => {
