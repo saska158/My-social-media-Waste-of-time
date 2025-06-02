@@ -109,7 +109,6 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
               display: 'flex', 
               gap: '.5em', 
               fontSize: '.9rem',
-              background: '#4f3524'
             }}
           >
             <button

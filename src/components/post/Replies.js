@@ -17,7 +17,7 @@ const Replies = ({firestoreRef, creatorName}) => {
 
   return (
     <div className="comments-container">
-      <PostForm {...{firestoreRef}} placeholder={`Reply to ${creatorName}...`} type="comments" style={{background: '#f8a9a2'}}/>
+      <PostForm {...{firestoreRef}} placeholder={`Reply to ${creatorName}...`} type="comments" style={{background: "#f7d4d1"}}/>
       <div 
         className="comments-box"
         id="scrollableRepliesDiv"

@@ -659,6 +659,7 @@ textarea {
   height: 100%;
   display: flex;
   flex-direction: column;
+  color: #4f3524;
 }
 
 .comments-form {
@@ -1108,6 +1109,7 @@ textarea {
     flex-direction: column;
     align-items: flex-start;
     gap: 3em;
+    position: fixed;
   }
 
   .navigation-layout-nav-links {

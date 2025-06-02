@@ -28,7 +28,7 @@ const Comment = ({comment, room, postId}) => {
 
   return (
     <div className="comment-container">
-      <div className="comment-content" style={{background: showComments ? '#f8a9a2' : '#f7d4d1'}}>
+      <div className="comment-content" style={{background: showComments ? '#f7d4d1' : '#faf2f2'}}>
         <FirestoreItemHeader {...{creatorUid, timestamp}} />
         <FirestoreItemContent {...{content}} />
         <FirestoreItemActions
