@@ -143,7 +143,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
   return (
     <>
       { error && <ErrorMessage message={error} /> }
-      <form style={{position: 'relative'}}>
+      <form style={{position: 'relative', background: '#4f3524'}}>
       <label className="chat-box-main-label"> 
       {
         linkData && (

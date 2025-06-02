@@ -8,21 +8,35 @@ html {
   scroll-behavior: smooth;
 }
 
+:root {
+  --bg-color-dark: #402b1d;
+  --bg-color-medium: #4f3524;
+  --bg-color-light: #5c3d2a;
+  --text-color: #fff;
+}
+
+[data-theme="light"] {
+  --bg-color-dark: #fdeded;
+  --bg-color-medium: #faf2f2;
+  --bg-color-light: #fff;
+  --text-color: #4f3524;
+}
 
 body {
   margin: 0;
-  font-family: "Roboto", sans-serif;
+  /*font-family: "Roboto", sans-serif;*/
+  font-family: "Inter", sans-serif;
   font-weight: 300;
-  line-height: 1.6;
-  color: #000;
-  letter-spacing: 1px;
+  line-height: 1.8;
+  letter-spacing: 1.7px;
   line-height: 1.6;
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
   width: 100vw;
   height: 100vh;
-  background-color: salmon;
+  background-color: var(--bg-color-dark);
+  color: var(--text-color);
 }
 
 h1, h2, h3, h4, p {
@@ -37,6 +51,7 @@ img, video {
 a {
   text-decoration: none;
   color: inherit;
+  letter-spacing: 1.7px;
 }
 
 li {
@@ -48,6 +63,7 @@ button {
   cursor: pointer;
   background: transparent;
   border: none;
+  letter-spacing: 1.5px;
 }
 
 input, textarea {
@@ -56,8 +72,8 @@ input, textarea {
   outline: none;
 }
 input {
-  border: .3px solid salmon;
   border-radius: 20px;
+  border: none;
 }
 
 input::placeholder {
@@ -69,8 +85,8 @@ textarea {
   /*overflow-y: auto;*/
   overflow-y: hidden;
   scrollbar-gutter: stable;
-  border: .3px solid salmon;
   border-radius: 20px;
+  border: none;
 }
 
 .image-input-label {
@@ -98,13 +114,13 @@ textarea {
 
 .image-input-icon {
   width: 100%;
-  color: salmon;
+  color: #f29bbe;
 }
 
 .image-preview {
   width: 60px; 
   height: 60px; 
-  border: 1px solid hotpink;
+  border: 1px solid #f29bbe;
   position: relative;
   margin: .5em;
 }
@@ -130,43 +146,24 @@ textarea {
 
 /* ======= LAYOUTS ======= */
 
-/* GROUP CHAT LAYOUT */
-
-.group-chat-layout-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100vh;
-  background: rgb(253, 239, 237);
-}
-
-.group-chat-layout-container-nav {
-  display: flex;
-  justify-content: flex-start; 
-  width: 100%;
-  gap: 1em;
-  color: white;
-  background-color: salmon;
-  padding: 1em;
-}
-
 /* NAVIGATION LAYOUT */
 
 .navigation-layout-container {
-  background-color: rgb(238, 171, 163);
   display: flex;
   width: 100%;
   height: 100vh;
 }
 
-.navigation-layout-container nav {
-  background-color: rgb(241, 137, 125);
+.navigation-layout-container-nav {
+  background-color: var(--bg-color-light);
+  color: #f29bbe;
   padding: .8em 2em;
   width: 35%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 3em;
+  padding-bottom: 2.5em;
 }
 
 .navigation-layout-nav-links {
@@ -174,21 +171,39 @@ textarea {
   flex-direction: column; 
   gap: .8em;
   font-size: 1.2rem;
+  color: #f29bbe;
 }
 
 .logo-link {
   font-size: 2rem;
   text-transform: uppercase;
-  color: white;
+  color: #f29bbe;
 }
 
 .sign-out-button {
-  border: .3px solid salmon;
-  color: salmon;
-  background: rgb(253, 248, 248);
+  color: #5c3d2a;
+  background: #fff;
   width: 80px;
   border-radius: 30px;
   padding: .7em;
+}
+
+/* GROUP CHAT LAYOUT */
+
+.group-chat-layout-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+}
+
+.group-chat-layout-container-nav {
+  display: flex;
+  justify-content: flex-start; 
+  width: 100%;
+  gap: 1em;
+  background-color: var(--bg-color-medium);
+  padding: 1em;
 }
 
 
@@ -200,6 +215,7 @@ textarea {
   display: flex; 
   flex-direction: column;
   flex: 1;
+  background-color: var(--bg-color-dark);
 }
 
 .group-chat-layout-container {
@@ -212,15 +228,13 @@ textarea {
   justify-content: flex-start;
   width: 100%;
   gap: 1em;
-  color: white;
-  background-color: salmon;
+  color: var(--text-color);
+  /*background-color: salmon;*/
   padding: 1em;
 }
 
 .new-post-button {
-  border: .3px solid salmon;
-  color: salmon;
-  background: rgb(253, 248, 248);
+  color: var(--text-color);
   width: 150px;
   border-radius: 30px;
   padding: 1em 1.5em;
@@ -230,6 +244,8 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: .5em;
+  background-color: var(--bg-color-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .posts-container {
@@ -246,6 +262,7 @@ textarea {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 1em;
 }
 
 /* MY CHATS */
@@ -260,17 +277,16 @@ textarea {
 
 .sign-in-up-container {
   padding: 2em;
-  background-color: #fff;
+  background-color: var(--bg-color-medium);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-
   width: 100%;
   min-height: 100vh;
 }
 
 .sign-in-up-container h4 {
-  color: salmon;
+  color: #f29bbe;
   font-weight: 400;
   font-size: 2rem;
   margin-bottom: 1em;
@@ -288,7 +304,6 @@ textarea {
   background: #fff;
   padding: 1em 1.2em;
   border-radius: 20px;
-  border: .3px solid salmon;
 }
 
 /* USER PROFILE */
@@ -296,7 +311,7 @@ textarea {
 .user-profile-container {
   position: relative; 
   width: 100%;
-  background: #f7c7c7;
+  background: var(--bg-color-dark);
 }
 
 .user-profile-content {
@@ -305,7 +320,7 @@ textarea {
   gap: 3em; 
   padding: .5em;
   padding-bottom: .2em;
-  background: #f7a1a1;
+  background: var(--bg-color-medium);
 }
 
 .user-profile-profile-picture {
@@ -317,7 +332,7 @@ textarea {
 }
 
 .user-profile-displayName {
-  color: white;
+  color: var(--text-color);
   text-align: center; 
   font-size: 1.5rem;
 }
@@ -342,7 +357,7 @@ textarea {
 }
 
 .user-profile-description {
-  background: #f7c7c7;
+  background: var(--bg-color-dark);
   padding: .5em;
   padding-left: 1em;
 }
@@ -359,6 +374,7 @@ textarea {
   flex-direction: column; 
   gap: 1em; 
   margin: 1em;
+  color: #f29bbe;
 }
 
 .edit-image-label {
@@ -389,7 +405,7 @@ textarea {
 
 .save-changes-button { 
   border-radius: 20px; 
-  color: white;
+  color: var(--text-color);
   padding: .5em .8em;
   align-self: center;
 }
@@ -399,7 +415,7 @@ textarea {
   flex-direction: row; 
   width: 100%;
   padding: .8em;
-  background: #f7c7c7;
+  background: var(--bg-color-dark);
 }
 
 /*======= COMPONENTS =======*/
@@ -407,7 +423,7 @@ textarea {
 /* CHAT BOX */
 
 .chat-box {
-  background-color: #f1d4d4;
+  background-color: var(--bg-color-dark);
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -427,7 +443,8 @@ textarea {
 }
 
 .date {
-  background-color: rgba(187, 144, 113, .5);
+  background-color: rgba(242, 155, 190, .5);
+  color: var(--text-color);
   align-self: center;
   position: sticky;
   top: 0;
@@ -442,13 +459,11 @@ textarea {
 }
  
 .chat-box form {
-  background-color: rgb(238, 171, 163);
   padding: 1em;
   display: flex;
 }
 
 .chat-box-main-label {
-  border: .3px solid salmon; 
   border-radius: 20px;
   background: white;
   display: flex;
@@ -475,7 +490,7 @@ textarea {
   margin: 10px 0;
   font-size: 12px;
   font-weight: bold;
-  color: gray;
+  color: #f29bbe;
   position: relative;
 }
 
@@ -486,7 +501,7 @@ textarea {
   top: 50%;
   width: 40%;
   height: 1px;
-  background: gray;
+  background: #f29bbe;
 }
 
 .date-divider::before {
@@ -513,7 +528,7 @@ textarea {
 .typing-indicator span {
   width: 6px;
   height: 6px;
-  background-color: #888;
+  background-color: #f29bbe;
   border-radius: 50%;
   animation: wave 1.5s infinite ease-in-out;
 }
@@ -550,7 +565,7 @@ textarea {
   top: 0; 
   left: 0; 
   right: 0; 
-  background: rgb(238, 171, 163); 
+  background: var(--bg-color-medium); 
   display: flex;
   padding: .5em;
 }
@@ -597,9 +612,10 @@ textarea {
 }
 
 .message-content {
-  padding: .5em;
+  padding: .5em 1em;
   border-radius: 15px;
   width: fit-content;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 /* COMMENT */
@@ -716,8 +732,9 @@ textarea {
 /* POST */
 
 .post-container {
-  background: white;
-  border: .5px solid rgb(247, 198, 193);
+  background-color: var(--bg-color-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: var(--text-color);
   border-radius: 10px;
   width: 100%;
   min-height: 300px;
@@ -740,7 +757,7 @@ textarea {
   align-items: center; 
   justify-content: space-between;
   padding: .5em 1em;
-  color: salmon;
+  color: #f29bbe;
 }
 
 .post-actions-buttons {
@@ -748,7 +765,7 @@ textarea {
   gap: 2em; 
   border-top: .5px solid rgb(247, 198, 193); 
   font-size: .7rem;
-  color: rgb(243, 85, 68);
+  color: #f29bbe;
   padding: 1em;
   padding-top: .5em;
 }
@@ -758,7 +775,7 @@ textarea {
   justify-content: center; 
   align-items: center; 
   gap: .5em;
-  color: salmon;
+  color: #f29bbe;
 }
 
 /* POST CONTENT */
@@ -815,7 +832,7 @@ textarea {
 
 .chat-item-content {
   font-size: .8rem;
-  color: salmon;
+  color: #4f3524;
   margin-top: .3em;
   display: flex;
   justify-content: space-between;
@@ -862,7 +879,7 @@ textarea {
 
 .join-button {
   font-size: 1rem; 
-  background: salmon; 
+  background: #f29bbe;
   padding: .7em 1.2em; 
   border-radius: 10px;
 }
@@ -875,7 +892,7 @@ textarea {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(238, 171, 163, .8);
+  background-color: rgba(242, 155, 190, .7);
   z-index: 9999;
 }
 
@@ -887,10 +904,10 @@ textarea {
   z-index: 9999;
   height: 70%;
   overflow: hidden;
-  background: white;
+  background: var(--bg-color-dark);
   padding: 1em;
   border-radius: 15px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
@@ -907,7 +924,7 @@ textarea {
 
 .user-item-container {
   padding: 2em;
-  border-bottom: .5px solid salmon;
+  border-bottom: .5px solid #f29bbe;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -942,10 +959,10 @@ textarea {
 /* USERS LIST */
 
 .users-list-container {
-  background-color: white; 
+  background-color: var(--bg-color-light);
   width: 40%;
   padding: 1em .5em;
-  color: salmon;
+  color: var(--text-color);
   display: flex;
   flex-direction: column;
   gap: 1em;
@@ -960,8 +977,7 @@ textarea {
 }
 
 .users-list-follow-button {
-  /*border: .3px solid salmon;*/
-  color: salmon;
+  color: #5c3d2a;
   background: rgb(252, 239, 239);
   width: 250px;
   border-radius: 30px;
@@ -979,8 +995,8 @@ textarea {
 }
 
 .active-user-profile-image {
-  width: 30px; 
-  height: 30px;
+  width: 40px; 
+  height: 40px;
   object-fit: cover;
   object-position: top;
   display: inline;
@@ -997,7 +1013,7 @@ textarea {
 .active-user {
   display: flex;
   align-items: center;
-  gap: .3em;
+  gap: .5em;
 }
 
 .input-wrapper {
@@ -1056,14 +1072,36 @@ textarea {
   color: salmon;
 }
 
+/* Target WebKit scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track (background of the scrollbar) */
+::-webkit-scrollbar-track {
+  background-color: var(--bg-color-dark);
+}
+
+/* Thumb (the draggable part) */
+::-webkit-scrollbar-thumb {
+  background: var(--text-color);
+  border-radius: 10px;
+  border: 2px solid #fcd8e3; /* matches track to create space effect */
+}
+
+/* On hover */
+::-webkit-scrollbar-thumb:hover {
+  background-color: #4a2715;
+}
+
+
 @media (max-width: 768px) {
   .navigation-layout-container {
     flex-direction: column;
     height: 100vh;
   }
 
-  .navigation-layout-container nav {
-    background-color: rgb(241, 137, 125);
+  .navigation-layout-container-nav {
     padding: .8em 2em;
     width: 100%;
     display: flex;
@@ -1109,10 +1147,9 @@ textarea {
   }
 
   .users-list-container {
-    background-color: transparent; 
-    padding: 0;
-    width: 100%;
-  }
+  background-color: transparent; 
+  padding: 0;
+}
 
   .chat-box {
     width: 100%;

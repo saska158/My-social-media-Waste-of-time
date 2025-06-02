@@ -7,7 +7,7 @@ const UserProfileNavigation = ({activeSection, setActiveSection}) => {
                   <button
                     key={section}
                     onClick={() => setActiveSection(section)}
-                    style={{color: activeSection === section ? "white" : '', textTransform: 'uppercase'}}
+                    style={{color: activeSection === section ? "#f29bee" : '#fff', textTransform: 'uppercase'}}
                   >
                     {section}
                   </button>

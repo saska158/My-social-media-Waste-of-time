@@ -25,7 +25,7 @@ const UserPosts = ({profileUid}) => {
           <div>
             {
               roomTags.map(tag => (
-                <button key={tag} onClick={() => setRoom(tag)} style={{color: room === tag ? "white" : ""}}>{tag}</button>
+                <button key={tag} onClick={() => setRoom(tag)} style={{color: room === tag ? "#f29bbe" : "#fff"}}>{tag}</button>
               ))
             }
           </div>
@@ -45,11 +45,11 @@ const UserPosts = ({profileUid}) => {
                   dataLength={posts.length}
                   next={fetchMore}
                   hasMore={hasMore}
-                  loader={<ClipLoader color="salmon" />}
+                  loader={<ClipLoader color="#f29bbe" />}
                   scrollThreshold={0.9}
                   scrollableTarget="scrollableUserPostsDiv"
                 >
-                  <div>
+                  <div style={{width: '70%'}}>
                     {
                       posts.length > 0 ? (
                         posts.map((post, index) => (

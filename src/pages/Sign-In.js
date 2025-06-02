@@ -41,6 +41,8 @@ const SignIn = () => {
 
     const handleSignIn = async (e) => {
         e.preventDefault()
+        if (!email || !password) return
+        
         setLoading(true)
         setError(null)
         
@@ -100,7 +102,7 @@ const SignIn = () => {
               required
             />
             {
-              loading ? <PulseLoader size={10}  color="salmon"/> : (
+              loading ? <PulseLoader size={10}  color="#f29bbe"/> : (
                 <button onClick={e => handleSignIn(e)} disabled={loading} className="sign-in-up-button">
                   SIGN IN
                 </button>

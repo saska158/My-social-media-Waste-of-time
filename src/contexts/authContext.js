@@ -3,7 +3,6 @@ Primenicu na kontekst znanje iz knjige, sredicu performans,
 pogledacu koja su sva rerenderovanja zbog promene state-a
 ostavicu neke komentare mozda u zavrsnoj verziji kako bi videli kako sam razmisljala
 */
-
 import { auth, firestore, doc, updateDoc, onAuthStateChanged, signOut } from "../api/firebase"
 import { useState, useEffect, createContext, useContext } from "react"
 

@@ -80,7 +80,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
           }
           <div 
             className="message-content"
-            style={{backgroundColor: senderName === user?.displayName ? 'salmon' : 'grey'}}
+            style={{backgroundColor: senderName === user?.displayName ? '#fff' : '#dbaf93'}}
           >
             <div>
               { content.text && <p>{linkify(content.text)}</p> }
@@ -100,11 +100,11 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
                 </div>
             { linkData && <LinkPreview {...{linkData, content}}/> } 
             {
-              timestamp && <p style={{textAlign: 'right'}}>{format(timestamp.toDate(), 'p')}</p>
+              timestamp && <p style={{textAlign: 'right', fontSize: '.55rem'}}>{format(timestamp.toDate(), 'p')}</p>
             }
             {
               isLastIndex && message.senderUid === user.uid && message.status === "seen" && (
-                <p style={{fontSize: '.6rem'}}>seen</p>
+                <p style={{fontSize: '.55rem'}}>seen</p>
               )
             }
           </div>

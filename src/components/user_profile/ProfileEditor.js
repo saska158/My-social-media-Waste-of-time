@@ -112,7 +112,7 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
             name="bio"
             onChange={handleInputChange}
             placeholder="bio"
-            style={{minHeight: '100px', border: '.5px solid salmon', borderRadius: '20px'}}
+            style={{minHeight: '100px', borderRadius: '20px'}}
           />
           <label
             style={{
@@ -175,12 +175,12 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
             />
           </label>
           <button 
-            style={{background: loading ? 'none' : 'salmon'}}
+            style={{background: loading ? 'none' : '#f29bbe'}}
             className="save-changes-button"
             onClick={saveProfileChanges}
             disabled={loading}
           >
-            { loading ? <PulseLoader color="salmon" /> : 'save changes' }
+            { loading ? <PulseLoader color="#f29bbe" /> : 'save changes' }
           </button>
           {error && <ErrorMessage message={error} />}
         </form>

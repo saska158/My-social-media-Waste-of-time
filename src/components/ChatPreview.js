@@ -40,7 +40,7 @@ const ChatPreview = ({
                 <p>{contentText}</p>
               )
             }
-            <span style={{color: 'salmon', fontSize: '.6rem'}}>{formattedTime}</span>
+            <span style={{color: '#f29bbe', fontSize: '.6rem'}}>{formattedTime}</span>
           </div>
         </div>
     )

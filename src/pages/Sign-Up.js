@@ -87,7 +87,9 @@ const SignUp = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault()
-    const { email, password, name } = formData
+
+    const { email, password, name, terms } = formData
+    if (!email || !password || !name || !terms) return
 
     setLoading(true)
     setError(null)
@@ -159,7 +161,7 @@ const SignUp = () => {
           I have read and understand the Privacy and Cookies Policy
         </label>
         {
-          loading ? <PulseLoader size={10}  color="salmon"/> : (
+          loading ? <PulseLoader size={10}  color="#f29bbe"/> : (
             <button onClick={(e) => handleSignUp(e)} disabled={loading} className="sign-in-up-button">
               CREATE ACCOUNT
             </button>

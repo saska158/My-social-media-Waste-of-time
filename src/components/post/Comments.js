@@ -33,7 +33,7 @@ const Comments = ({room, postId, firestoreRef}) => {
               dataLength={comments.length}
               next={fetchMore}
               hasMore={hasMore}
-              loader={<ClipLoader color="salmon" />}
+              loader={<ClipLoader color="#f29bbe" />}
               scrollThreshold={0.9}
               scrollableTarget="scrollableCommentsDiv"
             >

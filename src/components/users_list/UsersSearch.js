@@ -149,7 +149,7 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
   return (
     <PopUp setIsPopUpShown={setIsUsersQueryShown}>
       <div className="input-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px'}}>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px', color: '#4f3524'}}>
           <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
         </svg>
         <input
@@ -158,7 +158,7 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
           value={searchQuery}
           onChange={handleSearchChange}
           className="users-list-follow-button"
-          style={{border: 'none', color: 'salmon'}}
+          style={{border: 'none', color: '#4f3524'}}
         />
       </div>
       <div 
@@ -171,7 +171,7 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
           dataLength={filteredUsers.length}
           next={fetchMore}
           hasMore={hasMore}
-          loader={<ClipLoader color="salmon" />}
+          loader={<ClipLoader color="#f29bbe" />}
           scrollThreshold={0.9}
           scrollableTarget="scrollableUsersDiv"
         >
