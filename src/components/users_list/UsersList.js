@@ -72,7 +72,6 @@ const UsersList = () => {
       {
         isDesktop && (
           <div>
-            <span>online:</span>
             {error && <ErrorMessage message={error} onRetry={refetch} />}
             <div 
               className="active-users-container"
@@ -90,7 +89,14 @@ const UsersList = () => {
                 <div>
                   {
                     loading ? <UserSkeleton /> : (
-                      users.length > 0 ? (users.map((usr, index) => <UserItem key={index} user={usr} />)) : <p>Noone is online.</p>
+                      users.length > 0 ? (
+                        <div>
+                          <span>online:</span>
+                          {
+                            users.map((usr, index) => <UserItem key={index} user={usr} />)
+                          }
+                        </div>
+                      ) : <p>Noone is online.</p>
                     )
                   }
                 </div>
