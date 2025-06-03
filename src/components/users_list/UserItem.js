@@ -12,7 +12,7 @@ const UserItem = ({user}) => {
               alt="profile"
               className="active-user-profile-image"
             />
-            <span style={{color: '#fff'}}>{user?.displayName}</span>
+            <span>{user?.displayName}</span>
           </div>
         </Link>
       </div>

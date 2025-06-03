@@ -4,7 +4,7 @@ const LinkPreview = ({linkData, /*linkFromText,*/ children, style=null, imgStyle
         <div>
           {
             linkData.description === 'Too many requests / rate limit exceeded' ? (
-              <p style={{fontSize: '.7rem', color: '#f29bbe', padding: '.5em', borderRadius: '20px'}}>
+              <p style={{fontSize: '.7rem', color: '#eb8d8d', padding: '.5em', borderRadius: '20px'}}>
                 {/*Too many requests / rate limit exceeded.*/}
                 Link can't be shown.
               </p>

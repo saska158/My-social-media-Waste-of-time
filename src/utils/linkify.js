@@ -3,7 +3,7 @@ const linkify = (text) => {
     return text.split(urlRegex).map((part, i) => {
       if (urlRegex.test(part)) {
         return (
-          <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: '#f188b2' }}>
+          <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: '#eb8d8d' }}>
             {part}
           </a>
         )

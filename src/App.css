@@ -208,7 +208,7 @@ textarea {
   display: flex;
   justify-content: flex-start; 
   width: 100%;
-  gap: 1em;
+  gap: .5em;
   background-color: var(--bg-color-dark);
   padding: 1em;
 }

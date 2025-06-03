@@ -74,10 +74,9 @@ const NavigationLayout = () => {
               }
             </div>
           ) : (
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-              <p style={{fontSize: '2rem'}}>Join us</p>
-              <Link to='/sign-up' style={{textTransform: 'uppercase'}}>create account</Link>
-              <Link to='/sign-in' style={{textTransform: 'uppercase'}}>sign in</Link>
+            <div style={{display: 'flex', flexDirection: 'column', gap: '.5em'}}>
+              <Link to='/sign-up' className="navigation-layout-nav-link" >create account</Link>
+              <Link to='/sign-in' className="navigation-layout-nav-link" >sign in</Link>
             </div>
           )
         }
