@@ -126,7 +126,7 @@ const likesArray = Object.values(likes || {})
     <div className="post-actions">
       <div className="post-actions-container">
         <button
-          style={{fontSize: '.7rem', color: '#f29bbe'}}
+          style={{fontSize: '.7rem'}}
           onClick={handleShowLikes}
         >
           {
@@ -136,7 +136,7 @@ const likesArray = Object.values(likes || {})
           }
         </button>
         <button
-          style={{fontSize: '.7rem', color: '#f29bbe'}}
+          style={{fontSize: '.7rem'}}
           onClick={handleShowComments}
         >
           {numberOfComments} {numberOfComments === 1 ? 'comment' : 'comments'}

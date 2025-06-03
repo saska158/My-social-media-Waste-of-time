@@ -14,7 +14,7 @@ import { ClipLoader } from "react-spinners"
 import ErrorMessage from "./errors/ErrorMessage"
 
 
-const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupShown=()=>{}, style=null}) => {
+const PostForm = ({firestoreRef, placeholder, type, setIsPopupShown=()=>{}}) => {
   const initialData = {
     text: '',
     image: ''
@@ -127,9 +127,9 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
 
 
   return (
-    <form onSubmit={handleOnSubmit} ref={formRef} className={`${type}-form`} style={style}>
+    <form onSubmit={handleOnSubmit} ref={formRef} className={`${type}-form`}>
       { error && <ErrorMessage message={error} /> }
-      <label className={`${type}-main-label`}>
+      <label className='post-form-main-label'>
         {
           linkData && (
             <LinkPreview {...{linkData}} content={data} style={{display: 'flex', alignItems: 'flex-start'}} imgStyle={{width: '30%'}}>
@@ -150,7 +150,7 @@ const PostForm = ({dataArray=null, firestoreRef, placeholder, type, setIsPopupSh
           }}
         >
           <div style={{display: 'flex', gap: '.3em', alignItems: 'center', fontSize: '1.3rem'}}>
-            <img src={user.photoURL} alt="profile-img" className={`${type}-profile-image`} style={{width: '50px', height: '50px'}} />
+            <img src={user.photoURL} alt="profile-img" className='post-form-profile-image' />
             {
               type === 'create-post' && <span style={{color: '#f29bbe'}}>{user.displayName}</span>
             }

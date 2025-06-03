@@ -10,13 +10,11 @@ import MyChats from './pages/MyChats'
 import UserProfile from './pages/UserProfile'
 import AuthRequired from './components/AuthRequired'
 import { AuthProvider } from './contexts/authContext'
-import { ThemeProvider } from './contexts/themeContext'
 import { ErrorBoundary } from 'react-error-boundary'
 import ErrorFallback from './components/errors/ErrorFallback'
 
 const App = () => {
   return (
-    <ThemeProvider>
       <AuthProvider>
         <BrowserRouter>
           <ErrorBoundary
@@ -41,7 +39,6 @@ const App = () => {
           </ErrorBoundary>
         </BrowserRouter>
       </AuthProvider>
-    </ThemeProvider>
   )
 }
 

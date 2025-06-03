@@ -70,7 +70,7 @@ const Homepage = () => {
         }
         <button 
           onClick={handleNewPost} 
-          className="users-list-follow-button"
+          className="show-popup-btn"
         >
           What's on your mind {user?.displayName}? 
         </button>

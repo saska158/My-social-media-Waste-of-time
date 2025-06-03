@@ -17,7 +17,7 @@ const Reply = ({reply}) => {
 
   return (
     <div className="comment-container">
-      <div className="comment-content" style={{background: 'white', width: '80%', marginLeft: '2em'}}>
+      <div className="comment-content reply-content">
         <FirestoreItemHeader {...{creatorUid, timestamp}} />
         <FirestoreItemContent {...{content}} />
       </div>

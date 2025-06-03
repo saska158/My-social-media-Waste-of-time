@@ -156,7 +156,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
           </LinkPreview>
         )
       }    
-      <div style={{display: 'flex'}}>
+      <div style={{display: 'flex', alignItems: 'center'}}>
         <input 
           type='text'
           placeholder='Message...'
@@ -165,7 +165,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
           style={{border: '0', fontSize: '1rem', padding: '1em'}}
           ref={inputRef}
         />
-        <div>
+        <div style={{display: 'flex', alignItems: 'center'}}>
           { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setMessage} /> }
           <ImageUploadButton {...{handleImageChange, fileInputRef}} />
           <ChatSmiley setShowEmojiPicker={setShowEmojiPicker}/>

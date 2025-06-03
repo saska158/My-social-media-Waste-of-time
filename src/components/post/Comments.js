@@ -48,7 +48,7 @@ const Comments = ({room, postId, firestoreRef}) => {
           )
         }
       </div>
-      <PostForm {...{firestoreRef}} placeholder="Add comment..." type="comments" style={{background: '#402b1d'}} />
+      <PostForm {...{firestoreRef}} placeholder="Add comment..." type="comments" />
     </div>
   )
 }

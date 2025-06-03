@@ -79,7 +79,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             )
           }
           <div 
-            className="message-content"
+            className={content.image ? 'message-content-img' : "message-content"}
             style={{backgroundColor: senderName === user?.displayName ? '#fff' : '#dbaf93'}}
           >
             <div>
@@ -97,7 +97,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
                   />
                 )
               }
-                </div>
+            </div>
             { linkData && <LinkPreview {...{linkData, content}}/> } 
             {
               timestamp && <p style={{textAlign: 'right', fontSize: '.55rem'}}>{format(timestamp.toDate(), 'p')}</p>

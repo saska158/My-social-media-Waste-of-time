@@ -175,7 +175,7 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
             />
           </label>
           <button 
-            style={{background: loading ? 'none' : '#f29bbe'}}
+            style={{background: loading ? 'none' : '#f29bbe', color: '#4f3524', padding: '1em 1.3em'}}
             className="save-changes-button"
             onClick={saveProfileChanges}
             disabled={loading}

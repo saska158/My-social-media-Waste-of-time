@@ -17,12 +17,12 @@ const Replies = ({firestoreRef, creatorName}) => {
 
   return (
     <div className="comments-container">
-      <PostForm {...{firestoreRef}} placeholder={`Reply to ${creatorName}...`} type="comments" style={{background: "#f7d4d1"}}/>
+      <PostForm {...{firestoreRef}} placeholder={`Reply to ${creatorName}...`} type="replies"/>
       <div 
         className="comments-box"
         id="scrollableRepliesDiv"
         ref={repliesContainerRef}
-        style={{height: '200px'}}
+        style={{height: '150px'}}
       >
         {error && (
           <ErrorMessage message="Failed to load comments." onRetry={refetch} />

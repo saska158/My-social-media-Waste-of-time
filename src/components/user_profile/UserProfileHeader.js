@@ -105,7 +105,6 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
           <div 
             style={{
               padding: '.5em', 
-              paddingTop: '0', 
               display: 'flex', 
               gap: '.5em', 
               fontSize: '.9rem',
@@ -113,12 +112,14 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
           >
             <button
              onClick={handleShowFollowers}
+             style={{color: '#fff'}}
             >
               {profile.followers?.length || 0}
               {profile.followers?.length === 1 ? 'follower' : 'followers'}
             </button>
             <button
               onClick={handleShowFollowing}
+              style={{color: '#fff'}}
             >
               {profile.following?.length || 0}
               following
