@@ -1049,9 +1049,16 @@ textarea {
     font-size: .7rem;
   }
 
+  .group-chat-layout-container {
+    padding-top: 14em;
+  }
+  .group-chat-layout-container-nav {
+    gap: .5em;
+    font-size: .8rem;
+  }
+
   .group-chat-container {
     height: 500px;
-    padding-top: 10em;
   }
 
   .posts-container {
