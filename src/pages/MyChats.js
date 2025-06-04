@@ -83,7 +83,7 @@ const MyChats = () => {
     }
 
     return (
-      <div style={{width: '100%', position: 'relative'}}>
+      <div className="my-chats-container">
         {
           !isChatBoxVisible ? (
             <div 
@@ -95,7 +95,7 @@ const MyChats = () => {
                 dataLength={chats.length}
                 next={fetchMore}
                 hasMore={hasMore}
-                loader={<ClipLoader color="#f29bbe" />}
+                loader={<ClipLoader color="#4f3524" />}
                 scrollThreshold={0.9}
                 endMessage={
                  <p style={{ textAlign: 'center' }}></p>

@@ -35,7 +35,7 @@ const Replies = ({firestoreRef, creatorName}) => {
               dataLength={replies.length}
               next={fetchMore}
               hasMore={hasMore}
-              loader={<ClipLoader color="#f29bbe" />}
+              loader={<ClipLoader color="#4f3524" />}
               scrollThreshold={0.9}
               scrollableTarget="scrollableRepliesDiv"
             >

@@ -741,6 +741,13 @@ textarea {
   border-radius: 50%;
 }
 
+/* MY CHATS */
+
+.my-chats-container {
+  width: 100%;
+  position: relative;
+}
+
 /* CHAT ITEM */
 
 .chat-item-container {
@@ -1023,6 +1030,7 @@ textarea {
     align-items: flex-start;
     gap: 1em;
     position: fixed;
+    z-index: 9999;
   }
 
   .navigation-layout-nav-links {
@@ -1038,6 +1046,7 @@ textarea {
 
   .group-chat-container {
     height: 500px;
+    padding-top: 10em;
   }
 
   .posts-container {
@@ -1047,7 +1056,6 @@ textarea {
     width: 100%;
     height: 700px;
     overflow-y: auto;
-    padding-top: 5em;
     overflow-x: hidden;
   }
 
@@ -1057,6 +1065,10 @@ textarea {
 
   .pop-up-box {
     width: 80%;
+  }
+
+  .user-profile-container {
+    padding-top: 15em;
   }
 
   .user-profile-description {
@@ -1071,5 +1083,10 @@ textarea {
 
   .chat-box {
     width: 100%;
+    padding-top: 6em;
+  }
+
+  .my-chats-container {
+    padding-top: 8em;
   }
 }

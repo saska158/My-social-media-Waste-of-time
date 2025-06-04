@@ -162,7 +162,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
           placeholder='Message...'
           value={message.text}
           onChange={handleMessageChange}
-          style={{border: '0', fontSize: '1rem', padding: '1em', background: "#5c3d2a", color: "#eed4d4"}}
+          style={{border: '0', fontSize: '1rem', padding: '1em', background: "#5c3d2a", color: "#eed4d4", borderRadius: '30px'}}
           ref={inputRef}
         />
         <div style={{display: 'flex', alignItems: 'center'}}>

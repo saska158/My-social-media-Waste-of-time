@@ -52,7 +52,7 @@ const Homepage = () => {
   
   return (
     <div className="group-chat-container">
-      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.5em', width: '100%', paddingTop: '1em'}}>
+      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.5em', width: '100%', padding: '1em 0'}}>
         { 
           user && (
             <img 
@@ -81,7 +81,7 @@ const Homepage = () => {
           dataLength={posts.length}
           next={fetchMore}
           hasMore={hasMore}
-          loader={<ClipLoader color="#f29bbe" />}
+          loader={<ClipLoader color="#4f3524" />}
           scrollThreshold={0.9}
           scrollableTarget="scrollableDiv"
           style={{width: '500px'}}
