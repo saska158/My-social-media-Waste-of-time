@@ -6,6 +6,7 @@ import Post from "../post/Post"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
 import ErrorMessage from "../errors/ErrorMessage"
+import { useMediaQuery } from "react-responsive"
 
 const UserPosts = ({profileUid}) => {
     const roomTags = ['main', 'watching', 'reading', 'listening']
@@ -19,6 +20,8 @@ const UserPosts = ({profileUid}) => {
   
     // Custom hooks
     const { data: posts, loading, error, fetchMore, hasMore, refetch } = useFirestoreBatch(userPostsRef, 2, [where("creatorUid", "==", profileUid)], profileUid)
+
+    const isMobile = useMediaQuery({ maxWidth: 767 })
 
     return (
         <div>
@@ -61,7 +64,7 @@ const UserPosts = ({profileUid}) => {
                   scrollThreshold={0.9}
                   scrollableTarget="scrollableUserPostsDiv"
                 >
-                  <div>
+                  <div style={{width: isMobile ? '100%' : '70%'}}>
                     {
                       posts.length > 0 ? (
                         posts.map((post, index) => (
