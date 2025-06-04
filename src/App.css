@@ -179,9 +179,10 @@ textarea {
 }
 
 .logo-link {
-  font-size: 3rem;
+  font-size: 4rem;
   text-transform: uppercase;
-  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  /*font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;*/
+  font-family: 'Anton', sans-serif;
   color: #eed4d4;
 }
 
@@ -1039,6 +1040,10 @@ textarea {
     align-items: center;
   }
 
+
+  .logo-link {
+    font-size: 3rem;
+  }
 
   .sign-out-button {
     font-size: .7rem;
