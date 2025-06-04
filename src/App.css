@@ -182,7 +182,6 @@ textarea {
 .logo-link {
   font-size: 4rem;
   text-transform: uppercase;
-  /*font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;*/
   font-family: 'Anton', sans-serif;
   color: #eed4d4;
 }
@@ -687,7 +686,6 @@ textarea {
   flex-direction: column;
   gap: 1em;
   padding: 1em;
-  width: 70%;
 }
 
 /* POST ACTIONS */
@@ -1048,7 +1046,7 @@ textarea {
 
 
   .logo-link {
-    font-size: 3rem;
+    font-size: 3.2rem;
   }
 
   .sign-out-button {
@@ -1078,7 +1076,7 @@ textarea {
   }
 
   .post-container {
-    width: 80%;
+    width: 70%;
   }
 
   .pop-up-box {

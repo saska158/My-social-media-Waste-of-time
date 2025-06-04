@@ -15,7 +15,7 @@ const UserProfileContent = ({activeSection, profile, profileUid}) => {
                                   style={{
                                     display: 'block', 
                                     marginBottom: '.5em',
-                                    fontFamily: "Impact, Haettenschweiler, sans-serif"
+                                    fontFamily: "'Anton', sans-serif"
                                   }}
                                 >
                                     {key}: 

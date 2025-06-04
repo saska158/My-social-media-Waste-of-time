@@ -85,7 +85,7 @@ const SignIn = () => {
     return (
         <div className="sign-in-up-container">
           { location.state?.message ? <p>{location.state.message}</p> : null }
-         <h4>Sign in to your account</h4>
+         <h4 style={{fontFamily: "'Anton', sans-serif"}}>Sign in to your account</h4>
          <form className="sign-in-up-form">
             <input 
               type="email"

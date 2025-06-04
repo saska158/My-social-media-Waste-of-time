@@ -124,7 +124,7 @@ const SignUp = () => {
 
   return (
     <div className="sign-in-up-container">
-      <h4>Personal details</h4>
+      <h4 style={{fontFamily: "'Anton', sans-serif"}}>Personal details</h4>
       <form className="sign-in-up-form">
         <input 
           type="email"
