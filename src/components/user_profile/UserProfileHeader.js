@@ -112,14 +112,12 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
           >
             <button
              onClick={handleShowFollowers}
-             style={{color: '#fff'}}
             >
               {profile.followers?.length || 0}
               {profile.followers?.length === 1 ? 'follower' : 'followers'}
             </button>
             <button
               onClick={handleShowFollowing}
-              style={{color: '#fff'}}
             >
               {profile.following?.length || 0}
               following

@@ -158,7 +158,6 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
           value={searchQuery}
           onChange={handleSearchChange}
           className="users-list-follow-button"
-          style={{border: 'none', color: '#4f3524'}}
         />
       </div>
       <div 

@@ -152,7 +152,7 @@ const PostForm = ({firestoreRef, placeholder, type, setIsPopupShown=()=>{}}) => 
           <div style={{display: 'flex', gap: '.3em', alignItems: 'center', fontSize: '1.3rem'}}>
             <img src={user.photoURL} alt="profile-img" className='post-form-profile-image' />
             {
-              type === 'create-post' && <span style={{color: '#f29bbe'}}>{user.displayName}</span>
+              type === 'create-post' && <span>{user.displayName}</span>
             }
           </div>
           <Textarea

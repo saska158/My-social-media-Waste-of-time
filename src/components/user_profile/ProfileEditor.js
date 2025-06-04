@@ -112,7 +112,7 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
             name="bio"
             onChange={handleInputChange}
             placeholder="bio"
-            style={{minHeight: '100px', borderRadius: '20px'}}
+            style={{minHeight: '100px'}}
           />
           <label
             style={{

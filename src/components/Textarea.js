@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect } from "react"
 
 const Textarea = ({value, onChange, placeholder, textareaRef, type}) => {
 

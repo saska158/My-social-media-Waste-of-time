@@ -25,7 +25,19 @@ const UserPosts = ({profileUid}) => {
           <div>
             {
               roomTags.map(tag => (
-                <button key={tag} onClick={() => setRoom(tag)} style={{color: room === tag ? "#f29bbe" : "#fff"}}>{tag}</button>
+                <button 
+                  key={tag} 
+                  onClick={() => setRoom(tag)} 
+                  style={{
+                    borderBottom: room === tag ? ".2px solid #4f3524" : "none", 
+                    borderRadius: '0', 
+                    padding: 0, 
+                    paddingBottom: '.5em',
+                    marginRight: '1em'
+                  }}
+                >
+                  {tag}
+                </button>
               ))
             }
           </div>
