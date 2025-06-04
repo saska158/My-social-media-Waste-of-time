@@ -157,7 +157,7 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
           <div>
             {
               loading ? (
-                <ClipLoader color="#f29bbe" size={20} />
+                <ClipLoader color="#4f3524" size={20} />
               ) : (
                 messages.length > 0 && (
                   <div>

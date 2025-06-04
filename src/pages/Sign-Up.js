@@ -161,7 +161,7 @@ const SignUp = () => {
           I have read and understand the Privacy and Cookies Policy
         </label>
         {
-          loading ? <PulseLoader size={10}  color="#f29bbe"/> : (
+          loading ? <PulseLoader size={10}  color="#4f3524"/> : (
             <button onClick={(e) => handleSignUp(e)} disabled={loading} className="sign-in-up-button">
               CREATE ACCOUNT
             </button>

@@ -13,7 +13,6 @@ html {
   --bg-color-medium: #faf2f2;
   --bg-color-light: #fff;
   --text-color: #4f3524;
-  --button-color: #faf2f2;
   --nav-link: #f29bbe;
   --active-nav-link: #4f3524;
 }
@@ -32,8 +31,8 @@ body {
   overflow-y: auto;
   width: 100vw;
   height: 100vh;
-  background-color: var(--bg-color-dark);
-  color: var(--text-color);
+  background-color: #eed4d4;
+  color: #4f3524;
 }
 
 h1, h2, h3, h4, p {
@@ -69,9 +68,10 @@ input, textarea {
   padding: 1em;
   font-style: inherit;
   outline: none;
+  color: #4f3524;
 }
 input {
-  border-radius: 20px;
+  border-radius: 30px;
   border: none;
 }
 
@@ -119,7 +119,6 @@ textarea {
 .image-preview {
   width: 60px; 
   height: 60px; 
-  border: 1px solid #f29bbe;
   position: relative;
   margin: .5em;
 }
@@ -134,7 +133,7 @@ textarea {
   position: absolute;
   top: -12%;
   right: -12%;
-  background-color: rgba(238, 171, 163, .8);
+  background-color: rgba(74, 39, 21, .3);
   border-radius: 50%;
   padding: .3em;
   display: flex;
@@ -154,8 +153,6 @@ textarea {
 }
 
 .navigation-layout-container-nav {
-  background-color: var(--bg-color-light);
-  color: #f29bbe;
   padding: .8em 2em;
   width: 35%;
   display: flex;
@@ -176,7 +173,7 @@ textarea {
 
 .navigation-layout-nav-link {
   text-transform: uppercase;
-  color: var(--bg-color-dark);
+  color: #eed4d4;
 }
 
 .active-nav-link {
@@ -184,15 +181,17 @@ textarea {
 }
 
 .logo-link {
-  font-size: 2.7rem;
+  font-size: 3rem;
   text-transform: uppercase;
   font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  color: var(--bg-color-dark);
+  color: #eed4d4;
 }
 
 .sign-out-button {
   color: #5c3d2a;
-  background: var(--button-color);
+  /*background: #eed4d4;*/
+  border: .2px solid #eed4d4;
+  color: #eed4d4;
 }
 
 /* GROUP CHAT LAYOUT */
@@ -209,7 +208,6 @@ textarea {
   justify-content: flex-start; 
   width: 100%;
   gap: .5em;
-  background-color: var(--bg-color-dark);
   padding: 1em;
 }
 
@@ -222,7 +220,6 @@ textarea {
   display: flex; 
   flex-direction: column;
   flex: 1;
-  background-color: var(--bg-color-dark);
 }
 
 .group-chat-layout-container {
@@ -235,13 +232,10 @@ textarea {
   justify-content: flex-start;
   width: 100%;
   gap: 1em;
-  color: var(--text-color);
-  /*background-color: salmon;*/
   padding: 1em;
 }
 
-.new-post-button {
-  color: var(--text-color);
+/*.new-post-button {
   width: 150px;
   border-radius: 30px;
   padding: 1em 1.5em;
@@ -251,9 +245,7 @@ textarea {
   align-items: center;
   justify-content: center;
   gap: .5em;
-  background-color: var(--bg-color-light);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
-}
+}*/
 
 .posts-container {
   display: flex;
@@ -284,7 +276,6 @@ textarea {
 
 .sign-in-up-container {
   padding: 2em;
-  background-color: var(--bg-color-medium);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -293,7 +284,6 @@ textarea {
 }
 
 .sign-in-up-container h4 {
-  color: #f29bbe;
   font-weight: 400;
   font-size: 2rem;
   margin-bottom: 1em;
@@ -308,7 +298,6 @@ textarea {
 }
 
 .sign-in-up-button {
-  background: #fff;
   padding: 1em 1.2em;
   border-radius: 20px;
 }
@@ -318,7 +307,6 @@ textarea {
 .user-profile-container {
   position: relative; 
   width: 100%;
-  background: var(--bg-color-dark);
 }
 
 .user-profile-content {
@@ -327,7 +315,6 @@ textarea {
   gap: 3em; 
   padding: .5em;
   padding-bottom: .2em;
-  background: var(--bg-color-medium);
 }
 
 .user-profile-profile-picture {
@@ -339,7 +326,6 @@ textarea {
 }
 
 .user-profile-displayName {
-  color: var(--text-color);
   text-align: center; 
   font-size: 1.5rem;
 }
@@ -347,15 +333,13 @@ textarea {
 .follow-toggle-button {
   text-align: center;
   font-size: 1rem;
-  border: .5px solid white;
-  color: white;
   padding: '.5em .8em';
   border-radius: 30px;
 }
 
 .edit-profile-button {
-  border: .5px solid white;
-  color: white;
+  border: .2px solid #4f3524;
+  color: #4f3524;
   padding: .5em .8em;
   border-radius: 30px;
   display: flex;
@@ -364,13 +348,13 @@ textarea {
 }
 
 .user-profile-description {
-  background: var(--bg-color-dark);
   padding: .5em;
   padding-left: 1em;
 }
 
 .message-button {
-  background: white;
+  border: .2px solid #4f3524;
+  color: #4f3524;
   border-radius: 20px;
   padding: .5em .8em;
   margin: .8em;
@@ -381,7 +365,11 @@ textarea {
   flex-direction: column; 
   gap: 1em; 
   margin: 1em;
-  color: #f29bbe;
+}
+
+.edit-profile-form input,
+.edit-profile-form textarea {
+  color: #4f3524;
 }
 
 .edit-image-label {
@@ -412,7 +400,6 @@ textarea {
 
 .save-changes-button { 
   border-radius: 20px; 
-  color: var(--text-color);
   padding: .5em .8em;
   align-self: center;
 }
@@ -422,7 +409,6 @@ textarea {
   flex-direction: row; 
   width: 100%;
   padding: .8em;
-  background: var(--bg-color-dark);
 }
 
 /*======= COMPONENTS =======*/
@@ -430,7 +416,6 @@ textarea {
 /* CHAT BOX */
 
 .chat-box {
-  background-color: var(--bg-color-dark);
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -450,8 +435,7 @@ textarea {
 }
 
 .date {
-  background-color: rgba(242, 155, 190, .5);
-  color: var(--text-color);
+  background-color: rgba(79, 53, 36, .3);
   align-self: center;
   position: sticky;
   top: 0;
@@ -472,7 +456,6 @@ textarea {
 
 .chat-box-main-label {
   border-radius: 20px;
-  background: white;
   display: flex;
   flex-direction: column;
   padding: .5em;
@@ -497,7 +480,7 @@ textarea {
   margin: 10px 0;
   font-size: 12px;
   font-weight: bold;
-  color: #f29bbe;
+  color: rgba(79, 53, 36, .4);
   position: relative;
 }
 
@@ -508,7 +491,7 @@ textarea {
   top: 50%;
   width: 40%;
   height: 1px;
-  background: #f29bbe;
+  background: rgba(79, 53, 36, .4);
 }
 
 .date-divider::before {
@@ -535,7 +518,7 @@ textarea {
 .typing-indicator span {
   width: 6px;
   height: 6px;
-  background-color: #f29bbe;
+  background-color: rgba(79, 53, 36, .4);
   border-radius: 50%;
   animation: wave 1.5s infinite ease-in-out;
 }
@@ -572,7 +555,6 @@ textarea {
   top: 0; 
   left: 0; 
   right: 0; 
-  background: var(--bg-color-medium); 
   display: flex;
   padding: .5em;
 }
@@ -597,7 +579,6 @@ textarea {
 
 .message-container {
   width: 300px;
-  /*margin: 1em;*/
   margin-top: 1em;
   margin-bottom: 1em;
   margin-right: 1em;
@@ -622,8 +603,6 @@ textarea {
   padding: .5em 1em;
   border-radius: 15px;
   width: fit-content;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
-  color: #4a2715;
 }
 
 /* COMMENT */
@@ -790,10 +769,10 @@ textarea {
 /* CHAT ITEM */
 
 .chat-item-container {
-  background: white;
-  border-radius: 20px;
+  border-radius: 30px;
+  border: .2px solid #4f3524;
   margin: 0 1em 1em;
-  padding: .5em .8em; 
+  padding: .7em 1em; 
   cursor: pointer;
 }
 

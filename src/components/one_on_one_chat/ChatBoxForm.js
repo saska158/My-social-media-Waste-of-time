@@ -143,7 +143,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
   return (
     <>
       { error && <ErrorMessage message={error} /> }
-      <form style={{position: 'relative', background: '#4f3524'}}>
+      <form style={{position: 'relative'}}>
       <label className="chat-box-main-label"> 
       {
         linkData && (
@@ -156,13 +156,13 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
           </LinkPreview>
         )
       }    
-      <div style={{display: 'flex', alignItems: 'center'}}>
+      <div style={{display: 'flex', alignItems: 'center', gap: '1em'}}>
         <input 
           type='text'
           placeholder='Message...'
           value={message.text}
           onChange={handleMessageChange}
-          style={{border: '0', fontSize: '1rem', padding: '1em'}}
+          style={{border: '0', fontSize: '1rem', padding: '1em', background: "#5c3d2a", color: "#eed4d4"}}
           ref={inputRef}
         />
         <div style={{display: 'flex', alignItems: 'center'}}>
@@ -181,9 +181,9 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
           >
             {
               loading ? (
-                <ClipLoader color="white"/>
+                <ClipLoader color="#4f3524"/>
               ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: 'white'}}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: '#4f3524'}}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                 </svg>
               )

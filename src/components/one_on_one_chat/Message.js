@@ -62,15 +62,15 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
         <div 
           className="message-container"
           style={{
-            alignSelf: senderName === user?.displayName ? 'flex-end' : 'flex-start',
-            justifyContent: senderName === user?.displayName ? 'flex-end' : 'flex-start'
+            alignSelf: senderName.toLowerCase() === user?.displayName ? 'flex-end' : 'flex-start',
+            justifyContent: senderName.toLowerCase() === user?.displayName ? 'flex-end' : 'flex-start'
           }}
           //data-timestamp={message.timestamp}
           data-timestamp={messageDate}
           ref={(el) => (messageRefs.current[index] = el)} // Assign ref dynamically
         >
           {
-            senderName !== user?.displayName && (
+            senderName.toLowerCase() !== user?.displayName && (
               <img 
                 src={userProfile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
                 alt="profile" 
@@ -80,7 +80,11 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
           }
           <div 
             className={content.image ? 'message-content-img' : "message-content"}
-            style={{backgroundColor: senderName === user?.displayName ? '#fff' : '#dbaf93'}}
+            style={{
+              backgroundColor: senderName.toLowerCase() === user?.displayName ? '#c7bab2' : '#c59a82',
+              borderTopRightRadius: senderName.toLowerCase() === user?.displayName ? '0' : '15px',
+              borderTopLeftRadius: senderName.toLowerCase() !== user?.displayName ? '0' : '15px',
+            }}
           >
             <div>
               { content.text && <p>{linkify(content.text)}</p> }

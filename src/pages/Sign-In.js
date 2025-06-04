@@ -102,7 +102,7 @@ const SignIn = () => {
               required
             />
             {
-              loading ? <PulseLoader size={10}  color="#f29bbe"/> : (
+              loading ? <PulseLoader size={10}  color="#4f3524"/> : (
                 <button onClick={e => handleSignIn(e)} disabled={loading} className="sign-in-up-button">
                   SIGN IN
                 </button>
