@@ -61,7 +61,7 @@ const UserPosts = ({profileUid}) => {
                   scrollThreshold={0.9}
                   scrollableTarget="scrollableUserPostsDiv"
                 >
-                  <div style={{width: '70%'}}>
+                  <div>
                     {
                       posts.length > 0 ? (
                         posts.map((post, index) => (
@@ -69,7 +69,6 @@ const UserPosts = ({profileUid}) => {
                             key={index}
                             post={post}
                             room={room}
-                            style={{width: '70%'}}
                           />
                         ))
                       ) : <p>No posts yet.</p>

@@ -87,9 +87,10 @@ const MyChats = () => {
         {
           !isChatBoxVisible ? (
             <div 
-              className="my-chats-container"
+             /* className="my-chats-container"*/
               id="scrollableChatsDiv"
               ref={chatsContainerRef}
+              className="my-chats-content"
             >
               <InfiniteScroll
                 dataLength={chats.length}

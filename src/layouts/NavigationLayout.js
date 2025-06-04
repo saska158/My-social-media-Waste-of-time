@@ -31,9 +31,9 @@ const NavigationLayout = () => {
               <NavLink
                 to="/"
                 className={({isActive}) => isActive || 
-                  location.pathname === '/movies' || 
-                  location.pathname === '/music' || 
-                  location.pathname === '/books' ? 
+                  location.pathname === '/watching' || 
+                  location.pathname === '/listening' || 
+                  location.pathname === '/reading' ? 
                   'navigation-layout-nav-link active-nav-link' : 
                   'navigation-layout-nav-link' 
                 }
