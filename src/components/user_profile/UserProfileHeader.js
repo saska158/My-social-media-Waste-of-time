@@ -2,8 +2,6 @@ import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/authContext"
 import fetchProfile from "../../api/fetchProfile"
 import FollowButton from "../FollowButton"
-import UserItem from "../users_list/UserItem"
-import PopUp from "../PopUp"
 import ErrorMessage from "../errors/ErrorMessage"
 
 const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxVisible, setIsChatBoxVisible, setIsFollowPopupShown}) => {
@@ -44,33 +42,14 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
 
     const handleMessageButton = (e) => {
       e.stopPropagation()
-      const amIFollowingThisUser = profile.followers.some(follower => follower.uid === user.uid)
-      const isThisUserFollowingMe = profile.following ? profile.following.some(follower => follower.uid === user.uid) : false
+      const amIFollowingThisUser = profile.followers.includes(user.uid)
+      const isThisUserFollowingMe = profile.following ? profile.following.includes(user.uid) : false
   
       if(amIFollowingThisUser && isThisUserFollowingMe) {
         setIsChatBoxVisible(!isChatBoxVisible)
       } else {
         setIsFollowPopupShown(true)
       }
-    }
-
-    const handleShowFollowers = (e) => {
-      e.stopPropagation()
-      //if(!user) {
-        //setIsJoinPopupShown(true)
-      //} else {
-        setShowFollowers(!showFollowers)
-      //}
-    }
-
-
-    const handleShowFollowing = (e) => {
-      e.stopPropagation()
-      //if(!user) {
-        //setIsJoinPopupShown(true)
-      //} else {
-        setShowFollowing(!showFollowing)
-      //}
     }
 
     return (
@@ -110,41 +89,14 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
               fontSize: '.9rem',
             }}
           >
-            <button
-             onClick={handleShowFollowers}
-            >
+            <span>
               {profile.followers?.length || 0}
               {profile.followers?.length === 1 ? 'follower' : 'followers'}
-            </button>
-            <button
-              onClick={handleShowFollowing}
-            >
+            </span>
+            <span>
               {profile.following?.length || 0}
               following
-            </button>
-
-            {
-            showFollowers && (
-              <PopUp setIsPopUpShown={setShowFollowers}>
-                {
-                  profile?.followers?.length > 0 ? (
-                    profile.followers.map(follower => <UserItem key={follower.uid} user={follower} />)
-                  ) : 'No followers'
-                }
-              </PopUp>
-            )
-          }
-          {
-            showFollowing && (
-              <PopUp setIsPopUpShown={setShowFollowing}>
-                {
-                  profile?.following?.length > 0 ? (
-                    profile.following.map(person => <UserItem key={person.uid} user={person} />)
-                  ) : 'No following'
-                }
-              </PopUp>
-            )
-          }
+            </span>
           </div>
         </>
     )

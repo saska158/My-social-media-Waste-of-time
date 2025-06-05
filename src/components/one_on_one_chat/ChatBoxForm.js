@@ -143,8 +143,8 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
   return (
     <>
       { error && <ErrorMessage message={error} /> }
-      <form style={{position: 'relative'}}>
-      <label className="chat-box-main-label"> 
+      <form style={{position: 'relative'}} onSubmit={handleSendMessage}>
+      <div className="chat-box-main-label"> 
       {
         linkData && (
           <LinkPreview {...{linkData, linkPreviewRef}} style={{display: 'flex', alignItems: 'flex-start'}} imgStyle={{width: '30%'}}>
@@ -171,11 +171,12 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
           <ChatSmiley setShowEmojiPicker={setShowEmojiPicker}/>
         </div>
       </div>
-      </label>
+      </div>
       {
         message.text || message.image ? (
           <button 
-            onClick={handleSendMessage}
+            //onClick={handleSendMessage}
+            type="submit"
             style={{marginLeft: 'auto'}}
             disabled={loading}
           >

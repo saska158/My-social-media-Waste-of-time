@@ -17,7 +17,7 @@ const FollowButton = ({currentUser, targetUser}) => {
         const currentUserDoc = await getDoc(doc(firestore, "profiles", currentUser.uid))
         if (currentUserDoc.exists()) {
           const following = currentUserDoc.data().following || []
-          setIsFollowing(following.some(user => user.uid === targetUser.uid))
+          setIsFollowing(following.includes(targetUser.uid))
         }
       } catch (error) {
         console.error("Error fetching following status:", error)
@@ -28,6 +28,8 @@ const FollowButton = ({currentUser, targetUser}) => {
     checkFollowingStatus()
   }, [currentUser, targetUser])
 
+  
+
 
   const handleFollowToggle = async (e, currentUser, targetUser) => {
     setLoading(true)
@@ -35,13 +37,16 @@ const FollowButton = ({currentUser, targetUser}) => {
 
     try {
       await followToggle(e, currentUser, targetUser)
+      const updatedDoc = await getDoc(doc(firestore, "profiles", currentUser.uid))
+      const following = updatedDoc.data().following || []
+      setIsFollowing(following.includes(targetUser.uid))
     } catch(error) {
       console.error("Error toggling follow:", error)
       setError("Failed to toggle follow status. Please try again.")
     } finally {
       setLoading(false)
     }
-    setIsFollowing((prev) => !prev)
+    //setIsFollowing((prev) => !prev)
   }
 
   return (

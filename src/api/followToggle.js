@@ -2,6 +2,7 @@ import { firestore, doc, runTransaction, arrayUnion, arrayRemove } from "./fireb
 
 const followToggle = async (e, currentUser, targetUser) => {
     e.stopPropagation()
+
     if(currentUser.uid === targetUser.uid) return
 
     const currentUserRef = doc(firestore, 'profiles', currentUser.uid)
@@ -17,19 +18,19 @@ const followToggle = async (e, currentUser, targetUser) => {
     
       const currentFollowing = currentUserDoc.data().following || []
     
-      if (currentFollowing.some(user => user.uid === targetUser.uid)) {
+      if (currentFollowing.includes(targetUser.uid)) {
         transaction.update(currentUserRef, {
-          following: arrayRemove(targetUser)
+          following: arrayRemove(targetUser.uid)
         })
         transaction.update(targetUserRef, {
-          followers: arrayRemove(currentUser)
+          followers: arrayRemove(currentUser.uid)
         })
       } else {
         transaction.update(currentUserRef, {
-          following: arrayUnion(targetUser)
+          following: arrayUnion(targetUser.uid)
         })
         transaction.update(targetUserRef, {
-          followers: arrayUnion(currentUser)
+          followers: arrayUnion(currentUser.uid)
         })
       }
     })

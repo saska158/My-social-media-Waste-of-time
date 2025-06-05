@@ -12,7 +12,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
   const { content, senderUid, senderName, timestamp } = message
   // Context
   const { user } = useAuth()
-  
+  console.log(senderName, user.displayName)
   // State
   const [userProfile, setUserProfile] = useState(null)
   const [linkData, setLinkData] = useState(null)
@@ -62,8 +62,8 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
         <div 
           className="message-container"
           style={{
-            alignSelf: senderName.toLowerCase() === user?.displayName ? 'flex-end' : 'flex-start',
-            justifyContent: senderName.toLowerCase() === user?.displayName ? 'flex-end' : 'flex-start'
+            alignSelf: senderName.toLowerCase() === user?.displayName.toLowerCase() ? 'flex-end' : 'flex-start',
+            justifyContent: senderName.toLowerCase() === user?.displayName.toLowerCase() ? 'flex-end' : 'flex-start'
           }}
           //data-timestamp={message.timestamp}
           data-timestamp={messageDate}
@@ -81,9 +81,9 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
           <div 
             className={content.image ? 'message-content-img' : "message-content"}
             style={{
-              backgroundColor: senderName.toLowerCase() === user?.displayName ? '#c7bab2' : '#c59a82',
-              borderTopRightRadius: senderName.toLowerCase() === user?.displayName ? '0' : '15px',
-              borderTopLeftRadius: senderName.toLowerCase() !== user?.displayName ? '0' : '15px',
+              backgroundColor: senderName.toLowerCase() === user?.displayName.toLowerCase() ? '#c7bab2' : '#c59a82',
+              borderTopRightRadius: senderName.toLowerCase() === user?.displayName.toLowerCase() ? '0' : '15px',
+              borderTopLeftRadius: senderName.toLowerCase() !== user?.displayName.toLowerCase() ? '0' : '15px',
             }}
           >
             <div>
@@ -104,7 +104,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             </div>
             { linkData && <LinkPreview {...{linkData, content}}/> } 
             {
-              timestamp && <p style={{textAlign: 'right', fontSize: '.55rem'}}>{format(timestamp.toDate(), 'p')}</p>
+              user && timestamp && <p style={{textAlign: 'right', fontSize: '.55rem'}}>{format(timestamp.toDate(), 'p')}</p>
             }
             {
               isLastIndex && message.senderUid === user.uid && message.status === "seen" && (
