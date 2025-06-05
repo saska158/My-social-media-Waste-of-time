@@ -32,7 +32,7 @@ const FirestoreItemHeader = ({creatorUid, timestamp}) => {
             }
             <div>
               <p>{profile?.displayName}</p>
-              {timestamp && <p style={{fontSize: '.65rem'}}>{formattedTime}</p>}
+              {timestamp && <p style={{fontSize: '.65rem', color: '#8a7263'}}>{formattedTime}</p>}
             </div>
           </div>
         </Link>

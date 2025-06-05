@@ -63,7 +63,7 @@ const UsersList = () => {
           onClick={findPeopleToFollow} 
           className="show-popup-btn"
           style={{
-            color: isMobile ? "#eed4d4" : "#4f3524",
+            color: isMobile ? "#eed4d4" : "#8a7263",
             borderBottom: isMobile ? ".2px solid #eed4d4" : ".2px solid #4f3524"
           }}
         >
@@ -95,7 +95,7 @@ const UsersList = () => {
                     loading ? <UserSkeleton /> : (
                       users.length > 0 ? (
                         <div>
-                          <span>online:</span>
+                          <span style={{display: 'block', margin: '1em 0'}}>online</span>
                           {
                             users.map((usr, index) => <UserItem key={index} user={usr} />)
                           }
