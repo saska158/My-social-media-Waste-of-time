@@ -25,18 +25,18 @@ const UserPosts = ({profileUid}) => {
 
     return (
         <div>
-          <div>
+          <div style={{paddingLeft: '1em'}}>
             {
               roomTags.map(tag => (
                 <button 
                   key={tag} 
                   onClick={() => setRoom(tag)} 
                   style={{
-                    borderBottom: room === tag ? ".2px solid #4f3524" : "none", 
-                    borderRadius: '0', 
-                    padding: 0, 
-                    paddingBottom: '.5em',
-                    marginRight: '1em'
+                    border: room === tag ? ".2px solid #c2668b" : "none", 
+                    borderRadius: '30px', 
+                    padding: '.5em .8em',
+                    marginRight: '1em',
+                    fontSize: '.75rem'
                   }}
                 >
                   {tag}
