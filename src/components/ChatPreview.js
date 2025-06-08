@@ -24,7 +24,7 @@ const ChatPreview = ({
             <img 
               src={receiverUid === chatPartnerUid ? receiverPhoto : senderPhoto} 
               alt="sender" 
-              className="chat-item-profile-image"
+              className="user-img user-img-medium"
             />
             <span>{receiverUid === chatPartnerUid ? receiverName : senderName}</span>
           </div>

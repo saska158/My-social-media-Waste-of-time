@@ -161,7 +161,7 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
         />
       </div>
       <div 
-        style={{ height: '300px', overflowY: 'auto'}}
+        style={{ height: '400px', overflowY: 'auto'}}
         id="scrollableUsersDiv"
         ref={usersContainerRef}
       >

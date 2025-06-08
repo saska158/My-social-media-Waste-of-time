@@ -27,7 +27,7 @@ const FirestoreItemHeader = ({creatorUid, timestamp}) => {
           <div className="post-header-container">
             {
               profile?.photoURL ? (
-                <img src={profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} alt="profile" className="post-header-profile-image" />
+                <img src={profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} alt="profile" className="user-img user-img-medium" />
               ) : null
             }
             <div>

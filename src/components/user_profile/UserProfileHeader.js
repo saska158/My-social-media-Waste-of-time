@@ -59,7 +59,7 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
               <img 
                 src={profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
                 alt="profile-picture" 
-                className="user-profile-profile-picture"
+                className="user-img user-img-big"
               />
               <p className="user-profile-displayName">{profile.displayName}</p>
             </div>
@@ -73,11 +73,11 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
             }
             {error && <ErrorMessage message={error} />}      
             {
-              isMyProfile && <button className="edit-profile-button" onClick={handleEditButton}>Edit Profile</button>
+              isMyProfile && <button className="dark-border" onClick={handleEditButton}>Edit Profile</button>
             }
             {
               user && !isMyProfile ? (
-                <button className="message-button" onClick={handleMessageButton}>message</button>
+                <button className="dark-border" onClick={handleMessageButton}>message</button>
               ) : null
             }
           </div>

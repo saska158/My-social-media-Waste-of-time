@@ -183,7 +183,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
           <EmojiPicker 
             onEmojiClick={handleEmojiClick} 
             style={{
-              position: 'fixed',
+              position: 'absolute',
               bottom: '10%',
               left: '10%',
               width: '30%',

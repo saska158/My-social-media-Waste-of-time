@@ -78,7 +78,6 @@ const UsersList = () => {
           <div>
             {error && <ErrorMessage message={error} onRetry={refetch} />}
             <div 
-              className="active-users-container"
               id="scrollableActiveUsersDiv"
               ref={usersContainerRef}
             >
@@ -94,7 +93,7 @@ const UsersList = () => {
                   {
                     loading ? <UserSkeleton /> : (
                       users.length > 0 ? (
-                        <div>
+                        <div style={{display: 'flex', flexDirection: 'column', gap: '1em'}}>
                           <span style={{display: 'block', margin: '1em 0'}}>online</span>
                           {
                             users.map((usr, index) => <UserItem key={index} user={usr} />)

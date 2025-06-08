@@ -127,7 +127,7 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
 
 
   return (
-    <form onSubmit={handleOnSubmit} ref={formRef}>
+    <form onSubmit={handleOnSubmit} ref={formRef} style={{height: '100%'}}>
       { error && <ErrorMessage message={error} /> }
 
       <Textarea
@@ -151,38 +151,40 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
 
       { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setData} /> }
 
-      <ImageUploadButton {...{handleImageChange, fileInputRef}} />
-      <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
+      <div className="post-form-icons-container">
+        <ImageUploadButton {...{handleImageChange, fileInputRef}} />
+        <div style={{position: 'relative'}}>
+          <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
+          {
+            showEmojiPicker && (
+              <EmojiPicker 
+                onEmojiClick={handleEmojiClick} 
+                style={{
+                  position: 'absolute',
+                  bottom: '10%',
+                  left: '70%',
+                }}
+              />
+            )
+          }
+        </div>
 
-      {
-        showEmojiPicker && (
-          <EmojiPicker 
-            onEmojiClick={handleEmojiClick} 
-            style={{
-              position: 'fixed',
-              bottom: '10%',
-              left: '10%',
-              width: '30%',
-            }}
-          />
-        )
-      }
-
-      {
-        data.text || data.image ? (
-          <button type="submit" disabled={loading}>
-            {
-              loading ? (
-                <ClipLoader color="#4f3524"/>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: '#4f3524'}}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                </svg>
-              )
-            }
-          </button>
-        ) : null
-      }
+        {
+          data.text || data.image ? (
+            <button type="submit" disabled={loading}>
+              {
+                loading ? (
+                  <ClipLoader color="#4f3524"/>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: '#4f3524'}}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                  </svg>
+                )
+              }
+            </button>
+          ) : null
+        }
+      </div>
     </form>
   )    
 }

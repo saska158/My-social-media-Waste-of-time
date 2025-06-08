@@ -74,7 +74,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
               <img 
                 src={userProfile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
                 alt="profile" 
-                className="message-profile-image"
+                className="user-img user-img-small"
               />
             )
           }

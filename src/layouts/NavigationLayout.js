@@ -64,7 +64,7 @@ const NavigationLayout = () => {
                 ) : (
                   <button
                     onClick={logOut} 
-                    className="sign-out-button"
+                    className="light-border"
                     disabled={authLoading}
                   >
                     sign out

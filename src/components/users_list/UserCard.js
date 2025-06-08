@@ -34,19 +34,18 @@ const UserCard = ({userItem}) => {
 
 
     return (
-        <div className="user-item-container">
+        <div className="user-card-container">
           <UserItem user={userItem} />
-          <div style={{width: '50%'}}>
-            {
-              currentUser.uid !== userItem.uid && (
-                <FollowButton 
-                  currentUser={currentUser}
-                  targetUser={userItem}
-            />
-              )
-            }
-            {error && <ErrorMessage message={error} />}     
-          </div>
+          {
+            currentUser.uid !== userItem.uid && (
+              <FollowButton 
+                currentUser={currentUser}
+                targetUser={userItem}
+                type="bordered"
+              />
+            )
+          }
+          {error && <ErrorMessage message={error} />}     
         </div>
     )
 }
