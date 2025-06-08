@@ -14,7 +14,7 @@ import { ClipLoader } from "react-spinners"
 import ErrorMessage from "./errors/ErrorMessage"
 
 
-const PostForm = ({firestoreRef, placeholder, type, setIsPopupShown=()=>{}}) => {
+const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
   const initialData = {
     text: '',
     image: ''
@@ -127,63 +127,33 @@ const PostForm = ({firestoreRef, placeholder, type, setIsPopupShown=()=>{}}) => 
 
 
   return (
-    <form onSubmit={handleOnSubmit} ref={formRef} className={`${type}-form`}>
+    <form onSubmit={handleOnSubmit} ref={formRef}>
       { error && <ErrorMessage message={error} /> }
-      <label className='post-form-main-label'>
-        {
-          linkData && (
-            <LinkPreview {...{linkData}} content={data} style={{display: 'flex', alignItems: 'flex-start'}} imgStyle={{width: '30%'}}>
-              <button onClick={cancelLink}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '15px'}} /*className="size-6"*/>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </LinkPreview>
-          )
-        }
-        <div 
-          style={{
-            display: 'flex', 
-            alignItems: type === 'create-post' ? 'flex-start' : 'center', 
-            flexDirection: type === 'create-post' ? 'column' : 'row',
-            gap: '1em',
-          }}
-        >
-          <div style={{display: 'flex', gap: '.3em', alignItems: 'center', fontSize: '1.3rem'}}>
-            <img src={user.photoURL} alt="profile-img" className='post-form-profile-image' />
-            {
-              type === 'create-post' && <span>{user.displayName}</span>
-            }
-          </div>
-          <Textarea
-            value={data.text}
-            onChange={handleDataChange}
-            placeholder={placeholder}
-            textareaRef={textareaRef}
-            type={type}
-          />
-          <div style={{display: 'flex', alignItems: 'center'}}>
-            { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setData} /> }
-            <ImageUploadButton {...{handleImageChange, fileInputRef}} />
-            <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
-          </div>
-        </div>
-      </label>
+
+      <Textarea
+        value={data.text}
+        onChange={handleDataChange}
+        placeholder={placeholder}
+        textareaRef={textareaRef}
+      />
+
       {
-        data.text || data.image ? (
-          <button type="submit" className={`${type}-form-btn`} disabled={loading}>
-            {
-              loading ? (
-                <ClipLoader color="#4f3524"/>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: '#4f3524'}}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                </svg>
-              )
-            }
-          </button>
-        ) : null
+        linkData && (
+          <LinkPreview {...{linkData}} content={data} style={{display: 'flex', alignItems: 'flex-start'}} imgStyle={{width: '30%'}}>
+            <button onClick={cancelLink}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '15px'}}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </LinkPreview>
+        )
       }
+
+      { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setData} /> }
+
+      <ImageUploadButton {...{handleImageChange, fileInputRef}} />
+      <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
+
       {
         showEmojiPicker && (
           <EmojiPicker 
@@ -197,9 +167,28 @@ const PostForm = ({firestoreRef, placeholder, type, setIsPopupShown=()=>{}}) => 
           />
         )
       }
+
+      {
+        data.text || data.image ? (
+          <button type="submit" disabled={loading}>
+            {
+              loading ? (
+                <ClipLoader color="#4f3524"/>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: '#4f3524'}}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                </svg>
+              )
+            }
+          </button>
+        ) : null
+      }
     </form>
   )    
 }
 
 export default PostForm
+
+
+
 

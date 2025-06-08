@@ -51,7 +51,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
 
   return (
     userProfile && (
-      <div style={{display: 'flex', flexDirection: 'column'}}>
+      <div style={{display: 'flex', flexDirection: 'column', whiteSpace: 'pre-wrap'}}>
         {
           showDateDivider && (
             <div className="date-divider">

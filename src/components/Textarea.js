@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 
-const Textarea = ({value, onChange, placeholder, textareaRef, type}) => {
+const Textarea = ({value, onChange, onKeyDown, placeholder, textareaRef}) => {
 
     useEffect(() => {
         const textarea = textareaRef.current
@@ -21,6 +21,7 @@ const Textarea = ({value, onChange, placeholder, textareaRef, type}) => {
           ref={textareaRef}
           value={value}
           onChange={onChange}
+          onKeyDown={onKeyDown}
           placeholder={placeholder}
           rows={1}
           style={{
@@ -28,7 +29,6 @@ const Textarea = ({value, onChange, placeholder, textareaRef, type}) => {
             resize: 'none',
             overflow: 'hidden',
             padding: '1em',
-            fontSize: type === 'create-post' ? '1.3rem' : '.8rem',
             fontFamily: 'inherit'
           }}
         />
