@@ -18,7 +18,6 @@ const ChatPreview = ({
         <div 
           className="chat-item-container"
           onClick={() => pickChat(chatPartnerUid, setIsChatBoxVisible)}
-          style={{width: '60%'}}
         >
           <div className="chat-item-infos">
             <img 

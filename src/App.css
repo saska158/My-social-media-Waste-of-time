@@ -320,13 +320,13 @@ textarea::placeholder {
 /* MY CHATS */
 
 .my-chats-container {
+  width: 100%;
   height: 700px;
   overflow-y: auto;
+  position: relative;
+  margin: 1em;
 }
 
-.my-chats-content {
-  padding: 1em;
-}
 
 /* SIGN IN/ SIGN UP */
 
@@ -425,12 +425,6 @@ textarea::placeholder {
   padding: .8em;
 }
 
-/* MY CHATS */
-
-.my-chats-container {
-  width: 100%;
-  position: relative;
-}
 
 /*======= COMPONENTS =======*/
   
@@ -718,6 +712,7 @@ textarea::placeholder {
   margin: 0 1em 1em;
   padding: .7em 1em; 
   cursor: pointer;
+  width: 60%;
 }
 
 .chat-item-infos {
@@ -959,6 +954,14 @@ textarea::placeholder {
     bottom: 0;
     left: 0;
     right: 0;
+  }
+
+  .chat-item-container {
+    width: 80%;
+  }
+
+  .comment-content {
+    width: 80%;
   }
 
 }
