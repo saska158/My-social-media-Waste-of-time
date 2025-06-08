@@ -55,7 +55,7 @@ const UsersList = () => {
             <img 
               src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
               alt="user-profile-image" 
-              className="post-header-profile-image"
+              className="user-img user-img-medium"
             />
           ) 
         }
