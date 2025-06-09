@@ -901,22 +901,19 @@ textarea::placeholder {
   padding: 0;
   width: 100%;
 }
-
-  .chat-box {
-    width: 100%;
-    padding-top: 15em;
-  }
-
   .my-chats-content {
     padding-top: 15em;
   }
 
   .chat-box {
-    padding-top: 15em;
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
+  }  
+
+  .chat-box-header-container {
+    margin-top: 15em;
   }
 
   .chat-item-container {
