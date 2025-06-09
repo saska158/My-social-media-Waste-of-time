@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/authContext'
 import { firestore, collection } from "../api/firebase"
 import Post from "../components/post/Post"
 import JoinPopUp from "../components/JoinPopUp"
-import PostForm from "../components/PostForm"
+import PostForm from "../components/post/PostForm"
 import PopUp from "../components/PopUp"
 import PostSkeleton from "../components/skeletons/PostSkeleton"
 import useFirestoreBatch from "../hooks/useFirestoreBatch"
@@ -72,7 +72,12 @@ const Homepage = () => {
       { 
         isPopupShown && (
           <PopUp setIsPopUpShown={setIsPopupShown}>
-            <PostForm firestoreRef={roomRef} placeholder="let's waste time..." type="create-post" setIsPopupShown={setIsPopupShown}/>
+            <PostForm 
+              firestoreRef={roomRef} 
+              placeholder="let's waste time..." 
+              type="create-post" 
+              setIsPopupShown={setIsPopupShown} 
+            />
           </PopUp>
         ) 
       }

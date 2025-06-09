@@ -1,6 +1,6 @@
 import { useRef } from "react"
 import Comment from "./Comment"
-import PostForm from "../PostForm"
+import CommentsForm from "./CommentsForm"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import PostSkeleton from "../skeletons/PostSkeleton"
@@ -48,7 +48,11 @@ const Comments = ({room, postId, firestoreRef}) => {
           )
         }
       </div>
-      <PostForm {...{firestoreRef}} placeholder="Add comment..." />
+      <CommentsForm 
+        {...{firestoreRef}} 
+        placeholder="Add comment..." 
+        style={{border: '1px solid green', height: '20%'}} 
+      />
     </div>
   )
 }

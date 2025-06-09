@@ -1,5 +1,5 @@
 import { useRef } from "react"
-import PostForm from "../PostForm"
+import CommentsForm from "./CommentsForm"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import { ClipLoader } from "react-spinners"
 import PostSkeleton from "../skeletons/PostSkeleton"
@@ -17,7 +17,7 @@ const Replies = ({firestoreRef, creatorName}) => {
 
   return (
     <div className="comments-container">
-      <PostForm {...{firestoreRef}} placeholder={`Reply to ${creatorName}...`} />
+      <CommentsForm {...{firestoreRef}} placeholder={`Reply to ${creatorName}...`} />
       <div 
         className="comments-box"
         id="scrollableRepliesDiv"

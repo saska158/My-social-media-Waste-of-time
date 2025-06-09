@@ -1,24 +1,26 @@
 import { useState, useEffect, useRef } from "react"
-import { useAuth } from "../contexts/authContext" 
-import extractUrls from "../utils/extractUrls"
-import fetchLinkPreview from "../api/fetchLinkPreview"
-import { readImageAsDataURL } from "../utils/readImageAsDataURL"
-import sendPostToFirestore from "../api/sendPostToFirestore"
-import ImagePreview from "./ImagePreview"
-import LinkPreview from "./LinkPreview"
-import ImageUploadButton from "./ImageUploadButton"
-import ChatSmiley from "./ChatSmiley"
+import { useAuth } from "../../contexts/authContext" 
+import extractUrls from "../../utils/extractUrls"
+import fetchLinkPreview from "../../api/fetchLinkPreview"
+import { readImageAsDataURL } from "../../utils/readImageAsDataURL"
+import sendPostToFirestore from "../../api/sendPostToFirestore"
+import ImagePreview from "../ImagePreview"
+import LinkPreview from "../LinkPreview"
+import ImageUploadButton from "../ImageUploadButton"
+import ChatSmiley from "../ChatSmiley"
 import EmojiPicker from "emoji-picker-react"
-import Textarea from "./Textarea"
+import Textarea from "../Textarea"
 import { ClipLoader } from "react-spinners"
-import ErrorMessage from "./errors/ErrorMessage"
+import ErrorMessage from "../errors/ErrorMessage"
 
 
-const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
+const CommentsForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
   const initialData = {
     text: '',
     image: ''
-  }  
+  }
+  
+
   // Context
   const { user } = useAuth()
   
@@ -27,14 +29,12 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
   const [imagePreview, setImagePreview] = useState(null)
   const [showEmojiPicker, setShowEmojiPicker] = useState(false) 
   const [linkData, setLinkData] = useState(null)
-  const [linkFromText, setLinkFromText] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
   // Hooks that don't trigger re-renders 
   const textareaRef = useRef(null)
   const fileInputRef = useRef(null) 
-  const formRef = useRef(null)
 
   // Functions
   const handleDataChange = (e) => {
@@ -63,7 +63,6 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
     e.preventDefault()
     e.stopPropagation()
     setLinkData(null)
-    setLinkFromText(null)
   }
 
   const handleOnSubmit = async (e) => {
@@ -79,7 +78,6 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
       setImagePreview(null)
       setShowEmojiPicker(false)
       setLinkData(null)
-      setLinkFromText(null)
       fileInputRef.current.value = null
       setIsPopupShown(false)
     } catch (error) {
@@ -102,15 +100,9 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
   }
 
   // Effects
-  /*useEffect(() => {
-    if(textareaRef.current) {
-      textareaRef.current.focus()
-    }
-  }, [dataArray])//proveri sto uopste ovo*/
 
   useEffect(() => {
     if(!data.text) return
-    //if (!linkFromText) return
     const fetchData = async () => {
       try {
         const urls = extractUrls(data.text)
@@ -127,15 +119,55 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
 
 
   return (
-    <form onSubmit={handleOnSubmit} ref={formRef} style={{height: '100%'}}>
+    <form onSubmit={handleOnSubmit} style={{display: 'flex', flexDirection: 'column-reverse'}}>
       { error && <ErrorMessage message={error} /> }
 
-      <Textarea
-        value={data.text}
-        onChange={handleDataChange}
-        placeholder={placeholder}
-        textareaRef={textareaRef}
-      />
+      <div style={{display: 'flex', alignItems: 'center', gap: '2em'}}>
+        <Textarea
+          value={data.text}
+          onChange={handleDataChange}
+          placeholder={placeholder}
+          textareaRef={textareaRef}
+        />
+
+        <div style={{display: 'flex', alignItems: 'center', width: '50%'}}>
+          <ImageUploadButton {...{handleImageChange, fileInputRef}} />
+          <div style={{position: 'relative'}}>
+            <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
+            {
+              showEmojiPicker && (
+                <EmojiPicker 
+                  onEmojiClick={handleEmojiClick} 
+                  style={{
+                    position: 'absolute',
+                    bottom: '100%',
+                    left: '0',
+                    marginBottom: '.25em',
+                    zIndex: '1000',
+                    overflow: 'hidden'
+                  }}
+                />
+              )
+            }
+          </div>
+
+          {
+            data.text || data.image ? (
+              <button type="submit" disabled={loading}>
+                {
+                  loading ? (
+                    <ClipLoader color="#4f3524"/>
+                  ) : (
+                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: '#4f3524'}}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                    </svg>
+                  )
+                }
+              </button>
+            ) : null
+          }
+        </div>
+      </div>
 
       {
         linkData && (
@@ -150,49 +182,11 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
       }
 
       { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setData} /> }
-
-      <div className="post-form-icons-container">
-        <ImageUploadButton {...{handleImageChange, fileInputRef}} />
-        <div style={{position: 'relative'}}>
-          <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
-          {
-            showEmojiPicker && (
-              <EmojiPicker 
-                onEmojiClick={handleEmojiClick} 
-                style={{
-                  position: 'absolute',
-                  bottom: '100%',
-                  left: '0',
-                  marginBottom: '.25em',
-                  zIndex: '1000',
-                  overflow: 'hidden'
-                }}
-              />
-            )
-          }
-        </div>
-
-        {
-          data.text || data.image ? (
-            <button type="submit" disabled={loading}>
-              {
-                loading ? (
-                  <ClipLoader color="#4f3524"/>
-                ) : (
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: '#4f3524'}}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                  </svg>
-                )
-              }
-            </button>
-          ) : null
-        }
-      </div>
     </form>
   )    
 }
 
-export default PostForm
+export default CommentsForm
 
 
 
