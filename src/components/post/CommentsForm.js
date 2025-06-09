@@ -128,6 +128,7 @@ const CommentsForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
           onChange={handleDataChange}
           placeholder={placeholder}
           textareaRef={textareaRef}
+          maxLength={280}
         />
 
         <div style={{display: 'flex', alignItems: 'center', width: '50%'}}>

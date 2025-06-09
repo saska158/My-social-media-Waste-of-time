@@ -32,7 +32,7 @@ const UserPosts = ({profileUid}) => {
                   key={tag} 
                   onClick={() => setRoom(tag)} 
                   style={{
-                    border: room === tag ? ".2px solid #c2668b" : "none", 
+                    border: room === tag ? ".2px solid #f05593" : "none", 
                     borderRadius: '30px', 
                     padding: '.5em .8em',
                     marginRight: '1em',

@@ -100,82 +100,96 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
               className="edit-image-input"
             />
           </label>
-          <input
-            type="text"
-            value={profile.displayName}
-            name="displayName"
-            onChange={handleInputChange}
-            placeholder="name"
-          />
-          <textarea
-            value={profile.bio}
-            name="bio"
-            onChange={handleInputChange}
-            placeholder="bio"
-            style={{minHeight: '100px'}}
-          />
-          <label
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '.5em'
-            }}
-          >
-            Currently:
+          <label>
+            name:
             <input
               type="text"
-              value={profile.currently.watching}
-              name="currently.watching"
+              value={profile.displayName}
+              name="displayName"
               onChange={handleInputChange}
-              placeholder="watching..."
-            />
-            <input
-              type="text"
-              value={profile.currently.reading}
-              name="currently.reading"
-              onChange={handleInputChange}
-              placeholder="reading..."
-            />
-            <input
-              type="text"
-              value={profile.currently.listening}
-              name="currently.listening"
-              onChange={handleInputChange}
-              placeholder="listening..."
             />
           </label>
-          <label
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '.5em'
-            }}
-          >
-            Favorites:
-            <input
-              type="text"
-              value={profile.favorites.watching}
-              name="favorites.watching"
+          <label>
+            bio:
+            <textarea
+              value={profile.bio}
+              name="bio"
               onChange={handleInputChange}
-              placeholder="watching..."
-            />
-            <input
-              type="text"
-              value={profile.favorites.reading}
-              name="favorites.reading"
-              onChange={handleInputChange}
-              placeholder="reading"
-            />
-            <input
-              type="text"
-              value={profile.favorites.listening}
-              name="favorites.listening"
-              onChange={handleInputChange}
-              placeholder="listening"
+              maxLength={270}
+              rows={1}
+              onInput={(e) => {
+                e.target.style.height = 'auto'
+                e.target.style.height = `${e.target.scrollHeight}px`
+              }}
+              style={{
+                resize: 'none',
+                overflow: 'hidden',
+              }}
             />
           </label>
+            <p style={{fontFamily: "'Anton', sans-serif", fontSize: '1.3rem'}}>currently:</p>
+            <label>
+              watching:
+              <input
+                type="text"
+                value={profile.currently.watching}
+                name="currently.watching"
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+              reading:
+              <input
+                type="text"
+                value={profile.currently.reading}
+                name="currently.reading"
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+              listening:
+              <input
+                type="text"
+                value={profile.currently.listening}
+                name="currently.listening"
+                onChange={handleInputChange}
+              />
+            </label>
+            <p style={{fontFamily: "'Anton', sans-serif", fontSize: '1.3rem'}}>favorites:</p>
+            <label>
+              watching:
+              <input
+                type="text"
+                value={profile.favorites.watching}
+                name="favorites.watching"
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+              reading:
+              <input
+                type="text"
+                value={profile.favorites.reading}
+                name="favorites.reading"
+                onChange={handleInputChange}
+              />
+            </label>
+            <label>
+              listening:
+              <input
+                type="text"
+                value={profile.favorites.listening}
+                name="favorites.listening"
+                onChange={handleInputChange}
+              />
+            </label>
           <button 
-            style={{border: loading ? 'none' : '.2px solid #4f3524', padding: '1em 1.3em', alignSelf: 'center'}}
+            style={{
+              border: loading ? 'none' : '.2px solid #4f3524', 
+              padding: '1em 1.3em', 
+              alignSelf: 'center',
+              margin: '2em 0'
+            }}
             onClick={saveProfileChanges}
             disabled={loading}
           >

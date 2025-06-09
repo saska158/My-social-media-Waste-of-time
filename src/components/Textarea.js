@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 
-const Textarea = ({value, onChange, onKeyDown, placeholder, textareaRef, style = {}}) => {
+const Textarea = ({value, onChange, onKeyDown, placeholder, textareaRef, style = {}, maxLength}) => {
 
     const defaultStyle = {
       width: '100%',
@@ -32,8 +32,13 @@ const Textarea = ({value, onChange, onKeyDown, placeholder, textareaRef, style =
           value={value}
           onChange={onChange}
           onKeyDown={onKeyDown}
+          onInput={(e) => {
+            e.target.style.height = 'auto'
+            e.target.style.height = `${e.target.scrollHeight}px`
+          }}
           placeholder={placeholder}
           rows={1}
+          maxLength={maxLength}
           style={combinedStyle}
         />
     )

@@ -161,6 +161,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
           placeholder="Message..."
           textareaRef={textareaRef}
           style={{width: '50%'}}
+          maxLength={1000}
         />
 
         <div style={{display: 'flex', alignItems: 'center', width: '50%'}}>

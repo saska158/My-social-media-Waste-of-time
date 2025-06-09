@@ -116,7 +116,7 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
 
 
   return (
-    <form onSubmit={handleOnSubmit} style={{height: '100%'}}>
+    <form onSubmit={handleOnSubmit} className="post-form">
       { error && <ErrorMessage message={error} /> }
 
       <Textarea
@@ -124,6 +124,8 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
         onChange={handleDataChange}
         placeholder={placeholder}
         textareaRef={textareaRef}
+        style={{fontSize: '1.5rem', borderBottom: 'none'}}
+        maxLength={270}
       />
 
       {

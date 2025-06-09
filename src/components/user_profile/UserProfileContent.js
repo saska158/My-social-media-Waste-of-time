@@ -4,13 +4,13 @@ const UserProfileContent = ({activeSection, profile, profileUid}) => {
     return (
         <div>
             {
-                activeSection === "bio" ? <p>{profile[activeSection]}</p> :
+                activeSection === "bio" ? <p style={{width: '80%', wordBreak: 'break-word'}}>{profile[activeSection]}</p> :
                 activeSection === 'posts' && profileUid ? (
                     <UserPosts {...{profileUid}} />
                 ) : (
                     <div style={{display: 'flex', flexDirection: 'column', gap: '1.5em'}}>
                         {Object.entries(profile[activeSection]).map(([key, value]) => (
-                            <div key={key}>
+                            <div key={key} style={{width: '80%', wordBreak: 'break-word'}}>
                                 <span 
                                   style={{
                                     display: 'block', 

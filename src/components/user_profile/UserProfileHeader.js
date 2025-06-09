@@ -94,14 +94,14 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
               fontSize: '.9rem',
             }}
           >
-            <span>
-              {profile.followers?.length || 0}
-              {profile.followers?.length === 1 ? 'follower' : 'followers'}
-            </span>
-            <span>
-              {profile.following?.length || 0}
-              following
-            </span>
+            <p style={{display: 'flex', gap: '2px'}}>
+              <span>{profile.followers?.length || 0}</span>
+              <span>{profile.followers?.length === 1 ? 'follower' : 'followers'}</span>
+            </p>
+            <p style={{display: 'flex', gap: '2px'}}>
+              <span>{profile.following?.length || 0}</span>
+              <span>following</span>
+            </p>
           </div>
         </div>
     )

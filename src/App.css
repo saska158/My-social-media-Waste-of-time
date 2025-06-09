@@ -97,8 +97,8 @@ form {
 }
 
 input, textarea {
-  padding: 1em 0;
-  font-style: inherit;
+  padding: 1em;
+  font-family: inherit;
   outline: none;
   color: var(--dark);
   background-color: var(--light);
@@ -304,11 +304,15 @@ textarea::placeholder {
   padding: 1em;
 }
 
+.post-form {
+  height: 100%;
+  padding-top: 2.5em; 
+  display: flex; 
+  flex-direction: column;
+}
+
 .post-form-icons-container {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+  margin-top: auto;
   display: flex;
   align-items: center;
 }
@@ -374,7 +378,13 @@ textarea::placeholder {
   display: flex; 
   flex-direction: column; 
   gap: 1em; 
-  margin: 1em;
+}
+
+.edit-profile-form input,
+.edit-profile-form textarea {
+  display: inline-block;
+  margin-left: 1em;
+  color: var(--accent);
 }
 
 .edit-image-label {
