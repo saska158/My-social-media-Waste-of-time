@@ -912,7 +912,7 @@ textarea::placeholder {
   }
 
   .chat-box {
-    padding-top: 13em;
+    padding-top: 15em;
     position: fixed;
     bottom: 0;
     left: 0;
