@@ -613,7 +613,7 @@ textarea::placeholder {
   border-radius: 10px;
   width: 100%;
   min-height: 300px;
-  margin-bottom: 2em;
+  margin-bottom: 3em;
   display: flex;
   flex-direction: column;
   gap: 1em;
