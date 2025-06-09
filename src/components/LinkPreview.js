@@ -15,7 +15,7 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
                 Link can't be shown.
               </p>
             ) : (
-              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
+              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', position: 'relative'}}>
                 <a 
                   href={linkData.url} 
                   target="_blank" 

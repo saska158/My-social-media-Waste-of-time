@@ -651,12 +651,19 @@ textarea::placeholder {
   margin-top: auto;
 }
 
+.post-actions button {
+  padding: 0;
+}
+
 .post-actions-container {
-  font-size: .7rem; 
   display: flex; 
   align-items: center; 
   justify-content: space-between;
-  padding: .5em 1em;
+  padding: 1em 0;
+}
+
+.post-actions-container button {
+  font-size: .7rem;
 }
 
 .post-actions-buttons {
@@ -664,17 +671,8 @@ textarea::placeholder {
   gap: 2em; 
   border-top: .5px solid var(--dark); 
   font-size: .7rem;
-  padding: 1em;
-  padding-top: .5em;
+  padding-top: 1em;
 }
-
-.post-actions-like-button {
-  display: flex; 
-  justify-content: center; 
-  align-items: center; 
-  gap: .5em;
-}
-
 
 /* CHAT ITEM */
 
@@ -690,14 +688,12 @@ textarea::placeholder {
 .chat-item-infos {
   display: flex;
   align-items: center;
+  gap: .5em;
 }
 
 .chat-item-content {
   font-size: .75rem;
-  margin-top: .3em;
-  display: flex;
-  justify-content: space-between;
-  gap: 2em;
+  margin-top: 1em;
   word-break: break-all;
 }
 

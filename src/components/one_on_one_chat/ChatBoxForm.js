@@ -153,7 +153,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
     <form style={{display: 'flex', flexDirection: 'column-reverse', padding: '1em'}}>
       { error && <ErrorMessage message={error} /> }
 
-      <div style={{display: 'flex', alignItems: 'center'}}>
+      <div style={{display: 'flex', alignItems: 'center', gap: '2em'}}>
         <Textarea
           value={message.text}
           onChange={handleMessageChange}
@@ -171,14 +171,14 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
               showEmojiPicker && (
                 <EmojiPicker 
                  onEmojiClick={handleEmojiClick} 
-                  style={{
-                    position: 'absolute',
-                    bottom: '100%',
-                    right: '0',
-                    marginBottom: '.25em',
-                    zIndex: '1000',
-                    overflow: 'hidden'
-                  }}
+                 style={{
+                  position: 'absolute',
+                  bottom: '100%',
+                  right: '0',
+                  marginBottom: '.25em',
+                  zIndex: '1000',
+                  overflow: 'hidden'
+                 }}
                 />
               )
             }
@@ -205,7 +205,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
       {
         linkData && (
           <LinkPreview {...{linkData}} content={message} style={{display: 'flex', alignItems: 'flex-start'}} imgStyle={{width: '30%'}}>
-            <button onClick={cancelLink}>
+            <button onClick={cancelLink} style={{position: 'absolute', top: '0', right: '0'}}>
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '15px'}}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
               </svg>
