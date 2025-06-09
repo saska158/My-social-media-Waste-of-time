@@ -6,17 +6,15 @@ import fetchLinkPreview from "../../api/fetchLinkPreview"
 import extractUrls from "../../utils/extractUrls"
 import linkify from "../../utils/linkify"
 import LinkPreview from "../LinkPreview"
-import PopUp from "../PopUp"
 
 const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDateDivider}) => {
   const { content, senderUid, senderName, timestamp } = message
   // Context
   const { user } = useAuth()
-  console.log(senderName, user.displayName)
+
   // State
   const [userProfile, setUserProfile] = useState(null)
   const [linkData, setLinkData] = useState(null)
-  const [isImageViewerShown, setIsImageViewerShown] = useState(false)
 
   // Effects
   useEffect(() => {
@@ -26,9 +24,12 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
         if(urls && urls.length > 0) {
           const linkDetails = await fetchLinkPreview(urls[0])
           setLinkData(linkDetails)                            
+        } else {
+          setLinkData(null)
         }
       } catch(error) {
         console.error("Error fetching link preview:", error)
+        setLinkData(null)
       } 
     }
     fetchData()
@@ -89,17 +90,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             <div>
               { content.text && <p>{linkify(content.text)}</p> }
               {
-                content.image && (
-                  <img
-                    src={content.image}
-                    alt="message-image"
-                    style={{cursor: 'pointer'}}
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setIsImageViewerShown(true)
-                    }}
-                  />
-                )
+                content.image && <img src={content.image} alt="message-image" />
               }
             </div>
             { linkData && <LinkPreview {...{linkData, content}}/> } 
@@ -113,13 +104,6 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             }
           </div>
         </div>
-        {
-          isImageViewerShown && (
-            <PopUp setIsPopUpShown={setIsImageViewerShown}>
-              <img src={content.image} alt="image viewer" />
-            </PopUp>
-          )
-        }
       </div>
     )
   )

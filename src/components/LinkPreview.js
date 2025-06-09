@@ -44,7 +44,7 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
                     </span>
                   )}
                 </p>
-                {/*{children}*/}
+                {children}
               </div>
             )
           }

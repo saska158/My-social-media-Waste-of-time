@@ -161,8 +161,11 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
                 onEmojiClick={handleEmojiClick} 
                 style={{
                   position: 'absolute',
-                  bottom: '10%',
-                  left: '70%',
+                  bottom: '100%',
+                  left: '0',
+                  marginBottom: '.25em',
+                  zIndex: '1000',
+                  overflow: 'hidden'
                 }}
               />
             )

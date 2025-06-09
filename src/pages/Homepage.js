@@ -71,7 +71,7 @@ const Homepage = () => {
       </div>
       { 
         isPopupShown && (
-          <PopUp setIsPopUpShown={setIsPopupShown} /*setShowEmojiPicker={setShowEmojiPicker}*/>
+          <PopUp setIsPopUpShown={setIsPopupShown}>
             <PostForm firestoreRef={roomRef} placeholder="let's waste time..." type="create-post" setIsPopupShown={setIsPopupShown}/>
           </PopUp>
         ) 
@@ -96,7 +96,7 @@ const Homepage = () => {
                     room={room}
                   />
                 )) : (
-                  <div>No posts in this room yet</div>
+                  <div>No posts in this room yet.</div>
                 )
               )
             }    

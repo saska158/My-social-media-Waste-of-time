@@ -150,16 +150,57 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
 
 
   return (
-    <form>
+    <form style={{display: 'flex', flexDirection: 'column-reverse', padding: '1em'}}>
       { error && <ErrorMessage message={error} /> }
 
-      <Textarea
-        value={message.text}
-        onChange={handleMessageChange}
-        onKeyDown={handleKeyDown}
-        placeholder="Message..."
-        textareaRef={textareaRef}
-      />
+      <div style={{display: 'flex', alignItems: 'center'}}>
+        <Textarea
+          value={message.text}
+          onChange={handleMessageChange}
+          onKeyDown={handleKeyDown}
+          placeholder="Message..."
+          textareaRef={textareaRef}
+          style={{width: '50%'}}
+        />
+
+        <div style={{display: 'flex', alignItems: 'center', width: '50%'}}>
+          <ImageUploadButton {...{handleImageChange, fileInputRef}} />
+          <div style={{position: 'relative'}}>
+            <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
+            {
+              showEmojiPicker && (
+                <EmojiPicker 
+                 onEmojiClick={handleEmojiClick} 
+                  style={{
+                    position: 'absolute',
+                    bottom: '100%',
+                    right: '0',
+                    marginBottom: '.25em',
+                    zIndex: '1000',
+                    overflow: 'hidden'
+                  }}
+                />
+              )
+            }
+          </div>
+  
+          {
+            message.text || message.image ? (
+              <button onClick={handleSendMessage} disabled={loading} style={{marginLeft: 'auto'}}>
+                {
+                  loading ? (
+                    <ClipLoader color="#4f3524"/>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: '#4f3524'}}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
+                    </svg>
+                  )
+                }
+              </button>
+            ) : null
+          }
+        </div>
+      </div>
 
       {
         linkData && (
@@ -174,39 +215,6 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
       }
 
       { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setMessage} /> }
-
-      <ImageUploadButton {...{handleImageChange, fileInputRef}} />
-      <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
-
-      {
-        showEmojiPicker && (
-          <EmojiPicker 
-            onEmojiClick={handleEmojiClick} 
-            style={{
-              position: 'absolute',
-              bottom: '10%',
-              left: '10%',
-              width: '30%',
-            }}
-          />
-        )
-      }
-
-      {
-        message.text || message.image ? (
-          <button onClick={handleSendMessage} disabled={loading}>
-            {
-              loading ? (
-                <ClipLoader color="#4f3524"/>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: '#4f3524'}}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
-                </svg>
-              )
-            }
-          </button>
-        ) : null
-      }
     </form>
   )
 }
