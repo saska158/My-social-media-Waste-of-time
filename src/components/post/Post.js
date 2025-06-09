@@ -6,7 +6,7 @@ import FirestoreItemActions from "./FirestoreItemActions"
 import PopUp from "../PopUp"
 import Comments from "./Comments"
 
-const Post = ({post, room,  style}) => {
+const Post = ({post, room,  style = {}}) => {
   const { id: postId, creatorUid, content, timestamp } = post
 
   // State
@@ -21,7 +21,7 @@ const Post = ({post, room,  style}) => {
   }, [room, postId])
 
   return (
-    <div key={postId} className="post-container">
+    <div key={postId} className="post-container" style={style}>
       <FirestoreItemHeader {...{creatorUid, timestamp}} />
       <FirestoreItemContent {...{content}} />
       <FirestoreItemActions 

@@ -72,6 +72,7 @@ const UserPosts = ({profileUid}) => {
                             key={index}
                             post={post}
                             room={room}
+                            style={{width: '90%'}}
                           />
                         ))
                       ) : <p>No posts yet.</p>
