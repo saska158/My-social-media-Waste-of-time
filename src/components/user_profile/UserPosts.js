@@ -24,8 +24,8 @@ const UserPosts = ({profileUid}) => {
     const isMobile = useMediaQuery({ maxWidth: 767 })
 
     return (
-        <div>
-          <div style={{paddingLeft: '1em'}}>
+        <div style={{paddingLeft: '1.5em'}}>
+          <div style={{marginBottom: '1em'}}>
             {
               roomTags.map(tag => (
                 <button 
@@ -45,7 +45,7 @@ const UserPosts = ({profileUid}) => {
             }
           </div>
           <div 
-            style={{padding: '.5em', height: '400px', overflowY: 'auto'}} 
+            style={{height: '400px', overflowY: 'auto'}} 
             id="scrollableUserPostsDiv"
             ref={postsContainerRef}
           >

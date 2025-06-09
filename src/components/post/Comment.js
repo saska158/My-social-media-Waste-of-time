@@ -1,6 +1,5 @@
 import { useState, useMemo } from "react"
 import { firestore, collection, doc } from "../../api/firebase"
-import PopUp from "../PopUp"
 import FirestoreItemHeader from "./FirestoreItemHeader"
 import FirestoreItemContent from "./FirestoreItemContent"
 import FirestoreItemActions from "./FirestoreItemActions"
@@ -8,8 +7,8 @@ import Replies from "./Replies"
 
 const Comment = ({comment, room, postId}) => {
   const { id: commentId, creatorUid, creatorName, content, timestamp } = comment
+
   // State
-  const [isImageViewerShown, setIsImageViewerShown] = useState(false)
   const [showComments, setShowComments] = useState(false)
 
   const commentRef = useMemo(() => {
@@ -19,12 +18,6 @@ const Comment = ({comment, room, postId}) => {
   const repliesRef = useMemo(() => {
     return collection(firestore, room, postId, 'comments', commentId, 'replies')
   }, [room, postId, commentId])
-
-  // Functions
-  const handleImageViewer = (e) => {
-    e.stopPropagation()
-    setIsImageViewerShown(true)
-  }
 
   return (
     <div className="comment-container">
@@ -42,13 +35,6 @@ const Comment = ({comment, room, postId}) => {
           )
         }
       </div>
-      {
-        isImageViewerShown && (
-          <PopUp setIsPopUpShown={setIsImageViewerShown}>
-            <img src={content.image} alt="image viewer" />
-          </PopUp>
-        )
-      }
     </div>
   )
 }

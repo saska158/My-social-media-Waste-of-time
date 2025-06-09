@@ -2,7 +2,7 @@ import UserPosts from "./UserPosts"
 
 const UserProfileContent = ({activeSection, profile, profileUid}) => {
     return (
-        <div className="user-profile-description">
+        <div>
             {
                 activeSection === "bio" ? <p>{profile[activeSection]}</p> :
                 activeSection === 'posts' && profileUid ? (

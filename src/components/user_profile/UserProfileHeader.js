@@ -53,8 +53,14 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
     }
 
     return (
-        <>
-          <div className="user-profile-content">  
+        <div>
+          <div 
+            style={{
+              display: 'flex',
+              alignItems: 'center', 
+              gap: '3em' 
+            }}
+          >  
             <div>
               <img 
                 src={profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
@@ -83,7 +89,6 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
           </div>
           <div 
             style={{
-              padding: '.5em', 
               display: 'flex', 
               gap: '.5em', 
               fontSize: '.9rem',
@@ -98,7 +103,7 @@ const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxV
               following
             </span>
           </div>
-        </>
+        </div>
     )
 }
 

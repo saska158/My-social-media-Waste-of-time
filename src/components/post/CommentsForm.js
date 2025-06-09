@@ -143,8 +143,7 @@ const CommentsForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
                     bottom: '100%',
                     right: '0',
                     marginBottom: '.25em',
-                    zIndex: '1000',
-                    overflow: 'hidden'
+                    zIndex: '9999',
                   }}
                 />
               )

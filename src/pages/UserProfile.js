@@ -97,7 +97,7 @@ const UserProfile = () => {
         <div>
         {
         !isChatBoxVisible ? (
-          <div style={{display: 'flex', flexDirection: 'column'}}>
+          <div style={{display: 'flex', flexDirection: 'column', padding: '.5em 1em'}}>
             <UserProfileHeader {...{profile, profileUid, setIsEditPopupShown, isChatBoxVisible, setIsChatBoxVisible, setIsFollowPopupShown}} />
             <UserProfileNavigation {...{activeSection, setActiveSection}}/>  
             {

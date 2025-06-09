@@ -1,19 +1,8 @@
-import { useState } from "react"
-import PopUp from "../PopUp"
 import FirestoreItemHeader from "./FirestoreItemHeader"
 import FirestoreItemContent from "./FirestoreItemContent"
 
 const Reply = ({reply}) => {
   const { creatorUid, content, timestamp } = reply
-
-  // State
-  const [isImageViewerShown, setIsImageViewerShown] = useState(false)
-
-  // Functions
-  const handleImageViewer = (e) => {
-    e.stopPropagation()
-    setIsImageViewerShown(true)
-  }
 
   return (
     <div className="comment-container">
@@ -21,13 +10,6 @@ const Reply = ({reply}) => {
         <FirestoreItemHeader {...{creatorUid, timestamp}} />
         <FirestoreItemContent {...{content}} />
       </div>
-      {
-        isImageViewerShown && (
-          <PopUp setIsPopUpShown={setIsImageViewerShown}>
-            <img src={content.image} alt="image viewer" />
-          </PopUp>
-        )
-      }
     </div>
   )
 }
