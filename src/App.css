@@ -904,11 +904,11 @@ textarea::placeholder {
 
   .chat-box {
     width: 100%;
-    padding-top: 6em;
+    padding-top: 10em;
   }
 
   .my-chats-content {
-    padding-top: 18em;
+    padding-top: 10em;
   }
 
   .chat-box {
