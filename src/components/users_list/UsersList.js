@@ -85,7 +85,8 @@ const UsersList = () => {
                 dataLength={users.length}
                 next={fetchMore}
                 hasMore={hasMore}
-                loader={<ClipLoader color="#4f3524" />}
+                //loader={<ClipLoader color="#4f3524" />}
+                loader={<UserSkeleton />}
                 scrollThreshold={0.9}
                 scrollableTarget="scrollableActiveUsersDiv"
               >

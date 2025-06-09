@@ -385,6 +385,7 @@ textarea::placeholder {
   display: inline-block;
   margin-left: 1em;
   color: var(--accent);
+  padding: .5em;
 }
 
 .edit-image-label {
@@ -613,7 +614,7 @@ textarea::placeholder {
   border-radius: 10px;
   width: 100%;
   min-height: 300px;
-  margin-bottom: 3em;
+  margin-bottom: 4em;
   display: flex;
   flex-direction: column;
   gap: 1em;

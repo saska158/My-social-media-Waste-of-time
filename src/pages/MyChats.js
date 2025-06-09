@@ -96,7 +96,8 @@ const MyChats = () => {
                 dataLength={chats.length}
                 next={fetchMore}
                 hasMore={hasMore}
-                loader={<ClipLoader color="#4f3524" />}
+                //loader={<ClipLoader color="#4f3524" />}
+                loader={<ChatItemSkeleton />}
                 scrollThreshold={0.9}
                 endMessage={
                  <p style={{ textAlign: 'center' }}></p>

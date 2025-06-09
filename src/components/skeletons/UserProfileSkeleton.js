@@ -1,12 +1,8 @@
 const UserPofileSkeleton = () => {
     return (
-        <div className="user-profile-container skeleton">
-            <div style={{display: 'flex', flexDirection: 'column'}}>
-                <div className="user-profile-content" style={{padding: '1em'}}>
-                    <div className="user-profile-profile-picture" style={{background: 'rgb(126, 84, 58)'}}></div>
-                </div>
-              <div className="user-profile-description skeleton"></div>   
-            </div>
+        <div className="user-profile-container skeleton" style={{padding: '.5em 1em'}}>
+            <div className="user-img user-img-big" style={{background: "#5c3d2a", marginBottom: '.5em'}}></div>
+            <div style={{background: '#5c3d2a', width: '100px', height: '20px', borderRadius: '15px'}}></div>
         </div>
     )
 }

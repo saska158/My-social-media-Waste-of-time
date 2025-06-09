@@ -86,7 +86,8 @@ const Homepage = () => {
           dataLength={posts.length}
           next={fetchMore}
           hasMore={hasMore}
-          loader={<ClipLoader color="#4f3524" />}
+          //loader={<ClipLoader color="#4f3524" />}
+          loader={<PostSkeleton />}
           scrollThreshold={0.9}
           scrollableTarget="scrollableDiv"
           style={{width: '500px'}}
