@@ -1,25 +1,9 @@
 import { useEffect, useRef } from "react"
+import gsap from "gsap"
 
 const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children, style}) => {
     const popUpRef = useRef(null)
-
-    /*const defaultStyle = {
-      position: 'fixed',
-      top: '50%',
-      left: '50%',
-      width: '50%',
-      zIndex: '9999',
-      height: '70%',
-      overflow: 'hidden',
-      background: 'white',
-      padding: '1em',
-      borderRadius: '15px',
-      boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.15)',
-      transform: 'translate(-50%, -50%)',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '1em',
-    }*/
+    const popUpContainerRef = useRef(null)
 
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -33,8 +17,16 @@ const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children, style}
         return () => document.removeEventListener("click", handleClickOutside)
     }, [])
 
+    useEffect(() => {
+      gsap.to(popUpContainerRef.current, {
+        duration: .3,
+        opacity: 1,
+        ease: "power2.out"
+      })
+    }, [])
+
     return (
-      <div className="pop-up-container">
+      <div className="pop-up-container" ref={popUpContainerRef}>
         <div className="pop-up-box" style={{...style}} ref={popUpRef}>
           { children }
           <button className="close-pop-up-button" onClick={() => setIsPopUpShown(false)}>
