@@ -51,4 +51,3 @@ const UserCard = ({userItem}) => {
 }
 
 export default UserCard
-
