@@ -80,9 +80,9 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             )
           }
           <div 
-            className={content.image ? 'message-content-img' : "message-content"}
+            className={content.image ? 'message-content-img dark-border' : "message-content dark-border"}
             style={{
-              backgroundColor: senderName.toLowerCase() === user?.displayName.toLowerCase() ? '#c7bab2' : '#c59a82',
+              //backgroundColor: senderName.toLowerCase() === user?.displayName.toLowerCase() ? '#cac5c2' : '#c9b1a4',
               borderTopRightRadius: senderName.toLowerCase() === user?.displayName.toLowerCase() ? '0' : '15px',
               borderTopLeftRadius: senderName.toLowerCase() !== user?.displayName.toLowerCase() ? '0' : '15px',
             }}

@@ -129,7 +129,7 @@ const MyChats = () => {
                       )
                       })
                   ) : (
-                      <p>Start a conversation to see your chats here.</p>
+                      <p style={{margin: '1em'}}>Start a conversation to see your chats here.</p>
                   )
                 )
               }

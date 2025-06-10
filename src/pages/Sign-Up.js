@@ -51,7 +51,7 @@ const SignUp = () => {
       if (!userDoc.exists()) {
         await setDoc(userRef, {
           uid: user.uid,
-          displayName: user.displayName.toLowercase() || "",
+          displayName: user.displayName?.toLowerCase() || "",
           bio: "", 
           currently: {
             watching: '',
@@ -101,7 +101,7 @@ const SignUp = () => {
         displayName: name
       })
       await sendEmailVerification(user)
-      createUserProfile(user)
+      await createUserProfile(user)
       setFormData(initialState)
       navigate('/email-verification', {replace:true})// treba nesto da uradim povodom ovoga
     } catch(error) {

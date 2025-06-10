@@ -52,7 +52,7 @@ img, video {
 .user-img {
   border-radius: 50%;
   object-fit: cover;
-  object-position: top;
+  object-position: center;
 }
 
 .user-img-big {
@@ -558,8 +558,8 @@ textarea::placeholder {
 }
 
 .message-content {
-  padding: .5em 1em;
-  border-radius: 15px;
+  padding: 1em 1.7em;
+  border-radius: 20px;
   width: fit-content;
 }
 
