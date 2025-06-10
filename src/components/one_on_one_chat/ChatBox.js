@@ -19,10 +19,13 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
   const [chatId, setChatId] = useState('')
   const [visibleDate, setVisibleDate] = useState('')
   const [isTyping, setIsTyping] = useState(false)
-
+  
   // Hooks that don't trigger re-renders 
   const chatRef = useRef(null)
   const messageRefs = useRef([])
+
+  const scrollInfoRef = useRef({ scrollTop: 0, scrollHeight: 0 })
+
 
   let lastDate = null
 
@@ -38,13 +41,12 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
 
 
   // Effects
-  /* generate chat id */
   useEffect(() => {
     const generatedChatId = [user?.uid, chatPartnerProfile?.uid].sort().join("_")
     setChatId(generatedChatId)
   }, [user?.uid, chatPartnerProfile?.uid])
 
-  /* handle 'seen' status of a message */
+
   useEffect(() => {
     if(!chatId) return
 
@@ -76,7 +78,6 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
   }, [chatId, user?.uid, messages]) 
 
 
-  /* chat-partner typing status */
   useEffect(() => {
     if (!chatId || !chatPartnerProfile) return
 
@@ -95,7 +96,6 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
   }, [chatId, chatPartnerProfile?.uid])
 
 
-  /* handle chat scrolling */
   useEffect(() => {
     const handleScroll = () => {
       if (!chatRef.current || messageRefs.current.length === 0) return
@@ -133,7 +133,30 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
       }
     }
   }, [messages])
-  
+
+  useEffect(() => {
+    if (!chatRef.current) return
+
+    const { scrollTop, scrollHeight } = scrollInfoRef.current
+    const newScrollHeight = chatRef.current.scrollHeight
+
+    // Calculate new scrollTop so the content appears stable
+    const newScrollTop = newScrollHeight - scrollHeight + scrollTop
+
+    chatRef.current.scrollTop = newScrollTop
+  }, [messages])
+
+  const handleFetchMore = () => {
+    if (!chatRef.current) return
+
+    scrollInfoRef.current = {
+      scrollTop: chatRef.current.scrollTop,
+      scrollHeight: chatRef.current.scrollHeight,
+    }
+
+    fetchMore()
+  }
+
 
   return (
     <div className="chat-box">
@@ -145,7 +168,7 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
       >
         <InfiniteScroll
           dataLength={messages.length}
-          next={fetchMore}
+          next={handleFetchMore}
           hasMore={hasMore}
           inverse={true}
           loader={null}
@@ -190,6 +213,7 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
         </InfiniteScroll>
         { messages.length > 0 && <p className="date">{visibleDate}</p> }
       </div>
+
       {isTyping && (
         <div className="typing-container">
           <span>{chatPartnerProfile.displayName} is typing</span>
@@ -203,3 +227,4 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
 }
 
 export default ChatBox
+
