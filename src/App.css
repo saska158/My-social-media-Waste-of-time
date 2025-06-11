@@ -115,6 +115,13 @@ textarea::placeholder {
 .input-wrapper {
   position: relative;
   display: inline-block;
+  display: flex; 
+  align-items: center; 
+  justify-content: flex-start; 
+  gap: .5em;  
+  padding-left: .5em;
+  background: rgb(248, 248, 248);
+  border-radius: 50px;
 }
 
 .input-wrapper svg {
@@ -127,6 +134,8 @@ textarea::placeholder {
 
 .input-wrapper input {
   padding-left: 32px;
+  background: transparent;
+  border-bottom: 0;
 }
 
 .image-input-label {
@@ -154,7 +163,7 @@ textarea::placeholder {
 
 .image-input-icon {
   width: 100%;
-  color: var(--dark);
+  /*color: var(--dark);*/
 }
 
 
@@ -207,6 +216,18 @@ textarea::placeholder {
 .user-img-small {
   width: 30px;
   height: 30px;
+}
+
+.online-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: translate(15%, 15%); 
+  width: 12px;
+  height: 12px;
+  background-color: green;
+  border: 2px solid white; 
+  border-radius: 50%;
 }
 
 /* ======= LAYOUTS ======= */

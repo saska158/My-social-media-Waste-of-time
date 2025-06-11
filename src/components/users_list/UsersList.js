@@ -3,6 +3,7 @@ import { firestore, collection, where } from "../../api/firebase"
 import { useAuth } from "../../contexts/authContext"
 import UsersSearch from "./UsersSearch"
 import JoinPopUp from "../JoinPopUp"
+import PopUp from "../PopUp"
 import UserItem from "./UserItem"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import InfiniteScroll from "react-infinite-scroll-component"
@@ -48,47 +49,47 @@ const UsersList = () => {
 
   return (
     <div className="users-list-container">
-      <div
-        style={{
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'flex-start', 
-          gap: '.5em', 
-          //width: '57%', 
-          paddingLeft: '.5em',
-          background: "rgb(248, 248, 248)",
-          borderRadius: '50px'
-        }}
-      /*style={{display: 'flex', alignItems: 'center', gap: '.5em', width: '100%'}}*/
-      >
-        { 
-          isMobile && user && (
+      { 
+        isMobile && user && (
+          <div
+            style={{
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'flex-start', 
+              gap: '.5em',  
+              paddingLeft: '.5em',
+              background: "rgb(248, 248, 248)",
+              borderRadius: '50px'
+            }}
+          >
             <img 
               src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
               alt="user-profile-image" 
               className="user-img user-img-medium"
             />
-          ) 
-        }
-        <button 
-          onClick={findPeopleToFollow} 
-          className="show-popup-btn"
-          style={{
-            color: isMobile ? "#eed4d4" : "#8a7263",
-            //borderBottom: isMobile ? ".2px solid #eed4d4" : ".2px solid #4f3524"
-          }}
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px'}}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-          </svg>
-          <span>search people</span>
-        </button>
-      </div>
+            <button 
+              onClick={findPeopleToFollow} 
+              className="show-popup-btn"
+              style={{
+                color: isMobile ? "#eed4d4" : "#8a7263",
+                //borderBottom: isMobile ? ".2px solid #eed4d4" : ".2px solid #4f3524"
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px'}}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+              </svg>
+              <span>search people</span>
+            </button>
+          </div>
+        ) 
+      }
       {
         isDesktop && (
           <div>
             {error && <ErrorMessage message={error} onRetry={refetch} />}
-            <div 
+            <UsersSearch />
+            
+            {/*<div 
               id="scrollableActiveUsersDiv"
               ref={usersContainerRef}
             >
@@ -114,11 +115,15 @@ const UsersList = () => {
                   }
                 </div>
                </InfiniteScroll>
-            </div>
+            </div>*/}
           </div>
         )
       }
-      { isUsersQueryShown && <UsersSearch {...{ setIsUsersQueryShown }}/>}
+      { isUsersQueryShown && (
+        <PopUp setIsPopUpShown={setIsUsersQueryShown}>
+          <UsersSearch />
+        </PopUp>
+      )}
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
     </div>
   )
