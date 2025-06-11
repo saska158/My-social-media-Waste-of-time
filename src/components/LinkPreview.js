@@ -8,7 +8,7 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
   const visibleText = expanded ? linkData.description : linkData.description.slice(0, limit)
 
     return (
-        <div>
+        <div className="link-preview-container">
           {
             linkData.description === 'Too many requests / rate limit exceeded' ? (
               <p style={{fontSize: '.7rem', color: '#f05593', padding: '.5em', borderRadius: '20px'}}>
@@ -25,12 +25,12 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
                   <img
                     src={linkData.image}
                     alt={linkData.title}
-                    style={imgStyle}
+                    style={{...imgStyle, borderTopLeftRadius: '15px', borderTopRightRadius: '15px'}}
                   />
-                  <p style={{textTransform: 'initial', fontSize: '.85rem', margin: '.5em 0', fontWeight: '700'}}>{linkData.title}</p>
                 </a>
-                <p style={{fontSize: '.6rem', color: 'grey'}}>
-                  {visibleText}
+                <p style={{fontSize: '.6rem', padding: '0 1em'}}>
+                  <p style={{textTransform: 'initial', fontSize: '.85rem', margin: '.5em 0', fontWeight: '700'}}>{linkData.title}</p>
+                  <p style={{color: 'grey'}}>{visibleText}</p>
                   {isLong && !expanded && '... '}
                   {isLong && (
                     <span

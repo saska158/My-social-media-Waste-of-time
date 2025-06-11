@@ -35,7 +35,7 @@ const FirestoreItemContent = ({content}) => {
         </p>
         {
           content.image && (
-            <img src={content.image} alt="post-image" />
+            <img src={content.image} alt="post-image" style={{borderRadius: '15px'}} />
           )
         }
       </div>

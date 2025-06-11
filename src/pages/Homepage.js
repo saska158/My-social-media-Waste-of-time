@@ -89,7 +89,7 @@ const Homepage = () => {
           loader={<ClipLoader color="#5c3d2a" />}
           scrollThreshold={0.9}
           scrollableTarget="scrollableDiv"
-          style={{width: '500px'}}
+          //style={{width: '500px'}}
         >
           <div className="posts">
             {
