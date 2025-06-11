@@ -36,7 +36,8 @@ const UserPosts = ({profileUid}) => {
                   borderRadius: '30px', 
                   padding: '.5em .8em',
                   marginRight: '1em',
-                  fontSize: '.75rem'
+                  fontSize: '.75rem',
+                  fontFamily: '"Manrope", sans-serif'
                 }}
               >
                 {tag}

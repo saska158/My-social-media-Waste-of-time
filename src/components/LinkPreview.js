@@ -8,14 +8,13 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
   const visibleText = expanded ? linkData.description : linkData.description.slice(0, limit)
 
     return (
-        <div className="link-preview-container">
+        <div /*className="link-preview-container"*/>
           {
-            linkData.description === 'Too many requests / rate limit exceeded' ? (
-              <p style={{fontSize: '.7rem', color: '#f05593', padding: '.5em', borderRadius: '20px'}}>
-                Link preview currently unavailable.
-              </p>
-            ) : (
-              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', position: 'relative'}}>
+            linkData.description !== 'Too many requests / rate limit exceeded' ? (
+              <div 
+                className="link-preview-container"
+                //style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', position: 'relative'}}
+              >
                 <a 
                   href={linkData.url} 
                   target="_blank" 
@@ -46,10 +45,16 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
                 </p>
                 {children}
               </div>
-            )
+            ) : null
           }
         </div>
     )
 }
 
 export default LinkPreview
+
+/*
+<p style={{fontSize: '.7rem', color: '#f05593', padding: '.5em', borderRadius: '20px'}}>
+                Link preview currently unavailable.
+              </p>
+*/

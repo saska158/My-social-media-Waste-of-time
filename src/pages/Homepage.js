@@ -102,8 +102,9 @@ const Homepage = () => {
           scrollThreshold={0.9}
           scrollableTarget="scrollableDiv"
           //style={{width: '500px'}}
+          //style={{width: '580px'}}
         >
-          <div className="posts">
+          {/*<div className="posts">*/}
             {
               loading ? <PostSkeleton /> : (
                 posts.length > 0 ? posts.map(post=> (
@@ -117,7 +118,7 @@ const Homepage = () => {
                 )
               )
             }    
-          </div> 
+          {/*</div> */}
         </InfiniteScroll>
       </div>
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }

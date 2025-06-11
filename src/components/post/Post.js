@@ -21,7 +21,7 @@ const Post = ({post, room,  style = {}}) => {
   }, [room, postId])
 
   return (
-    <div key={postId} className="post-container" style={style}>
+    <div className="post-container" style={style}>
       <FirestoreItemHeader {...{creatorUid, timestamp}} />
       <FirestoreItemContent {...{content}} />
       <FirestoreItemActions 

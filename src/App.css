@@ -50,6 +50,7 @@ img, video {
 a {
   text-decoration: none;
   color: inherit;
+  font-family: inherit;
 }
 
 li {
@@ -67,6 +68,7 @@ button {
   border-radius: 20px;
   color: var(--dark);
   color: inherit;
+  font-family: inherit;
 }
 
 .show-popup-btn {
@@ -259,6 +261,7 @@ textarea::placeholder {
   flex-direction: column;
   width: 100%;
   height: 100vh;
+  overflow: hidden;
 }
 
 .group-chat-layout-container-nav {
@@ -305,12 +308,14 @@ textarea::placeholder {
   padding-bottom: 10em;
 }
 
-.posts {
+/*.posts {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+  overflow: hidden;
+  border: 1px solid red;
+}*/
 
 .post-form {
   height: 100%;
@@ -577,8 +582,8 @@ textarea::placeholder {
   border-bottom: 0;
  /* border-radius: 10px;*/
   width: 100%;
-  /*min-height: 300px;*/
-  /*margin-bottom: 4em;*/
+  /*min-height: 300px;
+  margin-bottom: 4em;*/
   display: flex;
   flex-direction: column;
   /*gap: 1em;*/
@@ -747,6 +752,11 @@ textarea::placeholder {
   padding: 0 0 1em;
   background: rgb(248, 248, 248);
   margin-top: 8px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
 }
 
 /* JOIN POP UP */
@@ -889,7 +899,7 @@ textarea::placeholder {
   }
 
   .group-chat-layout-container {
-    padding-top: 15em;
+    padding-top: 16em;
   }
   .group-chat-layout-container-nav {
     gap: .5em;
@@ -929,9 +939,9 @@ textarea::placeholder {
     overflow-x: hidden;
   }
 
-  .post-container {
+ /* .post-container {
     width: 70%;
-  }
+  }*/
 
   .comment-content {
     width: 80%;
