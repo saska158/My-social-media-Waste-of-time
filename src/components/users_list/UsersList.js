@@ -48,7 +48,19 @@ const UsersList = () => {
 
   return (
     <div className="users-list-container">
-      <div style={{display: 'flex', alignItems: 'center', gap: '.5em', width: '100%'}}>
+      <div
+        style={{
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'flex-start', 
+          gap: '.5em', 
+          //width: '57%', 
+          paddingLeft: '.5em',
+          background: "rgb(248, 248, 248)",
+          borderRadius: '50px'
+        }}
+      /*style={{display: 'flex', alignItems: 'center', gap: '.5em', width: '100%'}}*/
+      >
         { 
           isMobile && user && (
             <img 
@@ -63,7 +75,7 @@ const UsersList = () => {
           className="show-popup-btn"
           style={{
             color: isMobile ? "#eed4d4" : "#8a7263",
-            borderBottom: isMobile ? ".2px solid #eed4d4" : ".2px solid #4f3524"
+            //borderBottom: isMobile ? ".2px solid #eed4d4" : ".2px solid #4f3524"
           }}
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px'}}>
@@ -93,7 +105,6 @@ const UsersList = () => {
                     loading ? <UserSkeleton /> : (
                       users.length > 0 ? (
                         <div style={{display: 'flex', flexDirection: 'column', gap: '1em'}}>
-                          <span style={{display: 'block', margin: '1em 0'}}>online</span>
                           {
                             users.map((usr, index) => <UserItem key={index} user={usr} />)
                           }

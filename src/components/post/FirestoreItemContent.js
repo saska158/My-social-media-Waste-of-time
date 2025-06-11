@@ -29,13 +29,13 @@ const FirestoreItemContent = ({content}) => {
 
   return (
     <div className="post-content">
-      <div style={{paddingBottom: '1em'}}>
-        <p style={{fontSize: '.8rem', padding: '0 .5em'}}>
+      <div>
+        <p style={{padding: '0'}}>
           {linkify(content.text)}
         </p>
         {
           content.image && (
-            <img src={content.image} alt="post-image" style={{borderRadius: '15px'}} />
+            <img src={content.image} alt="post-image" style={{borderRadius: '15px', marginTop: '8px'}} />
           )
         }
       </div>

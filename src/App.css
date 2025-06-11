@@ -18,17 +18,16 @@ html {
 
 body {
   margin: 0;
-  font-family: "Inter", sans-serif;
   font-family: "Satoshi", sans-serif;
-  font-weight: 300;
-  line-height: 1.6;
+  font-family: "Manrope", sans-serif;
+  font-weight: 400;
   position: relative;
   overflow-x: hidden;
   overflow-y: auto;
   width: 100vw;
   height: 100vh;
   background-color: var(--light);
-  color: var(--dark);
+  color: #000;
 }
 
 .dark-border {
@@ -76,10 +75,12 @@ button {
   align-items: center;
   gap: .5em;
   border-radius: 0;
-  border-bottom: .2px solid var(--dark);
+  /*border-bottom: .2px solid var(--dark);*/
   padding-left: 0;
   padding-right: 0;
   color: #8a7263;
+  font-family: "Manrope", sans-serif;
+  font-size: 1rem;
 }
 
 /*======= FORM =======*/
@@ -197,8 +198,8 @@ textarea::placeholder {
 }
 
 .user-img-medium {
-  width: 50px;
-  height: 50px;
+  width: 45px;
+  height: 45px;
 }
 
 .user-img-small {
@@ -574,7 +575,6 @@ textarea::placeholder {
 .post-container {
   border-top: .2px solid rgb(233, 233, 233);
   border-bottom: 0;
-  color: var(--dark);
  /* border-radius: 10px;*/
   width: 100%;
   /*min-height: 300px;*/
@@ -594,8 +594,8 @@ textarea::placeholder {
 
 .post-header-container {
   display: flex; 
-  align-items: center;
-  gap: .5em;
+  align-items: flex-end;
+  gap: 8px;
   cursor: pointer;
 }
 
@@ -603,7 +603,7 @@ textarea::placeholder {
 
 .post-content {
   flex: 1;
-  padding: 1em 0;
+  padding: 8px 0;
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: normal; /* allows wrapping */
@@ -746,6 +746,7 @@ textarea::placeholder {
   border: .2px solid rgb(233, 233, 233); 
   padding: 0 0 1em;
   background: rgb(248, 248, 248);
+  margin-top: 8px;
 }
 
 /* JOIN POP UP */

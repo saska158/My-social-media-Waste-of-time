@@ -52,13 +52,25 @@ const Homepage = () => {
   
   return (
     <div className="group-chat-container">
-      <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.5em', width: '100%', padding: '1em 0'}}>
+      <div 
+        style={{
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          gap: '.5em', 
+          width: '57%', 
+          padding: '.5em',
+          background: "rgb(248, 248, 248)",
+          borderRadius: '50px'
+        }}
+      >
         { 
           user && (
             <img 
               src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
               alt="user-profile-image" 
               className="user-img user-img-medium"
+              style={{marginRight: 'auto'}}
             />
           ) 
         }

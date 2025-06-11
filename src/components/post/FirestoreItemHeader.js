@@ -6,6 +6,8 @@ import useFormattedTime from "../../hooks/useFormattedTime"
 const FirestoreItemHeader = ({creatorUid, timestamp}) => {
   const formattedTime = useFormattedTime(timestamp)
 
+  console.log('time', formattedTime)
+
   // State
   const [profile, setProfile] = useState(null)
 
@@ -31,9 +33,9 @@ const FirestoreItemHeader = ({creatorUid, timestamp}) => {
               ) : null
             }
             <div>
-              <span>{profile?.displayName}</span>
+              <span style={{fontWeight: '700', display: 'inline-block', marginBottom: '8px'}}>{profile?.displayName}</span>
               {timestamp && (
-                <span style={{fontSize: '.65rem', color: '#8a7263', marginLeft: '.7em'}}>{formattedTime}</span>
+                <p style={{color: "rgb(107, 109, 136)"}}>{formattedTime}</p>
               )}
             </div>
           </div>
