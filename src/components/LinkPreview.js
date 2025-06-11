@@ -12,7 +12,7 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
           {
             linkData.description === 'Too many requests / rate limit exceeded' ? (
               <p style={{fontSize: '.7rem', color: '#f05593', padding: '.5em', borderRadius: '20px'}}>
-                Link can't be shown.
+                Link preview currently unavailable.
               </p>
             ) : (
               <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', position: 'relative'}}>
