@@ -6,7 +6,6 @@ import ChatPreview from "../components/ChatPreview"
 import ChatItemSkeleton from "../components/skeletons/ChatItemSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
 import useFirestoreBatch from "../hooks/useFirestoreBatch"
-import { ClipLoader } from "react-spinners"
 import ErrorMessage from "../components/errors/ErrorMessage"
 
 const MyChats = () => {
@@ -75,11 +74,23 @@ const MyChats = () => {
     }
 
     if(error) {
-      return <ErrorMessage message={error} isFatal={true} onRetry={refetch} />
+      return (
+        <ErrorMessage 
+          message={error} 
+          isFatal={true} 
+          onRetry={refetch} 
+        />
+      )
     }
 
     if(fetchProfileError) {
-      return <ErrorMessage message={fetchProfileError} isFatal={true} onRetry={() => setRetryFlag(prev => prev + 1)} />
+      return (
+        <ErrorMessage 
+          message={fetchProfileError} 
+          isFatal={true} 
+          onRetry={() => setRetryFlag(prev => prev + 1)} 
+        />
+      )
     }
 
     return (
@@ -87,7 +98,6 @@ const MyChats = () => {
         {
           !isChatBoxVisible ? (
             <div 
-             /* className="my-chats-container"*/
               id="scrollableChatsDiv"
               ref={chatsContainerRef}
               className="my-chats-content"
@@ -96,7 +106,6 @@ const MyChats = () => {
                 dataLength={chats.length}
                 next={fetchMore}
                 hasMore={hasMore}
-                //loader={<ClipLoader color="#4f3524" />}
                 loader={<ChatItemSkeleton />}
                 scrollThreshold={0.9}
                 endMessage={

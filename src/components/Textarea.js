@@ -15,8 +15,8 @@ const Textarea = ({value, onChange, onKeyDown, placeholder, textareaRef, style =
     useEffect(() => {
         const textarea = textareaRef.current
         if (textarea) {
-          textarea.style.height = 'auto' // Reset height
-          textarea.style.height = `${textarea.scrollHeight}px` // Set height based on content
+          textarea.style.height = 'auto' 
+          textarea.style.height = `${textarea.scrollHeight}px` 
         }
     }, [value])
 
@@ -27,20 +27,20 @@ const Textarea = ({value, onChange, onKeyDown, placeholder, textareaRef, style =
     }, [])
 
     return (
-        <textarea
-          ref={textareaRef}
-          value={value}
-          onChange={onChange}
-          onKeyDown={onKeyDown}
-          onInput={(e) => {
-            e.target.style.height = 'auto'
-            e.target.style.height = `${e.target.scrollHeight}px`
-          }}
-          placeholder={placeholder}
-          rows={1}
-          maxLength={maxLength}
-          style={combinedStyle}
-        />
+      <textarea
+        ref={textareaRef}
+        value={value}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        onInput={(e) => {
+          e.target.style.height = 'auto'
+          e.target.style.height = `${e.target.scrollHeight}px`
+        }}
+        placeholder={placeholder}
+        rows={1}
+        maxLength={maxLength}
+        style={combinedStyle}
+      />
     )
 }
 

@@ -6,7 +6,6 @@ import JoinPopUp from "../JoinPopUp"
 import UserItem from "./UserItem"
 import useFirestoreBatch from "../../hooks/useFirestoreBatch"
 import InfiniteScroll from "react-infinite-scroll-component"
-import { ClipLoader } from "react-spinners"
 import UserSkeleton from "../skeletons/UserSkeleton"
 import ErrorMessage from "../errors/ErrorMessage"
 import { useMediaQuery } from "react-responsive"
@@ -85,7 +84,6 @@ const UsersList = () => {
                 dataLength={users.length}
                 next={fetchMore}
                 hasMore={hasMore}
-                //loader={<ClipLoader color="#4f3524" />}
                 loader={<UserSkeleton />}
                 scrollThreshold={0.9}
                 scrollableTarget="scrollableActiveUsersDiv"

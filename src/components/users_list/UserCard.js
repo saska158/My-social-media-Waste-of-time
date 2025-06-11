@@ -1,6 +1,5 @@
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "../../contexts/authContext"
-import { firestore, doc, getDoc } from "../../api/firebase"
 import fetchProfile from "../../api/fetchProfile"
 import FollowButton from "../FollowButton"
 import UserItem from "./UserItem"

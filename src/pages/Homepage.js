@@ -8,9 +8,9 @@ import PostForm from "../components/post/PostForm"
 import PopUp from "../components/PopUp"
 import PostSkeleton from "../components/skeletons/PostSkeleton"
 import useFirestoreBatch from "../hooks/useFirestoreBatch"
-import { ClipLoader } from "react-spinners"
 import InfiniteScroll from "react-infinite-scroll-component"
 import ErrorMessage from "../components/errors/ErrorMessage"
+import { ClipLoader } from "react-spinners"
 
 const Homepage = () => {
   // Context
@@ -86,8 +86,7 @@ const Homepage = () => {
           dataLength={posts.length}
           next={fetchMore}
           hasMore={hasMore}
-          //loader={<ClipLoader color="#4f3524" />}
-          loader={<PostSkeleton />}
+          loader={<ClipLoader color="#5c3d2a" />}
           scrollThreshold={0.9}
           scrollableTarget="scrollableDiv"
           style={{width: '500px'}}

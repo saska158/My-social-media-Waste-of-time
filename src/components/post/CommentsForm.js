@@ -19,7 +19,6 @@ const CommentsForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
     text: '',
     image: ''
   }
-  
 
   // Context
   const { user } = useAuth()

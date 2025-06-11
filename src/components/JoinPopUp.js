@@ -5,7 +5,7 @@ const JoinPopUp = ({setIsPopUpShown}) => {
     return (
       <PopUp setIsPopUpShown={setIsPopUpShown}>
         <h1>Waste of Time</h1>
-        <p>Sign in or create your account to join the conversation!</p>
+        <p>Sign in or create your account to waste time together!</p>
         <Link to="/sign-up">
           <button className="join-button">Create an account</button>
         </Link>

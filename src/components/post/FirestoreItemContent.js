@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 import fetchLinkPreview from "../../api/fetchLinkPreview"
 import extractUrls from "../../utils/extractUrls"
 import linkify from "../../utils/linkify"
@@ -41,7 +41,11 @@ const FirestoreItemContent = ({content}) => {
       </div>
       {
         linkData && (
-          <LinkPreview {...{linkData, content}} style={{display: 'flex', flexDirection: 'column'}} imgStyle={{width: '100%'}}/>
+          <LinkPreview 
+            {...{linkData, content}} 
+            style={{display: 'flex', flexDirection: 'column'}} 
+            imgStyle={{width: '100%'}}
+          />
         ) 
       }
     </div>

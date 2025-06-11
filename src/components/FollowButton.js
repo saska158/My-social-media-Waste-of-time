@@ -30,9 +30,7 @@ const FollowButton = ({currentUser, targetUser, type}) => {
 
     checkFollowingStatus()
   }, [currentUser, targetUser])
-
   
-
 
   const handleFollowToggle = async (e, currentUser, targetUser) => {
     setLoading(true)

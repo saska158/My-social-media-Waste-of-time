@@ -1,4 +1,15 @@
-import { firestore, collection, doc, getDocs, setDoc, addDoc, updateDoc, serverTimestamp, where, query } from "./firebase"
+import { 
+  firestore, 
+  collection, 
+  doc, 
+  getDocs, 
+  setDoc, 
+  addDoc, 
+  updateDoc, 
+  serverTimestamp, 
+  where, 
+  query 
+} from "./firebase"
 import uploadToCloudinaryAndGetUrl from "./uploadToCloudinaryAndGetUrl"
 
 const sendMessageToFirestore = async (chatId, userA, userBUid, receiverName, receiverPhoto, message) => {

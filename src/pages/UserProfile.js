@@ -86,6 +86,8 @@ const UserProfile = () => {
     setIsChatBoxVisible(false)
   }, [profileUid])
 
+  //Functions
+
   const handleRetry = () => {
     setLoading(true)
     setRetryFlag(prev => prev + 1)

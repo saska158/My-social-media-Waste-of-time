@@ -6,22 +6,22 @@ const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children, style}
     const popUpContainerRef = useRef(null)
 
     useEffect(() => {
-        const handleClickOutside = (e) => {
-            if(popUpRef.current && !popUpRef.current.contains(e.target)) {
-                setIsPopUpShown(false)
-                setShowEmojiPicker(false)
-            }
+      const handleClickOutside = (e) => {
+        if(popUpRef.current && !popUpRef.current.contains(e.target)) {
+          setIsPopUpShown(false)
+          setShowEmojiPicker(false)
         }
-        document.addEventListener("click", handleClickOutside)
+      }
+      document.addEventListener("click", handleClickOutside)
 
-        return () => document.removeEventListener("click", handleClickOutside)
+      return () => document.removeEventListener("click", handleClickOutside)
     }, [])
 
     useEffect(() => {
       gsap.to(popUpContainerRef.current, {
         duration: .3,
         opacity: 1,
-        ease: "power2.out"
+        ease: "power1.in"
       })
     }, [])
 

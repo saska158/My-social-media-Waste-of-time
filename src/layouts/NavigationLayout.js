@@ -1,4 +1,3 @@
-import { useState } from "react"
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom"
 import { useAuth } from "../contexts/authContext"
 import UsersList from "../components/users_list/UsersList"

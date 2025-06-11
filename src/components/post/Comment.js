@@ -27,7 +27,7 @@ const Comment = ({comment, room, postId}) => {
         <FirestoreItemActions
           firestoreDoc={commentRef} 
           firestoreCollection={repliesRef} 
-          {...{postId, commentId, room, showComments, setShowComments}}
+          {...{showComments, setShowComments}}
         />
         {
           showComments && (

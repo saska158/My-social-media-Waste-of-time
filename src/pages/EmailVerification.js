@@ -50,7 +50,7 @@ const EmailVerification = () => {
     if(user) {
       setIsEmailVerified(user?.emailVerified)
     }
-  }, [user]) //Cudno, razmisli...ne bi ni bili na ovoj strani da nema user-a...
+  }, [user]) 
 
   return (
     <div className="sign-in-up-container">
@@ -80,7 +80,7 @@ const EmailVerification = () => {
               )}
             </div>
           </div>
-        ) : <Navigate to="/" />//treba da vrati na sobu odakle ga je prebacilo na pravljenje naloga
+        ) : <Navigate to="/" />
       }
       { error && <ErrorMessage message={error} /> }
     </div>

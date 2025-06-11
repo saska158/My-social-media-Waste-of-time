@@ -41,12 +41,14 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
 
 
   // Effects
+  /* generate chat id */
   useEffect(() => {
     const generatedChatId = [user?.uid, chatPartnerProfile?.uid].sort().join("_")
     setChatId(generatedChatId)
   }, [user?.uid, chatPartnerProfile?.uid])
 
 
+  /* mark message as seen */
   useEffect(() => {
     if(!chatId) return
 
@@ -78,6 +80,7 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
   }, [chatId, user?.uid, messages]) 
 
 
+  /* handle typing indicator */
   useEffect(() => {
     if (!chatId || !chatPartnerProfile) return
 
@@ -96,6 +99,7 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
   }, [chatId, chatPartnerProfile?.uid])
 
 
+  /* handle visible date based on scrolling */
   useEffect(() => {
     const handleScroll = () => {
       if (!chatRef.current || messageRefs.current.length === 0) return
@@ -134,18 +138,20 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
     }
   }, [messages])
 
+  /* handle scroll position */
   useEffect(() => {
     if (!chatRef.current) return
 
     const { scrollTop, scrollHeight } = scrollInfoRef.current
     const newScrollHeight = chatRef.current.scrollHeight
 
-    // Calculate new scrollTop so the content appears stable
     const newScrollTop = newScrollHeight - scrollHeight + scrollTop
 
     chatRef.current.scrollTop = newScrollTop
   }, [messages])
 
+  //Functions
+  
   const handleFetchMore = () => {
     if (!chatRef.current) return
 
@@ -211,7 +217,7 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
             }
           </div>
         </InfiniteScroll>
-        { messages.length > 0 && <p className="date">{visibleDate}</p> }
+        { messages.length > 0 && visibleDate && <p className="date">{visibleDate}</p> }
       </div>
 
       {isTyping && (

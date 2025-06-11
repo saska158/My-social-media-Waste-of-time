@@ -4,14 +4,19 @@ import fetchProfile from "../../api/fetchProfile"
 import FollowButton from "../FollowButton"
 import ErrorMessage from "../errors/ErrorMessage"
 
-const UserProfileHeader = ({profile, profileUid, setIsEditPopupShown, isChatBoxVisible, setIsChatBoxVisible, setIsFollowPopupShown}) => {
+const UserProfileHeader = ({
+  profile, 
+  profileUid, 
+  setIsEditPopupShown, 
+  isChatBoxVisible, 
+  setIsChatBoxVisible, 
+  setIsFollowPopupShown
+}) => {
     // Context
     const { user } = useAuth()
 
     // State
     const [currentUser, setCurrentUser] = useState(null)
-    const [showFollowers, setShowFollowers] = useState(false)
-    const [showFollowing, setShowFollowing] = useState(false)
     const [error, setError] = useState(null)
 
     const isMyProfile = profileUid === user?.uid

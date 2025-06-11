@@ -19,7 +19,6 @@ const sendPostToFirestore =  async (user, data, firestoreRef) => {
       creatorPhoto: user.photoURL || '',
       content: newData,
       timestamp: serverTimestamp(),
-      //room: roomId || 'main',
       likes: {},
       comments: []
     })

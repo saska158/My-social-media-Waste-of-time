@@ -1,7 +1,18 @@
 import { useState, useEffect, useRef, useMemo } from "react"
 import { useLocation } from "react-router-dom"
 import { useAuth } from "../../contexts/authContext"
-import { collection, firestore, query, orderBy , limit, startAfter, startAt, endAt, getDocs, onSnapshot } from "../../api/firebase"
+import { 
+  collection, 
+  firestore, 
+  query, 
+  orderBy, 
+  limit, 
+  startAfter, 
+  startAt, 
+  endAt, 
+  getDocs, 
+  onSnapshot 
+} from "../../api/firebase"
 import PopUp from "../PopUp"
 import UserCard from "./UserCard"
 import { ClipLoader } from "react-spinners"
@@ -44,56 +55,56 @@ const UsersSearch = ({setIsUsersQueryShown}) => {
   useEffect(() => {
     if (!usersRef) return
 
-      const q = query(
-          usersRef,
-          orderBy("displayName"), 
-          startAt(searchQuery),
-          endAt(searchQuery + '\uf8ff'),
-          limit(10) 
-      )
+    const q = query(
+      usersRef,
+      orderBy("displayName"), 
+      startAt(searchQuery),
+      endAt(searchQuery + '\uf8ff'),
+      limit(10) 
+    )
 
-      setLoading(true)
-      setError(null)
+    setLoading(true)
+    setError(null)
 
-      const unsubscribe = onSnapshot(
-        q, 
-        (snapshot) => { 
-          if(!snapshot.empty) {
-            const newData = snapshot.docs.map(doc => ({
-              id: doc.id,
-              ...doc.data()
-            }))
-            setFilteredUsers(newData)
-            setLastDoc(snapshot.docs[snapshot.docs.length - 1])
-            setHasMore(snapshot.docs.length === 10)
-            setLoading(false)
-          } else {
-            setFilteredUsers([])
-            setHasMore(false)
-          }
+    const unsubscribe = onSnapshot(
+      q, 
+      (snapshot) => { 
+        if(!snapshot.empty) {
+          const newData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }))
+          setFilteredUsers(newData)
+          setLastDoc(snapshot.docs[snapshot.docs.length - 1])
+          setHasMore(snapshot.docs.length === 10)
           setLoading(false)
-        },
-        (error) => {
-          console.error(error)
-
-          let errorMessage 
-
-          if (error.code === "permission-denied") {
-            errorMessage = "You don’t have permission to access the users' data."
-          } else if (error.code === "unavailable") {
-            errorMessage = "Network issue. Please try again later."
-          } else if (error.code === "not-found") {
-            errorMessage = "Requested data not found."
-          } else if (error.code === "cancelled") {
-            errorMessage = "The request was cancelled."
-          } else {
-          errorMessage = "Something went wrong. Please try again."
-          }
-          setError(errorMessage)
+        } else {
+          setFilteredUsers([])
+          setHasMore(false)
         }
-      )
+        setLoading(false)
+      },
+      (error) => {
+        console.error(error)
 
-      return () => unsubscribe()
+        let errorMessage 
+
+        if (error.code === "permission-denied") {
+          errorMessage = "You don’t have permission to access the users' data."
+        } else if (error.code === "unavailable") {
+          errorMessage = "Network issue. Please try again later."
+        } else if (error.code === "not-found") {
+          errorMessage = "Requested data not found."
+        } else if (error.code === "cancelled") {
+          errorMessage = "The request was cancelled."
+        } else {
+          errorMessage = "Something went wrong. Please try again."
+        }
+        setError(errorMessage)
+      }
+    )
+
+    return () => unsubscribe()
   }, [searchQuery, retryFlag])
 
   // Functions

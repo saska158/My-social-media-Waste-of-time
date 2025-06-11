@@ -68,9 +68,8 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             alignSelf: senderName.toLowerCase() === user?.displayName.toLowerCase() ? 'flex-end' : 'flex-start',
             justifyContent: senderName.toLowerCase() === user?.displayName.toLowerCase() ? 'flex-end' : 'flex-start'
           }}
-          //data-timestamp={message.timestamp}
           data-timestamp={messageDate}
-          ref={(el) => (messageRefs.current[index] = el)} // Assign ref dynamically
+          ref={(el) => (messageRefs.current[index] = el)} 
         >
           {
             senderName.toLowerCase() !== user?.displayName && (

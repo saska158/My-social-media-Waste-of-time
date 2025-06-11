@@ -10,7 +10,7 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
     const [retryFlag, setRetryFlag] = useState(0)
 
     useEffect(() => {
-      if (!collectionRef /*&& !profileUid*/) return 
+      if (!collectionRef) return 
 
         const q = query(
             collectionRef,
@@ -74,17 +74,15 @@ const useFirestoreBatch = (collectionRef, pageSize = 3, queryConstraints = [], p
         const docs = snapshot.docs
 
         if (docs.length > pageSize) {
-          // We have more data, but we only need to store `pageSize` items
           const newData = docs.slice(0, pageSize).map(doc => ({ id: doc.id, ...doc.data() }))
           setData(prevData => [...prevData, ...newData])
-          setLastDoc(docs[pageSize - 1]) // Update lastDoc with the last item of the batch
-          setHasMore(true) // There is at least one more item to fetch
+          setLastDoc(docs[pageSize - 1]) 
+          setHasMore(true) 
         } else {
-          // Last batch, store only what's available
           const newData = docs.map(doc => ({ id: doc.id, ...doc.data() }))
           setData(prevData => [...prevData, ...newData])
-          setLastDoc(null) // No more documents to fetch
-          setHasMore(false) // Stop further requests
+          setLastDoc(null) 
+          setHasMore(false) 
         }
       } catch(error) {
         console.error('Error from useFirestoreBatch:', error)
