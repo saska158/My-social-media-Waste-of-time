@@ -5,6 +5,7 @@ import { getDoc, updateDoc, onSnapshot, deleteField } from "../../api/firebase"
 import PopUp from "../PopUp"
 import JoinPopUp from "../JoinPopUp"
 import UserItem from "../users_list/UserItem"
+import UserCard from "../users_list/UserCard"
 import ErrorMessage from "../errors/ErrorMessage"
 
 const FirestoreItemActions = ({
@@ -133,7 +134,7 @@ const FirestoreItemActions = ({
                 </svg>
               )
             }
-            <span>{likesArray.length}</span>
+            {/*<span>{likesArray.length}</span>*/}
             {/*
               likesArray.length === 0 ? `0 likes` :
               likesArray.length === 1 ? `${likesArray[0]?.displayName || 'Someone'} likes` :
@@ -149,12 +150,22 @@ const FirestoreItemActions = ({
         </div>
         {
           likesArray.length > 0 && (
-            <span style={{fontSize: '.7rem'}}>
-              {
-                likesArray.length === 1 ? `Liked by ${likesArray[0]?.displayName}` :
+            <div style={{fontSize: '.7rem', display: 'flex', alignItems: 'flex-end', gap: '.5em', padding: '.5em 0'}}>
+              {/*
+                likesArray.length === 1 ? `Liked by ${likesArray[0]?.displayName}` : 
                 `Liked by ${likesArray[0].displayName} and others`
-              }
-            </span>
+              */}
+              <span>Liked by</span>
+              <div 
+                onClick={handleShowLikes}
+                style={{display: 'flex', alignItems: 'flex-end', gap: '.5em', cursor: 'pointer'}}
+              >
+                <img src={likesArray[0].photoURL} alt="profile photo" className="user-img user-img-extra-small" />
+                <span>{likesArray[0]?.displayName}</span>
+                { likesArray.length === 2 && 'and 1 other' }
+                { likesArray.length > 2 && 'and others' }
+              </div>
+            </div>
           )
         }
         {error && <ErrorMessage message={error} />}
@@ -163,7 +174,7 @@ const FirestoreItemActions = ({
         <PopUp setIsPopUpShown={setShowLikes}>
           {
            likesArray.length > 0 ? (
-            likesArray.map((profileItem, index) => <UserItem key={index} user={profileItem} />)
+            likesArray.map((profileItem, index) => <UserCard key={index} userItem={profileItem} />)
            ) : 'nobody likes it'
           }
         </PopUp>

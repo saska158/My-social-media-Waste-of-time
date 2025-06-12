@@ -53,7 +53,7 @@ const FollowButton = ({currentUser, targetUser, type}) => {
     <button 
       onClick={(e) => handleFollowToggle(e, currentUser, targetUser)} 
       disabled={loading}
-      style={{border: loading || type === 'bordered' || !statusLoaded ? '0' : '.2px solid #4f3524', borderRadius: '30px'}}
+      style={{padding: '0'}}
     >
       {
         loading ? <ClipLoader color="#4f3524" /> : 

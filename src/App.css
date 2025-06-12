@@ -218,6 +218,12 @@ textarea::placeholder {
   height: 30px;
 }
 
+.user-img-extra-small {
+  width: 15px;
+  height: 15px;
+  display: inline;
+}
+
 .online-indicator {
   position: absolute;
   bottom: 0;
@@ -594,6 +600,8 @@ textarea::placeholder {
   padding: 1em 1.7em;
   border-radius: 20px;
   width: fit-content;
+  border: .2px solid rgb(233, 233, 233);
+  background: rgb(248, 248, 248);
 }
 
 /* POST */
@@ -713,7 +721,8 @@ textarea::placeholder {
 
 .chat-item-container {
   border-radius: 30px;
-  border: .2px solid var(--dark);
+  border: .2px solid rgb(233, 233, 233);
+  background: rgb(248, 248, 248);
   margin: 1em 1em 0;
   padding: .7em 1em; 
   cursor: pointer;
@@ -746,7 +755,7 @@ textarea::placeholder {
 
 .user-item {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: .5em;
 }
 
@@ -755,8 +764,9 @@ textarea::placeholder {
 .user-card-container {
   padding: 1em;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: flex-start;
+  gap: .5em;
 }
 
 .user-item-infos {
@@ -900,8 +910,8 @@ textarea::placeholder {
     flex-direction: column;
     align-items: flex-start;
     gap: 1em;
-    position: fixed;
-    z-index: 9999;
+   /* position: fixed;
+    z-index: 9999;*/
   }
 
   .navigation-layout-nav-links {
@@ -909,7 +919,6 @@ textarea::placeholder {
     font-size: .8rem;
     align-items: center;
   }
-
 
   .logo-link {
     font-size: 3.2rem;
@@ -919,9 +928,9 @@ textarea::placeholder {
     font-size: .7rem;
   }
 
-  .group-chat-layout-container {
+  /*.group-chat-layout-container {
     padding-top: 16em;
-  }
+  }*/
   .group-chat-layout-container-nav {
     gap: .5em;
     font-size: .8rem;
@@ -931,9 +940,9 @@ textarea::placeholder {
     height: 500px;
   }
 
-  .my-chats-content {
+  /*.my-chats-content {
     padding-top: 15em;
-  }
+  }*/
 
   .chat-item-container {
     width: 80%;
@@ -944,11 +953,12 @@ textarea::placeholder {
     bottom: 0;
     left: 0;
     right: 0;
+    background: #fff;
   }  
 
-  .chat-box-header-container {
+  /*.chat-box-header-container {
     margin-top: 18em;
-  }
+  }*/
 
   .posts-container {
     display: flex;
@@ -968,10 +978,10 @@ textarea::placeholder {
     width: 80%;
   }
 
-  .user-profile-container {
+  /*.user-profile-container {
     padding-top: 15em;
   }
-
+*/
   .users-list-container {
     background-color: transparent; 
     padding: 0;

@@ -52,35 +52,6 @@ const Homepage = () => {
   
   return (
     <div className="group-chat-container">
-      <div 
-        style={{
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          gap: '.5em', 
-          width: '57%', 
-          padding: '.5em',
-          background: "rgb(248, 248, 248)",
-          borderRadius: '50px'
-        }}
-      >
-        { 
-          user && (
-            <img 
-              src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
-              alt="user-profile-image" 
-              className="user-img user-img-medium"
-              style={{marginRight: 'auto'}}
-            />
-          ) 
-        }
-        <button 
-          onClick={handleNewPost} 
-          className="show-popup-btn"
-        >
-          What's on your mind {user?.displayName}? 
-        </button>
-      </div>
       { 
         isPopupShown && (
           <PopUp setIsPopUpShown={setIsPopupShown}>
@@ -94,6 +65,35 @@ const Homepage = () => {
         ) 
       }
       <div className="posts-container" id="scrollableDiv">
+        <div 
+          style={{
+            display: 'flex', 
+            alignItems: 'center', 
+            //justifyContent: 'flex-start', 
+            gap: '3em', 
+            width: '100%', 
+            padding: '1.3em .7em',
+            background: "rgb(248, 248, 248)",
+            //borderRadius: '50px'
+          }}
+        >
+          { 
+            user && (
+              <img 
+                src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
+                alt="user-profile-image" 
+                className="user-img user-img-medium"
+                //style={{marginRight: 'auto'}}
+              />
+            ) 
+          }
+          <button 
+            onClick={handleNewPost} 
+            className="show-popup-btn"
+          >
+            What's on your mind {user?.displayName}? 
+          </button>
+        </div>
         <InfiniteScroll
           dataLength={posts.length}
           next={fetchMore}
