@@ -27,7 +27,7 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
                     style={{...imgStyle, borderTopLeftRadius: '15px', borderTopRightRadius: '15px'}}
                   />
                 </a>
-                <p style={{fontSize: '.6rem', padding: '0 1em'}}>
+                <div style={{fontSize: '.6rem', padding: '0 1em'}}>
                   <p style={{textTransform: 'initial', fontSize: '.85rem', margin: '.5em 0', fontWeight: '700'}}>{linkData.title}</p>
                   <p style={{color: 'grey'}}>{visibleText}</p>
                   {isLong && !expanded && '... '}
@@ -42,7 +42,7 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
                       {expanded ? ' See less' : ' See more'}
                     </span>
                   )}
-                </p>
+                </div>
                 {children}
               </div>
             ) : null

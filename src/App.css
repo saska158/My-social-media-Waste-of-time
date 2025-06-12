@@ -219,9 +219,8 @@ textarea::placeholder {
 }
 
 .user-img-extra-small {
-  width: 15px;
-  height: 15px;
-  display: inline;
+  width: 20px;
+  height: 20px;
 }
 
 .online-indicator {
@@ -655,21 +654,9 @@ textarea::placeholder {
   padding: 0;
 }
 
-/*.post-actions-container {
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between;
-  padding: 1em 0;
-}
-
-.post-actions-container button {
-  font-size: .7rem;
-}*/
-
 .post-actions-buttons {
   display: flex;
   gap: 2em; 
-  /*border-top: .5px solid var(--dark); */
   font-size: .7rem;
 }
 
@@ -873,6 +860,19 @@ textarea::placeholder {
   justify-content: center;
   align-items: center;
   color: var(--dark);
+}
+
+/* ADDITIONS */
+
+.avatar-stack {
+  position: relative;
+  height: 20px; 
+  margin-right: 2em;
+}
+
+.avatar {
+  position: absolute;
+  border: 1px solid #fff;
 }
 
 /* Target WebKit scrollbars */
