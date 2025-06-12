@@ -180,7 +180,7 @@ const FirestoreItemActions = ({
                 <span>Liked by</span>
                 <span>{likesArray[0]?.displayName}</span>
                 { likesArray.length === 2 && 'and 1 other' }
-                { likesArray.length > 2 && `and ${likesArray.length} others` }
+                { likesArray.length > 2 && `and ${likesArray.length - 1} others` }
               </div>
             </div>
           )
