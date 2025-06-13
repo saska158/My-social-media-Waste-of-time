@@ -73,7 +73,7 @@ const Homepage = () => {
             gap: '3em', 
             width: '100%', 
             padding: '1.3em .7em',
-            background: "rgb(248, 248, 248)",
+            background: "#eaf4f0",
             //borderRadius: '50px'
           }}
         >
@@ -91,7 +91,7 @@ const Homepage = () => {
             onClick={handleNewPost} 
             className="show-popup-btn"
           >
-            What's on your mind {user?.displayName}? 
+            Hey <span style={{fontWeight: '700'}}>{user?.displayName}</span> - what you waste time on?
           </button>
         </div>
         <InfiniteScroll

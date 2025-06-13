@@ -17,9 +17,12 @@ const RoomsLayout = () => {
             key={path}
             to={path}
             style={({ isActive }) => ({
-              border: isActive ? ".5px solid #4f3524" : "none",
+              background: isActive ? "#eaf4f0" : "none",
+              border: isActive ? 'none' : "1px solid #eaf4f0",
+              color: '#4b896f',
               borderRadius: '30px',
-              padding: '.5em 1em'
+              padding: '.5em 1em',
+              fontWeight: '700'
             })}
           >
             {label}

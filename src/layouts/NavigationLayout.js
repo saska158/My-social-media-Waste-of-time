@@ -21,13 +21,21 @@ const NavigationLayout = () => {
 
   return (
     <div className="navigation-layout-container">
-      <nav className="navigation-layout-container-nav"> 
-        <Link to="/" className="logo-link">Waste of time</Link>
+      <nav 
+        className="navigation-layout-container-nav"
+        style={{
+          backgroundImage: `url(${process.env.PUBLIC_URL}/images/background.png)`,
+          backgroundSize: 'cover'
+        }}
+      > 
+        <Link to="/" className="logo-link">
+          <img src={`${process.env.PUBLIC_URL}/images/logo.png`} />
+        </Link>
         { isMobile && <UsersList /> }
         {
           user ? (
             <div className="navigation-layout-nav-links">
-              <NavLink
+             {/* <NavLink
                 to="/"
                 className={({isActive}) => isActive || 
                   location.pathname === '/watching' || 
@@ -38,7 +46,7 @@ const NavigationLayout = () => {
                 }
               >
                 Home
-              </NavLink>
+              </NavLink>*/}
               <NavLink 
                 to={`/user/${user?.uid}`}
                 className={({isActive}) => isActive ? 
@@ -46,7 +54,13 @@ const NavigationLayout = () => {
                   'navigation-layout-nav-link' 
                 }
               >
-                My profile
+                <img 
+                  src={user.photoURL} 
+                  alt="profile image" 
+                  className="user-img user-img-small" 
+                  style={{display: 'inline-block'}} 
+                />
+                <span>Profile</span>
               </NavLink>
               <NavLink 
                 to="/my-chats"
@@ -55,7 +69,7 @@ const NavigationLayout = () => {
                   'navigation-layout-nav-link' 
                 }
               >
-                My chats
+                Chat
               </NavLink>
               {
                 authLoading ? (
@@ -63,10 +77,12 @@ const NavigationLayout = () => {
                 ) : (
                   <button
                     onClick={logOut} 
-                    className="light-border"
+                    //className="light-border"
+                    className="navigation-layout-nav-link"
+                    style={{fontSize: '1rem'}}
                     disabled={authLoading}
                   >
-                    sign out
+                    Sign out
                   </button>
 
                 )
@@ -79,6 +95,9 @@ const NavigationLayout = () => {
             </div>
           )
         }
+        <p style={{color: '#4b896f', marginTop: 'auto'}}>
+          Made by <Link to="https://www.justsittingdoingnothing.com/" target="_blank" style={{textDecoration: 'underline'}}>Just Sitting Doing Nothing</Link>
+        </p>
       </nav>
       <Outlet />
       { isDesktop && <UsersList /> }
