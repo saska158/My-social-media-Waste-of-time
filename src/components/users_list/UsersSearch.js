@@ -181,7 +181,7 @@ const UsersSearch = () => {
           dataLength={filteredUsers.length}
           next={fetchMore}
           hasMore={hasMore}
-          loader={<ClipLoader color="#4f3524" />}
+          loader={<ClipLoader color="#4b896f" />}
           scrollThreshold={0.9}
           scrollableTarget="scrollableUsersDiv"
         >
