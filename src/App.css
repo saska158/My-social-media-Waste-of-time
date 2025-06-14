@@ -395,6 +395,12 @@ textarea::placeholder {
   width: 100%;
 }
 
+.user-profile-header-container {
+  display: flex;
+  align-items: center; 
+  gap: 3em; 
+}
+
 .user-profile-displayName {
   font-size: 1.5rem;
   font-family: 'Anton', sans-serif;
@@ -957,6 +963,11 @@ textarea::placeholder {
   /*.chat-box-header-container {
     margin-top: 18em;
   }*/
+
+  .user-profile-header-container {
+    justify-content: flex-start;
+    gap: 1em;
+  }
 
   .posts-container {
     display: flex;
