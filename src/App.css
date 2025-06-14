@@ -278,6 +278,9 @@ textarea::placeholder {
   font-family: 'Anton', sans-serif;
 }
 
+.sign-out-btn {
+  font-size: 1rem;
+}
 
 /* GROUP CHAT LAYOUT */
 
@@ -564,7 +567,7 @@ textarea::placeholder {
 
 .chat-box-header-container {
   position: absolute;
-  top: 0; 
+  top: 20%; 
   left: 0; 
   right: 0; 
   display: flex;
@@ -891,27 +894,36 @@ textarea::placeholder {
 
   .navigation-layout-container-nav {
     padding: .8em 2em;
-    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 1em;
-   /* position: fixed;
-    z-index: 9999;*/
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 90%;
+    height: 100%;
+    z-index: 9999;
+    transform: translatex(-100%);
+    transition: all .7s;
+  }
+
+  .navigation-layout-container-nav-open {
+    transform: translatex(0);
   }
 
   .navigation-layout-nav-links {
-    flex-direction: row;
-    font-size: .8rem;
-    align-items: center;
+    gap: 1.5em;
+    font-size: 1.3rem;
+  }
+
+  .sign-out-btn {
+    font-size: 1.3rem;
   }
 
   .logo-link {
     font-size: 3.2rem;
-  }
-
-  .sign-out-button {
-    font-size: .7rem;
   }
 
   /*.group-chat-layout-container {

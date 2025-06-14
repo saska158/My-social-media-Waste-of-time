@@ -24,7 +24,7 @@ const App = () => {
             <Routes>
               <Route element={<NavigationLayout />}>
                 <Route path='/' element={<RoomsLayout />}>
-                  <Route index element={<Homepage roomId="main" />} />
+                  <Route index element={<Homepage roomId="watching" />} />
                   <Route path=':roomId' element={<Homepage />} />
                 </Route>
                 <Route element={<AuthRequired />}>

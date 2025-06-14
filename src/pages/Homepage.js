@@ -24,11 +24,11 @@ const Homepage = () => {
 
   // Memoized values 
   const room = useMemo(() => {
-    return roomId ? `${roomId}` : `main`
+    return roomId ? `${roomId}` : `watching`
   }, [roomId])
 
   const roomRef = useMemo(() => {
-    const room = roomId ? `${roomId}` : `main`
+    const room = roomId ? `${roomId}` : `watching`
     return collection(firestore, room)
   }, [roomId])
 
