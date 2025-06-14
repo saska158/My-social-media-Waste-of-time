@@ -91,7 +91,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             <div>
               { content.text && <p>{linkify(content.text)}</p> }
               {
-                content.image && <img src={content.image} alt="message-image" />
+                content.image && <img src={content.image} style={{borderRadius: '15px'}} alt="message-image" />
               }
             </div>
             { linkData && <LinkPreview {...{linkData, content}}/> } 
