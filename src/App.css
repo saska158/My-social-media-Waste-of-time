@@ -563,12 +563,14 @@ textarea::placeholder {
 /* CHAT BOX HEADER */ 
 
 .chat-box-header-container {
-  position: sticky;
+  position: absolute;
   top: 0; 
   left: 0; 
   right: 0; 
   display: flex;
   padding: .5em;
+  background-color: #fff;
+  z-index: 9999;
 }
 
 /* MESSAGE */
