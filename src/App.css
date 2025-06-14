@@ -567,7 +567,7 @@ textarea::placeholder {
 
 .chat-box-header-container {
   position: absolute;
-  top: 20%; 
+  top: 0; 
   left: 0; 
   right: 0; 
   display: flex;
