@@ -29,13 +29,30 @@ const FirestoreItemHeader = ({creatorUid, timestamp}) => {
           <div className="post-header-container">
             {
               profile?.photoURL ? (
-                <img src={profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} alt="profile" className="user-img user-img-medium" />
+                <img 
+                  src={profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
+                  alt="profile" 
+                  className="user-img user-img-medium" 
+                />
               ) : null
             }
-            <div>
-              <span style={{fontWeight: '700', display: 'inline-block', marginBottom: '8px'}}>{profile?.displayName}</span>
+            <div 
+              style={{
+                fontSize: '.95rem', 
+                display: 'flex', 
+                flexDirection: 'column',
+                gap: '.3em'
+                }}
+              >
+              <span 
+                style={{
+                  fontWeight: '700', 
+                  color: '#000',
+                }}>
+                  {profile?.displayName}
+                </span>
               {timestamp && (
-                <p style={{color: "rgb(107, 109, 136)"}}>{formattedTime}</p>
+                <span>{formattedTime}</span>
               )}
             </div>
           </div>

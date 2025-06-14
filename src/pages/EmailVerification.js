@@ -67,7 +67,7 @@ const EmailVerification = () => {
               </p><br />
               <button 
                 onClick={checkEmailVerified}
-                className="dark-border"
+                style={{background: '#eaf4f0'}}
                 disabled={loading}
               >
                 {loading ? "Checking..." : "I've Verified My Email"}

@@ -32,7 +32,9 @@ const UserPosts = ({profileUid}) => {
                 key={tag} 
                 onClick={() => setRoom(tag)} 
                 style={{
-                  border: room === tag ? ".2px solid #f05593" : "none", 
+                  background: room === tag ? "#eaf4f0" : "none", 
+                  border: room === tag ? "none" : ".2px solid #eaf4f0", 
+                  color: '#4b896f',
                   borderRadius: '30px', 
                   padding: '.5em .8em',
                   marginRight: '1em',
@@ -61,11 +63,11 @@ const UserPosts = ({profileUid}) => {
                 dataLength={posts.length}
                 next={fetchMore}
                 hasMore={hasMore}
-                loader={<ClipLoader color="#4f3524" />}
+                loader={<ClipLoader color="#4b896f" />}
                 scrollThreshold={0.9}
                 scrollableTarget="scrollableUserPostsDiv"
               >
-                <div style={{width: isMobile ? '100%' : '70%'}}>
+                {/*<div style={{width: '100%'}}>*/}
                   {
                     posts.length > 0 ? (
                       posts.map((post, index) => (
@@ -78,7 +80,7 @@ const UserPosts = ({profileUid}) => {
                       ))
                     ) : <p>No posts yet.</p>
                   } 
-                </div>  
+                {/*</div>*/}  
               </InfiniteScroll>  
             )
           }

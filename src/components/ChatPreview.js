@@ -25,7 +25,7 @@ const ChatPreview = ({
               alt="sender" 
               className="user-img user-img-medium"
             />
-            <span>{receiverUid === chatPartnerUid ? receiverName : senderName}</span>
+            <span style={{fontWeight: '700'}}>{receiverUid === chatPartnerUid ? receiverName : senderName}</span>
           </div>
           <div className="chat-item-content">
             {
@@ -39,7 +39,7 @@ const ChatPreview = ({
                 <p>{contentText}</p>
               )
             }
-            <p style={{color: '#8a7263', fontSize: '.6rem', marginTop: '.5em'}}>{formattedTime}</p>
+            <p style={{color: '#4b896f', fontSize: '.7rem', marginTop: '.5em'}}>{formattedTime}</p>
           </div>
         </div>
     )

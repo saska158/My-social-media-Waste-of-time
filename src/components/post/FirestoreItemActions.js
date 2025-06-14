@@ -123,7 +123,51 @@ const FirestoreItemActions = ({
 
   return (
     <div className="post-actions">
-      <div>
+        {
+          likesArray.length > 0 && (
+            <div 
+              style={{ 
+                display: 'flex', 
+                alignItems: 'flex-end', 
+                gap: '.3em', 
+                padding: '1em 0 0', 
+              }}
+            >
+              <div 
+                className="avatar-stack" 
+                style={{ width: `${10 * (likesArray.slice(0, 3).length - 1)}px` }}
+              >
+                {
+                  likesArray.length > 0 &&
+                  likesArray.slice(0, 3).map((item, index) => (
+                    <img 
+                      key={index} 
+                      src={item.photoURL} 
+                      alt="profile photo" 
+                      className="user-img user-img-extra-small avatar" 
+                      style={{ left: `${index * 15}px`, zIndex: likesArray.length - index }}
+                    />
+                  )) 
+                }
+              </div>
+              <div
+                onClick={handleShowLikes}
+                style={{display: 'flex', alignItems: 'flex-end', gap: '.3em', cursor: 'pointer'}}
+              >
+                <span>Liked by</span>
+                <span style={{fontWeight: '700'}}>{likesArray[0]?.displayName}</span>
+                {
+                  likesArray.length === 2 && (
+                    <p>and <span style={{fontWeight: '700'}}>1 other</span></p>
+                  )}
+                {
+                  likesArray.length > 2 && (
+                    <p>and <span style={{fontWeight: '700'}}>{likesArray.length - 1} others</span></p>
+                  )}
+              </div>
+            </div>
+          )
+        }
         <div className="post-actions-buttons">
           <button onClick={handleLike} style={{display: 'flex', alignItems: 'center'}}>
             {
@@ -145,48 +189,7 @@ const FirestoreItemActions = ({
             <span>{numberOfComments}</span>
           </button>
         </div>
-        {
-          likesArray.length > 0 && (
-            <div 
-              style={{
-                fontSize: '.7rem', 
-                display: 'flex', 
-                alignItems: 'flex-end', 
-                gap: '.3em', 
-                padding: '1em 0 0', 
-              }}
-            >
-              <div 
-                className="avatar-stack" 
-                style={{ width: `${15 * (likesArray.slice(0, 3).length - 1)}px` }}
-              >
-                {
-                  likesArray.length > 0 &&
-                  likesArray.slice(0, 3).map((item, index) => (
-                    <img 
-                      key={index} 
-                      src={item.photoURL} 
-                      alt="profile photo" 
-                      className="user-img user-img-extra-small avatar" 
-                      style={{ left: `${index * 15}px`, zIndex: likesArray.length - index }}
-                    />
-                  )) 
-                }
-              </div>
-              <div
-                onClick={handleShowLikes}
-                style={{display: 'flex', alignItems: 'flex-end', gap: '.3em', cursor: 'pointer'}}
-              >
-                <span>Liked by</span>
-                <span>{likesArray[0]?.displayName}</span>
-                { likesArray.length === 2 && 'and 1 other' }
-                { likesArray.length > 2 && `and ${likesArray.length - 1} others` }
-              </div>
-            </div>
-          )
-        }
         {error && <ErrorMessage message={error} />}
-      </div> 
       { showLikes && (
         <PopUp setIsPopUpShown={setShowLikes}>
           {

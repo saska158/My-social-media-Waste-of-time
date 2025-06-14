@@ -84,11 +84,29 @@ const UserProfileHeader = ({
             }
             {error && <ErrorMessage message={error} />}      
             {
-              isMyProfile && <button className="dark-border" onClick={handleEditButton}>Edit Profile</button>
+              isMyProfile && (
+                <button 
+                  style={{
+                    background: "#eaf4f0", 
+                    color: '#4b896f'
+                  }} 
+                  onClick={handleEditButton}
+                >
+                  Edit Profile
+                </button>
+              )
             }
             {
               user && !isMyProfile ? (
-                <button className="dark-border" onClick={handleMessageButton}>message</button>
+                <button 
+                  style={{
+                    background: "#eaf4f0", 
+                    color: '#4b896f'
+                  }} 
+                  onClick={handleMessageButton}
+                  >
+                    message
+                  </button>
               ) : null
             }
           </div>

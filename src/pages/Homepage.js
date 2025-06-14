@@ -69,12 +69,10 @@ const Homepage = () => {
           style={{
             display: 'flex', 
             alignItems: 'center', 
-            //justifyContent: 'flex-start', 
-            gap: '3em', 
+            gap: '1em',
             width: '100%', 
-            padding: '1.3em .7em',
+            padding: '0 .7em',
             background: "#eaf4f0",
-            //borderRadius: '50px'
           }}
         >
           { 
@@ -83,13 +81,13 @@ const Homepage = () => {
                 src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
                 alt="user-profile-image" 
                 className="user-img user-img-medium"
-                //style={{marginRight: 'auto'}}
               />
             ) 
           }
           <button 
             onClick={handleNewPost} 
             className="show-popup-btn"
+            style={{padding: '1.5em 0', width: '90%'}}
           >
             Hey <span style={{fontWeight: '700'}}>{user?.displayName}</span> - what you waste time on?
           </button>
@@ -98,7 +96,7 @@ const Homepage = () => {
           dataLength={posts.length}
           next={fetchMore}
           hasMore={hasMore}
-          loader={<ClipLoader color="#5c3d2a" />}
+          loader={<ClipLoader color="#4b896f" />}
           scrollThreshold={0.9}
           scrollableTarget="scrollableDiv"
           //style={{width: '500px'}}

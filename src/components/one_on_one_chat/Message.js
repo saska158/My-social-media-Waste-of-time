@@ -100,7 +100,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             }
             {
               isLastIndex && message.senderUid === user.uid && message.status === "seen" && (
-                <p style={{fontSize: '.55rem'}}>seen</p>
+                <p style={{fontSize: '.55rem', color: 'rgba(75, 137, 111, .5)'}}>seen</p>
               )
             }
           </div>

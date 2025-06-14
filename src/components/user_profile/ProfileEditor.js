@@ -187,7 +187,8 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
             </label>
           <button 
             style={{
-              border: loading ? 'none' : '.2px solid #4f3524', 
+              background: loading ? 'none' : '#eaf4f0', 
+              color: '#4b896f',
               padding: '1em 1.3em', 
               alignSelf: 'center',
               margin: '2em 0'
@@ -195,7 +196,7 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
             onClick={saveProfileChanges}
             disabled={loading}
           >
-            { loading ? <PulseLoader color="#4f3524" /> : 'save changes' }
+            { loading ? <PulseLoader color="#4b896f" /> : 'save changes' }
           </button>
           {error && <ErrorMessage message={error} />}
         </form>

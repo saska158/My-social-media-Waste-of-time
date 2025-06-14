@@ -1,20 +1,17 @@
-import { useState } from "react"
+//import { useState } from "react"
 
 const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
-  const [expanded, setExpanded] = useState(false)
-  const limit = 100
+  //const [expanded, setExpanded] = useState(false)
+  const limit = 200
 
-  const isLong = linkData.description.length > limit
-  const visibleText = expanded ? linkData.description : linkData.description.slice(0, limit)
+  //const isLong = linkData.description.length > limit
+  const visibleText =/* expanded ? linkData.description :*/ linkData.description.slice(0, limit)
 
     return (
-        <div /*className="link-preview-container"*/>
+        <div>
           {
             linkData.description !== 'Too many requests / rate limit exceeded' ? (
-              <div 
-                className="link-preview-container"
-                //style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', position: 'relative'}}
-              >
+              <div className="link-preview-container">
                 <a 
                   href={linkData.url} 
                   target="_blank" 
@@ -27,10 +24,18 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
                     style={{...imgStyle, borderTopLeftRadius: '15px', borderTopRightRadius: '15px'}}
                   />
                 </a>
-                <div style={{fontSize: '.6rem', padding: '0 1em'}}>
-                  <p style={{textTransform: 'initial', fontSize: '.85rem', margin: '.5em 0', fontWeight: '700'}}>{linkData.title}</p>
-                  <p style={{color: 'grey'}}>{visibleText}</p>
-                  {isLong && !expanded && '... '}
+                <div style={{padding: '0 1em'}}>
+                  <p 
+                    style={{
+                      textTransform: 'uppercase', 
+                      color: '#000',
+                      margin: '.5em 0', 
+                      fontWeight: '700'
+                    }}>
+                      {linkData.title}
+                    </p>
+                  <p style={{fontSize: '.9rem'}}>{visibleText}...</p>
+                 {/* {isLong && !expanded && '... '}
                   {isLong && (
                     <span
                       onClick={(e) => {
@@ -41,7 +46,7 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
                     >
                       {expanded ? ' See less' : ' See more'}
                     </span>
-                  )}
+                  )}*/}
                 </div>
                 {children}
               </div>

@@ -126,7 +126,7 @@ const UsersSearch = () => {
       const snapshot = await getDocs(q)
       const docs = snapshot.docs
   
-      if (docs.length > 10) {
+      if (docs.length > 6) {
         const newData = docs.slice(0, 10).map(doc => ({ id: doc.id, ...doc.data() }))
         setFilteredUsers(prev => [...prev, ...newData])
         setLastDoc(docs[10 - 1]) 
@@ -160,7 +160,7 @@ const UsersSearch = () => {
   return (
     <>
       <div className="input-wrapper">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px', color: '#4f3524'}}>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px', color: '#4b896f'}}>
           <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
         </svg>
         <input

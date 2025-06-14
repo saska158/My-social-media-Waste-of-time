@@ -58,7 +58,8 @@ const UsersList = () => {
               justifyContent: 'flex-start', 
               gap: '.5em',  
               paddingLeft: '.5em',
-              background: "rgb(248, 248, 248)",
+              background: "#eaf4f0",
+              color: "#4b896f",
               borderRadius: '50px'
             }}
           >
@@ -70,10 +71,6 @@ const UsersList = () => {
             <button 
               onClick={findPeopleToFollow} 
               className="show-popup-btn"
-              style={{
-                color: isMobile ? "#eed4d4" : "#8a7263",
-                //borderBottom: isMobile ? ".2px solid #eed4d4" : ".2px solid #4f3524"
-              }}
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px'}}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -88,34 +85,6 @@ const UsersList = () => {
           <div>
             {error && <ErrorMessage message={error} onRetry={refetch} />}
             <UsersSearch />
-            
-            {/*<div 
-              id="scrollableActiveUsersDiv"
-              ref={usersContainerRef}
-            >
-              <InfiniteScroll
-                dataLength={users.length}
-                next={fetchMore}
-                hasMore={hasMore}
-                loader={<UserSkeleton />}
-                scrollThreshold={0.9}
-                scrollableTarget="scrollableActiveUsersDiv"
-              >
-                <div>
-                  {
-                    loading ? <UserSkeleton /> : (
-                      users.length > 0 ? (
-                        <div style={{display: 'flex', flexDirection: 'column', gap: '1em'}}>
-                          {
-                            users.map((usr, index) => <UserItem key={index} user={usr} />)
-                          }
-                        </div>
-                      ) : <p>Noone is online.</p>
-                    )
-                  }
-                </div>
-               </InfiniteScroll>
-            </div>*/}
           </div>
         )
       }

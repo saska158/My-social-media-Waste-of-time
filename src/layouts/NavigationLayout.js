@@ -77,7 +77,6 @@ const NavigationLayout = () => {
                 ) : (
                   <button
                     onClick={logOut} 
-                    //className="light-border"
                     className="navigation-layout-nav-link"
                     style={{fontSize: '1rem'}}
                     disabled={authLoading}
