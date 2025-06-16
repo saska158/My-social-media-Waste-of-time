@@ -124,7 +124,7 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
         onChange={handleDataChange}
         placeholder={placeholder}
         textareaRef={textareaRef}
-        style={{fontSize: '1.5rem', borderBottom: 'none'}}
+        style={{fontSize: '1.5rem', borderBottom: 'none', background: 'transparent'}}
         maxLength={270}
       />
 

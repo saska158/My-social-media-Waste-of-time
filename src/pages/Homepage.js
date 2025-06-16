@@ -57,7 +57,7 @@ const Homepage = () => {
           <PopUp setIsPopUpShown={setIsPopupShown}>
             <PostForm 
               firestoreRef={roomRef} 
-              placeholder="let's waste time..." 
+              placeholder={`Hey ${user?.displayName} – what do you waste time on?`}
               type="create-post" 
               setIsPopupShown={setIsPopupShown} 
             />
@@ -75,7 +75,12 @@ const Homepage = () => {
             background: "#eaf4f0",
           }}
         >
-          { 
+          <button 
+            onClick={handleNewPost} 
+            className="show-popup-btn"
+            style={{padding: '1.5em 0 2.5em', width: '90%'}}
+          >
+            { 
             user && (
               <img 
                 src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
@@ -84,12 +89,7 @@ const Homepage = () => {
               />
             ) 
           }
-          <button 
-            onClick={handleNewPost} 
-            className="show-popup-btn"
-            style={{padding: '1.5em 0', width: '90%'}}
-          >
-            Hey <span style={{fontWeight: '700'}}>{user?.displayName}</span> - what you waste time on?
+            Hey <span style={{fontWeight: '700'}}>{user?.displayName}</span> - what do you waste time on?
           </button>
         </div>
         <InfiniteScroll

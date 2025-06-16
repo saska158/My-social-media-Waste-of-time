@@ -58,7 +58,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
         {
           showDateDivider && (
             <div className="date-divider">
-              <span style={{fontSize: '.6rem'}}>{messageDate}</span>
+              <span style={{fontSize: '.trem'}}>{messageDate}</span>
             </div>
           )
         }
@@ -96,11 +96,11 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             </div>
             { linkData && <LinkPreview {...{linkData, content}}/> } 
             {
-              user && timestamp && <p style={{textAlign: 'right', fontSize: '.55rem'}}>{format(timestamp.toDate(), 'p')}</p>
+              user && timestamp && <p style={{textAlign: 'right', fontSize: '.7rem'}}>{format(timestamp.toDate(), 'p')}</p>
             }
             {
               isLastIndex && message.senderUid === user.uid && message.status === "seen" && (
-                <p style={{fontSize: '.55rem', color: 'rgba(75, 137, 111, .5)'}}>seen</p>
+                <p style={{fontSize: '.7rem', color: 'rgba(75, 137, 111, .5)'}}>seen</p>
               )
             }
           </div>
