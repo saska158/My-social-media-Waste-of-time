@@ -78,7 +78,7 @@ const Homepage = () => {
           <button 
             onClick={handleNewPost} 
             className="show-popup-btn"
-            style={{padding: '1.5em 0 2.5em', width: '90%'}}
+            style={{padding: '1.5em 0 2.5em', width: '100%'}}
           >
             { 
             user && (
@@ -89,7 +89,7 @@ const Homepage = () => {
               />
             ) 
           }
-            Hey <span style={{fontWeight: '700'}}>{user?.displayName}</span> - what do you waste time on?
+            Hey <strong>{user?.displayName}</strong> - what do you waste time on?
           </button>
         </div>
         <InfiniteScroll

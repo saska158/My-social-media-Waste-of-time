@@ -1016,4 +1016,8 @@ textarea::placeholder {
     width: 90%;
   }
 
+  .show-popup-btn {
+    font-size: .9rem;
+  }
+
 }
