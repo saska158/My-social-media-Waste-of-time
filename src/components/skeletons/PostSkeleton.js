@@ -5,7 +5,7 @@ const PostSkeleton = () => {
         <div className="user-img user-img-medium" style={{background: '#eaf4f0'}}></div>
         <div style={{background: '#eaf4f0', width: '100px', height: '30px', borderRadius: '15px'}}></div>
       </div>
-      <div style={{width: '80%', height: '250px', background: '#eaf4f0', borderRadius: '15px'}}></div>
+      <div style={{width: '80%', height: '250px', background: '#eaf4f0', borderRadius: '15px', marginTop: '.5em'}}></div>
     </div>
   )
 }
