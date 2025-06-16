@@ -286,7 +286,6 @@ textarea::placeholder {
   color: #4b896f; 
   margin-top: auto; 
   width: 90%;
-  background: yellow;
 }
 
 /* GROUP CHAT LAYOUT */
@@ -945,7 +944,7 @@ textarea::placeholder {
   }
 
   .navigation-layout-footer {
-    margin-bottom: 5em;
+    margin-bottom: 2em;
   }
 
   /*.group-chat-layout-container {
