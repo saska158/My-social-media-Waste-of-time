@@ -109,7 +109,7 @@ const SignIn = () => {
         />
           {
             loading ? <PulseLoader size={10}  color="#4b896f"/> : (
-              <button onClick={e => handleSignIn(e)} disabled={loading}>
+              <button onClick={e => handleSignIn(e)} disabled={loading} className="green-btn">
                 Sign in
               </button>
             )

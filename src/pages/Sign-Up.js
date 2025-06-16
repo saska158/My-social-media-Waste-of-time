@@ -172,7 +172,7 @@ const SignUp = () => {
         </label>
         {
           loading ? <PulseLoader size={10}  color="#4b896f"/> : (
-            <button onClick={(e) => handleSignUp(e)} disabled={loading}>
+            <button onClick={(e) => handleSignUp(e)} disabled={loading} className="green-btn">
               Create account
             </button>
           )

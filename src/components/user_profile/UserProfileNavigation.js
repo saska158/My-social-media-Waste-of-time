@@ -8,7 +8,7 @@ const UserProfileNavigation = ({activeSection, setActiveSection}) => {
                     key={section}
                     onClick={() => setActiveSection(section)}
                     style={{
-                      border: activeSection === section ? ".5px solid #4f3524" : "none",
+                      border: activeSection === section ? ".5px solid #000" : "none",
                       borderRadius: '30px',
                       padding: '.5em 1em'
                     }}

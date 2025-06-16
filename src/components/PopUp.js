@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react"
-import gsap from "gsap"
 
 const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children, style}) => {
     const popUpRef = useRef(null)
@@ -17,13 +16,6 @@ const PopUp = ({setIsPopUpShown, setShowEmojiPicker = () => {}, children, style}
       return () => document.removeEventListener("click", handleClickOutside)
     }, [])
 
-    useEffect(() => {
-      gsap.to(popUpContainerRef.current, {
-        duration: .3,
-        opacity: 1,
-        ease: "power1.in"
-      })
-    }, [])
 
     return (
       <div className="pop-up-container" ref={popUpContainerRef}>

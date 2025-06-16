@@ -91,7 +91,7 @@ const UsersList = () => {
       }
       { isUsersQueryShown && (
         <PopUp setIsPopUpShown={setIsUsersQueryShown}>
-          <UsersSearch />
+          <UsersSearch style={{ margin: '1.5em'}} />
         </PopUp>
       )}
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }

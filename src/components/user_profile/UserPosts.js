@@ -24,7 +24,7 @@ const UserPosts = ({profileUid}) => {
     const isMobile = useMediaQuery({ maxWidth: 767 })
 
     return (
-      <div style={{paddingLeft: '1.5em'}}>
+      <div>
         <div style={{marginBottom: '1em'}}>
           {
             roomTags.map(tag => (
@@ -75,7 +75,7 @@ const UserPosts = ({profileUid}) => {
                           key={index}
                           post={post}
                           room={room}
-                          style={{width: '90%'}}
+                          style={{width: '90%', padding: '1em 0'}}
                         />
                       ))
                     ) : <p>No posts yet.</p>

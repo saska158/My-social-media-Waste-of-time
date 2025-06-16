@@ -20,7 +20,7 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import UserSkeleton from "../skeletons/UserSkeleton"
 import ErrorMessage from "../errors/ErrorMessage"
 
-const UsersSearch = () => {
+const UsersSearch = ({style=null}) => {
   // Context
   const { user } = useAuth()  
   
@@ -158,7 +158,7 @@ const UsersSearch = () => {
   }
 
   return (
-    <>
+    <div style={style}>
       <div className="input-wrapper">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px', color: '#4b896f'}}>
           <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -173,7 +173,7 @@ const UsersSearch = () => {
         />
       </div>
       <div 
-        style={{ height: '550px', overflowY: 'auto',}}
+        style={{ height: '400px', overflowY: 'auto',}}
         id="scrollableUsersDiv"
         ref={usersContainerRef}
       >
@@ -199,7 +199,7 @@ const UsersSearch = () => {
           </div>
         </InfiniteScroll>
       </div>
-    </>  
+    </div>  
   )
 }
 

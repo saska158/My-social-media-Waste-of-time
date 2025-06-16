@@ -34,7 +34,7 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
                     }}>
                       {linkData.title}
                     </p>
-                  <p style={{fontSize: '.9rem'}}>{visibleText}...</p>
+                  <p style={{fontSize: '.9rem', wordBreak: 'break-all'}}>{visibleText}...</p>
                  {/* {isLong && !expanded && '... '}
                   {isLong && (
                     <span

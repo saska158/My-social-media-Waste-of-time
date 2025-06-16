@@ -54,6 +54,7 @@ const NavigationLayout = () => {
         <Link to="/" className="logo-link">
           <img src={`${process.env.PUBLIC_URL}/images/logo-light.png`} />
         </Link>
+        { !user && <p style={{fontStyle: 'italic'}}>Ovde ide recenica.</p> }
         { isMobile && <UsersList /> }
         {
           user ? (
@@ -123,21 +124,38 @@ const NavigationLayout = () => {
           )
         }
         <p className="navigation-layout-footer">
-          Made by 
+          <p style={{display: 'flex', alignItems: 'flex-end', gap: '.3em'}}>
+            Made by
+            <img
+              src={`${process.env.PUBLIC_URL}/images/saki.jpg`}
+              alt="profile img"
+              className="user-img user-img-extra-small"
+              style={{display: 'inline'}}
+            />   
           <Link 
-            to="https://www.justsittingdoingnothing.com/" 
+            to="https://www.linkedin.com/in/saska-mikic-4ba087270/" 
             target="_blank" 
-            style={{textDecoration: 'underline', marginLeft: '.5em'}}
+            style={{textDecoration: 'underline'}}
           >
-            Just Sitting Doing Nothing
+            Saska (Linkedin)
           </Link>
-          <Link 
+          </p>
+          <p>
+            <Link 
             to="https://github.com/saska158/My-social-media-Waste-of-time" 
             target="_blank" 
             style={{textDecoration: 'underline', display: 'inline-block'}}
           >
-            For Developers
+            For Developers (Github)
           </Link> 
+          </p>
+          <p>
+            <Link 
+            to="https://www.justsittingdoingnothing.com/"
+            target="_blank" 
+            style={{textDecoration: 'underline'}}
+          >Personal Website</Link>
+          </p>
         </p>
       </nav>
       <Outlet context={{ toggleNav }} />

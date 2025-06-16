@@ -124,7 +124,7 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
         onChange={handleDataChange}
         placeholder={placeholder}
         textareaRef={textareaRef}
-        style={{fontSize: '1.5rem', borderBottom: 'none', background: 'transparent'}}
+        style={{fontSize: '1.5rem', borderBottom: 'none', background: 'transparent', paddingLeft: '0'}}
         maxLength={270}
       />
 
@@ -148,9 +148,9 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
       { imagePreview && <ImagePreview {...{imagePreview, setImagePreview, fileInputRef}} setState={setData} /> }
 
       <div className="post-form-icons-container">
-        <ImageUploadButton {...{handleImageChange, fileInputRef}} />
+        <ImageUploadButton {...{handleImageChange, fileInputRef}} style={{width: '30px', height: '30px'}} />
         <div style={{position: 'relative'}}>
-          <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
+          <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} style={{width: '30px'}} />
           {
             showEmojiPicker && (
               <EmojiPicker 
@@ -170,7 +170,7 @@ const PostForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
 
         {
           data.text || data.image ? (
-            <button type="submit" disabled={loading}>
+            <button type="submit" disabled={loading} className="no-padding-btn">
               {
                 loading ? (
                   <ClipLoader color="#4b896f"/>

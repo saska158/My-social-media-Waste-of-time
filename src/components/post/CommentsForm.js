@@ -118,10 +118,10 @@ const CommentsForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
 
 
   return (
-    <form onSubmit={handleOnSubmit} style={{display: 'flex', flexDirection: 'column-reverse', background: '#eaf4f0'}}>
+    <form onSubmit={handleOnSubmit} className="comments-form">
       { error && <ErrorMessage message={error} /> }
 
-      <div style={{display: 'flex', alignItems: 'flex-end', gap: '2em'}}>
+      <div style={{display: 'flex', alignItems: 'flex-end'}}>
         <Textarea
           value={data.text}
           onChange={handleDataChange}
@@ -131,7 +131,7 @@ const CommentsForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
           maxLength={280}
         />
 
-        <div style={{display: 'flex', alignItems: 'center', width: '50%'}}>
+        <div className="comments-form-icons-container">
           <ImageUploadButton {...{handleImageChange, fileInputRef}} />
           <div style={{position: 'relative'}}>
             <ChatSmiley setShowEmojiPicker={setShowEmojiPicker} />
@@ -153,12 +153,12 @@ const CommentsForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
 
           {
             data.text || data.image ? (
-              <button type="submit" disabled={loading}>
+              <button type="submit" disabled={loading} className="no-padding-btn" style={{marginLeft: 'auto'}}>
                 {
                   loading ? (
                     <ClipLoader color="#4b896f"/>
                   ) : (
-                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '30px', color: '#4b896f'}}>
+                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '25px', color: '#4b896f'}}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5" />
                     </svg>
                   )

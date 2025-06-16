@@ -76,7 +76,7 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
               <img 
                 src={userProfile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
                 alt="profile" 
-                className="user-img user-img-small"
+                className="user-img user-img-medium"
               />
             )
           }
@@ -84,23 +84,23 @@ const Message = ({index, message, messageRefs, messageDate, isLastIndex, showDat
             className={content.image ? 'message-content-img' : "message-content"}
             style={{
               //backgroundColor: senderName.toLowerCase() === user?.displayName.toLowerCase() ? '#cac5c2' : '#c9b1a4',
-              borderTopRightRadius: senderName.toLowerCase() === user?.displayName.toLowerCase() ? '0' : '15px',
-              borderTopLeftRadius: senderName.toLowerCase() !== user?.displayName.toLowerCase() ? '0' : '15px',
+              borderTopRightRadius: senderName.toLowerCase() === user?.displayName.toLowerCase() ? '0' : '30px',
+              borderTopLeftRadius: senderName.toLowerCase() !== user?.displayName.toLowerCase() ? '0' : '30px',
             }}
           >
             <div>
               { content.text && <p>{linkify(content.text)}</p> }
               {
-                content.image && <img src={content.image} style={{borderRadius: '15px'}} alt="message-image" />
+                content.image && <img src={content.image} className="message-img" alt="message-image" />
               }
             </div>
             { linkData && <LinkPreview {...{linkData, content}}/> } 
             {
-              user && timestamp && <p style={{textAlign: 'right', fontSize: '.7rem'}}>{format(timestamp.toDate(), 'p')}</p>
+              user && timestamp && <p style={{textAlign: 'right', fontSize: '.7rem', color: '#4b896f'}}>{format(timestamp.toDate(), 'p')}</p>
             }
             {
               isLastIndex && message.senderUid === user.uid && message.status === "seen" && (
-                <p style={{fontSize: '.7rem', color: 'rgba(75, 137, 111, .5)'}}>seen</p>
+                <p style={{fontSize: '.7rem', color: '#4b896f'}}>seen</p>
               )
             }
           </div>

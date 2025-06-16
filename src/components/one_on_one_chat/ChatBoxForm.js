@@ -187,7 +187,7 @@ const ChatBoxForm = ({messages, chatPartnerProfile, chatId}) => {
   
           {
             message.text || message.image ? (
-              <button onClick={handleSendMessage} disabled={loading} style={{marginLeft: 'auto'}}>
+              <button onClick={handleSendMessage} disabled={loading} style={{marginLeft: 'auto'}} className="no-padding-btn">
                 {
                   loading ? (
                     <ClipLoader color="#4b896f"/>
