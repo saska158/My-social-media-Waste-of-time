@@ -57,7 +57,7 @@ const Homepage = () => {
           <PopUp setIsPopUpShown={setIsPopupShown}>
             <PostForm 
               firestoreRef={roomRef} 
-              placeholder={`Hey ${user?.displayName} – what do you waste time on?`}
+              placeholder={`Hey ${user?.displayName} — what do you waste time on?`}
               type="create-post" 
               setIsPopupShown={setIsPopupShown} 
             />
@@ -78,7 +78,7 @@ const Homepage = () => {
           <button 
             onClick={handleNewPost} 
             className="show-popup-btn"
-            style={{padding: '1.5em 0 2.5em', width: '100%'}}
+            style={{padding: '.5em 0 2.5em', width: '100%'}}
           >
             { 
             user && (
@@ -89,7 +89,7 @@ const Homepage = () => {
               />
             ) 
           }
-            Hey <strong>{user?.displayName}</strong> - what do you waste time on?
+            Hey <strong style={{margin: '-.3em', fontWeight: '800'}}>{user?.displayName}</strong> — what do you waste time on?
           </button>
         </div>
         <InfiniteScroll

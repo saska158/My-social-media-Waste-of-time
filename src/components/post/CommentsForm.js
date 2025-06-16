@@ -118,7 +118,7 @@ const CommentsForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
 
 
   return (
-    <form onSubmit={handleOnSubmit} style={{display: 'flex', flexDirection: 'column-reverse'}}>
+    <form onSubmit={handleOnSubmit} style={{display: 'flex', flexDirection: 'column-reverse', background: '#eaf4f0'}}>
       { error && <ErrorMessage message={error} /> }
 
       <div style={{display: 'flex', alignItems: 'flex-end', gap: '2em'}}>
@@ -127,6 +127,7 @@ const CommentsForm = ({firestoreRef, placeholder, setIsPopupShown=()=>{}}) => {
           onChange={handleDataChange}
           placeholder={placeholder}
           textareaRef={textareaRef}
+          style={{background: 'transparent'}}
           maxLength={280}
         />
 

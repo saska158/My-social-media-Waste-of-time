@@ -165,14 +165,15 @@ const UsersSearch = () => {
         </svg>
         <input
           type="text"
-          placeholder="search people"
+          placeholder="Find people"
           value={searchQuery}
           onChange={handleSearchChange}
-          className="users-list-follow-button"
+         // className="users-list-follow-button"
+         style={{fontSize: '1rem'}}
         />
       </div>
       <div 
-        style={{ height: '550px', overflowY: 'auto'}}
+        style={{ height: '550px', overflowY: 'auto',}}
         id="scrollableUsersDiv"
         ref={usersContainerRef}
       >

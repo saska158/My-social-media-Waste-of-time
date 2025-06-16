@@ -41,6 +41,7 @@ const UserCard = ({userItem}) => {
                 currentUser={currentUser}
                 targetUser={userItem}
                 type="bordered"
+                style={{marginLeft: 'auto'}}
               />
             )
           }

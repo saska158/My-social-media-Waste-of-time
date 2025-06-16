@@ -20,7 +20,7 @@ const UserItem = ({user}) => {
               user?.isActive && <span className="online-indicator"></span>
             }
           </div>
-          <span style={{fontWeight: '700', color: '#000'}}>{user?.displayName}</span>
+          <span style={{fontWeight: '800', color: '#000'}}>{user?.displayName}</span>
         </div>
       </Link>
     )

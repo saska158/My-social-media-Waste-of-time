@@ -28,6 +28,7 @@ const Comment = ({comment, room, postId}) => {
           firestoreDoc={commentRef} 
           firestoreCollection={repliesRef} 
           {...{showComments, setShowComments}}
+          type="comment"
         />
         {
           showComments && (

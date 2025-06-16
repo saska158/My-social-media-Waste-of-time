@@ -68,7 +68,13 @@ const NavigationLayout = () => {
                   'navigation-layout-nav-link' 
                 }
               >
-                Home
+                <img 
+                  src={user.photoURL} 
+                  alt="profile image" 
+                  className="user-img user-img-small" 
+                  style={{display: 'inline-block'}} 
+                />
+                <span>Home</span>
               </NavLink>
               <NavLink 
                 to={`/user/${user?.uid}`}
@@ -92,7 +98,7 @@ const NavigationLayout = () => {
                   'navigation-layout-nav-link' 
                 }
               >
-                Chat
+                💬 Chat
               </NavLink>
               {
                 authLoading ? (
@@ -103,7 +109,7 @@ const NavigationLayout = () => {
                     className="navigation-layout-nav-link sign-out-btn"
                     disabled={authLoading}
                   >
-                    Sign out
+                    👋 Sign out
                   </button>
 
                 )

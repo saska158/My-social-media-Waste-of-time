@@ -36,7 +36,6 @@ const FirestoreItemHeader = ({creatorUid, timestamp}) => {
             }
             <div 
               style={{
-                fontSize: '.95rem', 
                 display: 'flex', 
                 flexDirection: 'column',
                 gap: '.3em'
@@ -44,7 +43,7 @@ const FirestoreItemHeader = ({creatorUid, timestamp}) => {
               >
               <span 
                 style={{
-                  fontWeight: '700', 
+                  fontWeight: '800', 
                   color: '#000',
                 }}>
                   {profile?.displayName}

@@ -5,9 +5,9 @@ const RoomsLayout = () => {
   const { toggleNav } = useOutletContext()
 
   const routes = [
-    { path: "/", label: "Watching" },
-    { path: "/reading", label: "Reading" },
-    { path: "/listening", label: "Listening" }
+    { path: "/", label: "📺 Watch" },
+    { path: "/reading", label: "📚 Read" },
+    { path: "/listening", label: "🎷 Listen" }
   ]
 
   const isMobile = useMediaQuery({ maxWidth: 767 })
@@ -30,15 +30,15 @@ const RoomsLayout = () => {
             to={path}
             style={({ isActive }) => ({
               background: isActive ? "#eaf4f0" : "none",
-              border: isActive ? 'none' : "1px solid #eaf4f0",
+              border: isActive ? 'none' : "2px solid #eaf4f0",
               color: '#4b896f',
               borderRadius: '30px',
-              padding: '.5em 1em',
+              padding: '1em',
               fontWeight: '700',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
             })}
           >
             {label}

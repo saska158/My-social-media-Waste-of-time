@@ -4,7 +4,7 @@ import { ClipLoader } from "react-spinners"
 import followToggle from "../api/followToggle"
 import ErrorMessage from "./errors/ErrorMessage"
 
-const FollowButton = ({currentUser, targetUser, type}) => {
+const FollowButton = ({currentUser, targetUser, type, style=null}) => {
   const [isFollowing, setIsFollowing] = useState(false)
   const [statusLoaded, setStatusLoaded] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -53,7 +53,7 @@ const FollowButton = ({currentUser, targetUser, type}) => {
     <button 
       onClick={(e) => handleFollowToggle(e, currentUser, targetUser)} 
       disabled={loading}
-      style={{padding: '0'}}
+      style={{...style, padding: '0'}}
     >
       {
         loading ? <ClipLoader color="#4b896f" /> : 
