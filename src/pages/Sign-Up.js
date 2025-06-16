@@ -125,13 +125,26 @@ const SignUp = () => {
   return (
     <div className="sign-in-up-container">
       <div className="sign-in-up-content">
-        <h4>Personal details</h4>
+      <img
+        src={`${process.env.PUBLIC_URL}/images/logo-green-2.png`}
+        style={{width: '20%'}}
+        alt="logo"
+      /> 
+      <h4>Personal details</h4>
       <form className="sign-in-up-form">
         <input 
           type="email"
           placeholder="Email"
           value={formData.email}
           name="email"
+          onChange={handleChange}
+          required
+        />
+        <input 
+          type="text"
+          placeholder="Username"
+          value={formData.name}
+          name="name"
           onChange={handleChange}
           required
         />
@@ -143,18 +156,10 @@ const SignUp = () => {
           onChange={handleChange}
           required
         />
-        <input 
-          type="text"
-          placeholder="Name"
-          value={formData.name}
-          name="name"
-          onChange={handleChange}
-          required
-        />
         <label 
           htmlFor="checkbox2" 
           className="checkbox-label" 
-          style={{display: 'flex', alignItems: 'flex-start', gap: '.3em', fontSize: '.9rem'}}
+          style={{display: 'flex', alignItems: 'flex-start', gap: '.3em', fontSize: '.7rem'}}
         >
           <input 
             type="checkbox"
@@ -168,7 +173,7 @@ const SignUp = () => {
         {
           loading ? <PulseLoader size={10}  color="#4b896f"/> : (
             <button onClick={(e) => handleSignUp(e)} disabled={loading}>
-              CREATE ACCOUNT
+              Create account
             </button>
           )
         }

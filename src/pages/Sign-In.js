@@ -86,6 +86,11 @@ const SignIn = () => {
     <div className="sign-in-up-container">
       <div className="sign-in-up-content">
         { location.state?.message ? <p>{location.state.message}</p> : null }
+      <img
+        src={`${process.env.PUBLIC_URL}/images/logo-green-2.png`}
+        style={{width: '20%'}}
+        alt="logo"
+      />  
       <h4>Sign in to your account</h4>
       <form className="sign-in-up-form">
         <input 

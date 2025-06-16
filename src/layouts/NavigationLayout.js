@@ -52,7 +52,7 @@ const NavigationLayout = () => {
           )
         }
         <Link to="/" className="logo-link">
-          <img src={`${process.env.PUBLIC_URL}/images/logo.png`} />
+          <img src={`${process.env.PUBLIC_URL}/images/logo-light.png`} />
         </Link>
         { isMobile && <UsersList /> }
         {
@@ -69,7 +69,7 @@ const NavigationLayout = () => {
                 }
               >
                 <img 
-                  src={user.photoURL} 
+                  src={`${process.env.PUBLIC_URL}/images/icon-light.png`}
                   alt="profile image" 
                   className="user-img user-img-small" 
                   style={{display: 'inline-block'}} 
