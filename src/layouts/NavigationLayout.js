@@ -116,9 +116,9 @@ const NavigationLayout = () => {
               }
             </div>
           ) : (
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '.5em'}}>
-              <Link to='/sign-up' className="navigation-layout-nav-link" >Create account</Link>
-              <Link to='/sign-in' className="navigation-layout-nav-link" >Sign in</Link>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '.5em'}}>
+              <Link to='/sign-up' className="navigation-layout-nav-link" >✨ Create account</Link>
+              <Link to='/sign-in' className="navigation-layout-nav-link" >🚪 Sign in</Link>
             </div>
           )
         }

@@ -84,32 +84,34 @@ const SignIn = () => {
     
   return (
     <div className="sign-in-up-container">
-      { location.state?.message ? <p>{location.state.message}</p> : null }
-      <h4 style={{fontFamily: "'Anton', sans-serif"}}>Sign in to your account</h4>
+      <div className="sign-in-up-content">
+        { location.state?.message ? <p>{location.state.message}</p> : null }
+      <h4>Sign in to your account</h4>
       <form className="sign-in-up-form">
         <input 
           type="email"
-          placeholder="E-MAIL" 
+          placeholder="Email" 
           value={email}
           onChange={e => setEmail(e.target.value)}
           required
         />
         <input 
           type='password'
-          placeholder="PASSWORD"
+          placeholder="Password"
           value={password}
           onChange={e => setPassword(e.target.value)}
           required
         />
           {
             loading ? <PulseLoader size={10}  color="#4b896f"/> : (
-              <button onClick={e => handleSignIn(e)} disabled={loading} style={{border: '1px solid #4b896f'}}>
-                SIGN IN
+              <button onClick={e => handleSignIn(e)} disabled={loading}>
+                Sign in
               </button>
             )
           }
       </form>
       { error && <ErrorMessage message={error} /> }
+      </div>
     </div>
   )
 }

@@ -124,11 +124,12 @@ const SignUp = () => {
 
   return (
     <div className="sign-in-up-container">
-      <h4 style={{fontFamily: "'Anton', sans-serif"}}>Personal details</h4>
+      <div className="sign-in-up-content">
+        <h4>Personal details</h4>
       <form className="sign-in-up-form">
         <input 
           type="email"
-          placeholder="E-MAIL"
+          placeholder="Email"
           value={formData.email}
           name="email"
           onChange={handleChange}
@@ -136,7 +137,7 @@ const SignUp = () => {
         />
         <input 
           type="password"
-          placeholder="PASSWORD"
+          placeholder="Password"
           value={formData.password}
           name="password"
           onChange={handleChange}
@@ -144,13 +145,17 @@ const SignUp = () => {
         />
         <input 
           type="text"
-          placeholder="NAME"
+          placeholder="Name"
           value={formData.name}
           name="name"
           onChange={handleChange}
           required
         />
-        <label htmlFor="checkbox2" className="checkbox-label" style={{fontSize: '.8rem'}}>
+        <label 
+          htmlFor="checkbox2" 
+          className="checkbox-label" 
+          style={{display: 'flex', alignItems: 'flex-start', gap: '.3em', fontSize: '.9rem'}}
+        >
           <input 
             type="checkbox"
             checked={formData.terms}
@@ -158,17 +163,18 @@ const SignUp = () => {
             onChange={handleChange}
             required
           />
-          I have read and understand the Privacy and Cookies Policy
+          <span style={{color: '#4b896f'}}>I have read and understand the Privacy and Cookies Policy</span>
         </label>
         {
           loading ? <PulseLoader size={10}  color="#4b896f"/> : (
-            <button onClick={(e) => handleSignUp(e)} disabled={loading} style={{border: '1px solid #4b896f'}}>
+            <button onClick={(e) => handleSignUp(e)} disabled={loading}>
               CREATE ACCOUNT
             </button>
           )
         }
       </form>
       { error && <ErrorMessage message={error} /> }
+      </div>
     </div>
   )
 }
