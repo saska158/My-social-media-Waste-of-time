@@ -13,7 +13,7 @@ import {
   getDocs, 
   onSnapshot 
 } from "../../api/firebase"
-import PopUp from "../PopUp"
+//import PopUp from "../PopUp"
 import UserCard from "./UserCard"
 import { ClipLoader } from "react-spinners"
 import InfiniteScroll from "react-infinite-scroll-component"
@@ -22,7 +22,7 @@ import ErrorMessage from "../errors/ErrorMessage"
 
 const UsersSearch = ({style=null}) => {
   // Context
-  const { user } = useAuth()  
+  //const { user } = useAuth()  
   
   // State
   const [filteredUsers, setFilteredUsers] = useState([])
@@ -60,7 +60,7 @@ const UsersSearch = ({style=null}) => {
       orderBy("displayName"), 
       startAt(searchQuery),
       endAt(searchQuery + '\uf8ff'),
-      limit(10) 
+      limit(15) 
     )
 
     setLoading(true)
@@ -76,7 +76,7 @@ const UsersSearch = ({style=null}) => {
           }))
           setFilteredUsers(newData)
           setLastDoc(snapshot.docs[snapshot.docs.length - 1])
-          setHasMore(snapshot.docs.length === 10)
+          setHasMore(snapshot.docs.length === 15)
           setLoading(false)
         } else {
           setFilteredUsers([])
@@ -120,16 +120,16 @@ const UsersSearch = ({style=null}) => {
         usersRef,
         orderBy("displayName"), 
         startAfter(lastDoc),
-        limit(10 + 1)
+        limit(15 + 1)
       )
   
       const snapshot = await getDocs(q)
       const docs = snapshot.docs
   
       if (docs.length > 6) {
-        const newData = docs.slice(0, 10).map(doc => ({ id: doc.id, ...doc.data() }))
+        const newData = docs.slice(0, 15).map(doc => ({ id: doc.id, ...doc.data() }))
         setFilteredUsers(prev => [...prev, ...newData])
-        setLastDoc(docs[10 - 1]) 
+        setLastDoc(docs[15 - 1]) 
         setHasMore(true) 
       } else {
         const newData = docs.map(doc => ({ id: doc.id, ...doc.data() }))
@@ -173,7 +173,8 @@ const UsersSearch = ({style=null}) => {
         />
       </div>
       <div 
-        style={{ height: '400px', overflowY: 'auto',}}
+        className="users-search-infinite"
+        //style={{ height: '400px', overflowY: 'auto',}}
         id="scrollableUsersDiv"
         ref={usersContainerRef}
       >

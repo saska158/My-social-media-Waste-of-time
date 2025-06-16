@@ -816,6 +816,11 @@ textarea::placeholder {
   gap: .5em;
 }
 
+.users-search-infinite {
+  height: 600px; 
+  overflow-y: auto;
+}
+
 
 /* USER CARD */
 
@@ -1092,6 +1097,10 @@ textarea::placeholder {
     padding: 0;
     width: 100%;
     border-left: 0;
+  }
+
+  .users-search-infinite {
+    height: 400px; 
   }
 
   .pop-up-box {
