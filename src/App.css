@@ -975,9 +975,9 @@ textarea::placeholder {
     background: #fff;
   }  
 
-  /*.chat-box-header-container {
-    margin-top: 18em;
-  }*/
+  .chat-box-header-container {
+    top: 20%
+  }
 
   .user-profile-header-container {
     justify-content: flex-start;
@@ -994,18 +994,10 @@ textarea::placeholder {
     overflow-x: hidden;
   }
 
- /* .post-container {
-    width: 70%;
-  }*/
-
   .comment-content {
     width: 80%;
   }
 
-  /*.user-profile-container {
-    padding-top: 15em;
-  }
-*/
   .users-list-container {
     background-color: transparent; 
     padding: 0;
