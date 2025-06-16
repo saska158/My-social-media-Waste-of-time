@@ -9,8 +9,8 @@ import ErrorMessage from "../errors/ErrorMessage"
 import { useMediaQuery } from "react-responsive"
 
 const UserPosts = ({profileUid}) => {
-    const roomTags = ['main', 'watching', 'reading', 'listening']
-    const [room, setRoom] = useState('main')
+    const roomTags = ['watching', 'reading', 'listening']
+    const [room, setRoom] = useState('watching')
 
     const userPostsRef = useMemo(() => {
       return collection(firestore, room)

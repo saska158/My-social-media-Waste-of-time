@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react"
+import { useOutletContext } from "react-router-dom"
 import { firestore, collection, where, doc, getDoc } from "../api/firebase"
 import { useAuth } from "../contexts/authContext"
 import ChatBox from "../components/one_on_one_chat/ChatBox"
@@ -7,6 +8,7 @@ import ChatItemSkeleton from "../components/skeletons/ChatItemSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
 import useFirestoreBatch from "../hooks/useFirestoreBatch"
 import ErrorMessage from "../components/errors/ErrorMessage"
+import { useMediaQuery } from "react-responsive"
 
 const MyChats = () => {
     // Context
@@ -18,6 +20,10 @@ const MyChats = () => {
     const [chatPartnerUid, setChatPartnerUid] = useState(null)
     const [retryFlag, setRetryFlag] = useState(0)
     const [fetchProfileError, setFetchProfileError] = useState(null)
+
+    const { toggleNav } = useOutletContext()
+
+    const isMobile = useMediaQuery({ maxWidth: 767 })
 
     const chatsContainerRef = useRef(null)
 
@@ -95,6 +101,15 @@ const MyChats = () => {
 
     return (
       <div className="my-chats-container">
+        { 
+          isMobile && (
+            <button onClick={toggleNav}>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '25px', color: '#4b896f'}}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+              </svg>
+            </button>
+          )
+        }
         {
           !isChatBoxVisible ? (
             <div 

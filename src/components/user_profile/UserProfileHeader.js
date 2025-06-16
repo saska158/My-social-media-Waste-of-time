@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react"
-import { useOutletContext } from "react-router-dom"
 import { useAuth } from "../../contexts/authContext"
 import fetchProfile from "../../api/fetchProfile"
 import FollowButton from "../FollowButton"
 import ErrorMessage from "../errors/ErrorMessage"
-import { useMediaQuery } from "react-responsive"
+
 
 const UserProfileHeader = ({
   profile, 
@@ -21,11 +20,8 @@ const UserProfileHeader = ({
     const [currentUser, setCurrentUser] = useState(null)
     const [error, setError] = useState(null)
 
-    const { toggleNav } = useOutletContext()
 
     const isMyProfile = profileUid === user?.uid
-
-    const isMobile = useMediaQuery({ maxWidth: 767 })
 
     // Effects
     useEffect(() => {
@@ -65,15 +61,6 @@ const UserProfileHeader = ({
 
     return (
         <div>
-          { 
-              isMobile && (
-                <button onClick={toggleNav}>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '25px', color: '#4b896f'}}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-                  </svg>
-                </button>
-              )
-            }
           <div className="user-profile-header-container">  
             <div>
               <img 

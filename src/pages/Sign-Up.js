@@ -162,7 +162,7 @@ const SignUp = () => {
         </label>
         {
           loading ? <PulseLoader size={10}  color="#4b896f"/> : (
-            <button onClick={(e) => handleSignUp(e)} disabled={loading} className="dark-border">
+            <button onClick={(e) => handleSignUp(e)} disabled={loading} style={{border: '1px solid #4b896f'}}>
               CREATE ACCOUNT
             </button>
           )

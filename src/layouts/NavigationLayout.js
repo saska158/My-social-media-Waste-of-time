@@ -58,7 +58,7 @@ const NavigationLayout = () => {
         {
           user ? (
             <div className="navigation-layout-nav-links">
-             {/* <NavLink
+              <NavLink
                 to="/"
                 className={({isActive}) => isActive || 
                   location.pathname === '/watching' || 
@@ -69,7 +69,7 @@ const NavigationLayout = () => {
                 }
               >
                 Home
-              </NavLink>*/}
+              </NavLink>
               <NavLink 
                 to={`/user/${user?.uid}`}
                 className={({isActive}) => isActive ? 
@@ -116,8 +116,28 @@ const NavigationLayout = () => {
             </div>
           )
         }
-        <p style={{color: '#4b896f', marginTop: 'auto'}}>
-          Made by <Link to="https://www.justsittingdoingnothing.com/" target="_blank" style={{textDecoration: 'underline'}}>Just Sitting Doing Nothing</Link>
+        <p 
+          style={{
+            color: '#4b896f', 
+            marginTop: 'auto', 
+            width: '90%'
+          }}
+        >
+          Made by 
+          <Link 
+            to="https://www.justsittingdoingnothing.com/" 
+            target="_blank" 
+            style={{textDecoration: 'underline', marginLeft: '.5em'}}
+          >
+            Just Sitting Doing Nothing
+          </Link>
+          <Link 
+            to="https://github.com/saska158/My-social-media-Waste-of-time" 
+            target="_blank" 
+            style={{textDecoration: 'underline', display: 'inline-block'}}
+          >
+            For Developers
+          </Link> 
         </p>
       </nav>
       <Outlet context={{ toggleNav }} />

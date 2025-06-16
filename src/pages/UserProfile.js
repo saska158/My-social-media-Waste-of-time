@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useOutletContext } from "react-router-dom"
 import { firestore, doc, onSnapshot } from '../api/firebase'
 import { useAuth } from "../contexts/authContext"
 import ChatBox from '../components/one_on_one_chat/ChatBox'
@@ -10,6 +10,7 @@ import UserProfileNavigation from "../components/user_profile/UserProfileNavigat
 import UserProfileContent from "../components/user_profile/UserProfileContent"
 import ErrorMessage from "../components/errors/ErrorMessage"
 import UserProfileSkeleton from "../components/skeletons/UserProfileSkeleton"
+import { useMediaQuery } from "react-responsive"
 
 const UserProfile = () => {
   // Context
@@ -42,8 +43,12 @@ const UserProfile = () => {
   const [error, setError] = useState(null)
   const [retryFlag, setRetryFlag] = useState(0)
 
+  const { toggleNav } = useOutletContext()
+
   // Hooks that don't trigger re-renders 
   const { profileUid } = useParams()
+
+  const isMobile = useMediaQuery({ maxWidth: 767 })
 
   // Effects
   useEffect(() => {
@@ -95,6 +100,15 @@ const UserProfile = () => {
 
   return (
     <div className="user-profile-container">
+      { 
+        isMobile && (
+          <button onClick={toggleNav}>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '25px', color: '#4b896f'}}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+            </svg>
+          </button>
+        )
+      }
       {loading ? <UserProfileSkeleton /> : (
         <div>
         {

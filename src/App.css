@@ -418,6 +418,11 @@ textarea::placeholder {
   gap: 1em; 
 }
 
+.edit-profile-form label {
+  display: flex;
+  align-items: center;
+}
+
 .edit-profile-form input,
 .edit-profile-form textarea {
   display: inline-block;
