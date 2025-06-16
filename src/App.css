@@ -982,6 +982,10 @@ textarea::placeholder {
     top: 6%
   }
 
+  .date {
+    top: 16%;
+  }
+
   .user-profile-header-container {
     justify-content: flex-start;
     gap: 1em;
