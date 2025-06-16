@@ -71,7 +71,7 @@ const Homepage = () => {
             alignItems: 'center', 
             gap: '1em',
             width: '100%', 
-            padding: '0 .7em',
+            padding: '.5em 1em',
             background: "#eaf4f0",
           }}
         >
