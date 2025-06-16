@@ -904,7 +904,7 @@ textarea::placeholder {
   }
 
   .navigation-layout-container-nav {
-    padding: .8em 2em;
+    padding: .8em 2em 3em;
     display: flex;
     flex-direction: column;
 
