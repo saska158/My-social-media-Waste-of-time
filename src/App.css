@@ -359,7 +359,7 @@ textarea::placeholder {
 
 .post-form {
   height: 100%;
-  padding: 2.5em 1.5em; 
+  padding: 2.5em 1em 1em; 
   display: flex; 
   flex-direction: column;
 }
@@ -643,15 +643,15 @@ textarea::placeholder {
 
 .message-content {
   padding: 1em;
-  border-radius: 30px;
-  width: 300px;
+  border-radius: 15px;
+  max-width: 300px;
   word-break: break-all;
   background: var(--light-green);
 }
 
 .message-img {
-  width: 300px;
-  border-radius: 30px;
+  max-width: 300px;
+  border-radius: 15px;
 }
 
 /* POST */
@@ -779,12 +779,13 @@ textarea::placeholder {
 
 .chat-item-container {
   border-bottom: 2px solid var(--light-green);
-  padding: 1em; 
+  padding: 1em 0; 
   cursor: pointer;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
   gap: .5em;
+  margin: 0 1em;
 }
 
 .chat-item-content {
@@ -1079,11 +1080,11 @@ textarea::placeholder {
   }
 
   .message-content {
-    width: 200px;
+    max-width: 200px;
   }
 
   .message-img {
-    width: 200px;
+    max-width: 200px;
   }
 
   .users-list-container {
