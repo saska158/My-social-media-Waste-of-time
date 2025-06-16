@@ -116,13 +116,7 @@ const NavigationLayout = () => {
             </div>
           )
         }
-        <p 
-          style={{
-            color: '#4b896f', 
-            marginTop: 'auto', 
-            width: '90%'
-          }}
-        >
+        <p className="navigation-layout-footer">
           Made by 
           <Link 
             to="https://www.justsittingdoingnothing.com/" 

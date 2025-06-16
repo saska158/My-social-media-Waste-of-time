@@ -282,6 +282,13 @@ textarea::placeholder {
   font-size: 1rem;
 }
 
+.navigation-layout-footer {
+  color: #4b896f; 
+  margin-top: auto; 
+  width: 90%;
+  background: yellow;
+}
+
 /* GROUP CHAT LAYOUT */
 
 .group-chat-layout-container {
@@ -904,7 +911,7 @@ textarea::placeholder {
   }
 
   .navigation-layout-container-nav {
-    padding: .8em 2em 5em;
+    padding: .8em 2em;
     display: flex;
     flex-direction: column;
 
@@ -935,6 +942,10 @@ textarea::placeholder {
 
   .logo-link {
     font-size: 3.2rem;
+  }
+
+  .navigation-layout-footer {
+    margin-bottom: 5em;
   }
 
   /*.group-chat-layout-container {
