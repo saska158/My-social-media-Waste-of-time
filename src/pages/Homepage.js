@@ -34,7 +34,7 @@ const Homepage = () => {
 
 
   // Custom hooks
-  const { data: posts, loading, error, fetchMore, hasMore, refetch } = useFirestoreBatch(roomRef, 5)
+  const { data: posts, loading, error, fetchMore, hasMore, refetch } = useFirestoreBatch(roomRef, 7)
 
   // Functions
   const handleNewPost = (e) => {
@@ -64,7 +64,7 @@ const Homepage = () => {
           </PopUp>
         ) 
       }
-      <div className="posts-container" id="scrollableDiv">
+      <div className="posts-container"/* id="scrollableDiv"*/>
         <div 
           style={{
             display: 'flex', 
@@ -98,7 +98,7 @@ const Homepage = () => {
           hasMore={hasMore}
           loader={<ClipLoader color="#4b896f" />}
           scrollThreshold={0.9}
-          scrollableTarget="scrollableDiv"
+          //scrollableTarget="scrollableDiv"
           //style={{width: '500px'}}
           //style={{width: '580px'}}
         >

@@ -126,7 +126,7 @@ const UsersSearch = ({style=null}) => {
       const snapshot = await getDocs(q)
       const docs = snapshot.docs
   
-      if (docs.length > 6) {
+      if (docs.length > 15) {
         const newData = docs.slice(0, 15).map(doc => ({ id: doc.id, ...doc.data() }))
         setFilteredUsers(prev => [...prev, ...newData])
         setLastDoc(docs[15 - 1]) 

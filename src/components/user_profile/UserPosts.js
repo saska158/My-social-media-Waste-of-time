@@ -21,7 +21,7 @@ const UserPosts = ({profileUid}) => {
     // Custom hooks
     const { data: posts, loading, error, fetchMore, hasMore, refetch } = useFirestoreBatch(userPostsRef, 2, [where("creatorUid", "==", profileUid)], profileUid)
 
-    const isMobile = useMediaQuery({ maxWidth: 767 })
+
 
     return (
       <div>
