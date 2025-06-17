@@ -85,23 +85,37 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
     return (
       <div className="profile-editor">
         <form className="edit-profile-form">
-          <label className="edit-image-label">
-            <img 
-              src={imagePreview || profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
-              alt="profile" className="edit-image" 
-            />
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px', position: 'absolute', zIndex: '999', right: '3%', top: '0'}}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
-            </svg>
-            <input
-              type="file" 
-              accept="image/*"
-              onChange={handleImageChange}
-              ref={imageInputRef}
-              className="edit-image-input"
-            />
-          </label>
+          <div style={{display: 'flex', gap: '3em'}}>
+            <label className="edit-image-label">
+              <img 
+                src={imagePreview || profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
+                alt="profile" className="edit-image" 
+              />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px', position: 'absolute', zIndex: '999', right: '3%', top: '0'}}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+              </svg>
+              <input
+                type="file" 
+                accept="image/*"
+                onChange={handleImageChange}
+                ref={imageInputRef}
+                className="edit-image-input"
+              />
+            </label>
+            <button 
+              style={{
+                background: loading ? 'none' : '#eaf4f0', 
+                color: '#4b896f',
+                alignSelf: 'center',
+                margin: '2em 0'
+              }}
+              onClick={saveProfileChanges}
+              disabled={loading}
+            >
+              { loading ? <PulseLoader color="#4b896f" /> : 'save changes' }
+            </button>
+          </div>
           <label>
             name:
             <input
@@ -185,19 +199,6 @@ const ProfileEditor = ({profile, setProfile, profileUid}) => {
                 onChange={handleInputChange}
               />
             </label>
-          <button 
-            style={{
-              background: loading ? 'none' : '#eaf4f0', 
-              color: '#4b896f',
-              padding: '1em 1.3em', 
-              alignSelf: 'center',
-              margin: '2em 0'
-            }}
-            onClick={saveProfileChanges}
-            disabled={loading}
-          >
-            { loading ? <PulseLoader color="#4b896f" /> : 'save changes' }
-          </button>
           {error && <ErrorMessage message={error} />}
         </form>
       </div>

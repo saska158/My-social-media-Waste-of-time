@@ -1,6 +1,6 @@
 import { auth, reload } from "../api/firebase"
 import { useState, useEffect } from "react"
-import { Navigate } from "react-router-dom"
+import { Navigate, useNavigate } from "react-router-dom"
 import { useAuth } from "../contexts/authContext"
 import ErrorMessage from "../components/errors/ErrorMessage"
 
@@ -13,6 +13,8 @@ const EmailVerification = () => {
   const [verificationMessage, setVerificationMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+
+  const navigate = useNavigate()
 
   // Functions
   const checkEmailVerified = async () => {
@@ -46,11 +48,22 @@ const EmailVerification = () => {
   }
 
   // Effects
-  useEffect(() => {
+  /*useEffect(() => {
     if(user) {
       setIsEmailVerified(user?.emailVerified)
     }
-  }, [user]) 
+  }, [user]) */
+
+  useEffect(() => {
+    const finalize = async () => {
+      if (isEmailVerified) {
+        await reload(auth.currentUser)
+        setUser(auth.currentUser)       // update context
+        navigate("/", { replace: true })  // then navigate
+      }
+    }
+    finalize()
+  }, [isEmailVerified])
 
   return (
     <div className="sign-in-up-container">
