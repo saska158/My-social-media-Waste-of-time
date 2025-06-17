@@ -84,7 +84,8 @@ const UserProfileHeader = ({
                 <button 
                   style={{
                     background: "#eaf4f0", 
-                    color: '#4b896f'
+                    color: '#4b896f',
+                    fontWeight: '500'
                   }} 
                   onClick={handleEditButton}
                 >

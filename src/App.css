@@ -1037,7 +1037,7 @@ textarea::placeholder {
   }
 
   .navigation-layout-container-nav {
-    padding: .8em 2em;
+    padding: 2em;
     display: flex;
     flex-direction: column;
     gap: 2em;
@@ -1060,6 +1060,7 @@ textarea::placeholder {
   .navigation-layout-nav-links {
     gap: 1.5em;
     font-size: 1.3rem;
+    padding-top: 2em;
   }
 
   .sign-out-btn {
