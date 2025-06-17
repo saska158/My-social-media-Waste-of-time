@@ -91,10 +91,14 @@ const NavigationLayout = () => {
               </NavLink>
               <NavLink 
                 to={`/user/${user?.uid}`}
-                className={({isActive}) => isActive ? 
+                /*className={({isActive}) => isActive ? 
                   'navigation-layout-nav-link active-nav-link' : 
                   'navigation-layout-nav-link' 
-                }
+                }*/
+                className='navigation-layout-nav-link'
+                style={({isActive}) => ({
+                  background: isActive ? 'rgba(250, 250, 250, .3)' : 'transparent'
+                })}
               >
                 <img 
                   src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
