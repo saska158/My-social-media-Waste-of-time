@@ -60,6 +60,7 @@ const UserProfileHeader = ({
     }
 
     return (
+      <>
       <div className="user-profile-header-container">  
         <img 
           src={profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
@@ -69,10 +70,12 @@ const UserProfileHeader = ({
         <div>
           <div style={{fontSize: '.9rem', marginBottom: '1em'}}>
             <p className="user-profile-displayName">{profile.displayName}</p>
-            <span>{profile.followers?.length || 0}</span>
-            <span>{profile.followers?.length === 1 ? 'follower' : 'followers'}</span>
-            <span>{profile.following?.length || 0}</span>
-            <span>following</span>
+            <div style={{color: '#4b896f'}}>
+              <span>{profile.followers?.length || 0} </span>
+              <span>{profile.followers?.length === 1 ? 'follower' : 'followers'} </span>
+              <span style={{marginLeft: '.5em'}}>{ profile.following?.length || 0} </span>
+              <span>following</span>
+              </div>
           </div>
           <div style={{display: 'flex', alignItems: 'center', gap: '1em'}}>
             {
@@ -116,6 +119,10 @@ const UserProfileHeader = ({
           </div>
         </div>
       </div>
+      <p style={{padding: '.5em'}}>
+        {profile?.bio}
+      </p>
+      </>
     )
 }
 

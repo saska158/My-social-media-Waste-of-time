@@ -35,7 +35,7 @@ const UserProfile = () => {
     followers: [],
     following: []
   })  
-  const [activeSection, setActiveSection] = useState("bio")
+  const [activeSection, setActiveSection] = useState("currently")
   const [isChatBoxVisible, setIsChatBoxVisible] = useState(false)
   const [isFollowPopupShown, setIsFollowPopupShown] = useState(false)
   const [isEditPopupShown, setIsEditPopupShown] = useState(false)
@@ -89,6 +89,10 @@ const UserProfile = () => {
 
   useEffect(() => {
     setIsChatBoxVisible(false)
+  }, [profileUid])
+
+  useEffect(() => {
+    setActiveSection('currently')
   }, [profileUid])
 
   //Functions

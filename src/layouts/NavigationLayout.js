@@ -166,7 +166,7 @@ const NavigationLayout = () => {
             to="https://www.justsittingdoingnothing.com/"
             target="_blank" 
             style={{textDecoration: 'underline'}}
-          >Personal Website</Link>
+          >Just Sitting Doing Nothing (Personal Website)</Link>
           </p>
         </div>
       </nav>

@@ -57,7 +57,7 @@ const UsersList = () => {
               alignItems: 'center', 
               justifyContent: 'flex-start', 
               gap: '.5em',  
-              paddingLeft: '.5em',
+              padding: '.5em',
               background: "#eaf4f0",
               color: "#4b896f",
               borderRadius: '50px',

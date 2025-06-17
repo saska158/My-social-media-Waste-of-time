@@ -4,9 +4,6 @@ const UserProfileContent = ({activeSection, profile, profileUid}) => {
     return (
         <div style={{padding: '.5em'}}>
             {
-              activeSection === "bio" ? (
-                <p style={{wordBreak: 'break-word'}}>{profile[activeSection]}</p>
-              ) :
               activeSection === 'posts' && profileUid ? (
                 <UserPosts {...{profileUid}} />
               ) : (
@@ -17,9 +14,10 @@ const UserProfileContent = ({activeSection, profile, profileUid}) => {
                         style={{
                           display: 'block', 
                           marginBottom: '.5em',
+                          color: '#4b896f'
                         }}
                       >
-                        {key}: 
+                        {key.charAt(0).toUpperCase()+key.slice(1)}
                       </span>
                       <p>{value}</p>
                     </div>

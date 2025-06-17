@@ -1,5 +1,5 @@
 const UserProfileNavigation = ({activeSection, setActiveSection}) => {
-    const sections = ['bio', 'currently', 'favorites', 'posts']
+    const sections = ['currently', 'favorites', 'posts']
     return (
         <div className="user-profile-container-nav">
             {

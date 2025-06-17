@@ -29,7 +29,7 @@ const UserPosts = ({profileUid}) => {
 
 
     return (
-      <div style={{padding: '.5em'}}> 
+      <div style={{padding: '.5em 0'}}> 
         <div style={{marginBottom: '1em', display: 'flex', gap: '1em'}}>
           {
             roomTags.map(tag => (
@@ -75,7 +75,7 @@ const UserPosts = ({profileUid}) => {
                           key={index}
                           post={post}
                           room={room}
-                          
+
                         />
                       ))
                     ) : <p>No posts yet.</p>
