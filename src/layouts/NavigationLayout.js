@@ -55,7 +55,18 @@ const NavigationLayout = () => {
         <Link to="/" className="logo-link">
           <img src={`${process.env.PUBLIC_URL}/images/logo-light.png`} />
         </Link>
-        { !user && <p style={{fontStyle: 'italic'}}>Ovde ide recenica.</p> }
+        { !user && (
+          <p 
+            style={{
+              fontFamily: '"Cormorant", serif', 
+              fontStyle: 'italic',
+              fontSize: '1.5rem',
+              fontWeight: '300'
+            }}
+          >
+            Do nothing. It's beautiful.
+          </p>
+        ) }
         { isMobile && <UsersList /> }
         {
           user ? (

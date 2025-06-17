@@ -46,6 +46,19 @@ li {
   cursor: pointer;
 }
 
+/*=======LINKS=======*/
+
+.post-category-navlink {
+  color: #4b896f;
+  border-radius: 30px;
+  padding: 1em;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center
+}
+
 /*======= BUTTON =======*/
 
 button {
@@ -295,11 +308,15 @@ textarea::placeholder {
 }
 
 .navigation-layout-footer {
-  color: #4b896f; 
+  color: #396955; 
   margin-top: auto; 
   width: 90%;
-  font-size: .9rem;
-  
+  font-size: .8rem;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .4em;
 }
 
 /* GROUP CHAT LAYOUT */
@@ -421,9 +438,6 @@ textarea::placeholder {
 /* USER PROFILE */
 
 .user-profile-container {
-  position: relative; 
-  width: 100%;
-
   position: absolute;
   top: 0;
   bottom: 0;
@@ -435,7 +449,8 @@ textarea::placeholder {
 .user-profile-header-container {
   display: flex;
   align-items: center; 
-  gap: 3em; 
+  gap: 1em;
+  padding: .5em;
 }
 
 .user-profile-displayName {
@@ -445,8 +460,10 @@ textarea::placeholder {
 
 .user-profile-container-nav {
   display: flex; 
-  flex-direction: row; 
-  padding: 1em 0;
+  flex-direction: row;
+  align-items: center; 
+  gap: 1em;
+  padding: .5em;
 }
 
 .profile-editor {

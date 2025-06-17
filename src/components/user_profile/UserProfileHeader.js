@@ -60,32 +60,51 @@ const UserProfileHeader = ({
     }
 
     return (
+      <div className="user-profile-header-container">  
+        <img 
+          src={profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
+          alt="profile-picture" 
+          className="user-img user-img-big"
+        />
         <div>
-          <div className="user-profile-header-container">  
-            <div>
-              <img 
-                src={profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
-                alt="profile-picture" 
-                className="user-img user-img-big"
-              />
-              <p className="user-profile-displayName">{profile.displayName}</p>
-            </div>
+          <div style={{fontSize: '.9rem', marginBottom: '1em'}}>
+            <p className="user-profile-displayName">{profile.displayName}</p>
+            <span>{profile.followers?.length || 0}</span>
+            <span>{profile.followers?.length === 1 ? 'follower' : 'followers'}</span>
+            <span>{profile.following?.length || 0}</span>
+            <span>following</span>
+          </div>
+          <div style={{display: 'flex', alignItems: 'center', gap: '1em'}}>
             {
               user && !isMyProfile ? (
                 <FollowButton
                   currentUser={currentUser}
                   targetUser={profile}
+                  type="text"
+                  style={{background: '#4b896f', color: '#fff'}}
                 />
               ) : null
             }
-            {error && <ErrorMessage message={error} />}      
+            {
+              user && !isMyProfile ? (
+                <button 
+                  style={{
+                    background: "#eaf4f0", 
+                    color: '#4b896f',
+                  }} 
+                  onClick={handleMessageButton}
+                >
+                  message
+                </button>
+              ) : null
+            }
             {
               isMyProfile && (
                 <button 
                   style={{
                     background: "#eaf4f0", 
                     color: '#4b896f',
-                    fontWeight: '500'
+                    fontWeight: '700'
                   }} 
                   onClick={handleEditButton}
                 >
@@ -93,37 +112,10 @@ const UserProfileHeader = ({
                 </button>
               )
             }
-            {
-              user && !isMyProfile ? (
-                <button 
-                  style={{
-                    background: "#eaf4f0", 
-                    color: '#4b896f'
-                  }} 
-                  onClick={handleMessageButton}
-                  >
-                    message
-                  </button>
-              ) : null
-            }
-          </div>
-          <div 
-            style={{
-              display: 'flex', 
-              gap: '.5em', 
-              fontSize: '.9rem',
-            }}
-          >
-            <p style={{display: 'flex', gap: '2px'}}>
-              <span>{profile.followers?.length || 0}</span>
-              <span>{profile.followers?.length === 1 ? 'follower' : 'followers'}</span>
-            </p>
-            <p style={{display: 'flex', gap: '2px'}}>
-              <span>{profile.following?.length || 0}</span>
-              <span>following</span>
-            </p>
+            {error && <ErrorMessage message={error} />}      
           </div>
         </div>
+      </div>
     )
 }
 

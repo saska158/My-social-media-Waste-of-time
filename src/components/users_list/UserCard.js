@@ -40,8 +40,8 @@ const UserCard = ({userItem}) => {
               <FollowButton 
                 currentUser={currentUser}
                 targetUser={userItem}
-                type="bordered"
-                style={{marginLeft: 'auto'}}
+                type="image"
+                style={{marginLeft: 'auto', padding: '0'}}
               />
             )
           }

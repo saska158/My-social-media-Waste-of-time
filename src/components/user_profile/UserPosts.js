@@ -10,6 +10,11 @@ import { useMediaQuery } from "react-responsive"
 
 const UserPosts = ({profileUid}) => {
     const roomTags = ['watching', 'reading', 'listening']
+    const icons = {
+      watch: '📺',
+      read: '📚',
+      listen: '🎷'
+    }
     const [room, setRoom] = useState('watching')
 
     const userPostsRef = useMemo(() => {
@@ -24,21 +29,21 @@ const UserPosts = ({profileUid}) => {
 
 
     return (
-      <div>
-        <div style={{marginBottom: '1em'}}>
+      <div style={{padding: '.5em'}}> 
+        <div style={{marginBottom: '1em', display: 'flex', gap: '1em'}}>
           {
             roomTags.map(tag => (
               <button 
                 key={tag} 
                 onClick={() => setRoom(tag)} 
                 style={{
-                  background: room === tag ? "#eaf4f0" : "none", 
-                  border: room === tag ? "none" : "1px solid #eaf4f0", 
-                  color: '#4b896f',
-                  marginRight: '.5em',
+                  background: room === tag ? "#eaf4f0" : "none",
+                  border: room === tag ? 'none' : "2px solid #eaf4f0",
+                  fontSize: '.9rem'
                 }}
+                className="post-category-navlink"
               >
-                {tag}
+                {icons[tag.slice(0, -3)]} {tag.slice(0, -3).charAt(0).toUpperCase()+tag.slice(0, -3).slice(1)}
               </button>
             ))
           }
@@ -63,7 +68,6 @@ const UserPosts = ({profileUid}) => {
                 scrollThreshold={0.9}
                 scrollableTarget="scrollableUserPostsDiv"
               >
-                {/*<div style={{width: '100%'}}>*/}
                   {
                     posts.length > 0 ? (
                       posts.map((post, index) => (
@@ -71,12 +75,11 @@ const UserPosts = ({profileUid}) => {
                           key={index}
                           post={post}
                           room={room}
-                          style={{width: '90%', padding: '1em 0'}}
+                          
                         />
                       ))
                     ) : <p>No posts yet.</p>
-                  } 
-                {/*</div>*/}  
+                  }   
               </InfiniteScroll>  
             )
           }

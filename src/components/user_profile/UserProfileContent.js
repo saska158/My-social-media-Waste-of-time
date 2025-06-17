@@ -2,17 +2,17 @@ import UserPosts from "./UserPosts"
 
 const UserProfileContent = ({activeSection, profile, profileUid}) => {
     return (
-        <div>
+        <div style={{padding: '.5em'}}>
             {
               activeSection === "bio" ? (
-                <p style={{width: '80%', wordBreak: 'break-word'}}>{profile[activeSection]}</p>
+                <p style={{wordBreak: 'break-word'}}>{profile[activeSection]}</p>
               ) :
               activeSection === 'posts' && profileUid ? (
                 <UserPosts {...{profileUid}} />
               ) : (
                 <div style={{display: 'flex', flexDirection: 'column', gap: '1.5em'}}>
                   {Object.entries(profile[activeSection]).map(([key, value]) => (
-                    <div key={key} style={{width: '80%', wordBreak: 'break-word'}}>
+                    <div key={key} style={{wordBreak: 'break-word'}}>
                       <span 
                         style={{
                           display: 'block', 

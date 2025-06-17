@@ -8,10 +8,13 @@ const UserProfileNavigation = ({activeSection, setActiveSection}) => {
                     key={section}
                     onClick={() => setActiveSection(section)}
                     style={{
-                      border: activeSection === section ? ".5px solid #000" : "none",
+                      border: activeSection === section ? 'none' : "2px solid #eaf4f0",
+                      background: activeSection === section ? "#eaf4f0" : "none",
+                      fontSize: '.9rem'
                     }}
+                    className="post-category-navlink"
                   >
-                    {section}
+                    {section.charAt(0).toUpperCase()+section.slice(1)}
                   </button>
                 ))
             }

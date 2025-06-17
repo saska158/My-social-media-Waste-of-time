@@ -57,17 +57,10 @@ const RoomsLayout = () => {
           <NavLink
             key={path}
             to={path}
+            className="post-category-navlink"
             style={({ isActive }) => ({
               background: isActive ? "#eaf4f0" : "none",
               border: isActive ? 'none' : "2px solid #eaf4f0",
-              color: '#4b896f',
-              borderRadius: '30px',
-              padding: '1em',
-              fontWeight: '700',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
             })}
           >
             {label}
