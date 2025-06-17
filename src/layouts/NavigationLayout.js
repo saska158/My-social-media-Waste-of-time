@@ -9,6 +9,7 @@ import { useMediaQuery } from "react-responsive"
 const NavigationLayout = () => {
   // Context
   const { user, logOut, authLoading, authError } = useAuth() 
+  console.log('user', user?.uid)
 
   const isMobile = useMediaQuery({ maxWidth: 767 })
   const isDesktop = useMediaQuery({ minWidth: 768 })
@@ -123,7 +124,7 @@ const NavigationLayout = () => {
             </div>
           )
         }
-        <p className="navigation-layout-footer">
+        <div className="navigation-layout-footer">
           <p style={{display: 'flex', alignItems: 'flex-end', gap: '.3em'}}>
             Made by
             <img
@@ -156,7 +157,7 @@ const NavigationLayout = () => {
             style={{textDecoration: 'underline'}}
           >Personal Website</Link>
           </p>
-        </p>
+        </div>
       </nav>
       <Outlet context={{ toggleNav }} />
       { isDesktop && <UsersList /> }

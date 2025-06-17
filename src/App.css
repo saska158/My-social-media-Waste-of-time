@@ -456,7 +456,7 @@ textarea::placeholder {
 
 .user-profile-displayName {
   font-size: 1.5rem;
-  font-family: 'Anton', sans-serif;
+  font-weight: 800;
 }
 
 .user-profile-container-nav {
@@ -1177,6 +1177,7 @@ textarea::placeholder {
     border-left: 0;
 
     position: relative;
+    height: auto;
   }
 
   .users-search-infinite {

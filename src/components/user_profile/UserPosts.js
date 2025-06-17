@@ -33,12 +33,9 @@ const UserPosts = ({profileUid}) => {
                 onClick={() => setRoom(tag)} 
                 style={{
                   background: room === tag ? "#eaf4f0" : "none", 
-                  border: room === tag ? "none" : ".2px solid #eaf4f0", 
+                  border: room === tag ? "none" : "1px solid #eaf4f0", 
                   color: '#4b896f',
-                  borderRadius: '30px', 
-                  padding: '.5em .8em',
-                  marginRight: '1em',
-                  fontFamily: '"Manrope", sans-serif'
+                  marginRight: '.5em',
                 }}
               >
                 {tag}
