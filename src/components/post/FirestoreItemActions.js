@@ -144,7 +144,7 @@ const FirestoreItemActions = ({
                   likesArray.slice(0, 3).map((item, index) => (
                     <img 
                       key={index} 
-                      src={item.photoURL} 
+                      src={item.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
                       alt="profile photo" 
                       className="user-img user-img-small avatar" 
                       style={{ left: `${index * 15}px`, zIndex: likesArray.length - index }}

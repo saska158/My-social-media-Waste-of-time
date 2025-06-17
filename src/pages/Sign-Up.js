@@ -98,7 +98,7 @@ const SignUp = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password)
       const user = userCredential.user
       await updateProfile(user, {
-        displayName: name
+        displayName: name.toLowerCase()
       })
       await sendEmailVerification(user)
       await createUserProfile(user)

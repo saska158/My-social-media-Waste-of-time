@@ -89,7 +89,7 @@ const Homepage = () => {
               />
             ) 
           }
-            Hey <strong style={{margin: '-.3em', fontWeight: '800'}}>{user?.displayName}</strong> — what do you waste time on? 🖍️
+            Hey <strong style={{margin: '-.3em', fontWeight: '800'}}>{user?.displayName.toLowerCase()}</strong> — what do you waste time on? 🖍️
           </button>
         </div>
         <InfiniteScroll

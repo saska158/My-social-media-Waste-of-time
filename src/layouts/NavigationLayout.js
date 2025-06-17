@@ -85,7 +85,7 @@ const NavigationLayout = () => {
                 }
               >
                 <img 
-                  src={user.photoURL} 
+                  src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
                   alt="profile image" 
                   className="user-img user-img-small" 
                   style={{display: 'inline-block'}} 
