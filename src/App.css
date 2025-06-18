@@ -1139,7 +1139,7 @@ textarea::placeholder {
   }
 
   .date {
-    top: 0;
+    top: 3%;
   }
 
   .posts-container {
