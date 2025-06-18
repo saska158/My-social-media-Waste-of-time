@@ -125,6 +125,11 @@ const NavigationLayout = () => {
                     onClick={logOut} 
                     className="navigation-layout-nav-link sign-out-btn"
                     disabled={authLoading}
+                    style={{
+                      border: isMobile ? '2px solid #eaf4f0' : '',
+                      color: isMobile ? '#eaf4f0' : '',
+                      
+                    }}
                   >
                     👋 Sign out
                   </button>

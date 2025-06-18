@@ -199,11 +199,13 @@ const FirestoreItemActions = ({
         {error && <ErrorMessage message={error} />}
       { showLikes && (
         <PopUp setIsPopUpShown={setShowLikes}>
-          {
-           likesArray.length > 0 ? (
-            likesArray.map((profileItem, index) => <UserCard key={index} userItem={profileItem} />)
-           ) : 'nobody likes it'
-          }
+          <div style={{margin: '2em', width: '50%', overflowY: 'auto'}}>
+            {
+             likesArray.length > 0 ? (
+              likesArray.map((profileItem, index) => <UserCard key={index} userItem={profileItem} />)
+             ) : 'nobody likes it'
+            }
+          </div>
         </PopUp>
       ) }
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }

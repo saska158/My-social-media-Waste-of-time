@@ -293,6 +293,7 @@ textarea::placeholder {
   display: flex;
   align-items: center;
   gap: .5em;
+  font-weight: 500;
 }
 
 .active-nav-link {
@@ -849,7 +850,6 @@ textarea::placeholder {
 .users-search-infinite {
   height: 500px; 
   overflow-y: auto;
-
   /* Hide scrollbar initially */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none;  /* IE and Edge */
@@ -1172,10 +1172,6 @@ textarea::placeholder {
 
     position: relative;
     height: auto;
-  }
-
-  .users-search-infinite {
-    height: 400px; 
   }
 
   .pop-up-box {

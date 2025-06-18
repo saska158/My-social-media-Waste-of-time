@@ -182,7 +182,7 @@ const UserProfile = () => {
       {
         isFollowPopupShown && (
           <PopUp setIsPopUpShown={setIsFollowPopupShown}>
-            <p>You need to follow each other to send a message.</p>
+            <p style={{ margin: '2em'}}>You need to follow each other to send a message.</p>
           </PopUp>
         )
       }
