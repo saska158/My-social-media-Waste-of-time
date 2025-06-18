@@ -52,22 +52,13 @@ const UsersList = () => {
       { 
         isMobile && user && (
           <div
-            style={{
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'flex-start', 
-              gap: '.5em',  
+            style={{ 
               padding: '.5em',
               background: "#eaf4f0",
               color: "#4b896f",
               borderRadius: '50px',
             }}
           >
-            <img 
-              src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
-              alt="user-profile-image" 
-              className="user-img user-img-medium"
-            />
             <button 
               onClick={findPeopleToFollow} 
               className="show-popup-btn"
