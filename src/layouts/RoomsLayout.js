@@ -38,17 +38,18 @@ const RoomsLayout = () => {
       <div className={isVisible ? "group-chat-layout-container-nav" : "disappear"}> 
         {
         isMobile && (
-          <div style={{display: 'flex', alignItems: 'center', gap: '1em'}}>
-            <button onClick={toggleNav} className="no-padding-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '25px', color: '#4b896f'}}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-              </svg>
-            </button>
+          <div style={{display: 'flex', justifyContent: 'space-between'}}>
             <img
               src={`${process.env.PUBLIC_URL}/images/icon-green.png`}
               className="user-img user-img-medium"
               alt="logo"
             />
+
+            <button onClick={toggleNav} className="no-padding-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '25px', color: '#4b896f'}}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+              </svg>
+            </button>
           </div>
         )
       }
