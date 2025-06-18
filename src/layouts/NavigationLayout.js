@@ -125,11 +125,6 @@ const NavigationLayout = () => {
                     onClick={logOut} 
                     className="navigation-layout-nav-link sign-out-btn"
                     disabled={authLoading}
-                    style={{
-                      border: isMobile ? '2px solid #4b896f' : '',
-                      color: isMobile ? '#4b896f' : '',
-                      
-                    }}
                   >
                     👋 Sign out
                   </button>
@@ -153,29 +148,31 @@ const NavigationLayout = () => {
               className="user-img user-img-extra-small"
               style={{display: 'inline'}}
             />   
-          <Link 
-            to="https://www.linkedin.com/in/saska-mikic-4ba087270/" 
-            target="_blank" 
-            style={{textDecoration: 'underline'}}
-          >
-            Saska (Linkedin)
-          </Link>
+            <Link 
+              to="https://www.linkedin.com/in/saska-mikic-4ba087270/" 
+              target="_blank" 
+              style={{textDecoration: 'underline'}}
+            >
+              Saska (Linkedin)
+            </Link>
           </p>
           <p>
             <Link 
-            to="https://github.com/saska158/My-social-media-Waste-of-time" 
-            target="_blank" 
-            style={{textDecoration: 'underline', display: 'inline-block'}}
-          >
-            For Developers (Github)
-          </Link> 
+              to="https://github.com/saska158/My-social-media-Waste-of-time" 
+              target="_blank" 
+              style={{textDecoration: 'underline', display: 'inline-block'}}
+            >
+              For Developers (Github)
+            </Link> 
           </p>
           <p>
             <Link 
-            to="https://www.justsittingdoingnothing.com/"
-            target="_blank" 
-            style={{textDecoration: 'underline'}}
-          >Just Sitting Doing Nothing (Personal Website)</Link>
+              to="https://www.justsittingdoingnothing.com/"
+              target="_blank" 
+              style={{textDecoration: 'underline'}}
+            >
+              Just Sitting Doing Nothing (Personal Website)
+            </Link>
           </p>
         </div>
       </nav>
