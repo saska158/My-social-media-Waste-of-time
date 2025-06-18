@@ -1122,7 +1122,12 @@ textarea::placeholder {
   }  
 
   .chat-box-header-container {
-    top: 6%
+    top: 6%;
+  }
+
+  .chat-box-messages {
+    margin-top: 6em;
+    padding-top: 0;
   }
 
   .message-content {
@@ -1134,7 +1139,7 @@ textarea::placeholder {
   }
 
   .date {
-    top: 14%;
+    top: 0;
   }
 
   .posts-container {
