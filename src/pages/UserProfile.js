@@ -170,21 +170,21 @@ const UserProfile = () => {
                 />
           }
     
-      {
-        isEditPopupShown && (
-          <PopUp setIsPopUpShown={setIsEditPopupShown}>
-            <ProfileEditor {...{profile, setProfile, profileUid}} />
-          </PopUp>
-        )
-      }
-      {
-        isFollowPopupShown && (
-          <PopUp setIsPopUpShown={setIsFollowPopupShown}>
-            <p style={{ margin: '2em'}}>You need to follow each other to send a message.</p>
-          </PopUp>
-        )
-      }
-      </div>
+          {
+            isEditPopupShown && (
+              <PopUp setIsPopUpShown={setIsEditPopupShown}>
+                <ProfileEditor {...{profile, setProfile, profileUid}} />
+              </PopUp>
+            )
+          }
+          {
+            isFollowPopupShown && (
+              <PopUp setIsPopUpShown={setIsFollowPopupShown}>
+                <p style={{ margin: '2em'}}>You need to follow each other to send a message.</p>
+              </PopUp>
+            )
+          }
+        </div>
       )}
       { error && <ErrorMessage message={error} isFatal={true} onRetry={handleRetry} /> }
     </div>

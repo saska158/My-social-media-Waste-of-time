@@ -26,7 +26,6 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
 
   const scrollInfoRef = useRef({ scrollTop: 0, scrollHeight: 0 })
 
-
   let lastDate = null
 
   // Memoized values
@@ -35,10 +34,8 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
     return collection(firestore, "chats", chatId, "messages")
   }, [chatId])
 
-
   // Custom hooks
   const { data: messages, loading, error, fetchMore, hasMore, refetch } = useChatMessages(messagesRef, 15)
-
 
   // Effects
   /* generate chat id */
@@ -46,7 +43,6 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
     const generatedChatId = [user?.uid, chatPartnerProfile?.uid].sort().join("_")
     setChatId(generatedChatId)
   }, [user?.uid, chatPartnerProfile?.uid])
-
 
   /* mark message as seen */
   useEffect(() => {
@@ -79,7 +75,6 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
     markMessagesAsSeen()
   }, [chatId, user?.uid, messages]) 
 
-
   /* handle typing indicator */
   useEffect(() => {
     if (!chatId || !chatPartnerProfile) return
@@ -97,7 +92,6 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
 
     return () => unsubscribe()
   }, [chatId, chatPartnerProfile?.uid])
-
 
   /* handle visible date based on scrolling */
   useEffect(() => {
@@ -150,6 +144,7 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
     chatRef.current.scrollTop = newScrollTop
   }, [messages])
 
+  
   //Functions
   
   const handleFetchMore = () => {

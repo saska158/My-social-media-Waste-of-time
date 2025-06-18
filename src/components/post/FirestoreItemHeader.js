@@ -22,39 +22,40 @@ const FirestoreItemHeader = ({creatorUid, timestamp}) => {
     getProfile()
   }, [creatorUid])
 
-    return (
-        <Link to={creatorUid ? `/user/${creatorUid}` : '/my-profile'}>
-          <div className="post-header-container">
-            {
-              profile?.photoURL ? (
-                <img 
-                  src={profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
-                  alt="profile" 
-                  className="user-img user-img-medium" 
-                />
-              ) : null
-            }
-            <div 
-              style={{
-                display: 'flex', 
-                flexDirection: 'column',
-                gap: '.3em'
-                }}
-              >
-              <span 
-                style={{
-                  fontWeight: '800', 
-                  color: '#000',
-                }}>
-                  {profile?.displayName}
-                </span>
-              {timestamp && (
-                <span>{formattedTime}</span>
-              )}
-            </div>
-          </div>
-        </Link>
-    )
+  return (
+    <Link to={creatorUid ? `/user/${creatorUid}` : '/my-profile'}>
+      <div className="post-header-container">
+        {
+          profile?.photoURL ? (
+            <img 
+              src={profile.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
+              alt="profile" 
+              className="user-img user-img-medium" 
+            />
+          ) : null
+        }
+        <div 
+          style={{
+            display: 'flex', 
+            flexDirection: 'column',
+            gap: '.3em'
+          }}
+        >
+          <span 
+            style={{
+              fontWeight: '800', 
+              color: '#000',
+            }}
+          >
+            {profile?.displayName}
+          </span>
+          {timestamp && (
+            <span>{formattedTime}</span>
+          )}
+        </div>
+      </div>
+    </Link>
+  )
 }
 
 export default FirestoreItemHeader

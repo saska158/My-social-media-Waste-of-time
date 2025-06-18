@@ -66,7 +66,7 @@ const NavigationLayout = () => {
           >
             Do nothing. It's beautiful.
           </p>
-        ) }
+        )}
         { isMobile && <UsersList /> }
         {
           user ? (
@@ -91,10 +91,6 @@ const NavigationLayout = () => {
               </NavLink>
               <NavLink 
                 to={`/user/${user?.uid}`}
-                /*className={({isActive}) => isActive ? 
-                  'navigation-layout-nav-link active-nav-link' : 
-                  'navigation-layout-nav-link' 
-                }*/
                 className='navigation-layout-nav-link'
                 style={({isActive}) => ({
                   background: isActive ? 'rgba(250, 250, 250, .3)' : 'transparent'

@@ -57,18 +57,18 @@ const RoomsLayout = () => {
         }
         <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1em'}}>
           {routes.map(({ path, label }) => (
-          <NavLink
-            key={path}
-            to={path}
-            className="post-category-navlink"
-            style={({ isActive }) => ({
-              background: isActive ? "#eaf4f0" : "none",
-              border: isActive ? 'none' : "2px solid #eaf4f0",
-            })}
-          >
-            {label}
-          </NavLink>
-        ))}
+            <NavLink
+              key={path}
+              to={path}
+              className="post-category-navlink"
+              style={({ isActive }) => ({
+                background: isActive ? "#eaf4f0" : "none",
+                border: isActive ? 'none' : "2px solid #eaf4f0",
+              })}
+            >
+              {label}
+            </NavLink>
+          ))}
         </div>
       </div>
       <Outlet />

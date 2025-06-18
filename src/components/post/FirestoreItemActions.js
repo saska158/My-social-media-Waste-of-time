@@ -4,7 +4,6 @@ import fetchProfile from "../../api/fetchProfile"
 import { getDoc, updateDoc, onSnapshot, deleteField } from "../../api/firebase"
 import PopUp from "../PopUp"
 import JoinPopUp from "../JoinPopUp"
-import UserItem from "../users_list/UserItem"
 import UserCard from "../users_list/UserCard"
 import ErrorMessage from "../errors/ErrorMessage"
 
@@ -118,9 +117,7 @@ const FirestoreItemActions = ({
 
   const isLiked = !!(likes && likes[user?.uid])
   const likesArray = Object.values(likes || {})
- /* const profileImgsArray = likesArray.map(like => like.photoURL)
 
-  console.log(profileImgsArray)*/
 
   return (
     <div className="post-actions">

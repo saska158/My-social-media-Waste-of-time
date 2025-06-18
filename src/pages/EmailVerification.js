@@ -48,11 +48,6 @@ const EmailVerification = () => {
   }
 
   // Effects
-  /*useEffect(() => {
-    if(user) {
-      setIsEmailVerified(user?.emailVerified)
-    }
-  }, [user]) */
 
   useEffect(() => {
     const finalize = async () => {

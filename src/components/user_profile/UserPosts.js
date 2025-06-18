@@ -6,7 +6,6 @@ import Post from "../post/Post"
 import PostSkeleton from "../skeletons/PostSkeleton"
 import InfiniteScroll from "react-infinite-scroll-component"
 import ErrorMessage from "../errors/ErrorMessage"
-import { useMediaQuery } from "react-responsive"
 
 const UserPosts = ({profileUid}) => {
     const roomTags = ['watching', 'reading', 'listening']

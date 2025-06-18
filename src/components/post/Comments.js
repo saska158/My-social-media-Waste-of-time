@@ -51,7 +51,6 @@ const Comments = ({room, postId, firestoreRef}) => {
       <CommentsForm 
         {...{firestoreRef}} 
         placeholder="Add comment..." 
-        style={{border: '1px solid green', height: '20%'}} 
       />
     </div>
   )

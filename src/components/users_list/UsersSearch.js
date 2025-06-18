@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react"
 import { useLocation } from "react-router-dom"
-import { useAuth } from "../../contexts/authContext"
 import { 
   collection, 
   firestore, 
@@ -13,16 +12,13 @@ import {
   getDocs, 
   onSnapshot 
 } from "../../api/firebase"
-//import PopUp from "../PopUp"
 import UserCard from "./UserCard"
 import { ClipLoader } from "react-spinners"
 import InfiniteScroll from "react-infinite-scroll-component"
 import UserSkeleton from "../skeletons/UserSkeleton"
 import ErrorMessage from "../errors/ErrorMessage"
 
-const UsersSearch = ({style=null}) => {
-  // Context
-  //const { user } = useAuth()  
+const UsersSearch = ({style=null}) => { 
   
   // State
   const [filteredUsers, setFilteredUsers] = useState([])
@@ -45,12 +41,6 @@ const UsersSearch = ({style=null}) => {
   const usersContainerRef = useRef(null)
 
   // Effects
-  /*useEffect(() => {
-    if(prevLocation.current !== location.pathname) {
-        setIsUsersQueryShown(false)
-    } 
-    prevLocation.current = location.pathname
-  }, [location.pathname])*/
 
   useEffect(() => {
     if (!usersRef) return
@@ -168,13 +158,11 @@ const UsersSearch = ({style=null}) => {
           placeholder="Find people"
           value={searchQuery}
           onChange={handleSearchChange}
-         // className="users-list-follow-button"
          style={{fontSize: '1rem'}}
         />
       </div>
       <div 
         className="users-search-infinite"
-        //style={{ height: '400px', overflowY: 'auto',}}
         id="scrollableUsersDiv"
         ref={usersContainerRef}
       >

@@ -46,7 +46,7 @@ li {
   cursor: pointer;
 }
 
-/*=======LINKS=======*/
+/* LINKS */
 
 .post-category-navlink {
   color: #4b896f;
@@ -59,7 +59,7 @@ li {
   justify-content: center
 }
 
-/*======= BUTTON =======*/
+/* BUTTONS */
 
 button {
   cursor: pointer;
@@ -95,7 +95,7 @@ button {
   background-color: #00bb6d;
 }
 
-/*======= FORM =======*/
+/* FORM */
 
 form {
   position: relative;
@@ -122,8 +122,6 @@ input::placeholder,
 textarea::placeholder {
   color: var(--dark-green);
 }
-
-/* SEARCH PEOPLE */
 
 .input-wrapper {
   position: relative;
@@ -152,8 +150,6 @@ textarea::placeholder {
   border-bottom: 0;
 }
 
-
-
 .image-input-label {
   position: relative;
   display: inline-block;
@@ -180,75 +176,6 @@ textarea::placeholder {
 .image-input-icon {
   width: 100%;
   color: #4b896f;
-}
-
-
-/*======= IMAGE PREVIEW =======*/
-
-.image-preview {
-  width: 60px; 
-  height: 60px; 
-  position: relative;
-  margin: .5em;
-}
-
-.image-preview-img {
-  height: 100%;
-  object-fit: cover; 
-  object-position: top;
-}
-
-.image-preview-btn {
-  position: absolute;
-  top: -12%;
-  right: -12%;
-  background-color: rgba(75, 137, 111, .4);
-  border-radius: 50%;
-  padding: .3em;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-/*======= USER PROFILE IMAGE =======*/
-
-.user-img {
-  border-radius: 50%;
-  object-fit: cover;
-  object-position: center;
-}
-
-.user-img-big {
-  width: 100px;
-  height: 100px;
-}
-
-.user-img-medium {
-  width: 45px;
-  height: 45px;
-}
-
-.user-img-small {
-  width: 30px;
-  height: 30px;
-}
-
-.user-img-extra-small {
-  width: 20px;
-  height: 20px;
-}
-
-.online-indicator {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  transform: translate(15%, 15%); 
-  width: 18px;
-  height: 18px;
-  background-color: rgb(0, 190, 95);
-  border: 3px solid white; 
-  border-radius: 50%;
 }
 
 /* ======= LAYOUTS ======= */
@@ -902,6 +829,74 @@ textarea::placeholder {
   flex-direction: column;
   align-items: flex-start;
   position: relative;
+}
+
+/* IMAGE PREVIEW */
+
+.image-preview {
+  width: 60px; 
+  height: 60px; 
+  position: relative;
+  margin: .5em;
+}
+
+.image-preview-img {
+  height: 100%;
+  object-fit: cover; 
+  object-position: top;
+}
+
+.image-preview-btn {
+  position: absolute;
+  top: -12%;
+  right: -12%;
+  background-color: rgba(75, 137, 111, .4);
+  border-radius: 50%;
+  padding: .3em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* USER PROFILE IMAGE */
+
+.user-img {
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.user-img-big {
+  width: 100px;
+  height: 100px;
+}
+
+.user-img-medium {
+  width: 45px;
+  height: 45px;
+}
+
+.user-img-small {
+  width: 30px;
+  height: 30px;
+}
+
+.user-img-extra-small {
+  width: 20px;
+  height: 20px;
+}
+
+.online-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  transform: translate(15%, 15%); 
+  width: 18px;
+  height: 18px;
+  background-color: rgb(0, 190, 95);
+  border: 3px solid white; 
+  border-radius: 50%;
 }
 
 /* JOIN POP UP */

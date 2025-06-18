@@ -1,11 +1,9 @@
-//import { useState } from "react"
 
 const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
-  //const [expanded, setExpanded] = useState(false)
+
   const limit = 200
 
-  //const isLong = linkData.description.length > limit
-  const visibleText =/* expanded ? linkData.description :*/ linkData.description.slice(0, limit)
+  const visibleText = linkData.description.slice(0, limit)
 
     return (
         <div>
@@ -35,18 +33,6 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
                       {linkData.title}
                     </p>
                   <p style={{fontSize: '.9rem', wordBreak: 'break-all'}}>{visibleText}...</p>
-                 {/* {isLong && !expanded && '... '}
-                  {isLong && (
-                    <span
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setExpanded(!expanded)
-                      }}
-                      style={{ color: '#f05593', cursor: 'pointer' }}
-                    >
-                      {expanded ? ' See less' : ' See more'}
-                    </span>
-                  )}*/}
                 </div>
                 {children}
               </div>
@@ -58,8 +44,3 @@ const LinkPreview = ({linkData, children, style, imgStyle=null}) => {
 
 export default LinkPreview
 
-/*
-<p style={{fontSize: '.7rem', color: '#f05593', padding: '.5em', borderRadius: '20px'}}>
-                Link preview currently unavailable.
-              </p>
-*/

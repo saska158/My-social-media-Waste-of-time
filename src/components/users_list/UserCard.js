@@ -33,20 +33,20 @@ const UserCard = ({userItem}) => {
 
 
     return (
-        <div className="user-card-container">
-          <UserItem user={userItem} />
-          {
-            currentUser.uid !== userItem.uid && (
-              <FollowButton 
-                currentUser={currentUser}
-                targetUser={userItem}
-                type="image"
-                style={{marginLeft: 'auto', padding: '0'}}
-              />
-            )
-          }
-          {error && <ErrorMessage message={error} />}     
-        </div>
+      <div className="user-card-container">
+        <UserItem user={userItem} />
+        {
+          currentUser.uid !== userItem.uid && (
+            <FollowButton 
+              currentUser={currentUser}
+              targetUser={userItem}
+              type="image"
+              style={{marginLeft: 'auto', padding: '0'}}
+            />
+          )
+        }
+        {error && <ErrorMessage message={error} />}     
+      </div>
     )
 }
 

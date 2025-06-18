@@ -64,12 +64,9 @@ const Homepage = () => {
           </PopUp>
         ) 
       }
-      <div className="posts-container"/* id="scrollableDiv"*/>
+      <div className="posts-container">
         <div 
           style={{
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '1em',
             width: '100%', 
             padding: '.5em 1em',
             background: "#eaf4f0",
@@ -81,15 +78,17 @@ const Homepage = () => {
             style={{padding: '.5em 0 2.5em', width: '100%'}}
           >
             { 
-            user && (
-              <img 
-                src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
-                alt="user-profile-image" 
-                className="user-img user-img-medium"
-              />
-            ) 
-          }
-            Hey <strong style={{margin: '-.3em', fontWeight: '800'}}>{user?.displayName.toLowerCase()}</strong> — what do you waste time on? 🖍️
+              user && (
+                <img 
+                  src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
+                  alt="user-profile-image" 
+                  className="user-img user-img-medium"
+                />
+              ) 
+            }
+            Hey <strong style={{margin: '-.3em', fontWeight: '800'}}>
+              {user?.displayName.toLowerCase()}
+            </strong> — what do you waste time on? 🖍️
           </button>
         </div>
         <InfiniteScroll
@@ -98,25 +97,20 @@ const Homepage = () => {
           hasMore={hasMore}
           loader={<ClipLoader color="#4b896f" />}
           scrollThreshold={0.9}
-          //scrollableTarget="scrollableDiv"
-          //style={{width: '500px'}}
-          //style={{width: '580px'}}
         >
-          {/*<div className="posts">*/}
-            {
-              loading ? <PostSkeleton /> : (
-                posts.length > 0 ? posts.map(post=> (
-                  <Post
-                    key={post.id}
-                    post={post}
-                    room={room}
-                  />
-                )) : (
-                  <div>No posts in this room yet.</div>
-                )
+          {
+            loading ? <PostSkeleton /> : (
+              posts.length > 0 ? posts.map(post=> (
+                <Post
+                  key={post.id}
+                  post={post}
+                  room={room}
+                />
+              )) : (
+                <div>No posts in this room yet.</div>
               )
-            }    
-          {/*</div> */}
+            )
+          }    
         </InfiniteScroll>
       </div>
       { isJoinPopupShown && <JoinPopUp setIsPopUpShown={setIsJoinPopupShown} /> }
