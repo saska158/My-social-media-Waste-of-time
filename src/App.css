@@ -1049,7 +1049,7 @@ textarea::placeholder {
     right: 0;
     bottom: 0;
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
     z-index: 9999;
     transform: translatex(100%);
     transition: all .7s;
