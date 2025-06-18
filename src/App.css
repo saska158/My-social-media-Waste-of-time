@@ -1091,10 +1091,11 @@ textarea::placeholder {
     width: 100%;
     left: 0;
     right: 0;
+  
   }
 
   .group-chat-container {
-    margin-top: 7em;
+    margin-top: 8em;
   }
 
   .my-chats-container {

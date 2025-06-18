@@ -38,7 +38,7 @@ const RoomsLayout = () => {
       <div className={isVisible ? "group-chat-layout-container-nav" : "disappear"}> 
         {
           isMobile && (
-            <div style={{display: 'flex', justifyContent: 'space-between', padding: '.5em'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between',}}>
               <img
                 src={`${process.env.PUBLIC_URL}/images/icon-green.png`}
                 className="user-img user-img-medium"
