@@ -53,7 +53,7 @@ const NavigationLayout = () => {
           )
         }
         <Link to="/" className="logo-link">
-          <img src={`${process.env.PUBLIC_URL}/images/logo-light.png`} />
+          <img src={`${process.env.PUBLIC_URL}/images/logo-light.png`} alt="logo link" />
         </Link>
         { !user && (
           <p 
@@ -83,7 +83,7 @@ const NavigationLayout = () => {
               >
                 <img 
                   src={`${process.env.PUBLIC_URL}/images/icon-light.png`}
-                  alt="profile image" 
+                  alt="profile" 
                   className="user-img user-img-small" 
                   style={{display: 'inline-block'}} 
                 />
@@ -102,7 +102,7 @@ const NavigationLayout = () => {
               >
                 <img 
                   src={user.photoURL || process.env.PUBLIC_URL + "/images/no-profile-picture.png"} 
-                  alt="profile image" 
+                  alt="profile" 
                   className="user-img user-img-small" 
                   style={{display: 'inline-block'}} 
                 />
@@ -126,8 +126,8 @@ const NavigationLayout = () => {
                     className="navigation-layout-nav-link sign-out-btn"
                     disabled={authLoading}
                     style={{
-                      border: isMobile ? '2px solid #eaf4f0' : '',
-                      color: isMobile ? '#eaf4f0' : '',
+                      border: isMobile ? '2px solid #4b896f' : '',
+                      color: isMobile ? '#4b896f' : '',
                       
                     }}
                   >

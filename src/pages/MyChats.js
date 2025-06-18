@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from "react"
-import { useOutletContext } from "react-router-dom"
+import { Link, useOutletContext } from "react-router-dom"
 import { firestore, collection, where, doc, getDoc } from "../api/firebase"
 import { useAuth } from "../contexts/authContext"
 import ChatBox from "../components/one_on_one_chat/ChatBox"
@@ -135,11 +135,13 @@ const MyChats = () => {
               }}
               className={isVisible ? '' : 'disappear'}
             >
-              <img
-                src={`${process.env.PUBLIC_URL}/images/icon-green.png`}
-                className="user-img user-img-medium"
-                alt="logo"
-              />
+              <Link to="/">
+                <img
+                  src={`${process.env.PUBLIC_URL}/images/icon-green.png`}
+                  className="user-img user-img-medium"
+                  alt="logo"
+                />
+              </Link>
 
               <button onClick={toggleNav} className="no-padding-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '25px', color: '#4b896f'}}>

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { NavLink, Outlet, useOutletContext } from "react-router-dom"
+import { Link, NavLink, Outlet, useOutletContext } from "react-router-dom"
 import { useMediaQuery } from "react-responsive"
 
 const RoomsLayout = () => {
@@ -39,11 +39,13 @@ const RoomsLayout = () => {
         {
           isMobile && (
             <div style={{display: 'flex', justifyContent: 'space-between',}}>
-              <img
-                src={`${process.env.PUBLIC_URL}/images/icon-green.png`}
-                className="user-img user-img-medium"
-                alt="logo"
+              <Link to="/">
+                <img
+                  src={`${process.env.PUBLIC_URL}/images/icon-green.png`}
+                  className="user-img user-img-medium"
+                  alt="logo"
               />
+              </Link>
 
               <button onClick={toggleNav} className="no-padding-btn">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '25px', color: '#4b896f'}}>

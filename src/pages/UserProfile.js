@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react"
-import { useParams, useOutletContext } from "react-router-dom"
+import { Link, useParams, useOutletContext } from "react-router-dom"
 import { firestore, doc, onSnapshot } from '../api/firebase'
-import { useAuth } from "../contexts/authContext"
 import ChatBox from '../components/one_on_one_chat/ChatBox'
 import PopUp from "../components/PopUp"
 import ProfileEditor from "../components/user_profile/ProfileEditor"
@@ -13,9 +12,6 @@ import UserProfileSkeleton from "../components/skeletons/UserProfileSkeleton"
 import { useMediaQuery } from "react-responsive"
 
 const UserProfile = () => {
-  // Context
-  const { user } = useAuth()
- 
   // State
   const [profile, setProfile] = useState({
     uid: "",
@@ -138,11 +134,13 @@ const UserProfile = () => {
             }}
             className={isVisible ? '' : 'disappear'}
           >
-            <img
-              src={`${process.env.PUBLIC_URL}/images/icon-green.png`}
-              className="user-img user-img-medium"
-              alt="logo"
-            />
+            <Link to="/">
+              <img
+                src={`${process.env.PUBLIC_URL}/images/icon-green.png`}
+                className="user-img user-img-medium"
+                alt="logo"
+              />
+            </Link>
 
             <button onClick={toggleNav} className="no-padding-btn">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '25px', color: '#4b896f'}}>
