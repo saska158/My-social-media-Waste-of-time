@@ -43,6 +43,9 @@ const UserProfile = () => {
   const [error, setError] = useState(null)
   const [retryFlag, setRetryFlag] = useState(0)
 
+  const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset)
+  const [isVisible, setIsVisible] = useState(true)
+
   const { toggleNav } = useOutletContext()
 
   // Hooks that don't trigger re-renders 
@@ -95,6 +98,22 @@ const UserProfile = () => {
     setActiveSection('currently')
   }, [profileUid])
 
+  //handling header visibility based on scrolling:
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.pageYOffset
+      setIsVisible(prevScrollPos > currentScrollPos)
+      setPrevScrollPos(currentScrollPos)
+    }
+    
+    window.addEventListener('scroll', handleScroll)
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [prevScrollPos])
+
   //Functions
 
   const handleRetry = () => {
@@ -104,31 +123,54 @@ const UserProfile = () => {
 
   return (
     <div className="user-profile-container">
-      { 
+      {
         isMobile && (
-          <button onClick={toggleNav}>
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '25px', color: '#4b896f'}}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
-            </svg>
-          </button>
+          <div
+            style={{
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              padding: '.5em',
+              position: 'fixed',
+              top: '0',
+              left: '0',
+              right: '0',
+              transition: 'transform 500ms',
+            }}
+            className={isVisible ? '' : 'disappear'}
+          >
+            <img
+              src={`${process.env.PUBLIC_URL}/images/icon-green.png`}
+              className="user-img user-img-medium"
+              alt="logo"
+            />
+
+            <button onClick={toggleNav} className="no-padding-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{width: '25px', color: '#4b896f'}}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+              </svg>
+            </button>
+          </div>
         )
       }
       {loading ? <UserProfileSkeleton /> : (
         <div>
-        {
-        !isChatBoxVisible ? (
-          <div style={{display: 'flex', flexDirection: 'column'}}>
-            <UserProfileHeader {...{profile, profileUid, setIsEditPopupShown, isChatBoxVisible, setIsChatBoxVisible, setIsFollowPopupShown}} />
-            <UserProfileNavigation {...{activeSection, setActiveSection}}/>  
-            {
-              profileUid && <UserProfileContent {...{activeSection, profile, profileUid}}/>
-            }
-          </div>
-        ) : <ChatBox 
-              chatPartnerProfile={profile} 
-              setIsChatBoxVisible={setIsChatBoxVisible} 
-            />
-      }
+          {
+            !isChatBoxVisible ? (
+              <div 
+                style={{display: 'flex', flexDirection: 'column'}}
+                className={isVisible ? '' : 'disappear'}
+              >
+                <UserProfileHeader {...{profile, profileUid, setIsEditPopupShown, isChatBoxVisible, setIsChatBoxVisible, setIsFollowPopupShown}} />
+                <UserProfileNavigation {...{activeSection, setActiveSection}}/>  
+                {
+                  profileUid && <UserProfileContent {...{activeSection, profile, profileUid}}/>
+                }
+              </div>
+            ) : <ChatBox 
+                  chatPartnerProfile={profile} 
+                  setIsChatBoxVisible={setIsChatBoxVisible} 
+                />
+          }
     
       {
         isEditPopupShown && (
