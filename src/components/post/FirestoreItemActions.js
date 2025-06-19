@@ -203,7 +203,7 @@ const FirestoreItemActions = ({
         {error && <ErrorMessage message={error} />}
       { showLikes && (
         <PopUp setIsPopUpShown={setShowLikes}>
-          <div style={{margin: '2em', width: '50%', overflowY: 'auto'}}>
+          <div style={{margin: '2em', width: '70%', overflowY: 'auto'}}>
             {
              likesArray.length > 0 ? (
               likesArray.map((profileItem, index) => <UserCard key={index} userItem={profileItem} />)
