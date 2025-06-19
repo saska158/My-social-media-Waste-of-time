@@ -594,14 +594,14 @@ textarea::placeholder {
   display: flex;
   align-items: flex-start;
   gap: .3em;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 .message-content {
   padding: 1em;
   border-radius: 15px;
   max-width: 300px;
-  word-break: break-all;
+  word-break: break-word;
   background: var(--light-green);
 }
 
@@ -661,6 +661,10 @@ textarea::placeholder {
   justify-content: space-between;
 
 }
+
+.post-actions svg {
+    width: 30px;
+  }
 
 .post-actions button {
   padding: 0;
@@ -1147,6 +1151,10 @@ textarea::placeholder {
 
   .post-actions {
     font-size: .8rem;
+  }
+
+  .post-actions svg {
+    width: 25px;
   }
 
   .comment-content {
