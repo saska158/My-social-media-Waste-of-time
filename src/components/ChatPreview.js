@@ -35,7 +35,7 @@ const ChatPreview = ({
                   </svg> Photo image
                 </p>
               ) : (
-                <p>{contentText}</p>
+                <p>{`${contentText.slice(0, 18)}...`}</p>
               )
             }
           </div>

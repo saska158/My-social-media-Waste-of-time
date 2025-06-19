@@ -14,7 +14,7 @@ const useFormattedTime = (timestamp) => {
           const differenceInMs = now - date
 
           if(differenceInMs < 1000 * 60 * 60 * 24 * 7) {
-            setFormattedTime(formatDistanceToNow(date, {addSuffix: true}))
+            setFormattedTime(formatDistanceToNow(date))
           } else {
             setFormattedTime(format(date, 'MMMM d, yyyy'))
           }
