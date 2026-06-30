@@ -779,27 +779,14 @@ textarea::placeholder {
 }
 
 .users-search-infinite {
-  height: 500px; 
+  height: 500px;
   overflow-y: auto;
-  /* Hide scrollbar initially */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-/* Hide scrollbar in Webkit (Chrome, Safari) */
 .users-search-infinite::-webkit-scrollbar {
-  width: 0;
-  height: 0;
-}
-
-/* Show scrollbar on hover */
-.users-search-infinite:hover {
-  scrollbar-width: thin; /* Firefox */
-}
-
-/* Show scrollbar in Webkit on hover */
-.users-search-infinite:hover::-webkit-scrollbar {
-  width: 8px;
+  display: none;
 }
 
 
