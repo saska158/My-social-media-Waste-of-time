@@ -1,11 +1,8 @@
-import { useState, useMemo, useRef } from "react"
-import { firestore, collection, where } from "../../api/firebase"
+import { useState } from "react"
 import { useAuth } from "../../contexts/authContext"
 import UsersSearch from "./UsersSearch"
 import JoinPopUp from "../JoinPopUp"
 import PopUp from "../PopUp"
-import useFirestoreBatch from "../../hooks/useFirestoreBatch"
-import ErrorMessage from "../errors/ErrorMessage"
 import { useMediaQuery } from "react-responsive"
 
 const UsersList = () => {
@@ -14,25 +11,10 @@ const UsersList = () => {
 
   const isMobile = useMediaQuery({ maxWidth: 767 })
   const isDesktop = useMediaQuery({ minWidth: 768 })
-  
+
   // State
   const [isUsersQueryShown, setIsUsersQueryShown] = useState(false)
   const [isJoinPopupShown, setIsJoinPopupShown] = useState(false)
-
-  // Memoized values
-  const usersRef = useMemo(() => {
-    return collection(firestore, 'profiles')
-  }, [])
-
-  const usersContainerRef = useRef(null)
-
-  // Custom hooks
-  const {data: users, loading, error, fetchMore, hasMore, refetch } = useFirestoreBatch(
-    usersRef, 
-    20, 
-    [where("isActive", "==", true)]
-  )
-
 
   // Functions
   const findPeopleToFollow = (e) => {
@@ -46,18 +28,18 @@ const UsersList = () => {
 
   return (
     <div className="users-list-container">
-      { 
+      {
         isMobile && user && (
           <div
-            style={{ 
+            style={{
               padding: '.5em',
               background: "#eaf4f0",
               color: "#4b896f",
               borderRadius: '50px',
             }}
           >
-            <button 
-              onClick={findPeopleToFollow} 
+            <button
+              onClick={findPeopleToFollow}
               className="show-popup-btn"
               style={{width: '100%'}}
             >
@@ -67,12 +49,11 @@ const UsersList = () => {
               <span>Find people</span>
             </button>
           </div>
-        ) 
+        )
       }
       {
         isDesktop && (
           <div>
-            {error && <ErrorMessage message={error} onRetry={refetch} />}
             <UsersSearch />
           </div>
         )

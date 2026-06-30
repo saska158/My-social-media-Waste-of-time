@@ -179,7 +179,7 @@ const UsersSearch = ({style=null}) => {
             {
               loading ? <UserSkeleton /> : (
                 filteredUsers.length > 0 ? (
-                  filteredUsers.map((usr, index) => <UserCard key={index} userItem={usr}/>) 
+                  filteredUsers.map(usr => <UserCard key={usr.uid} userItem={usr}/>)
                 ) : (
                   <p>There's no users.</p>
                 )
