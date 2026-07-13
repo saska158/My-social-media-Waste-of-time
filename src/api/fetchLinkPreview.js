@@ -1,5 +1,5 @@
 const fetchLinkPreview = async (url) => {
-    const apiKey = 'faf544d8f3ee079721267922823df559'  
+    const apiKey = process.env.REACT_APP_LINK_PREVIEW_KEY
     const apiUrl = `https://api.linkpreview.net?key=${apiKey}&q=${encodeURIComponent(url)}`
 
     const response = await fetch(apiUrl)
