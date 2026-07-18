@@ -174,6 +174,7 @@ const UsersSearch = ({style=null}) => {
           loader={<ClipLoader color="#4b896f" />}
           scrollThreshold={0.9}
           scrollableTarget="scrollableUsersDiv"
+          style={{ overflow: 'visible' }}
         >
           <div>
             {

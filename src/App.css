@@ -785,8 +785,8 @@ textarea::placeholder {
   -ms-overflow-style: none;
 }
 
-.users-search-infinite::-webkit-scrollbar {
-  width: 0 !important;
+#scrollableUsersDiv::-webkit-scrollbar {
+  display: none;
 }
 
 
