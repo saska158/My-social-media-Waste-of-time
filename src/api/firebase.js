@@ -1,10 +1,11 @@
 import { initializeApp } from "firebase/app"
 
-import { 
-  getDatabase, 
-  ref, 
-  set, 
-  onValue
+import {
+  getDatabase,
+  ref,
+  set,
+  onValue,
+  onDisconnect
 } from "firebase/database"
 
 import { 
@@ -60,14 +61,15 @@ const database = getDatabase(app)
 const auth = getAuth(app) //proveri
 const firestore = getFirestore(app)
 
-export { 
-  app, 
-  database, 
+export {
+  app,
+  database,
   firestore,
   auth,
   ref,
   set,
   onValue,
+  onDisconnect,
   onAuthStateChanged, 
   signOut, 
   reload,

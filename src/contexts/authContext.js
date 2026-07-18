@@ -1,4 +1,4 @@
-import { auth, firestore, doc, updateDoc, onAuthStateChanged, signOut } from "../api/firebase"
+import { auth, firestore, database, doc, getDoc, onSnapshot, updateDoc, onAuthStateChanged, signOut, ref, set, onValue, onDisconnect } from "../api/firebase"
 import { useState, useEffect, createContext, useContext } from "react"
 
 const AuthContext = createContext()
@@ -14,12 +14,48 @@ export const AuthProvider = ({children}) => {
     setAuthLoading(true)
     setAuthError(null)
 
+    let profileUnsubscribe = null
+    let presenceUnsubscribe = null
+
     const unsubscribe = onAuthStateChanged(
-      auth, 
-      (user) => {
-        setUser(user) 
+      auth,
+      async (user) => {
+        if (profileUnsubscribe) { profileUnsubscribe(); profileUnsubscribe = null }
+        if (presenceUnsubscribe) { presenceUnsubscribe(); presenceUnsubscribe = null }
+
+        if (!user) {
+          setUser(null)
+          setAuthLoading(false)
+          return
+        }
+
+        const profileSnap = await getDoc(doc(firestore, 'profiles', user.uid))
+        if (profileSnap.exists() && profileSnap.data().banned) {
+          await signOut(auth)
+          setUser(null)
+          setAuthError("Your account has been banned.")
+          setAuthLoading(false)
+          return
+        }
+
+        setUser(user)
         setAuthLoading(false)
-      }, 
+
+        const presenceRef = ref(database, `presence/${user.uid}`)
+        presenceUnsubscribe = onValue(ref(database, '.info/connected'), (snap) => {
+          if (snap.val() !== true) return
+          onDisconnect(presenceRef).set(false)
+          set(presenceRef, true)
+        })
+
+        profileUnsubscribe = onSnapshot(doc(firestore, 'profiles', user.uid), (snap) => {
+          if (snap.exists() && snap.data().banned) {
+            signOut(auth)
+            setUser(null)
+            setAuthError("Your account has been banned.")
+          }
+        })
+      },
       (error) => {
         console.error(error)  
 
@@ -41,7 +77,11 @@ export const AuthProvider = ({children}) => {
       }
     )
 
-    return () => unsubscribe()
+    return () => {
+      unsubscribe()
+      if (profileUnsubscribe) profileUnsubscribe()
+      if (presenceUnsubscribe) presenceUnsubscribe()
+    }
   }, [])
 
   const logOut = async () => {
@@ -52,11 +92,10 @@ export const AuthProvider = ({children}) => {
       const user = auth.currentUser
       if(user) {
         const uid = user.uid
-        const userRef = doc(firestore, 'profiles', uid)
-        await updateDoc(userRef, {isActive: false})
+        await set(ref(database, `presence/${uid}`), false)
         await signOut(auth)
         setUser(null)
-        console.log("Korisnik odjavljen.")
+        console.log("User signed out.")
       }
     } catch(error) {
       console.error("Error during logout:", error.message)

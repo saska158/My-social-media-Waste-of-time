@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
-import { auth, signInWithEmailAndPassword, firestore, doc, updateDoc } from "../api/firebase"
+import { auth, signInWithEmailAndPassword } from "../api/firebase"
 import { PulseLoader } from "react-spinners"
 import ErrorMessage from "../components/errors/ErrorMessage"
 
@@ -15,30 +15,6 @@ const SignIn = () => {
   const location = useLocation()
   const navigate = useNavigate()
 
-  // Functions
-  const updateUserActivity = async (uid) => {
-    try {
-      const userRef = doc(firestore, 'profiles', uid)
-      await updateDoc(userRef, {isActive: true})
-    } catch(error) {
-      console.error("Error during login:", error.message)
-
-      let errorMessage
-    
-      if (error.code === "permission-denied") {
-        errorMessage = "You do not have permission to modify this data.";
-      } else if (error.code === "unavailable" || error.code === "network-request-failed") {
-        errorMessage = "Network issue occurred. Please check your connection."
-      } else if (error.code === "not-found") {
-        errorMessage = "User not found."
-      } else {
-        errorMessage = "Error updating data. Please try again later."
-      }
-
-      setError(errorMessage)
-    }
-  }
-
   const handleSignIn = async (e) => {
     e.preventDefault()
     if (!email || !password) return
@@ -52,7 +28,6 @@ const SignIn = () => {
       setEmail('')
       setPassword('')
       navigate(location.state?.from || '/', {replace: true})
-      updateUserActivity(user.uid)
     } catch(error) {
       console.error("Error during sign in:", error.message)
 
