@@ -19,17 +19,19 @@ import {
   reload 
 } from "firebase/auth"
 
-import { 
-  getFirestore, 
-  collection, 
+import {
+  initializeFirestore,
+  persistentLocalCache,
+  persistentMultipleTabManager,
+  collection,
   doc,
-  addDoc, 
+  addDoc,
   getDoc,
-  getDocs, 
+  getDocs,
   setDoc,
   updateDoc,
-  query, 
-  where, 
+  query,
+  where,
   orderBy,
   onSnapshot,
   serverTimestamp,
@@ -58,8 +60,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 
 const database = getDatabase(app)
-const auth = getAuth(app) //proveri
-const firestore = getFirestore(app)
+const auth = getAuth(app)
+const firestore = initializeFirestore(app, {
+  localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+})
 
 export {
   app,
@@ -77,8 +81,7 @@ export {
   signInWithEmailAndPassword, 
   updateProfile, 
   sendEmailVerification,  
-  getFirestore, 
-  collection, 
+  collection,
   doc,
   addDoc, 
   getDoc,
