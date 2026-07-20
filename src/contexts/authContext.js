@@ -9,6 +9,8 @@ export const AuthProvider = ({children}) => {
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(false)
   const [authError, setAuthError] = useState(null)
+  const [warnedPending, setWarnedPending] = useState(false)
+  const [removedPending, setRemovedPending] = useState(false)
 
   useEffect(() => {
     setAuthLoading(true)
@@ -25,6 +27,8 @@ export const AuthProvider = ({children}) => {
 
         if (!user) {
           setUser(null)
+          setWarnedPending(false)
+          setRemovedPending(false)
           setAuthLoading(false)
           return
         }
@@ -49,11 +53,15 @@ export const AuthProvider = ({children}) => {
         })
 
         profileUnsubscribe = onSnapshot(doc(firestore, 'profiles', user.uid), (snap) => {
-          if (snap.exists() && snap.data().banned) {
+          if (!snap.exists()) return
+          const data = snap.data()
+          if (data.banned) {
             signOut(auth)
             setUser(null)
             setAuthError("Your account has been banned.")
           }
+          if (data.warned) setWarnedPending(true)
+          if (data.removedPending) setRemovedPending(true)
         })
       },
       (error) => {
@@ -83,6 +91,22 @@ export const AuthProvider = ({children}) => {
       if (presenceUnsubscribe) presenceUnsubscribe()
     }
   }, [])
+
+  const dismissWarning = async () => {
+    setWarnedPending(false)
+    const currentUser = auth.currentUser
+    if (currentUser) {
+      await updateDoc(doc(firestore, 'profiles', currentUser.uid), { warned: false })
+    }
+  }
+
+  const dismissRemoval = async () => {
+    setRemovedPending(false)
+    const currentUser = auth.currentUser
+    if (currentUser) {
+      await updateDoc(doc(firestore, 'profiles', currentUser.uid), { removedPending: false })
+    }
+  }
 
   const logOut = async () => {
     setAuthLoading(true)
@@ -122,7 +146,7 @@ export const AuthProvider = ({children}) => {
   }
     
   return (
-    <AuthContext.Provider value={{user, logOut, setUser, authLoading, authError}}>
+    <AuthContext.Provider value={{user, logOut, setUser, authLoading, authError, warnedPending, dismissWarning, removedPending, dismissRemoval}}>
       {children}
     </AuthContext.Provider>
   )

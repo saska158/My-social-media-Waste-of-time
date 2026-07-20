@@ -1,0 +1,125 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isChatParticipant(chatId) {
+      return isSignedIn() &&
+        request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+    }
+
+    // Only the 'likes' map is changing (used by FirestoreItemActions)
+    function onlyUpdatingLikes() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes']);
+    }
+
+    // Only the 'followers' array is changing (used by followToggle)
+    function onlyUpdatingFollowers() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['followers']);
+    }
+
+    // ── Posts (room collections) ──────────────────────────────────────────────
+    // Rooms: /watching/{postId}, /reading/{postId}, /listening/{postId}
+
+    match /watching/{postId}  { allow read, write: if roomRules(postId); }
+    match /reading/{postId}   { allow read, write: if roomRules(postId); }
+    match /listening/{postId} { allow read, write: if roomRules(postId); }
+
+    // Comments subcollection under each room
+    match /watching/{postId}/comments/{commentId}  { allow read, write: if commentRules(); }
+    match /reading/{postId}/comments/{commentId}   { allow read, write: if commentRules(); }
+    match /listening/{postId}/comments/{commentId} { allow read, write: if commentRules(); }
+
+    // Replies subcollection under comments
+    match /watching/{postId}/comments/{commentId}/replies/{replyId}  { allow read, write: if commentRules(); }
+    match /reading/{postId}/comments/{commentId}/replies/{replyId}   { allow read, write: if commentRules(); }
+    match /listening/{postId}/comments/{commentId}/replies/{replyId} { allow read, write: if commentRules(); }
+
+    function roomRules(postId) {
+      // Reads: public
+      // Create: signed in, and creatorUid must match the caller
+      // Update: own post, OR only updating the likes map (anyone signed in can like)
+      // Delete: own post only
+      return
+        request.method == 'get' || request.method == 'list' ||
+        (isSignedIn() && (
+          (request.method == 'create' && request.resource.data.creatorUid == request.auth.uid) ||
+          (request.method == 'update' && (resource.data.creatorUid == request.auth.uid || onlyUpdatingLikes())) ||
+          (request.method == 'delete' && resource.data.creatorUid == request.auth.uid)
+        ));
+    }
+
+    function commentRules() {
+      return
+        request.method == 'get' || request.method == 'list' ||
+        (isSignedIn() && (
+          (request.method == 'create' && request.resource.data.creatorUid == request.auth.uid) ||
+          (request.method == 'update' && (resource.data.creatorUid == request.auth.uid || onlyUpdatingLikes())) ||
+          (request.method == 'delete' && resource.data.creatorUid == request.auth.uid)
+        ));
+    }
+
+    // ── User profiles ─────────────────────────────────────────────────────────
+    // /profiles/{userId}
+
+    match /profiles/{userId} {
+      // Anyone can read profiles (needed for UsersList, UserCard, FirestoreItemHeader)
+      allow read: if true;
+
+      // Only the user themselves can create their own profile (on sign-up)
+      allow create: if isOwner(userId);
+
+      // Own profile: update any field
+      // Other profiles: only the 'followers' array (for follow/unfollow via transaction)
+      allow update: if isOwner(userId) || onlyUpdatingFollowers();
+
+      // Prevent client-side profile deletion
+      allow delete: if false;
+    }
+
+    // ── Chats ─────────────────────────────────────────────────────────────────
+    // /chats/{chatId}
+
+    match /chats/{chatId} {
+      // Only participants can read the chat document
+      allow read: if isSignedIn() &&
+        request.auth.uid in resource.data.participants;
+
+      // A signed-in user can create a chat they are part of
+      allow create: if isSignedIn() &&
+        request.auth.uid in request.resource.data.participants;
+
+      // Only participants can update (e.g. lastMessage snapshot)
+      allow update: if isChatParticipant(chatId);
+
+      allow delete: if false;
+
+      // ── Messages subcollection ─────────────────────────────────────────────
+      // /chats/{chatId}/messages/{messageId}
+
+      match /messages/{messageId} {
+        // Only participants can read messages
+        allow read: if isChatParticipant(chatId);
+
+        // Sender must be a participant and senderUid must match caller
+        allow create: if isChatParticipant(chatId) &&
+          request.resource.data.senderUid == request.auth.uid;
+
+        // Allow participants to update status field (e.g. 'seen')
+        allow update: if isChatParticipant(chatId);
+
+        allow delete: if false;
+      }
+    }
+  }
+}

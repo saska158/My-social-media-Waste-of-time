@@ -11,6 +11,7 @@ import useFirestoreBatch from "../hooks/useFirestoreBatch"
 import InfiniteScroll from "react-infinite-scroll-component"
 import ErrorMessage from "../components/errors/ErrorMessage"
 import { ClipLoader } from "react-spinners"
+import WarnedBanner from "../components/WarnedBanner"
 
 const Homepage = () => {
   // Context
@@ -65,6 +66,7 @@ const Homepage = () => {
         ) 
       }
       <div className="posts-container">
+        <WarnedBanner />
         <div 
           style={{
             width: '100%', 

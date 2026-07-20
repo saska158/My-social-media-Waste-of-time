@@ -942,6 +942,68 @@ textarea::placeholder {
 }
 
 
+/* WARNED BANNER */
+
+.warned-banner {
+  width: 100%;
+  padding: .9em 1em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  font-size: .9rem;
+}
+
+.warned-banner--warned {
+  background-color: #fff8e1;
+  border-left: 4px solid #f5a623;
+  color: #7a5c00;
+}
+
+.warned-banner--removed {
+  background-color: #fff0f0;
+  border-left: 4px solid #e53e3e;
+  color: #7a0000;
+}
+
+.warned-banner-dismiss {
+  padding: .4em 1em;
+  border-radius: 20px;
+  color: #fff;
+  font-weight: 700;
+  font-size: .85rem;
+  white-space: nowrap;
+}
+
+.warned-banner--warned .warned-banner-dismiss {
+  background-color: #f5a623;
+}
+
+.warned-banner--removed .warned-banner-dismiss {
+  background-color: #e53e3e;
+}
+
+/* REVIEW DOTS */
+
+.review-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.review-dots span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: rgb(0, 190, 95);
+  display: block;
+  animation: wave 1.5s infinite ease-in-out;
+}
+
+.review-dots span:nth-child(1) { animation-delay: 0s; }
+.review-dots span:nth-child(2) { animation-delay: 0.2s; }
+.review-dots span:nth-child(3) { animation-delay: 0.4s; }
+
 /*=======SKELETON=======*/
 
 .skeleton {

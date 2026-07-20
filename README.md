@@ -1,70 +1,114 @@
-# Getting Started with Create React App
+# Razgovori
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React social media app with an AI-powered content moderation system built on the Claude API.
 
-## Available Scripts
+## Architecture
 
-In the project directory, you can run:
+The project has two parts:
 
-### `npm start`
+- **Frontend** — React app (`/src`), connects to Firebase directly
+- **Moderation server** — Node.js/Express (`/server`), runs the AI moderation agent
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### How moderation works
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+When a user reports a post:
+1. The post text is scored by the **Perspective API** for toxicity
+2. A **router agent** (Claude Haiku) reads the report and selects the most appropriate moderation skill
+3. A **moderation agent** (Claude Sonnet) runs an agentic loop — fetching post content, comments, user history, and violation history from Firestore — and makes a decision
+4. The decision (dismiss / warn / remove / ban) is written back to Firestore in real time
 
-### `npm test`
+Available skills: `content-toxicity`, `harassment`, `misinformation`, `threats-and-violence`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Setup
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Prerequisites
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Node.js 18+
+- A Firebase project (Firestore enabled)
+- An Anthropic API key
+- A Google Perspective API key
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+### 1. Frontend
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Install dependencies and create the environment file:
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+npm install
+cp .env.example .env.local
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Fill in `env.local` with your Firebase project config (find it in Firebase Console → Project Settings → General → Your apps).
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Start the frontend:
 
-## Learn More
+```bash
+npm start
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Opens at `http://localhost:3000`.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+### 2. Moderation server
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+cd server
+npm install
+```
 
-### Analyzing the Bundle Size
+Create the environment file:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+cp .env.example .env
+```
 
-### Making a Progressive Web App
+Fill in `server/.env`:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```
+ANTHROPIC_API_KEY=your_anthropic_key_here
+PERSPECTIVE_API_KEY=your_perspective_key_here
+```
 
-### Advanced Configuration
+Add the Firebase service account JSON to `server/.env`:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+1. Go to Firebase Console → Project Settings → Service Accounts
+2. Click **Generate new private key** — download the JSON file
+3. Open the file, copy the entire contents, and paste it as a single line:
 
-### Deployment
+```
+FIREBASE_SERVICE_ACCOUNT={"type":"service_account","project_id":"..."}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Start the server:
 
-### `npm run build` fails to minify
+```bash
+npm run dev
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Runs at `http://localhost:4000`.
+
+---
+
+### 3. Run both together
+
+Open two terminal tabs:
+
+```bash
+# Tab 1 — frontend
+npm start
+
+# Tab 2 — server
+cd server && npm run dev
+```
+
+---
+
+## Notes
+
+- `server/.env` is git-ignored and must be created locally — it is never committed
+- If the Perspective API key is missing, scoring falls back to a neutral `0.5` and the agent still runs
+- If the Anthropic key is missing, report submissions will fail silently on the server
