@@ -34,18 +34,8 @@ Available skills: `content-toxicity`, `harassment`, `misinformation`, `threats-a
 
 ### 1. Frontend
 
-Install dependencies and create the environment file:
-
 ```bash
 npm install
-cp .env.example .env.local
-```
-
-Fill in `env.local` with your Firebase project config (find it in Firebase Console → Project Settings → General → Your apps).
-
-Start the frontend:
-
-```bash
 npm start
 ```
 
@@ -58,27 +48,24 @@ Opens at `http://localhost:3000`.
 ```bash
 cd server
 npm install
-```
-
-Create the environment file:
-
-```bash
 cp .env.example .env
 ```
 
-Fill in `server/.env`:
+Open `server/.env` and fill in the three values:
 
 ```
-ANTHROPIC_API_KEY=your_anthropic_key_here
-PERSPECTIVE_API_KEY=your_perspective_key_here
+ANTHROPIC_API_KEY=
+PERSPECTIVE_API_KEY=
+FIREBASE_SERVICE_ACCOUNT=
 ```
 
-Add the Firebase service account JSON to `server/.env`:
+| Key | Where to get it |
+|---|---|
+| `ANTHROPIC_API_KEY` | Ask the repo owner to share privately |
+| `PERSPECTIVE_API_KEY` | Ask the repo owner to share privately |
+| `FIREBASE_SERVICE_ACCOUNT` | Ask the repo owner to share privately |
 
-1. Go to Firebase Console → Project Settings → Service Accounts
-2. Click **Generate new private key** — download the JSON file
-3. Open the file, copy the entire contents, and paste it as a single line:
-
+`FIREBASE_SERVICE_ACCOUNT` is the entire Firebase service account JSON as a single-line string:
 ```
 FIREBASE_SERVICE_ACCOUNT={"type":"service_account","project_id":"..."}
 ```
