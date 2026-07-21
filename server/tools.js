@@ -102,15 +102,17 @@ const TOOL_DEFINITIONS = [
   },
   {
     name: 'ban_user',
-    description: 'Ban the user — reserved for severe or repeated violations after escalation through warn and remove',
+    description: 'Ban the user and remove the offending post — reserved for severe or repeated violations after escalation through warn and remove',
     input_schema: {
       type: 'object',
       properties: {
         report_id: { type: 'string' },
         uid: { type: 'string', description: 'UID of the user being banned' },
+        room: { type: 'string', description: 'Collection the post lives in (watching, reading, listening)' },
+        post_id: { type: 'string', description: 'ID of the post to remove' },
         reasoning: { type: 'string', description: 'Reasoning for the decision, referencing the violation history' }
       },
-      required: ['report_id', 'uid', 'reasoning']
+      required: ['report_id', 'uid', 'room', 'post_id', 'reasoning']
     }
   }
 ]
@@ -221,6 +223,7 @@ const executeTool = async (name, input) => {
     }
 
     case 'ban_user': {
+      await db.collection(input.room).doc(input.post_id).delete()
       await db.collection('profiles').doc(input.uid).set({ banned: true }, { merge: true })
       await db.collection('reports').doc(input.report_id).update({
         status: 'banned',
@@ -230,6 +233,8 @@ const executeTool = async (name, input) => {
       await recordViolation(input.uid, {
         type: 'ban',
         reportId: input.report_id,
+        postId: input.post_id,
+        room: input.room,
         reasoning: input.reasoning
       })
       return { success: true }

@@ -1,0 +1,33 @@
+{
+  "skill": "content-toxicity",
+  "description": "Hate speech, slurs, and explicitly toxic content targeting individuals or groups",
+  "scenarios": [
+    {
+      "id": "ct-1",
+      "description": "Clear ethnic slur — unambiguous violation, first offense",
+      "postText": "All [slur] should go back where they came from, nobody wants them here",
+      "perspectiveScore": 0.91,
+      "expectedSkill": "content-toxicity",
+      "expectedAction": "remove_post",
+      "expectedReasoning": "explicit hate speech targeting an ethnic group"
+    },
+    {
+      "id": "ct-2",
+      "description": "Sarcastic comment that reads as toxic out of context",
+      "postText": "Oh great, another genius takes the wheel. Truly a masterpiece of human thought.",
+      "perspectiveScore": 0.42,
+      "expectedSkill": "content-toxicity",
+      "expectedAction": "dismiss_report",
+      "expectedReasoning": "sarcasm with no specific target and no slur — borderline but not a clear violation"
+    },
+    {
+      "id": "ct-3",
+      "description": "Repeat offender with prior removals — same type of content escalates to ban",
+      "postText": "These [slur] are ruining everything as usual",
+      "perspectiveScore": 0.88,
+      "expectedSkill": "content-toxicity",
+      "expectedAction": "ban_user",
+      "expectedReasoning": "prior removal for hate speech + new clear violation triggers escalation"
+    }
+  ]
+}

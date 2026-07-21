@@ -11,6 +11,65 @@ const app = express()
 app.use(cors({ origin: 'http://localhost:3000' }))
 app.use(express.json())
 
+class ReportStream {
+  constructor() {
+    this.buffer = []
+    this.listeners = new Set()
+    this.closed = false
+  }
+
+  emit(event) {
+    this.buffer.push(event)
+    this.listeners.forEach(fn => fn(event))
+    if (event.type === 'done' || event.type === 'error') this.closed = true
+  }
+
+  subscribe(fn) {
+    this.buffer.forEach(fn)
+    if (!this.closed) this.listeners.add(fn)
+    return () => this.listeners.delete(fn)
+  }
+}
+
+const reportStreams = new Map()
+
+const processReport = async (reportId, reportRef, { postId, room, reportedBy, creatorUid, postText }) => {
+  const stream = reportStreams.get(reportId)
+  const emit = event => stream?.emit(event)
+
+  try {
+    const perspectiveScore = await analyzeToxicity(postText)
+    console.log(`[report] Perspective score: ${perspectiveScore}`)
+    emit({ type: 'perspective', score: perspectiveScore })
+    await reportRef.update({ perspectiveScore })
+
+    const highToxicityHint = perspectiveScore >= 0.9
+    const lowToxicityHint = perspectiveScore < 0.2
+
+    if (highToxicityHint) console.log(`[report] Score ${perspectiveScore} >= 0.9 — routing with high-toxicity hint`)
+    if (lowToxicityHint) console.log(`[report] Score ${perspectiveScore} < 0.2 — routing with low-toxicity hint`)
+
+    const skillName = await runRouter({ postText, perspectiveScore, room, emit })
+    await reportRef.update({ skillName })
+
+    const decision = await runModerationAgent({
+      reportId, postId, room, reportedBy, creatorUid,
+      perspectiveScore, postText, skillName, highToxicityHint, lowToxicityHint, emit
+    })
+
+    console.log(`[report] Decision for ${reportId}:`, decision)
+    emit({ type: 'done', decision })
+
+  } catch (error) {
+    console.error('[report] Error processing report:', error)
+    emit({ type: 'error', message: error.message })
+    emit({ type: 'done', decision: null })
+    await reportRef.update({ status: 'error' }).catch(() => {})
+  } finally {
+    setTimeout(() => reportStreams.delete(reportId), 60_000)
+  }
+}
+
 app.post('/report', async (req, res) => {
   const { postId, room, reportedBy, creatorUid, postText } = req.body
 
@@ -20,65 +79,47 @@ app.post('/report', async (req, res) => {
 
   try {
     const reportRef = await db.collection('reports').add({
-      postId,
-      room,
-      reportedBy,
-      creatorUid,
+      postId, room, reportedBy, creatorUid,
       status: 'pending',
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     })
-
     const reportId = reportRef.id
     console.log(`[report] New report: ${reportId} for post ${postId}`)
 
-    // Step 1: Perspective API triage
-    const perspectiveScore = await analyzeToxicity(postText)
-    console.log(`[report] Perspective score: ${perspectiveScore}`)
+    const stream = new ReportStream()
+    reportStreams.set(reportId, stream)
 
-    await reportRef.update({ perspectiveScore })
+    processReport(reportId, reportRef, { postId, room, reportedBy, creatorUid, postText })
 
-    if (perspectiveScore < 0.05) {
-      await reportRef.update({
-        status: 'dismissed',
-        reasoning: 'Perspective score below 0.05 — content is clearly not toxic or harmful.',
-        resolvedAt: admin.firestore.FieldValue.serverTimestamp()
-      })
-      console.log(`[report] Auto-dismissed: ${reportId}`)
-      return res.json({ reportId, action: 'auto_dismissed', perspectiveScore })
-    }
-
-    // Step 2: Route to the appropriate skill
-    // Fast-track high-toxicity content (score >= 0.9) directly to content-toxicity — no need to route
-    // Scores between 0.05–0.9 always reach the agent — misinformation, spam, and doxxing score low but are still violations
-    let skillName
-    if (perspectiveScore >= 0.9) {
-      skillName = 'content-toxicity'
-      console.log(`[report] Score ${perspectiveScore} >= 0.9 — fast-tracking to content-toxicity`)
-      await reportRef.update({ skillName, fastTracked: true })
-    } else {
-      skillName = await runRouter({ postText, perspectiveScore, room })
-      await reportRef.update({ skillName })
-    }
-
-    // Step 3: Run the moderation agent with the selected skill
-    const decision = await runModerationAgent({
-      reportId,
-      postId,
-      room,
-      reportedBy,
-      creatorUid,
-      perspectiveScore,
-      postText,
-      skillName
-    })
-
-    console.log(`[report] Decision for ${reportId}:`, decision)
-    res.json({ reportId, skillName, ...decision, perspectiveScore })
-
+    res.json({ reportId })
   } catch (error) {
-    console.error('[report] Error processing report:', error)
-    res.status(500).json({ error: 'Failed to process report' })
+    console.error('[report] Error creating report:', error)
+    res.status(500).json({ error: 'Failed to create report' })
   }
+})
+
+app.get('/report/:reportId/stream', (req, res) => {
+  const stream = reportStreams.get(req.params.reportId)
+  if (!stream) return res.status(404).json({ error: 'Report stream not found' })
+
+  res.setHeader('Content-Type', 'text/event-stream')
+  res.setHeader('Cache-Control', 'no-cache')
+  res.setHeader('Connection', 'keep-alive')
+  res.flushHeaders()
+
+  const unsubscribe = stream.subscribe(event => {
+    try {
+      res.write(`data: ${JSON.stringify(event)}\n\n`)
+      if (event.type === 'done') {
+        unsubscribe()
+        res.end()
+      }
+    } catch {
+      unsubscribe()
+    }
+  })
+
+  req.on('close', unsubscribe)
 })
 
 app.get('/health', (_, res) => res.json({ status: 'ok' }))

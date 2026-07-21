@@ -1,0 +1,33 @@
+{
+  "skill": "harassment",
+  "description": "Targeted attacks on specific users, repeated callouts, coordinated pile-ons",
+  "scenarios": [
+    {
+      "id": "h-1",
+      "description": "Repeated targeting of the same user across multiple posts",
+      "postText": "Everyone stay away from @user123 — they're a known liar and a fraud and have been scamming people for years",
+      "perspectiveScore": 0.65,
+      "expectedSkill": "harassment",
+      "expectedAction": "remove_post",
+      "expectedReasoning": "pattern of targeting the same user combined with public callout"
+    },
+    {
+      "id": "h-2",
+      "description": "Mutual heated exchange — both parties engaged, not one-sided",
+      "postText": "You have no idea what you're talking about, stop commenting on things you don't understand",
+      "perspectiveScore": 0.38,
+      "expectedSkill": "harassment",
+      "expectedAction": "dismiss_report",
+      "expectedReasoning": "heated but mutual exchange, no specific targeting pattern, single comment"
+    },
+    {
+      "id": "h-3",
+      "description": "Pile-on in comments coordinated against a specific user",
+      "postText": "Can we all agree @userXYZ needs to be removed from this community? Who else has had problems with them?",
+      "perspectiveScore": 0.55,
+      "expectedSkill": "harassment",
+      "expectedAction": "remove_post",
+      "expectedReasoning": "explicit call for coordinated action against a named user"
+    }
+  ]
+}

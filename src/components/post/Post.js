@@ -2,6 +2,7 @@ import { useState, memo, useMemo, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
 import { firestore, collection, doc } from "../../api/firebase"
 import { useAuth } from "../../contexts/authContext"
+import { useModerationTrace } from "../../contexts/moderationContext"
 import FirestoreItemHeader from "./FirestoreItemHeader"
 import FirestoreItemContent from "./FirestoreItemContent"
 import FirestoreItemActions from "./FirestoreItemActions"
@@ -22,16 +23,15 @@ const RESULT_MESSAGES = {
 const Post = ({post, room, style = {}}) => {
   const { id: postId, creatorUid, content, timestamp } = post
   const { user } = useAuth()
+  const { openTrace, pushEvent, finishLoading } = useModerationTrace()
 
   const [showComments, setShowComments] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
   const [showJoinPopup, setShowJoinPopup] = useState(false)
-  const [reportState, setReportState] = useState('idle') // idle | confirming | loading | done
+  const [reportState, setReportState] = useState('idle')
   const [reportResult, setReportResult] = useState(null)
   const menuRef = useRef(null)
-
-  const postRef = useMemo(() => doc(firestore, room, postId), [room, postId])
-  const commentsRef = useMemo(() => collection(firestore, room, postId, 'comments'), [room, postId])
+  const esRef = useRef(null)
 
   useEffect(() => {
     if (!showMenu) return
@@ -43,6 +43,13 @@ const Post = ({post, room, style = {}}) => {
     document.addEventListener('click', handleClickOutside)
     return () => document.removeEventListener('click', handleClickOutside)
   }, [showMenu])
+
+  useEffect(() => {
+    return () => esRef.current?.close()
+  }, [])
+
+  const postRef = useMemo(() => doc(firestore, room, postId), [room, postId])
+  const commentsRef = useMemo(() => collection(firestore, room, postId, 'comments'), [room, postId])
 
   const handleReportClick = (e) => {
     e.stopPropagation()
@@ -57,28 +64,46 @@ const Post = ({post, room, style = {}}) => {
 
   const submitReport = async () => {
     setReportState('loading')
+    openTrace()
+
     try {
       const res = await fetch(`${SERVER_URL}/report`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          postId,
-          room,
-          reportedBy: user.uid,
-          creatorUid,
-          postText: content.text
-        })
+        body: JSON.stringify({ postId, room, reportedBy: user.uid, creatorUid, postText: content.text })
       })
       const data = await res.json()
-      setReportResult(data)
+      if (!data.reportId) throw new Error('No reportId returned')
+
+      const es = new EventSource(`${SERVER_URL}/report/${data.reportId}/stream`)
+      esRef.current = es
+
+      es.onmessage = (e) => {
+        const event = JSON.parse(e.data)
+
+        if (event.type !== 'done') {
+          pushEvent(event)
+          return
+        }
+
+        es.close()
+        esRef.current = null
+        finishLoading()
+        setReportState('done')
+        setReportResult(event.decision || null)
+      }
+
+      es.onerror = () => {
+        es.close()
+        esRef.current = null
+        finishLoading()
+        setReportState('done')
+      }
+
     } catch {
-      setReportResult(null)
+      finishLoading()
+      setReportState('done')
     }
-    setReportState('done')
-    setTimeout(() => {
-      setReportState('idle')
-      setReportResult(null)
-    }, 5000)
   }
 
   const isOwnPost = user?.uid === creatorUid
@@ -101,11 +126,10 @@ const Post = ({post, room, style = {}}) => {
         {showThreeDots && (
           <div ref={menuRef} style={{position: 'relative', flexShrink: 0}}>
 
-            {/* Status label: loading or done */}
             {(reportState === 'loading' || reportState === 'done') && (
               <span style={{
                 fontSize: '0.75rem',
-                color: reportState === 'done' ? 'var(--dark-green)' : 'var(--dark-green)',
+                color: 'var(--dark-green)',
                 fontStyle: 'italic',
                 whiteSpace: 'nowrap',
                 padding: '4px 6px',
@@ -124,7 +148,6 @@ const Post = ({post, room, style = {}}) => {
               </span>
             )}
 
-            {/* Three dots button */}
             {(reportState === 'idle' || reportState === 'confirming') && (
               <button
                 onClick={(e) => {
@@ -151,7 +174,6 @@ const Post = ({post, room, style = {}}) => {
               </button>
             )}
 
-            {/* Dropdown: report button */}
             {showMenu && reportState === 'idle' && (
               <div style={{
                 position: 'absolute',
@@ -181,7 +203,6 @@ const Post = ({post, room, style = {}}) => {
               </div>
             )}
 
-            {/* Confirmation panel */}
             {reportState === 'confirming' && (
               <div style={{
                 position: 'absolute',

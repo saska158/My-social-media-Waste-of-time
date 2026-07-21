@@ -3,10 +3,9 @@
 A Node.js server that runs an agentic content moderation loop for the Razgovori social media app. When a user reports a post, the server:
 
 1. Scores the post with the **Perspective API** for toxicity
-2. Auto-dismisses if score < 0.05 (clearly clean content)
-3. Fast-tracks to `content-toxicity` if score ≥ 0.90 (severe toxicity)
-4. Otherwise routes to the best-matching **skill** via Claude Haiku
-5. Runs a **Claude Sonnet moderation agent** that reads the post, comments, user history, and violation history from Firestore and makes a decision: dismiss, warn, remove post, or ban user
+2. Passes a hint to the agent (`lowToxicityHint` if score < 0.2, `highToxicityHint` if score ≥ 0.9) — the agent always runs
+3. Routes to the best-matching **skill** via Claude Haiku (with retry if no skill is selected)
+4. Runs a **Claude Sonnet moderation agent** that autonomously gathers context from Firestore and makes a decision: dismiss, warn, remove post, or ban user
 
 ---
 
@@ -123,6 +122,58 @@ Possible `action` values: `auto_dismissed`, `dismiss_report`, `warn_user`, `remo
 ### `GET /health`
 
 Returns `{ "status": "ok" }`. Use this to verify the server is running.
+
+---
+
+## Agentic loop
+
+This server is designed to demonstrate a true agentic loop — not a linear fetch-process-complete pipeline.
+
+### What makes it agentic
+
+**Non-linear tool selection.** The agent decides which tools to call based on what it finds. A clear high-severity post might only call `get_user_violations` then decide. An ambiguous borderline case might call all five context tools in a different order. The sequence is never predetermined.
+
+**Reactive reasoning.** Each tool result is added back to the conversation. The agent's next step is informed by what it just learned — not by a fixed script. Reasoning events emitted after tools have been called are flagged `reactive: true` in the SSE stream.
+
+**Self-correcting verification step.** When the agent makes a decision, the system sends it a verification prompt: *"Have you reviewed violation history? Does the Perspective score align with what you found? Confirm your decision or revise it."* The agent can call a different decision tool and change its mind. This produces two possible paths:
+- `verification_confirmed` — decision stands after reflection
+- `verification_revised` — agent changed its decision after seeing its own reasoning challenged
+
+**Autonomous routing with retry.** The router (Claude Haiku) reads available skill files from the filesystem and classifies the report. If it doesn't call `select_skill` on the first attempt, the router sends a follow-up message and retries before falling back.
+
+**Hints, not gates.** Low and high toxicity scores are passed as hints to the agent — they inform but do not override. The agent can dismiss a high-score post if it finds strong mitigating context, and it can remove a low-score post if community reaction and violation history warrant it.
+
+### SSE event types
+
+| Event | What it means |
+|---|---|
+| `perspective` | Perspective API score returned |
+| `router_reasoning` | Router's text reasoning before skill selection |
+| `routing` | Skill selected (or fallback) |
+| `iteration` | New agent loop iteration started |
+| `reasoning` | Agent's text reasoning; `reactive: true` means it follows tool results |
+| `tool_call` | Agent called a tool |
+| `tool_result` | Tool returned data |
+| `verification` | Agent made a decision — awaiting self-check |
+| `verification_confirmed` | Agent confirmed its decision after reflection |
+| `verification_revised` | Agent changed its decision during verification |
+| `decision` | Final action taken |
+| `skipped_tools` | Tools the agent chose not to call |
+| `done` | Pipeline complete |
+
+### Test scenarios
+
+The `scenarios/` directory contains machine-readable test inputs covering all four skills:
+
+```
+scenarios/
+  content-toxicity.json    — slurs, sarcasm, repeat offenders
+  harassment.json          — targeted attacks, mutual arguments, pile-ons
+  misinformation.json      — health claims, contested opinion, repeat posters
+  threats-and-violence.json — specific threats, venting hyperbole, glorification
+```
+
+Each scenario has `postText`, `perspectiveScore`, `expectedSkill`, and `expectedAction` — concrete inputs that yield traceable, verifiable outputs.
 
 ---
 

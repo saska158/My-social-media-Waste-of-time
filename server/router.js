@@ -4,9 +4,9 @@ const Anthropic = require('@anthropic-ai/sdk')
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
-const ROUTER_SYSTEM_PROMPT = `You are a moderation routing agent. Your only job is to classify an incoming report and select the most appropriate skill to handle it.
+const ROUTER_SYSTEM_PROMPT = `You are a moderation routing agent. Your job is to classify an incoming report and select the most appropriate skill to handle it.
 
-Analyze the post text, Perspective score, and room context. Then call select_skill with the best matching skill ID. Be decisive — pick exactly one.`
+Think through the nature of the violation first — what kind of harm is this? Is it aimed at a person, a group, or based on false information? Then call select_skill with the best matching skill ID.`
 
 const getAvailableSkills = () => {
   const skillsDir = path.join(__dirname, 'skills')
@@ -34,7 +34,27 @@ const getAvailableSkills = () => {
   return skills
 }
 
-const runRouter = async ({ postText, perspectiveScore, room }) => {
+const SELECT_SKILL_TOOL = (skills) => ({
+  name: 'select_skill',
+  description: 'Select the appropriate moderation skill for this report',
+  input_schema: {
+    type: 'object',
+    properties: {
+      skill_id: {
+        type: 'string',
+        enum: skills.map(s => s.id),
+        description: 'The ID of the skill to use'
+      },
+      reasoning: {
+        type: 'string',
+        description: 'One sentence explaining why this skill was selected'
+      }
+    },
+    required: ['skill_id', 'reasoning']
+  }
+})
+
+const runRouter = async ({ postText, perspectiveScore, room, emit = () => {} }) => {
   const skills = getAvailableSkills()
 
   if (!skills.length) {
@@ -43,37 +63,12 @@ const runRouter = async ({ postText, perspectiveScore, room }) => {
   }
 
   const skillList = skills.map(s => `- ${s.id}: ${s.description}`).join('\n')
+  const tools = [SELECT_SKILL_TOOL(skills)]
 
-  const response = await anthropic.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 256,
-    system: ROUTER_SYSTEM_PROMPT,
-    tool_choice: { type: 'tool', name: 'select_skill' },
-    tools: [
-      {
-        name: 'select_skill',
-        description: 'Select the appropriate moderation skill for this report',
-        input_schema: {
-          type: 'object',
-          properties: {
-            skill_id: {
-              type: 'string',
-              enum: skills.map(s => s.id),
-              description: 'The ID of the skill to use'
-            },
-            reasoning: {
-              type: 'string',
-              description: 'One sentence explaining why this skill was selected'
-            }
-          },
-          required: ['skill_id', 'reasoning']
-        }
-      }
-    ],
-    messages: [
-      {
-        role: 'user',
-        content: `Incoming report:
+  const messages = [
+    {
+      role: 'user',
+      content: `Incoming report:
 Room: ${room}
 Perspective toxicity score: ${perspectiveScore}
 Post text: "${postText}"
@@ -82,18 +77,45 @@ Available skills:
 ${skillList}
 
 Select the most appropriate skill.`
-      }
-    ]
-  })
+    }
+  ]
 
-  const toolUse = response.content.find(b => b.type === 'tool_use')
-  if (!toolUse || !toolUse.input?.skill_id) {
-    console.warn('[router] Failed to select a skill, falling back to content-toxicity')
-    return 'content-toxicity'
+  const MAX_RETRIES = 2
+
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    const response = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 512,
+      system: ROUTER_SYSTEM_PROMPT,
+      tools,
+      messages
+    })
+
+    for (const block of response.content) {
+      if (block.type === 'text' && block.text.trim()) {
+        console.log(`[router] Reasoning (attempt ${attempt}): ${block.text.trim()}`)
+        emit({ type: 'router_reasoning', text: block.text.trim() })
+      }
+    }
+
+    const toolUse = response.content.find(b => b.type === 'tool_use')
+    if (toolUse?.input?.skill_id) {
+      console.log(`[router] Selected skill: ${toolUse.input.skill_id} — ${toolUse.input.reasoning}`)
+      emit({ type: 'routing', skill: toolUse.input.skill_id, reasoning: toolUse.input.reasoning })
+      return toolUse.input.skill_id
+    }
+
+    console.warn(`[router] Attempt ${attempt} did not call select_skill — retrying`)
+    messages.push({ role: 'assistant', content: response.content })
+    messages.push({
+      role: 'user',
+      content: 'You must select a skill using the select_skill tool. Do not respond with text only.'
+    })
   }
 
-  console.log(`[router] Selected skill: ${toolUse.input.skill_id} — ${toolUse.input.reasoning}`)
-  return toolUse.input.skill_id
+  console.warn('[router] Failed to select a skill after retries, falling back to content-toxicity')
+  emit({ type: 'routing', skill: 'content-toxicity', reasoning: 'Fallback — no skill selected after retries' })
+  return 'content-toxicity'
 }
 
 module.exports = { runRouter }

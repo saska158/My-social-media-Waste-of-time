@@ -1,0 +1,33 @@
+{
+  "skill": "threats-and-violence",
+  "description": "Explicit threats of physical harm, calls for violence, content glorifying real-world violence",
+  "scenarios": [
+    {
+      "id": "tv-1",
+      "description": "Specific credible threat naming a target",
+      "postText": "I know where @user456 lives and they're going to regret what they posted. I'll be waiting.",
+      "perspectiveScore": 0.85,
+      "expectedSkill": "threats-and-violence",
+      "expectedAction": "remove_post",
+      "expectedReasoning": "specific named target with implied physical threat and knowledge of location — credible"
+    },
+    {
+      "id": "tv-2",
+      "description": "Frustrated venting with no specific target",
+      "postText": "I swear I could strangle whoever designed this app interface, this is so infuriating",
+      "perspectiveScore": 0.61,
+      "expectedSkill": "threats-and-violence",
+      "expectedAction": "dismiss_report",
+      "expectedReasoning": "clear hyperbole, no specific target, common frustrated expression"
+    },
+    {
+      "id": "tv-3",
+      "description": "Glorification of violence against an identifiable group",
+      "postText": "What happened to [group] in [historical event] was actually based. Some people just deserve it.",
+      "perspectiveScore": 0.78,
+      "expectedSkill": "threats-and-violence",
+      "expectedAction": "remove_post",
+      "expectedReasoning": "glorification of real-world violence against an identifiable group"
+    }
+  ]
+}

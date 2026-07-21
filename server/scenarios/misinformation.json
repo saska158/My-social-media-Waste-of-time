@@ -1,0 +1,33 @@
+{
+  "skill": "misinformation",
+  "description": "Demonstrably false claims, health misinformation, and deliberately misleading content",
+  "scenarios": [
+    {
+      "id": "m-1",
+      "description": "Health misinformation presented as fact — first offense",
+      "postText": "Doctors won't tell you this but drinking bleach diluted in water cures most infections. It's been suppressed for decades.",
+      "perspectiveScore": 0.22,
+      "expectedSkill": "misinformation",
+      "expectedAction": "remove_post",
+      "expectedReasoning": "demonstrably dangerous health misinformation with potential to cause physical harm"
+    },
+    {
+      "id": "m-2",
+      "description": "Contested political claim framed as opinion",
+      "postText": "In my opinion, the economic policies from last year have made things worse for working families — the numbers don't lie.",
+      "perspectiveScore": 0.08,
+      "expectedSkill": "misinformation",
+      "expectedAction": "dismiss_report",
+      "expectedReasoning": "opinion or contested interpretation, not a demonstrably false factual claim"
+    },
+    {
+      "id": "m-3",
+      "description": "Repeat misinformation poster — pattern of false claims after prior warning",
+      "postText": "Studies show 5G towers cause cancer — this has been confirmed by independent researchers. Share before it gets deleted.",
+      "perspectiveScore": 0.18,
+      "expectedSkill": "misinformation",
+      "expectedAction": "remove_post",
+      "expectedReasoning": "false claim presented as fact with prior warning for similar content"
+    }
+  ]
+}

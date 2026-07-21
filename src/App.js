@@ -1,5 +1,6 @@
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { AnimatePresence } from 'framer-motion'
 import NavigationLayout from './layouts/NavigationLayout'
 import RoomsLayout from './layouts/RoomsLayout'
 import Homepage from './pages/Homepage'
@@ -10,12 +11,26 @@ import MyChats from './pages/MyChats'
 import UserProfile from './pages/UserProfile'
 import AuthRequired from './components/AuthRequired'
 import { AuthProvider } from './contexts/authContext'
+import { ModerationProvider, useModerationTrace } from './contexts/moderationContext'
+import ModerationTraceModal from './components/post/ModerationTraceModal'
 import { ErrorBoundary } from 'react-error-boundary'
 import ErrorFallback from './components/errors/ErrorFallback'
 
+const GlobalModerationTrace = () => {
+  const { isOpen, isLoading, events, closeTrace } = useModerationTrace()
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <ModerationTraceModal events={events} isLoading={isLoading} onClose={closeTrace} />
+      )}
+    </AnimatePresence>
+  )
+}
+
 const App = () => {
   return (
-      <AuthProvider>
+    <AuthProvider>
+      <ModerationProvider>
         <BrowserRouter>
           <ErrorBoundary
             FallbackComponent={ErrorFallback}
@@ -33,12 +48,14 @@ const App = () => {
                 <Route path='user/:profileUid' element={<UserProfile />} />
               </Route>
               <Route path='sign-in' element={<SignIn />} />
-              <Route path='sign-up' element={<SignUp />} /> 
+              <Route path='sign-up' element={<SignUp />} />
               <Route path='email-verification' element={<EmailVerification />} />
             </Routes>
           </ErrorBoundary>
+          <GlobalModerationTrace />
         </BrowserRouter>
-      </AuthProvider>
+      </ModerationProvider>
+    </AuthProvider>
   )
 }
 
