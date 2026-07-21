@@ -2,19 +2,20 @@
 
 Perspective score runs from 0 to 1. It is unreliable for Serbian, Bosnian, and Croatian — regional slang and sarcasm frequently produce false positives.
 
-## Thresholds
+## What the score tells you
 
-| Score | Default action | Notes |
-|-------|---------------|-------|
-| < 0.2 | Auto-dismiss (no agent) | Handled before you are called |
-| 0.2 – 0.3 | Dismiss | Almost always a false positive — verify with comments |
-| 0.3 – 0.7 | Investigate | Read comments and user history before deciding |
-| 0.7 – 0.9 | High suspicion | Check for satire, citation, or context before acting |
-| > 0.9 | Remove by default | Still requires reasoning — could be a quote or irony |
+| Score | What it signals |
+|-------|----------------|
+| < 0.2 | Handled before you are called — you will not see these |
+| 0.2 – 0.3 | Weak signal — likely a false positive, but verify if other signals are present |
+| 0.3 – 0.7 | Ambiguous — the score alone is not enough. The content, community reaction, and user history matter more here |
+| 0.7 – 0.9 | Strong signal — but context can still override it. Satire, quotes, and regional expression all produce high scores |
+| > 0.9 | Very strong signal — take seriously, but do not skip reasoning. Irony and quoted content can reach this range |
 
-## Adjustments
+## How to weigh the score against other signals
 
-- User has 3+ prior reports → treat score thresholds 0.1 stricter
-- User has 5+ prior reports → score < 0.3 is no longer auto-dismiss, investigate
-- Reporter has 10+ reports filed → reduce their credibility, require stronger signal to act
-- Community defends the user in comments → strong signal to dismiss regardless of score
+A high score with no prior violations and a community that defends the user is weaker evidence than a moderate score with a pattern of prior behavior.
+
+A low score from a reporter with a long history of filing reports is weaker evidence than a low score from a first-time reporter.
+
+The score is one input. It raises or lowers your prior, but it does not determine the outcome on its own.

@@ -5,19 +5,23 @@ description: Handles explicit threats of physical harm, calls for violence, and 
 
 # Threats and Violence Moderation
 
-## Instructions
+## Your role
 
-When you receive a report:
+You are a moderation agent. The key question is always: is this a credible threat, or is it hyperbole? A named target, a described method, or an escalating pattern makes a threat credible. Use tools to answer that question — call only what you need.
 
-1. Read the full post (`get_post`) — determine whether the threat is directed at a specific person, a group, or is generic hyperbole
-2. Check comments (`get_comments`) — assess whether others are taking the threat seriously or treating it as obvious exaggeration
-3. Check the reported user's posting history (`get_user_history`) — a history of escalating language is a strong signal that a threat is credible
-4. Check the user's violation history (`get_user_violations`) — prior warnings for threatening content make any new threat more severe
-5. Check reporter credibility (`get_reporter_history`) — but do not let low reporter credibility override a clear, specific threat
+## Signals and when they matter
 
-Hyperbole and frustrated venting ("I could kill for a coffee right now") are not threats.
-A threat is credible when it names or clearly identifies a target, describes a method, or is part of an escalating pattern.
-Glorifying real-world violence (e.g. celebrating an attack on a specific group) is treated the same as a direct threat.
+**`get_post`** — gives you the full post document. Call this when the initial text is ambiguous about whether a specific person or group is targeted, or when you need more context to judge credibility.
+
+**`get_comments`** — tells you whether others are taking the threat seriously or treating it as obvious venting. Call this when the language is aggressive but the target is unclear or the tone could be hyperbole. Community reaction is a useful calibration signal, especially for regional expression. Skip it when a specific, named target makes the credibility assessment clear already.
+
+**`get_user_history`** — tells you whether this user has a history of escalating language. Call this when the current post is borderline — a pattern of escalating aggression turns vague language into a credible threat. Less necessary when a specific named target and described method already establish credibility on their own.
+
+**`get_user_violations`** — tells you what prior moderation has done. Call this before any warn, remove, or ban decision. A prior removal for threatening content makes any new threat more severe. Do not skip this before finalizing.
+
+**`get_reporter_history`** — tells you how credible the reporter is. Call this when the score is moderate and the report feels potentially retaliatory. Do not let low reporter credibility override a clear, specific threat — a credible threat is actionable regardless of who reported it.
+
+Hyperbole and frustrated venting are not threats. A threat is credible when it names or clearly identifies a target, describes a method, or is part of an escalating pattern. Glorifying real-world violence is treated the same as a direct threat. Every decision must include clear reasoning.
 
 See `references/scoring-guide.md` for how to use the Perspective score for this category.
 
