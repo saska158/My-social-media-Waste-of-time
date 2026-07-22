@@ -163,7 +163,7 @@ const NavigationLayout = () => {
           </p>
           <p>
             <Link 
-              to="https://www.justsittingdoingnothing.com/"
+              to="https://justsittingdoingnothing.netlify.app/"
               target="_blank" 
               style={{textDecoration: 'underline'}}
             >
