@@ -23,7 +23,7 @@ const RESULT_MESSAGES = {
 const Post = ({post, room, style = {}}) => {
   const { id: postId, creatorUid, content, timestamp } = post
   const { user } = useAuth()
-  const { openTrace, pushEvent, finishLoading } = useModerationTrace()
+  const { openTrace, startStream } = useModerationTrace()
 
   const [showComments, setShowComments] = useState(false)
   const [showMenu, setShowMenu] = useState(false)
@@ -31,7 +31,6 @@ const Post = ({post, room, style = {}}) => {
   const [reportState, setReportState] = useState('idle')
   const [reportResult, setReportResult] = useState(null)
   const menuRef = useRef(null)
-  const esRef = useRef(null)
 
   useEffect(() => {
     if (!showMenu) return
@@ -43,10 +42,6 @@ const Post = ({post, room, style = {}}) => {
     document.addEventListener('click', handleClickOutside)
     return () => document.removeEventListener('click', handleClickOutside)
   }, [showMenu])
-
-  useEffect(() => {
-    return () => esRef.current?.close()
-  }, [])
 
   const postRef = useMemo(() => doc(firestore, room, postId), [room, postId])
   const commentsRef = useMemo(() => collection(firestore, room, postId, 'comments'), [room, postId])
@@ -75,33 +70,12 @@ const Post = ({post, room, style = {}}) => {
       const data = await res.json()
       if (!data.reportId) throw new Error('No reportId returned')
 
-      const es = new EventSource(`${SERVER_URL}/report/${data.reportId}/stream`)
-      esRef.current = es
-
-      es.onmessage = (e) => {
-        const event = JSON.parse(e.data)
-
-        if (event.type !== 'done') {
-          pushEvent(event)
-          return
-        }
-
-        es.close()
-        esRef.current = null
-        finishLoading()
+      startStream(data.reportId, (decision) => {
         setReportState('done')
-        setReportResult(event.decision || null)
-      }
-
-      es.onerror = () => {
-        es.close()
-        esRef.current = null
-        finishLoading()
-        setReportState('done')
-      }
+        setReportResult(decision)
+      })
 
     } catch {
-      finishLoading()
       setReportState('done')
     }
   }

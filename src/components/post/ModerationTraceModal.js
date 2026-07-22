@@ -40,7 +40,7 @@ const label = (text, color = '#999') => (
   </span>
 )
 
-const EventRow = ({ event }) => {
+const EventRow = ({ event, isActiveIteration }) => {
   const base = { padding: '5px 0', display: 'flex', flexDirection: 'column', gap: '2px' }
 
   switch (event.type) {
@@ -68,16 +68,37 @@ const EventRow = ({ event }) => {
 
     case 'routing':
       return (
-        <div style={{ ...base, flexDirection: 'row', alignItems: 'center', gap: '8px' }}>
-          <span style={{ color: '#4b896f', fontWeight: 700, fontSize: '0.8rem' }}>→</span>
-          <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#4b896f', fontFamily: 'monospace' }}>{event.skill}</span>
+        <div style={base}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ color: '#4b896f', fontWeight: 700, fontSize: '0.8rem' }}>→</span>
+            <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#4b896f', fontFamily: 'monospace' }}>{event.skill}</span>
+          </div>
+          {event.reasoning && (
+            <p style={{ margin: '2px 0 0', fontSize: '0.78rem', color: '#777', fontStyle: 'italic', lineHeight: 1.5 }}>
+              {event.reasoning}
+            </p>
+          )}
         </div>
       )
 
     case 'iteration':
       return (
         <div style={{ ...base, borderTop: '1px solid #eaf4f0', paddingTop: '10px', marginTop: '4px' }}>
-          {label(`Iteration ${event.number}`, '#4b896f')}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {label(`Iteration ${event.number}`, '#4b896f')}
+            {isActiveIteration && (
+              <span style={{ display: 'flex', gap: '3px', alignItems: 'center' }}>
+                {[0, 1, 2].map(i => (
+                  <motion.span
+                    key={i}
+                    style={{ width: '3px', height: '3px', borderRadius: '50%', background: '#4b896f', display: 'block' }}
+                    animate={{ opacity: [0.3, 1, 0.3] }}
+                    transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
+                  />
+                ))}
+              </span>
+            )}
+          </div>
         </div>
       )
 
@@ -266,16 +287,21 @@ const ModerationTraceModal = ({ events, isLoading, onClose }) => {
             <p style={{ fontSize: '0.8rem', color: '#aaa', fontStyle: 'italic' }}>Waiting for agent…</p>
           )}
           <AnimatePresence initial={false}>
-            {events.map((event, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.18 }}
-              >
-                <EventRow event={event} />
-              </motion.div>
-            ))}
+            {(() => {
+              return events.map((event, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.18 }}
+                >
+                  <EventRow
+                    event={event}
+                    isActiveIteration={isLoading && event.type === 'iteration' && i === events.length - 1}
+                  />
+                </motion.div>
+              ))
+            })()}
           </AnimatePresence>
           <div ref={bottomRef} />
         </div>

@@ -1,5 +1,7 @@
 import { createContext, useContext, useRef, useState } from 'react'
 
+const SERVER_URL = 'http://localhost:4000'
+
 const ModerationContext = createContext(null)
 
 export const ModerationProvider = ({ children }) => {
@@ -16,9 +18,29 @@ export const ModerationProvider = ({ children }) => {
     setIsOpen(true)
   }
 
-  const pushEvent = (event) => setEvents(prev => [...prev, event])
+  const startStream = (reportId, onDone) => {
+    const es = new EventSource(`${SERVER_URL}/report/${reportId}/stream`)
+    esRef.current = es
 
-  const finishLoading = () => setIsLoading(false)
+    es.onmessage = (e) => {
+      const event = JSON.parse(e.data)
+      if (event.type !== 'done') {
+        setEvents(prev => [...prev, event])
+        return
+      }
+      es.close()
+      esRef.current = null
+      setIsLoading(false)
+      onDone?.(event.decision || null)
+    }
+
+    es.onerror = () => {
+      es.close()
+      esRef.current = null
+      setIsLoading(false)
+      onDone?.(null)
+    }
+  }
 
   const closeTrace = () => {
     esRef.current?.close()
@@ -29,7 +51,7 @@ export const ModerationProvider = ({ children }) => {
   }
 
   return (
-    <ModerationContext.Provider value={{ isOpen, isLoading, events, esRef, openTrace, pushEvent, finishLoading, closeTrace }}>
+    <ModerationContext.Provider value={{ isOpen, isLoading, events, openTrace, startStream, closeTrace }}>
       {children}
     </ModerationContext.Provider>
   )
