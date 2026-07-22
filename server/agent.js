@@ -142,7 +142,7 @@ Gather the context you need and make a decision.`
               ...toolResults,
               {
                 type: 'text',
-                text: `Before this decision is finalized: have you reviewed the user's violation history and post history? If you called call_perspective, does the toxicity score align with or contradict the other context you gathered? If your decision stands, briefly confirm. If you need to revise, call the appropriate decision tool.`
+                text: `You've reached a decision: ${pendingDecision.action}. Before this is finalized, reflect: are you confident? What was the key signal that drove it? If anything still feels uncertain or you think you need more context, gather it and revise. Otherwise, briefly confirm.`
               }
             ]
           })

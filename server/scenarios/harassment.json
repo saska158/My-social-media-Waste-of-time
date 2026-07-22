@@ -28,6 +28,16 @@
       "expectedSkill": "harassment",
       "expectedAction": "remove_post",
       "expectedReasoning": "explicit call for coordinated action against a named user"
+    },
+    {
+      "id": "h-4",
+      "description": "Apparent harassment that reveals itself as retaliatory reporting — demonstrates multi-step agentic reasoning",
+      "postText": "I disagree with @user456 on basically everything they post, their takes are consistently wrong",
+      "perspectiveScore": 0.41,
+      "expectedSkill": "harassment",
+      "expectedAction": "dismiss_report",
+      "expectedReasoning": "reporter has filed 40+ reports targeting the same user — report is retaliatory, post itself is critical opinion not harassment",
+      "agenticNote": "This scenario is designed to show non-linear tool use. The agent starts investigating the post author (get_user_history, get_user_violations), finds nothing notable, then checks get_reporter_history and discovers the reporter is the bad actor. The final decision is driven by a signal the agent found only because an earlier tool result prompted a new question — the tool sequence is emergent, not predetermined."
     }
   ]
 }

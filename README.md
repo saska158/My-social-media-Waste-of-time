@@ -12,10 +12,9 @@ The project has two parts:
 ### How moderation works
 
 When a user reports a post:
-1. The post text is scored by the **Perspective API** for toxicity
-2. A **router agent** (Claude Haiku) reads the report and selects the most appropriate moderation skill
-3. A **moderation agent** (Claude Sonnet) runs an agentic loop — fetching post content, comments, user history, and violation history from Firestore — and makes a decision
-4. The decision (dismiss / warn / remove / ban) is written back to Firestore in real time
+1. A **router agent** (Claude Haiku) reads the report and selects the most appropriate moderation skill
+2. A **moderation agent** (Claude Sonnet) runs an agentic loop — autonomously deciding which tools to call, including `call_perspective` to score toxicity, fetching post content, comments, user history, and violation history from Firestore — and makes a decision
+3. The decision (dismiss / warn / remove / ban) is written back to Firestore in real time
 
 Available skills: `content-toxicity`, `harassment`, `misinformation`, `threats-and-violence`
 

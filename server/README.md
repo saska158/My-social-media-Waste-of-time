@@ -109,15 +109,17 @@ Triggers the moderation agent for a reported post.
 **Response:**
 ```json
 {
-  "reportId": "xyz789",
-  "skillName": "content-toxicity",
-  "action": "warn_user",
-  "reasoning": "...",
-  "perspectiveScore": 0.82
+  "reportId": "xyz789"
 }
 ```
 
-Possible `action` values: `auto_dismissed`, `dismiss_report`, `warn_user`, `remove_post`, `ban_user`
+The decision is not returned in this response — the agent runs asynchronously. Subscribe to `GET /report/:reportId/stream` to receive events as the agent works.
+
+### `GET /report/:reportId/stream`
+
+Server-sent events (SSE) stream for a report. Returns events as the router and moderation agent run. See the SSE event types table below for the full list.
+
+Possible `action` values in the final `decision` event: `dismiss_report`, `warn_user`, `remove_post`, `ban_user`
 
 ### `GET /health`
 
@@ -135,7 +137,7 @@ This server is designed to demonstrate a true agentic loop — not a linear fetc
 
 **Reactive reasoning.** Each tool result is added back to the conversation. The agent's next step is informed by what it just learned — not by a fixed script. Reasoning events emitted after tools have been called are flagged `reactive: true` in the SSE stream.
 
-**Self-correcting verification step.** When the agent makes a decision, the system sends it a verification prompt: *"Have you reviewed violation history? Does the Perspective score align with what you found? Confirm your decision or revise it."* The agent can call a different decision tool and change its mind. This produces two possible paths:
+**Self-correcting verification step.** When the agent makes a decision, the system sends it an open reflection prompt: *"You've reached a decision. Before this is finalized, reflect: are you confident? What was the key signal that drove it? If anything still feels uncertain, gather more context or revise."* The agent decides what to reconsider — it's not given a checklist. It can call a different decision tool and change its mind. This produces two possible paths:
 - `verification_confirmed` — decision stands after reflection
 - `verification_revised` — agent changed its decision after seeing its own reasoning challenged
 
@@ -168,12 +170,14 @@ The `scenarios/` directory contains machine-readable test inputs covering all fo
 ```
 scenarios/
   content-toxicity.json    — slurs, sarcasm, repeat offenders
-  harassment.json          — targeted attacks, mutual arguments, pile-ons
+  harassment.json          — targeted attacks, mutual arguments, pile-ons, retaliatory reporting
   misinformation.json      — health claims, contested opinion, repeat posters
   threats-and-violence.json — specific threats, venting hyperbole, glorification
 ```
 
 Each scenario has `postText`, `perspectiveScore` (illustrative — the agent calls the API itself), `expectedSkill`, and `expectedAction` — concrete inputs that yield traceable, verifiable outputs.
+
+Scenario `h-4` in `harassment.json` is specifically designed to demonstrate non-linear tool use: the post appears to be harassment, but `get_reporter_history` reveals the reporter is filing retaliatory reports. The agent pivots mid-investigation and dismisses. The `agenticNote` field on that scenario traces the expected reasoning chain.
 
 ---
 
