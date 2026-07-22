@@ -29,9 +29,9 @@ const buildSystemPrompt = (skillName) => {
 
   parts.push(`---
 
-## Perspective score
+## Perspective toxicity score
 
-The report includes a Perspective API toxicity score (0–1). You must reference this score explicitly in your decision reasoning — state the score, explain how much weight you gave it for this type of content, and why.`)
+Use the \`call_perspective\` tool to score the post text for toxicity (0–1). Call it when the toxicity signal would help calibrate your decision. If you call it, reference the score explicitly in your reasoning — state the score, explain how much weight you gave it for this type of content, and why. If the violation type is unlikely to correlate with toxicity tone (e.g. calm misinformation), you may skip it.`)
 
   return parts.join('\n\n')
 }

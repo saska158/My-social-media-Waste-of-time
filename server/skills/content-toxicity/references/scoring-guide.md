@@ -6,8 +6,8 @@ Perspective score runs from 0 to 1. It is unreliable for Serbian, Bosnian, and C
 
 | Score | What it signals |
 |-------|----------------|
-| < 0.2 | Handled before you are called — you will not see these |
-| 0.2 – 0.3 | Weak signal — likely a false positive, but verify if other signals are present |
+| < 0.2 | Weak signal — likely a false positive, but verify if other signals are present |
+| 0.2 – 0.3 | Low — check community reaction and user history before deciding |
 | 0.3 – 0.7 | Ambiguous — the score alone is not enough. The content, community reaction, and user history matter more here |
 | 0.7 – 0.9 | Strong signal — but context can still override it. Satire, quotes, and regional expression all produce high scores |
 | > 0.9 | Very strong signal — take seriously, but do not skip reasoning. Irony and quoted content can reach this range |

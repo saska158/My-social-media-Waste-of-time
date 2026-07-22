@@ -6,11 +6,11 @@ Perspective score is a useful but imperfect signal for this category. Explicit t
 
 | Score | Interpretation for threats |
 |-------|---------------------------|
-| < 0.2 | Auto-dismissed before you are called |
-| 0.2 – 0.5 | Low toxicity — likely hyperbole or venting. Focus on specificity and target, not tone |
+| < 0.2 | Low toxicity — likely hyperbole or venting. Focus on specificity and target, not tone |
+| 0.2 – 0.5 | Low-moderate — check specificity of target before deciding |
 | 0.5 – 0.75 | Moderate — aggressive tone. Assess whether a specific person or group is named or implied |
 | 0.75 – 0.9 | High — strongly aggressive. Check for specific target and prior violation history |
-| > 0.9 | Fast-tracked — severe tone. Verify whether this is a specific, credible threat and act accordingly |
+| > 0.9 | Very high — severe tone. Verify whether this is a specific, credible threat and act accordingly |
 
 ## Adjustments
 

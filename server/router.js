@@ -54,7 +54,7 @@ const SELECT_SKILL_TOOL = (skills) => ({
   }
 })
 
-const runRouter = async ({ postText, perspectiveScore, room, emit = () => {} }) => {
+const runRouter = async ({ postText, room, emit = () => {} }) => {
   const skills = getAvailableSkills()
 
   if (!skills.length) {
@@ -70,7 +70,6 @@ const runRouter = async ({ postText, perspectiveScore, room, emit = () => {} }) 
       role: 'user',
       content: `Incoming report:
 Room: ${room}
-Perspective toxicity score: ${perspectiveScore}
 Post text: "${postText}"
 
 Available skills:

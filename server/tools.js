@@ -1,8 +1,20 @@
 const { db, admin } = require('./firebase')
+const { analyzeToxicity } = require('./perspective')
 
 const ROOMS = ['watching', 'reading', 'listening']
 
 const TOOL_DEFINITIONS = [
+  {
+    name: 'call_perspective',
+    description: 'Score the post text for toxicity using the Perspective API. Returns a score from 0 (not toxic) to 1 (very toxic). Call this early — the score is a useful calibration signal. Not all violation types correlate with toxicity (e.g. misinformation often scores low), but it is worth checking.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        text: { type: 'string', description: 'The text to score for toxicity' }
+      },
+      required: ['text']
+    }
+  },
   {
     name: 'get_post',
     description: 'Fetch the content of the reported post',
@@ -126,6 +138,11 @@ const recordViolation = async (uid, violation) => {
 
 const executeTool = async (name, input) => {
   switch (name) {
+    case 'call_perspective': {
+      const score = await analyzeToxicity(input.text)
+      return { score }
+    }
+
     case 'get_post': {
       const snap = await db.collection(input.room).doc(input.post_id).get()
       if (!snap.exists) return { error: 'Post not found' }

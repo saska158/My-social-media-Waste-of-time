@@ -2,10 +2,10 @@
 
 A Node.js server that runs an agentic content moderation loop for the Razgovori social media app. When a user reports a post, the server:
 
-1. Scores the post with the **Perspective API** for toxicity
-2. Passes a hint to the agent (`lowToxicityHint` if score < 0.2, `highToxicityHint` if score ≥ 0.9) — the agent always runs
-3. Routes to the best-matching **skill** via Claude Haiku (with retry if no skill is selected)
-4. Runs a **Claude Sonnet moderation agent** that autonomously gathers context from Firestore and makes a decision: dismiss, warn, remove post, or ban user
+1. Routes to the best-matching **skill** via Claude Haiku (with retry if no skill is selected)
+2. Runs a **Claude Sonnet moderation agent** that autonomously gathers context and makes a decision: dismiss, warn, remove post, or ban user
+
+The agent decides which tools to call — including `call_perspective` to score the post for toxicity using the Perspective API. The score is gathered as part of the agent's reasoning, not pre-computed before it runs.
 
 ---
 
@@ -141,18 +141,18 @@ This server is designed to demonstrate a true agentic loop — not a linear fetc
 
 **Autonomous routing with retry.** The router (Claude Haiku) reads available skill files from the filesystem and classifies the report. If it doesn't call `select_skill` on the first attempt, the router sends a follow-up message and retries before falling back.
 
-**Hints, not gates.** Low and high toxicity scores are passed as hints to the agent — they inform but do not override. The agent can dismiss a high-score post if it finds strong mitigating context, and it can remove a low-score post if community reaction and violation history warrant it.
+**Perspective as an agent tool.** The agent calls `call_perspective` itself as one of its context tools, rather than receiving the score as a pre-computed input. This means the toxicity signal appears in the agent's explicit reasoning trace — the agent decides when the score is relevant, weighs it against other context it has gathered, and references it directly in its decision. For violation types where toxicity tone is a weak signal (e.g. calm misinformation), the agent may skip it entirely.
 
 ### SSE event types
 
 | Event | What it means |
 |---|---|
-| `perspective` | Perspective API score returned |
 | `router_reasoning` | Router's text reasoning before skill selection |
 | `routing` | Skill selected (or fallback) |
 | `iteration` | New agent loop iteration started |
 | `reasoning` | Agent's text reasoning; `reactive: true` means it follows tool results |
-| `tool_call` | Agent called a tool |
+| `tool_call` | Agent called a tool (including `call_perspective`) |
+| `perspective` | Perspective API score returned — emitted when agent calls `call_perspective` |
 | `tool_result` | Tool returned data |
 | `verification` | Agent made a decision — awaiting self-check |
 | `verification_confirmed` | Agent confirmed its decision after reflection |
@@ -173,7 +173,7 @@ scenarios/
   threats-and-violence.json — specific threats, venting hyperbole, glorification
 ```
 
-Each scenario has `postText`, `perspectiveScore`, `expectedSkill`, and `expectedAction` — concrete inputs that yield traceable, verifiable outputs.
+Each scenario has `postText`, `perspectiveScore` (illustrative — the agent calls the API itself), `expectedSkill`, and `expectedAction` — concrete inputs that yield traceable, verifiable outputs.
 
 ---
 

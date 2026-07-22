@@ -5,9 +5,10 @@ const { TOOL_DEFINITIONS, executeTool } = require('./tools')
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
 const DECISION_TOOLS = new Set(['dismiss_report', 'warn_user', 'remove_post', 'ban_user'])
-const CONTEXT_TOOLS = new Set(['get_post', 'get_comments', 'get_user_history', 'get_user_violations', 'get_reporter_history'])
+const CONTEXT_TOOLS = new Set(['call_perspective', 'get_post', 'get_comments', 'get_user_history', 'get_user_violations', 'get_reporter_history'])
 
 const TOOL_LABELS = {
+  call_perspective: 'Scoring toxicity',
   get_post: 'Fetching post content',
   get_comments: 'Reading community reaction',
   get_user_history: 'Checking post history',
@@ -22,6 +23,7 @@ const TOOL_LABELS = {
 const summarizeResult = (toolName, result) => {
   if (result?.error) return `Error: ${result.error}`
   switch (toolName) {
+    case 'call_perspective': return `Score: ${result.score.toFixed(3)}`
     case 'get_post': return 'Post fetched'
     case 'get_comments': return `${result.length} comment${result.length !== 1 ? 's' : ''}`
     case 'get_user_history': return `${result.length} post${result.length !== 1 ? 's' : ''} found`
@@ -31,28 +33,19 @@ const summarizeResult = (toolName, result) => {
   }
 }
 
-const runModerationAgent = async ({ reportId, postId, room, reportedBy, creatorUid, perspectiveScore, postText, skillName, highToxicityHint, lowToxicityHint, emit = () => {} }) => {
+const runModerationAgent = async ({ reportId, postId, room, reportedBy, creatorUid, postText, skillName, emit = () => {} }) => {
   const systemPrompt = buildSystemPrompt(skillName)
 
-  let initialContent = `New moderation report.
+  const initialContent = `New moderation report.
 
 Report ID: ${reportId}
 Post ID: ${postId}
 Room: ${room}
 Post author (UID): ${creatorUid}
 Reported by (UID): ${reportedBy}
-Perspective score: ${perspectiveScore}
 Post text: "${postText}"
 
-Analyze the context and make a decision.`
-
-  if (highToxicityHint) {
-    initialContent += `\n\nNote: Perspective score is ${perspectiveScore} — this is a very high toxicity signal. Unless you find strong mitigating context (satire, regional expression, demonstrable false positive), removal is the expected outcome.`
-  }
-
-  if (lowToxicityHint) {
-    initialContent += `\n\nNote: Perspective score is ${perspectiveScore} — this is a low toxicity signal. Dismissal is likely, but verify context before deciding. Check reporter credibility if the report feels suspicious.`
-  }
+Gather the context you need and make a decision.`
 
   const messages = [{ role: 'user', content: initialContent }]
 
@@ -122,7 +115,11 @@ Analyze the context and make a decision.`
           content: JSON.stringify(result)
         })
 
-        emit({ type: 'tool_result', tool: block.name, summary: summarizeResult(block.name, result) })
+        if (block.name === 'call_perspective' && result.score !== undefined) {
+          emit({ type: 'perspective', score: result.score })
+        } else {
+          emit({ type: 'tool_result', tool: block.name, summary: summarizeResult(block.name, result) })
+        }
 
         if (DECISION_TOOLS.has(block.name) && !newDecision) {
           newDecision = { action: block.name, reasoning: block.input.reasoning }
@@ -145,7 +142,7 @@ Analyze the context and make a decision.`
               ...toolResults,
               {
                 type: 'text',
-                text: `Before this decision is finalized: have you reviewed the user's violation history and post history? Does the Perspective score (${perspectiveScore}) align with or contradict what you found in context? If your decision stands, briefly confirm. If you need to revise, call the appropriate decision tool.`
+                text: `Before this decision is finalized: have you reviewed the user's violation history and post history? If you called call_perspective, does the toxicity score align with or contradict the other context you gathered? If your decision stands, briefly confirm. If you need to revise, call the appropriate decision tool.`
               }
             ]
           })

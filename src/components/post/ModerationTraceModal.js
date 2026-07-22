@@ -19,6 +19,7 @@ const DECISION_LABEL = {
 }
 
 const TOOL_ICON = {
+  call_perspective: '🔬',
   get_post: '📄',
   get_comments: '💬',
   get_user_history: '📋',

@@ -2,7 +2,6 @@ require('dotenv').config()
 
 const express = require('express')
 const cors = require('cors')
-const { analyzeToxicity } = require('./perspective')
 const { runRouter } = require('./router')
 const { runModerationAgent } = require('./agent')
 const { db, admin } = require('./firebase')
@@ -38,23 +37,11 @@ const processReport = async (reportId, reportRef, { postId, room, reportedBy, cr
   const emit = event => stream?.emit(event)
 
   try {
-    const perspectiveScore = await analyzeToxicity(postText)
-    console.log(`[report] Perspective score: ${perspectiveScore}`)
-    emit({ type: 'perspective', score: perspectiveScore })
-    await reportRef.update({ perspectiveScore })
-
-    const highToxicityHint = perspectiveScore >= 0.9
-    const lowToxicityHint = perspectiveScore < 0.2
-
-    if (highToxicityHint) console.log(`[report] Score ${perspectiveScore} >= 0.9 — routing with high-toxicity hint`)
-    if (lowToxicityHint) console.log(`[report] Score ${perspectiveScore} < 0.2 — routing with low-toxicity hint`)
-
-    const skillName = await runRouter({ postText, perspectiveScore, room, emit })
+    const skillName = await runRouter({ postText, room, emit })
     await reportRef.update({ skillName })
 
     const decision = await runModerationAgent({
-      reportId, postId, room, reportedBy, creatorUid,
-      perspectiveScore, postText, skillName, highToxicityHint, lowToxicityHint, emit
+      reportId, postId, room, reportedBy, creatorUid, postText, skillName, emit
     })
 
     console.log(`[report] Decision for ${reportId}:`, decision)
