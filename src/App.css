@@ -302,6 +302,11 @@ textarea::placeholder {
   width: 100%;
 }
 
+.infinite-scroll-component__outerdiv,
+.infinite-scroll-component {
+  width: 100%;
+}
+
 .post-form {
   height: 100%;
   padding: 2.5em 1em 1em; 

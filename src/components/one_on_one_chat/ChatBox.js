@@ -40,6 +40,7 @@ const ChatBox = ({chatPartnerProfile, setIsChatBoxVisible}) => {
   // Effects
   /* generate chat id */
   useEffect(() => {
+    if (!user?.uid || !chatPartnerProfile?.uid) return
     const generatedChatId = [user?.uid, chatPartnerProfile?.uid].sort().join("_")
     setChatId(generatedChatId)
   }, [user?.uid, chatPartnerProfile?.uid])

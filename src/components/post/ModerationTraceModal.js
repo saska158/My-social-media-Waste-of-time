@@ -31,36 +31,191 @@ const TOOL_ICON = {
   ban_user: '⊘',
 }
 
+const WARNING_TOOLS = new Set(['get_user_violations', 'warn_user'])
+
 const scoreColor = score =>
   score > 0.7 ? '#e53e3e' : score > 0.4 ? '#d97706' : '#16a34a'
 
-const label = (text, color = '#999') => (
-  <span style={{ fontSize: '0.65rem', fontWeight: 700, color, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+const Label = ({ text, color = '#9ca3af' }) => (
+  <span style={{
+    fontSize: '0.62rem',
+    fontWeight: 700,
+    color,
+    textTransform: 'uppercase',
+    letterSpacing: '0.07em',
+  }}>
     {text}
   </span>
 )
 
-const EventRow = ({ event, isActiveIteration }) => {
-  const base = { padding: '5px 0', display: 'flex', flexDirection: 'column', gap: '2px' }
+const Spinner = () => (
+  <motion.span
+    style={{
+      display: 'inline-block',
+      width: '13px',
+      height: '13px',
+      border: '2px solid #d1e9df',
+      borderTopColor: '#4b896f',
+      borderRadius: '50%',
+      flexShrink: 0,
+    }}
+    animate={{ rotate: 360 }}
+    transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
+  />
+)
 
+const PulsingDot = () => (
+  <motion.span
+    style={{
+      display: 'inline-block',
+      width: '6px',
+      height: '6px',
+      borderRadius: '50%',
+      background: '#4b896f',
+      flexShrink: 0,
+    }}
+    animate={{ opacity: [1, 0.25, 1] }}
+    transition={{ duration: 1.4, repeat: Infinity }}
+  />
+)
+
+// Merge sequential tool_call + tool_result into a single tool_row.
+// _key is the raw event index so AnimatePresence keys stay stable when
+// a pending row transitions to done without remounting.
+const processEvents = events => {
+  const out = []
+  let i = 0
+  while (i < events.length) {
+    const ev = events[i]
+    if (ev.type === 'tool_call') {
+      const next = events[i + 1]
+      if (next?.type === 'tool_result') {
+        out.push({ type: 'tool_row', tool: ev.tool, label: ev.label, result: next.summary, done: true, _key: i })
+        i += 2
+      } else {
+        out.push({ type: 'tool_row', tool: ev.tool, label: ev.label, result: null, done: false, _key: i })
+        i++
+      }
+    } else if (ev.type === 'tool_result') {
+      // consumed by preceding tool_call; skip orphaned ones silently
+      i++
+    } else {
+      out.push({ ...ev, _key: i })
+      i++
+    }
+  }
+  return out
+}
+
+const ToolRow = ({ tool, label, result, done }) => {
+  const isWarning = WARNING_TOOLS.has(tool)
+  const pillColor = isWarning ? '#92400e' : '#3d7a60'
+  const pillBg   = isWarning ? '#fef3c7' : '#dcfce7'
+
+  return (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      padding: '6px 10px',
+      borderRadius: '6px',
+      background: '#f9fafb',
+      marginBottom: '4px',
+    }}>
+      <span style={{ fontSize: '0.8rem', flexShrink: 0 }}>{TOOL_ICON[tool] || '⚙'}</span>
+      <span style={{ fontSize: '0.78rem', color: '#374151', flex: 1 }}>{label}</span>
+      {done
+        ? result && (
+          <span style={{
+            fontSize: '0.68rem',
+            fontWeight: 600,
+            color: pillColor,
+            background: pillBg,
+            padding: '2px 9px',
+            borderRadius: '999px',
+            whiteSpace: 'nowrap',
+            flexShrink: 0,
+          }}>{result}</span>
+        )
+        : <Spinner />
+      }
+    </div>
+  )
+}
+
+const ReasoningCard = ({ text, reactive }) => (
+  <div style={{
+    background: '#f7faf9',
+    border: '1px solid #d1e9df',
+    borderLeft: '3px solid #4b896f',
+    borderRadius: '6px',
+    padding: '10px 12px',
+    marginBottom: '6px',
+  }}>
+    {reactive && (
+      <div style={{ marginBottom: '4px' }}>
+        <Label text="Reactive" color="#4b896f" />
+      </div>
+    )}
+    <p style={{ margin: 0, fontSize: '0.8rem', color: '#444', lineHeight: 1.6, fontStyle: 'italic' }}>{text}</p>
+  </div>
+)
+
+const StepHeader = ({ number, isActive }) => (
+  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '14px 0 8px' }}>
+    <Label text={`Step ${number}`} color="#4b896f" />
+    {isActive && <PulsingDot />}
+    <div style={{ flex: 1, height: '1px', background: '#e5e7eb' }} />
+  </div>
+)
+
+const EventRow = ({ event, isActiveStep }) => {
   switch (event.type) {
-    case 'perspective':
+    case 'tool_row':
+      return <ToolRow tool={event.tool} label={event.label} result={event.result} done={event.done} />
+
+    case 'iteration':
+      return <StepHeader number={event.number} isActive={isActiveStep} />
+
+    case 'reasoning':
+      return <ReasoningCard text={event.text} reactive={event.reactive} />
+
+    case 'perspective': {
+      const color = scoreColor(event.score)
+      const pillBg = color === '#e53e3e' ? '#fee2e2' : color === '#d97706' ? '#fef3c7' : '#dcfce7'
       return (
-        <div style={base}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {label('Perspective')}
-            <span style={{ fontSize: '0.85rem', fontWeight: 700, color: scoreColor(event.score), fontFamily: 'monospace' }}>
-              {event.score.toFixed(3)}
-            </span>
-          </div>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '6px 10px',
+          borderRadius: '6px',
+          background: '#f9fafb',
+          marginBottom: '4px',
+        }}>
+          <span style={{ fontSize: '0.8rem' }}>🔬</span>
+          <span style={{ fontSize: '0.78rem', color: '#374151', flex: 1 }}>Toxicity score</span>
+          <span style={{
+            fontSize: '0.68rem',
+            fontWeight: 700,
+            color,
+            background: pillBg,
+            padding: '2px 9px',
+            borderRadius: '999px',
+            fontFamily: 'monospace',
+            flexShrink: 0,
+          }}>
+            {event.score.toFixed(3)}
+          </span>
         </div>
       )
+    }
 
     case 'router_reasoning':
       return (
-        <div style={base}>
-          {label('Router')}
-          <p style={{ margin: 0, fontSize: '0.8rem', color: '#555', fontStyle: 'italic', lineHeight: 1.5 }}>
+        <div style={{ padding: '4px 0', marginBottom: '4px' }}>
+          <Label text="Router" />
+          <p style={{ margin: '3px 0 0', fontSize: '0.8rem', color: '#555', fontStyle: 'italic', lineHeight: 1.55 }}>
             {event.text}
           </p>
         </div>
@@ -68,7 +223,7 @@ const EventRow = ({ event, isActiveIteration }) => {
 
     case 'routing':
       return (
-        <div style={base}>
+        <div style={{ padding: '4px 0', marginBottom: '4px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ color: '#4b896f', fontWeight: 700, fontSize: '0.8rem' }}>→</span>
             <span style={{ fontSize: '0.8rem', fontWeight: 600, color: '#4b896f', fontFamily: 'monospace' }}>{event.skill}</span>
@@ -81,80 +236,36 @@ const EventRow = ({ event, isActiveIteration }) => {
         </div>
       )
 
-    case 'iteration':
-      return (
-        <div style={{ ...base, borderTop: '1px solid #eaf4f0', paddingTop: '10px', marginTop: '4px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            {label(`Iteration ${event.number}`, '#4b896f')}
-            {isActiveIteration && (
-              <span style={{ display: 'flex', gap: '3px', alignItems: 'center' }}>
-                {[0, 1, 2].map(i => (
-                  <motion.span
-                    key={i}
-                    style={{ width: '3px', height: '3px', borderRadius: '50%', background: '#4b896f', display: 'block' }}
-                    animate={{ opacity: [0.3, 1, 0.3] }}
-                    transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
-                  />
-                ))}
-              </span>
-            )}
-          </div>
-        </div>
-      )
-
-    case 'reasoning':
-      return event.reactive
-        ? (
-          <div style={{ ...base, borderLeft: '2px solid #d1e9df', paddingLeft: '10px' }}>
-            <p style={{ margin: 0, fontSize: '0.8rem', color: '#666', lineHeight: 1.55, fontStyle: 'italic' }}>{event.text}</p>
-          </div>
-        )
-        : (
-          <div style={base}>
-            <p style={{ margin: 0, fontSize: '0.8rem', color: '#444', lineHeight: 1.55 }}>{event.text}</p>
-          </div>
-        )
-
-    case 'tool_call':
-      return (
-        <div style={{ ...base, flexDirection: 'row', alignItems: 'center', gap: '6px', paddingLeft: '8px' }}>
-          <span style={{ fontSize: '0.75rem' }}>{TOOL_ICON[event.tool] || '⚙'}</span>
-          <span style={{ fontSize: '0.78rem', color: '#555', fontFamily: 'monospace' }}>{event.label}</span>
-          <span style={{ fontSize: '0.7rem', color: '#bbb', marginLeft: 'auto' }}>…</span>
-        </div>
-      )
-
-    case 'tool_result':
-      return (
-        <div style={{ ...base, flexDirection: 'row', alignItems: 'center', gap: '6px', paddingLeft: '8px' }}>
-          <span style={{ fontSize: '0.7rem', color: '#999' }}>←</span>
-          <span style={{ fontSize: '0.78rem', color: '#777', fontFamily: 'monospace' }}>{event.summary}</span>
-        </div>
-      )
-
     case 'verification':
       return (
-        <div style={{ ...base, borderTop: '1px solid #eaf4f0', paddingTop: '10px', marginTop: '4px' }}>
-          {label('Verifying decision', '#7c3aed')}
-          <p style={{ margin: 0, fontSize: '0.78rem', color: '#7c3aed', fontStyle: 'italic' }}>
-            Checking if all signals were considered before finalizing…
+        <div style={{
+          marginTop: '8px',
+          marginBottom: '4px',
+          padding: '8px 12px',
+          borderRadius: '6px',
+          background: '#faf5ff',
+          border: '1px solid #e9d5ff',
+        }}>
+          <Label text="Verifying decision" color="#7c3aed" />
+          <p style={{ margin: '4px 0 0', fontSize: '0.78rem', color: '#7c3aed', fontStyle: 'italic', lineHeight: 1.5 }}>
+            Checking all signals before finalizing…
           </p>
         </div>
       )
 
     case 'verification_confirmed':
       return (
-        <div style={{ ...base, flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 0', marginBottom: '4px' }}>
           <span style={{ color: '#16a34a', fontWeight: 700 }}>✓</span>
-          <span style={{ fontSize: '0.8rem', color: '#16a34a' }}>Decision confirmed</span>
+          <span style={{ fontSize: '0.78rem', color: '#16a34a', fontWeight: 600 }}>Decision confirmed</span>
         </div>
       )
 
     case 'verification_revised':
       return (
-        <div style={{ ...base, flexDirection: 'row', alignItems: 'center', gap: '6px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 0', marginBottom: '4px' }}>
           <span style={{ color: '#d97706', fontWeight: 700 }}>↻</span>
-          <span style={{ fontSize: '0.8rem', color: '#d97706' }}>
+          <span style={{ fontSize: '0.78rem', color: '#d97706' }}>
             Revised: <span style={{ fontFamily: 'monospace' }}>{event.from}</span>
             {' → '}
             <span style={{ fontFamily: 'monospace' }}>{event.to}</span>
@@ -164,13 +275,14 @@ const EventRow = ({ event, isActiveIteration }) => {
 
     case 'decision': {
       const color = DECISION_COLOR[event.action] || '#555'
+      const bg = { '#16a34a': '#dcfce7', '#d97706': '#fef3c7', '#e53e3e': '#fee2e2', '#991b1b': '#fee2e2' }[color] || '#f3f4f6'
       return (
-        <div style={{ ...base, borderTop: '1px solid #eaf4f0', paddingTop: '10px', marginTop: '4px' }}>
-          {label('Decision')}
-          <span style={{ fontSize: '0.9rem', fontWeight: 700, color, fontFamily: 'monospace' }}>
+        <div style={{ marginTop: '12px', padding: '12px', borderRadius: '8px', background: bg, border: `1px solid ${color}33` }}>
+          <Label text="Decision" color={color} />
+          <div style={{ marginTop: '4px', fontSize: '0.92rem', fontWeight: 700, color }}>
             {DECISION_LABEL[event.action] || event.action}
-          </span>
-          <p style={{ margin: '4px 0 0', fontSize: '0.78rem', color: '#555', lineHeight: 1.5 }}>
+          </div>
+          <p style={{ margin: '6px 0 0', fontSize: '0.78rem', color: '#555', lineHeight: 1.55 }}>
             {event.reasoning}
           </p>
         </div>
@@ -179,9 +291,9 @@ const EventRow = ({ event, isActiveIteration }) => {
 
     case 'skipped_tools':
       return (
-        <div style={{ ...base, flexDirection: 'row', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
-          {label('Skipped')}
-          <span style={{ fontSize: '0.75rem', color: '#aaa', fontFamily: 'monospace' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 0', marginBottom: '4px' }}>
+          <Label text="Skipped" />
+          <span style={{ fontSize: '0.72rem', color: '#9ca3af', fontFamily: 'monospace' }}>
             {event.tools.join(', ')}
           </span>
         </div>
@@ -189,7 +301,7 @@ const EventRow = ({ event, isActiveIteration }) => {
 
     case 'auto_dismissed':
       return (
-        <div style={base}>
+        <div style={{ padding: '4px 0', marginBottom: '4px' }}>
           <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#16a34a' }}>
             ✓ Score too low — auto-dismissed
           </span>
@@ -198,8 +310,14 @@ const EventRow = ({ event, isActiveIteration }) => {
 
     case 'error':
       return (
-        <div style={base}>
-          <span style={{ fontSize: '0.85rem', color: '#e53e3e' }}>Error: {event.message}</span>
+        <div style={{
+          padding: '6px 10px',
+          borderRadius: '6px',
+          background: '#fee2e2',
+          border: '1px solid #fca5a5',
+          marginBottom: '4px',
+        }}>
+          <span style={{ fontSize: '0.8rem', color: '#991b1b' }}>Error: {event.message}</span>
         </div>
       )
 
@@ -214,6 +332,9 @@ const ModerationTraceModal = ({ events, isLoading, onClose }) => {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [events])
+
+  const processed = processEvents(events)
+  const lastIterIdx = processed.reduce((last, ev, i) => ev.type === 'iteration' ? i : last, -1)
 
   return createPortal(
     <motion.div
@@ -273,7 +394,7 @@ const ModerationTraceModal = ({ events, isLoading, onClose }) => {
           </div>
           <button
             onClick={onClose}
-            style={{ color: '#999', display: 'flex', alignItems: 'center', padding: '2px' }}
+            style={{ color: '#9ca3af', display: 'flex', alignItems: 'center', padding: '2px' }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" style={{ width: '18px' }}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -283,25 +404,23 @@ const ModerationTraceModal = ({ events, isLoading, onClose }) => {
 
         {/* Event log */}
         <div style={{ overflowY: 'auto', padding: '12px 18px', flex: 1 }}>
-          {events.length === 0 && (
+          {processed.length === 0 && (
             <p style={{ fontSize: '0.8rem', color: '#aaa', fontStyle: 'italic' }}>Waiting for agent…</p>
           )}
           <AnimatePresence initial={false}>
-            {(() => {
-              return events.map((event, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.18 }}
-                >
-                  <EventRow
-                    event={event}
-                    isActiveIteration={isLoading && event.type === 'iteration' && i === events.length - 1}
-                  />
-                </motion.div>
-              ))
-            })()}
+            {processed.map((event, i) => (
+              <motion.div
+                key={event._key}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.18 }}
+              >
+                <EventRow
+                  event={event}
+                  isActiveStep={isLoading && event.type === 'iteration' && i === lastIterIdx}
+                />
+              </motion.div>
+            ))}
           </AnimatePresence>
           <div ref={bottomRef} />
         </div>

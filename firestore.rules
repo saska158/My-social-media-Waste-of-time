@@ -14,8 +14,11 @@ service cloud.firestore {
     }
 
     function isChatParticipant(chatId) {
-      return isSignedIn() &&
-        request.auth.uid in get(/databases/$(database)/documents/chats/$(chatId)).data.participants;
+      let chatPath = /databases/$(database)/documents/chats/$(chatId);
+      return isSignedIn() && (
+        !exists(chatPath) ||
+        request.auth.uid in get(chatPath).data.participants
+      );
     }
 
     // Only the 'likes' map is changing (used by FirestoreItemActions)
