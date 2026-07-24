@@ -15,8 +15,9 @@ service cloud.firestore {
 
     function isChatParticipant(chatId) {
       let chatPath = /databases/$(database)/documents/chats/$(chatId);
-      let uidInChatId = chatId.matches('^' + request.auth.uid + '_.*') ||
-                        chatId.matches('.*_' + request.auth.uid + '$');
+      let parts = chatId.split('_');
+      let uidInChatId = parts.size() >= 2 &&
+        (parts[0] == request.auth.uid || parts[1] == request.auth.uid);
       return isSignedIn() && uidInChatId && (
         !exists(chatPath) ||
         request.auth.uid in get(chatPath).data.participants
