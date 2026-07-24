@@ -1,16 +1,15 @@
 import { useState, useEffect, useRef, useMemo } from "react"
 import { useLocation } from "react-router-dom"
-import { 
-  collection, 
-  firestore, 
-  query, 
-  orderBy, 
-  limit, 
-  startAfter, 
-  startAt, 
-  endAt, 
-  getDocs, 
-  onSnapshot 
+import {
+  collection,
+  firestore,
+  query,
+  orderBy,
+  limit,
+  startAfter,
+  startAt,
+  endAt,
+  getDocs
 } from "../../api/firebase"
 import UserCard from "./UserCard"
 import { ClipLoader } from "react-spinners"
@@ -18,8 +17,8 @@ import InfiniteScroll from "react-infinite-scroll-component"
 import UserSkeleton from "../skeletons/UserSkeleton"
 import ErrorMessage from "../errors/ErrorMessage"
 
-const UsersSearch = ({style=null}) => { 
-  
+const UsersSearch = ({style=null}) => {
+
   // State
   const [filteredUsers, setFilteredUsers] = useState([])
   const [lastDoc, setLastDoc] = useState(null)
@@ -33,8 +32,8 @@ const UsersSearch = ({style=null}) => {
   const usersRef = useMemo(() => {
     return collection(firestore, 'profiles')
   }, [])
-  
- 
+
+
   // Hooks that don't trigger re-renders
   const location = useLocation()
   const prevLocation = useRef(location.pathname)
@@ -45,42 +44,55 @@ const UsersSearch = ({style=null}) => {
   useEffect(() => {
     if (!usersRef) return
 
-    const q = query(
-      usersRef,
-      orderBy("displayName"), 
-      startAt(searchQuery),
-      endAt(searchQuery + '\uf8ff'),
-      limit(15) 
-    )
+    let cancelled = false
 
     setLoading(true)
     setError(null)
 
-    const unsubscribe = onSnapshot(
-      q, 
-      (snapshot) => { 
-        if(!snapshot.empty) {
-          const newData = snapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }))
-          setFilteredUsers(newData)
-          setLastDoc(snapshot.docs[snapshot.docs.length - 1])
-          setHasMore(snapshot.docs.length === 15)
-          setLoading(false)
-        } else {
-          setFilteredUsers([])
-          setHasMore(false)
-        }
+    const lowerSearch = searchQuery.toLowerCase()
+    const capitalSearch = searchQuery
+      ? searchQuery[0].toUpperCase() + searchQuery.slice(1).toLowerCase()
+      : ''
+
+    const buildQ = (term) => query(
+      usersRef,
+      orderBy("displayName"),
+      startAt(term),
+      endAt(term + ""),
+      limit(15)
+    )
+
+    const queries = [buildQ(lowerSearch)]
+    if (capitalSearch && capitalSearch !== lowerSearch) {
+      queries.push(buildQ(capitalSearch))
+    }
+
+    Promise.all(queries.map(q => getDocs(q)))
+      .then(snapshots => {
+        if (cancelled) return
+        const seen = new Set()
+        const newData = []
+        snapshots.forEach(snapshot => {
+          snapshot.docs.forEach(doc => {
+            if (!seen.has(doc.id)) {
+              seen.add(doc.id)
+              newData.push({ id: doc.id, ...doc.data() })
+            }
+          })
+        })
+        newData.sort((a, b) => (a.displayName || '').localeCompare(b.displayName || ''))
+        setFilteredUsers(newData)
+        const mainSnap = snapshots[0]
+        setLastDoc(mainSnap.docs[mainSnap.docs.length - 1] || null)
+        setHasMore(mainSnap.docs.length === 15)
         setLoading(false)
-      },
-      (error) => {
+      })
+      .catch(error => {
+        if (cancelled) return
         console.error(error)
-
-        let errorMessage 
-
+        let errorMessage
         if (error.code === "permission-denied") {
-          errorMessage = "You don’t have permission to access the users' data."
+          errorMessage = "You don't have permission to access the users' data."
         } else if (error.code === "unavailable") {
           errorMessage = "Network issue. Please try again later."
         } else if (error.code === "not-found") {
@@ -91,49 +103,49 @@ const UsersSearch = ({style=null}) => {
           errorMessage = "Something went wrong. Please try again."
         }
         setError(errorMessage)
-      }
-    )
+        setLoading(false)
+      })
 
-    return () => unsubscribe()
+    return () => { cancelled = true }
   }, [searchQuery, retryFlag])
 
   // Functions
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value.toLowerCase())
-  }  
+    setSearchQuery(e.target.value)
+  }
 
   const fetchMore = async () => {
     if(loading || !hasMore || !lastDoc) return
-  
+
     try {
       const q = query(
         usersRef,
-        orderBy("displayName"), 
+        orderBy("displayName"),
         startAfter(lastDoc),
         limit(15 + 1)
       )
-  
+
       const snapshot = await getDocs(q)
       const docs = snapshot.docs
-  
+
       if (docs.length > 15) {
         const newData = docs.slice(0, 15).map(doc => ({ id: doc.id, ...doc.data() }))
         setFilteredUsers(prev => [...prev, ...newData])
-        setLastDoc(docs[15 - 1]) 
-        setHasMore(true) 
+        setLastDoc(docs[15 - 1])
+        setHasMore(true)
       } else {
         const newData = docs.map(doc => ({ id: doc.id, ...doc.data() }))
         setFilteredUsers(prev => [...prev, ...newData])
-        setLastDoc(null) 
-        setHasMore(false) 
+        setLastDoc(null)
+        setHasMore(false)
       }
     } catch(error) {
       console.error(error)
-      
-      let errorMessage 
+
+      let errorMessage
 
       if (error.code === "permission-denied") {
-        errorMessage = "You don’t have permission to access the users' data."
+        errorMessage = "You don't have permission to access the users' data."
       } else if (error.code === "unavailable") {
         errorMessage = "Network issue. Please try again later."
       } else if (error.code === "not-found") {
@@ -144,11 +156,11 @@ const UsersSearch = ({style=null}) => {
         errorMessage = "Something went wrong. Please try again."
       }
       setError(errorMessage)
-    } 
+    }
   }
 
   return (
-    <div style={style}>
+    <div style={{display: 'flex', flexDirection: 'column', flex: 1, minHeight: 0, ...style}}>
       <div className="input-wrapper">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6" style={{width: '20px', color: '#4b896f'}}>
           <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -161,7 +173,7 @@ const UsersSearch = ({style=null}) => {
          style={{fontSize: '1rem'}}
         />
       </div>
-      <div 
+      <div
         className="users-search-infinite"
         id="scrollableUsersDiv"
         ref={usersContainerRef}
@@ -189,14 +201,8 @@ const UsersSearch = ({style=null}) => {
           </div>
         </InfiniteScroll>
       </div>
-    </div>  
+    </div>
   )
 }
 
 export default UsersSearch
-
-
-
-    
-
-    
