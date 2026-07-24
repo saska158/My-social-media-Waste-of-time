@@ -97,9 +97,11 @@ service cloud.firestore {
     // /chats/{chatId}
 
     match /chats/{chatId} {
-      // Only participants can read the chat document
-      allow read: if isSignedIn() &&
-        request.auth.uid in resource.data.participants;
+      // Only participants can read; resource == null when the doc doesn't exist yet (getDoc on new chat)
+      allow read: if isSignedIn() && (
+        resource == null ||
+        request.auth.uid in resource.data.participants
+      );
 
       // A signed-in user can create a chat they are part of
       allow create: if isSignedIn() &&

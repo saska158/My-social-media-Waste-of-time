@@ -1,14 +1,12 @@
-import { 
-  firestore, 
-  collection, 
-  doc, 
-  getDocs, 
-  setDoc, 
-  addDoc, 
-  updateDoc, 
-  serverTimestamp, 
-  where, 
-  query 
+import {
+  firestore,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  addDoc,
+  updateDoc,
+  serverTimestamp
 } from "./firebase"
 import uploadToCloudinaryAndGetUrl from "./uploadToCloudinaryAndGetUrl"
 
@@ -28,8 +26,8 @@ const sendMessageToFirestore = async (chatId, userA, userBUid, receiverName, rec
       image: imageUrl
     }
 
-    const chatSnapshot = await getDocs(query(chatsRef, where("__name__", "==", chatId)))
-    if(chatSnapshot.empty) {
+    const chatSnapshot = await getDoc(chatDoc)
+    if(!chatSnapshot.exists()) {
       await setDoc(chatDoc, {
         participants: [userA.uid, userBUid],
         timestamp: serverTimestamp(),
