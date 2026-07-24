@@ -19,9 +19,16 @@ const ChatPreview = ({
         className="chat-item-container"
         onClick={() => pickChat(chatPartnerUid, setIsChatBoxVisible)}
       >
-        <img 
-          src={receiverUid === chatPartnerUid ? receiverPhoto : senderPhoto} 
-          alt="sender" 
+        <img
+          src={
+            (receiverUid === chatPartnerUid ? receiverPhoto : senderPhoto) ||
+            `${process.env.PUBLIC_URL}/images/no-profile-picture.png`
+          }
+          onError={(e) => {
+            e.target.onerror = null
+            e.target.src = `${process.env.PUBLIC_URL}/images/no-profile-picture.png`
+          }}
+          alt="sender"
           className="user-img user-img-medium"
         />
         <div>
