@@ -10,7 +10,7 @@ import PopUp from "../PopUp"
 import JoinPopUp from "../JoinPopUp"
 import Comments from "./Comments"
 
-const SERVER_URL = 'http://localhost:4000'
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:4000'
 
 const RESULT_MESSAGES = {
   auto_dismissed: 'Content looks clean — report dismissed.',

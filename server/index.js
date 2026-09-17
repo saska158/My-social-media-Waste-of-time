@@ -8,55 +8,18 @@ const { executeTool } = require('./tools')
 const { db, admin } = require('./firebase')
 
 const app = express()
-app.use(cors({ origin: 'http://localhost:3000' }))
+
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+  : ['http://localhost:3000']
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) callback(null, true)
+    else callback(new Error('Not allowed by CORS'))
+  }
+}))
 app.use(express.json())
-
-class ReportStream {
-  constructor() {
-    this.buffer = []
-    this.listeners = new Set()
-    this.closed = false
-  }
-
-  emit(event) {
-    this.buffer.push(event)
-    this.listeners.forEach(fn => fn(event))
-    if (event.type === 'done' || event.type === 'error') this.closed = true
-  }
-
-  subscribe(fn) {
-    this.buffer.forEach(fn)
-    if (!this.closed) this.listeners.add(fn)
-    return () => this.listeners.delete(fn)
-  }
-}
-
-const reportStreams = new Map()
-
-const processReport = async (reportId, reportRef, { postId, room, reportedBy, creatorUid, postText, postImage }) => {
-  const stream = reportStreams.get(reportId)
-  const emit = event => stream?.emit(event)
-
-  try {
-    const skillName = await runRouter({ postText, postImage, room, emit })
-    await reportRef.update({ skillName })
-
-    const decision = await runModerationAgent({
-      reportId, postId, room, reportedBy, creatorUid, postText, postImage, skillName, emit
-    })
-
-    console.log(`[report] Decision for ${reportId}:`, decision)
-    emit({ type: 'done', decision })
-
-  } catch (error) {
-    console.error('[report] Error processing report:', error)
-    emit({ type: 'error', message: error.message })
-    emit({ type: 'done', decision: null })
-    await reportRef.update({ status: 'error' }).catch(() => {})
-  } finally {
-    setTimeout(() => reportStreams.delete(reportId), 60_000)
-  }
-}
 
 app.post('/report', async (req, res) => {
   const { postId, room, reportedBy, creatorUid, postText = '', postImage = '' } = req.body
@@ -73,43 +36,54 @@ app.post('/report', async (req, res) => {
       status: 'pending',
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     })
-    const reportId = reportRef.id
-    console.log(`[report] New report: ${reportId} for post ${postId}`)
-
-    const stream = new ReportStream()
-    reportStreams.set(reportId, stream)
-
-    processReport(reportId, reportRef, { postId, room, reportedBy, creatorUid, postText, postImage })
-
-    res.json({ reportId })
+    console.log(`[report] New report: ${reportRef.id} for post ${postId}`)
+    res.json({ reportId: reportRef.id })
   } catch (error) {
     console.error('[report] Error creating report:', error)
     res.status(500).json({ error: 'Failed to create report' })
   }
 })
 
-app.get('/report/:reportId/stream', (req, res) => {
-  const stream = reportStreams.get(req.params.reportId)
-  if (!stream) return res.status(404).json({ error: 'Report stream not found' })
+app.get('/report/:reportId/stream', async (req, res) => {
+  const { reportId } = req.params
 
   res.setHeader('Content-Type', 'text/event-stream')
   res.setHeader('Cache-Control', 'no-cache')
   res.setHeader('Connection', 'keep-alive')
   res.flushHeaders()
 
-  const unsubscribe = stream.subscribe(event => {
-    try {
-      res.write(`data: ${JSON.stringify(event)}\n\n`)
-      if (event.type === 'done') {
-        unsubscribe()
-        res.end()
-      }
-    } catch {
-      unsubscribe()
-    }
-  })
+  const emit = (event) => {
+    try { res.write(`data: ${JSON.stringify(event)}\n\n`) } catch {}
+  }
 
-  req.on('close', unsubscribe)
+  try {
+    const reportDoc = await db.collection('reports').doc(reportId).get()
+    if (!reportDoc.exists) {
+      emit({ type: 'error', message: 'Report not found' })
+      emit({ type: 'done', decision: null })
+      return res.end()
+    }
+
+    const { postId, room, reportedBy, creatorUid, postText, postImage } = reportDoc.data()
+
+    const skillName = await runRouter({ postText, postImage, room, emit })
+    await db.collection('reports').doc(reportId).update({ skillName })
+
+    const decision = await runModerationAgent({
+      reportId, postId, room, reportedBy, creatorUid, postText, postImage, skillName, emit
+    })
+
+    console.log(`[report] Decision for ${reportId}:`, decision)
+    emit({ type: 'done', decision })
+
+  } catch (error) {
+    console.error('[stream] Error processing report:', error)
+    emit({ type: 'error', message: error.message })
+    emit({ type: 'done', decision: null })
+    await db.collection('reports').doc(reportId).update({ status: 'error' }).catch(() => {})
+  } finally {
+    res.end()
+  }
 })
 
 app.post('/admin/resolve', async (req, res) => {
@@ -137,4 +111,8 @@ app.post('/admin/resolve', async (req, res) => {
 app.get('/health', (_, res) => res.json({ status: 'ok' }))
 
 const PORT = process.env.PORT || 4000
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`))
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`))
+}
+
+module.exports = app

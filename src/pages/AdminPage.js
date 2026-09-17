@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/authContext'
 import { firestore, collection, query, where, onSnapshot } from '../api/firebase'
 
 const ADMIN_UID = process.env.REACT_APP_ADMIN_UID
-const SERVER_URL = 'http://localhost:4000'
+const SERVER_URL = process.env.REACT_APP_SERVER_URL || 'http://localhost:4000'
 
 const ACTIONS = [
   { key: 'dismiss_report', label: 'Dismiss' },
